@@ -1,8 +1,8 @@
 # 001: Static project landing page
 
-Date: 2026-10-03  
-Status: Accepted for the landing page only  
-Basis: User-approved landing implementation plan and attached requirements
+- Date: 2026-10-03
+- Status: Accepted for the landing page only
+- Basis: User-approved landing implementation plan and attached requirements
 
 ## Context
 
