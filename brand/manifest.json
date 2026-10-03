@@ -1,0 +1,200 @@
+{
+  "imported_on": "2026-10-03",
+  "origin": "ChatGPT conversation: Crear logo vectorial",
+  "preservation": "Original PNG bytes; filenames normalized only.",
+  "assets": [
+    {
+      "file": "logos/a2aviary-logo-original.png",
+      "description": "Initial full-logo concept",
+      "original_filename": "Logo tecnológico a2aviary con ave geométrica.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 236786,
+      "sha256": "d5c4055737c054b82b763a9f9c2930bf838873621367ac68bc2859dc840285c8",
+      "png_color_type": 6
+    },
+    {
+      "file": "guidelines/a2aviary-brand-guidelines.png",
+      "description": "Original visual brand guidelines",
+      "original_filename": "Imagen de ChatGPT 3 oct 2026, 06_41_21 p.m-1.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1451625,
+      "sha256": "aec51e44395e0b7bcc4effbbad3036c4e4b29940bcfdd9706186cef9c8f2fe6e",
+      "png_color_type": 2
+    },
+    {
+      "file": "logos/a2aviary-bird.png",
+      "description": "Standalone bird icon",
+      "original_filename": "Imagen de ChatGPT 3 oct 2026, 06_41_22 p.m-2.png",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 352594,
+      "sha256": "4e180f485a77a1cc84102b21695ccb7d8fb95f54f6c93a3635b1ea6fd036eda6",
+      "png_color_type": 6
+    },
+    {
+      "file": "logos/a2aviary-wordmark.png",
+      "description": "Standalone wordmark",
+      "original_filename": "Imagen de ChatGPT 3 oct 2026, 06_41_23 p.m-3.png",
+      "width": 2172,
+      "height": 724,
+      "bytes": 305296,
+      "sha256": "08af9b2df613fa48d67167b65ce6831c5d16bb4ec8fc8f74d2a6b90b971fb2fc",
+      "png_color_type": 6
+    },
+    {
+      "file": "blueprints/a2aviary-bird-blueprint.png",
+      "description": "Bird construction reference",
+      "original_filename": "Imagen de ChatGPT 3 oct 2026, 06_41_24 p.m-4.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1221903,
+      "sha256": "7538c26a304f4155bbf277a763c99e58e8202d11935f691bbcd78999dd378b8c",
+      "png_color_type": 2
+    },
+    {
+      "file": "blueprints/a2aviary-wordmark-blueprint.png",
+      "description": "Wordmark construction reference",
+      "original_filename": "Imagen de ChatGPT 3 oct 2026, 06_41_24 p.m-5.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1253926,
+      "sha256": "7c2f4517f2d4c4c9785aa2f4016c81aa733f3307f652265eda3f756b0de446f4",
+      "png_color_type": 2
+    },
+    {
+      "file": "blueprints/a2aviary-logo-blueprint.png",
+      "description": "Full-logo construction reference",
+      "original_filename": "Imagen de ChatGPT 3 oct 2026, 06_41_25 p.m-6.png",
+      "width": 1448,
+      "height": 1086,
+      "bytes": 1436409,
+      "sha256": "e2234700adb94bc0baf84c477bfad548d5eeaedc09d2944a2c57c9fa27698bfe",
+      "png_color_type": 2
+    },
+    {
+      "file": "logos/a2aviary-logo-transparent.png",
+      "description": "Full logo with transparency",
+      "original_filename": "Imagen de ChatGPT 3 oct 2026, 06_41_26 p.m-7.png",
+      "width": 2172,
+      "height": 724,
+      "bytes": 370072,
+      "sha256": "0ff45a1373370fa1fc853a7c3ee43012eed9d60beed1a75ab76e115af385d9fe",
+      "png_color_type": 6
+    }
+  ],
+  "vector_reconstructions": [
+    {
+      "file": "logos/svg/a2aviary-logo.svg",
+      "description": "Later editable vector reconstruction; original PNG preserved",
+      "source_file": "logos/a2aviary-logo-transparent.png",
+      "created_on": "2026-10-03",
+      "view_box": [
+        0,
+        0,
+        1923,
+        456
+      ],
+      "source_crop": [
+        122,
+        140,
+        2045,
+        596
+      ],
+      "path_count": 14,
+      "colors": [
+        "#0B1220",
+        "#14F1C8"
+      ],
+      "bytes": 15777,
+      "sha256": "6ce5bf62681bea1e42a38eaecd49426676404b1df03532dc8d684feeb0e1bf04",
+      "verification": {
+        "dark": {
+          "silhouette_iou": 0.993567,
+          "edge_distance_p95_source_px": 1.0,
+          "edge_distance_max_source_px": 1.0
+        },
+        "teal": {
+          "silhouette_iou": 0.992841,
+          "edge_distance_p95_source_px": 1.0,
+          "edge_distance_max_source_px": 1.414
+        }
+      }
+    },
+    {
+      "file": "logos/svg/a2aviary-bird.svg",
+      "description": "Later editable vector reconstruction; original PNG preserved",
+      "source_file": "logos/a2aviary-bird.png",
+      "created_on": "2026-10-03",
+      "view_box": [
+        0,
+        0,
+        1122,
+        740
+      ],
+      "source_crop": [
+        65,
+        282,
+        1187,
+        1022
+      ],
+      "path_count": 5,
+      "colors": [
+        "#0B1220",
+        "#14F1C8"
+      ],
+      "bytes": 7481,
+      "sha256": "5eb5e4f142fbf0217872ec5712f0feafe19775664b013949a87a5bef7af82b91",
+      "verification": {
+        "dark": {
+          "silhouette_iou": 0.994982,
+          "edge_distance_p95_source_px": 1.0,
+          "edge_distance_max_source_px": 1.0
+        },
+        "teal": {
+          "silhouette_iou": 0.994798,
+          "edge_distance_p95_source_px": 1.0,
+          "edge_distance_max_source_px": 1.0
+        }
+      }
+    },
+    {
+      "file": "logos/svg/a2aviary-wordmark.svg",
+      "description": "Later editable vector reconstruction; original PNG preserved",
+      "source_file": "logos/a2aviary-wordmark.png",
+      "created_on": "2026-10-03",
+      "view_box": [
+        0,
+        0,
+        1709,
+        377
+      ],
+      "source_crop": [
+        246,
+        203,
+        1955,
+        580
+      ],
+      "path_count": 9,
+      "colors": [
+        "#0B1220",
+        "#14F1C8"
+      ],
+      "bytes": 9990,
+      "sha256": "eeeb3efbe96dc67f1c229ee718bbdd9d87134c545770cbefba130db6e9ebe124",
+      "verification": {
+        "dark": {
+          "silhouette_iou": 0.994469,
+          "edge_distance_p95_source_px": 1.0,
+          "edge_distance_max_source_px": 2.0
+        },
+        "teal": {
+          "silhouette_iou": 0.995044,
+          "edge_distance_p95_source_px": 1.0,
+          "edge_distance_max_source_px": 1.0
+        }
+      }
+    }
+  ]
+}
