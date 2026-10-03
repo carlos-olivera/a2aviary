@@ -1,0 +1,19 @@
+# Referencias y datos privados de esta máquina
+.local/
+private/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Archivos del sistema y resultados locales
+.DS_Store
+work/
+tmp/
+node_modules/
+.venv/
+__pycache__/
+dist/
+build/
+coverage/
