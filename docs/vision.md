@@ -2,7 +2,7 @@
 
 ## Producto
 
-Construimos una agencia web autónoma machine-to-machine. El cliente conversa con su asistente habitual; ese agente prepara materiales, coordina con la agencia y presenta resultados y decisiones al humano.
+Construimos una agencia digital autónoma machine-to-machine para sitios web, aplicaciones y otros servicios digitales. El cliente conversa con su asistente IA habitual; ese agente prepara materiales, coordina con la agencia y presenta resultados y decisiones al humano. El primer recorrido se concentra en un sitio web.
 
 La agencia aporta producción especializada, verificación y continuidad. La autonomía se ejerce dentro del mandato, presupuesto y aprobaciones del cliente.
 
@@ -25,4 +25,4 @@ La agencia conserva el estado vigente. Callback y polling permiten seguir tareas
 
 ## Origen del contexto
 
-La base proviene del recap de la conversación «Agente para páginas web» y de las decisiones del usuario en esta sesión. El recap combina historial recuperado con propuestas; no demuestra una implementación desplegada ni acuerdos operativos cerrados. Las opciones de proveedores y sus precios deben verificarse al tomar decisiones técnicas.
+La base proviene del recap de la conversación «Agente para páginas web», de las decisiones del usuario en esta sesión y de la introducción vigente del Espacio a2aviary, que amplía la visión a aplicaciones y servicios digitales. El recap combina historial recuperado con propuestas; no demuestra una implementación desplegada ni acuerdos operativos cerrados. Las opciones de proveedores y sus precios deben verificarse al tomar decisiones técnicas.

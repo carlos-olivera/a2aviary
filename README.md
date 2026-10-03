@@ -1,6 +1,6 @@
 # a2aviary
 
-Agencia web autónoma diseñada para trabajar con el asistente del cliente: el humano define objetivos y autoriza acciones, su agente prepara el encargo y la agencia produce y gestiona el sitio.
+Agencia digital autónoma diseñada para trabajar con el asistente IA del cliente: el humano define objetivos y autoriza acciones, su agente prepara el encargo y la agencia produce y gestiona sitios web, aplicaciones y otros servicios digitales. El primer piloto se centra en un sitio web para Teco.
 
 Dominio elegido: **a2aviary.io**. El dominio no implica que exista un servicio desplegado.
 

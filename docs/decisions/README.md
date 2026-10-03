@@ -9,6 +9,7 @@
 | Open source desde el primer commit | 2026-10-03 | Instrucción del usuario |
 | Licencia Apache 2.0 | 2026-10-03 | Elección explícita del usuario |
 | Compartir progreso mediante build in public | 2026-10-03 | Instrucción del usuario |
+| Visión de agencia digital para sitios, aplicaciones y servicios; primer piloto web | 2026-10-03 | Introducción vigente del Espacio a2aviary |
 
 ## Orientación de diseño del recap
 
