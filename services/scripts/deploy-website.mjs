@@ -7,7 +7,7 @@ import { createHash, randomUUID } from 'node:crypto';
 const sha=process.env.DEPLOY_COMMIT??execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const config=process.env.WEBSITE_BUCKET?{WebsiteBucket:process.env.WEBSITE_BUCKET,ReleaseBucket:process.env.RELEASE_BUCKET,DistributionId:process.env.DISTRIBUTION_ID}:JSON.parse(await readFile('.local/website-outputs.json','utf8'))['a2aviary-prod-website'];
 const s3=new S3Client({}),cf=new CloudFrontClient({});
-const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.txt':'text/plain; charset=utf-8'};
+const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.ico':'image/vnd.microsoft.icon','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.txt':'text/plain; charset=utf-8','.xml':'application/xml; charset=utf-8'};
 const upload=async(bucket,key,body,contentType,cache)=>s3.send(new PutObjectCommand({Bucket:bucket,Key:key,Body:body,ContentType:contentType,CacheControl:cache}));
 const get=async(bucket,key)=>(await s3.send(new GetObjectCommand({Bucket:bucket,Key:key}))).Body.transformToByteArray();
 let previous;try{previous=JSON.parse(Buffer.from(await get(config.WebsiteBucket,'.well-known/release.json')).toString());}catch(e){if(!['NoSuchKey','NotFound'].includes(e.name))throw e;}
