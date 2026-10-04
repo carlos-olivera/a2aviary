@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-04 — landing SEO improvements prepared locally
+
+- Added the root canonical URL, complete Open Graph/X metadata with Carlos Olivera's creator handle, and a linked website/organization/person/source-code JSON-LD graph without an unapproved logo.
+- Added crawler discovery and a canonical-only sitemap, a standalone noindex 404 page, and XML/ICO upload MIME mappings. Prepared CloudFront origin 403/404 handling that returns the custom page with HTTP 404; owner review and infrastructure deployment remain pending.
+- Replaced the stale share screenshot with a reproducible 1200 × 630 composition whose headline, complete bird, identity, and updated attribution survive the centered square crop. Added derived 16/32/48-pixel ICO and 180-pixel Apple touch assets without modifying original artwork.
+- Verified website asset checks/build, browser metadata/XML/icon checks, desktop/mobile 404 behavior without JavaScript under locally injected production CSP, script syntax, and six synthesized infrastructure assertions. Recorded local evidence and the assets-before-CloudFront release sequence in the website documentation. No website delivery, infrastructure deployment, or social-platform preview validation was performed.
+
 ## 2026-10-03
 
 - Prepared the project foundation for code and documentation.

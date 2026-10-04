@@ -57,9 +57,13 @@ global identity. Original resources and their provenance remain in
 `public/brand/a2aviary-bird.svg` is a byte-identical copy of the source bird for
 runtime loading. The inverse logo and bird replace only `#0B1220` fills with
 `#F5F7FA`, plus descriptive metadata; contour geometry and teal are unchanged.
-`public/favicon.svg` derives from the inverse bird. `public/social-preview.png`
-is a 1200 × 630 browser render of this landing's settled Three.js composition.
-No source PNG or SVG was overwritten.
+`public/favicon.svg` derives from the inverse bird. The ICO contains 16, 32,
+and 48-pixel PNG variants; the Apple touch icon is 180 × 180. Both center the
+existing bird on charcoal. `public/social-preview.png` is a dedicated 1200 × 630
+browser-rendered composition using the inverse SVG and the landing's local
+fonts. Its identity, complete bird, headline, and Carlos Olivera attribution
+fit inside the centered 630 × 630 crop with padding. No source PNG or SVG was
+overwritten; these derivations do not approve a global visual identity.
 
 Space Grotesk 500 and Inter 400 are self-hosted through pinned Fontsource
 packages, with their SIL Open Font Licenses in `public/licenses/`. Three.js's
@@ -88,8 +92,62 @@ npx --package @playwright/cli playwright-cli -s=a2aviary run-code --filename=web
 ```
 
 Rebuild after regenerating the image. `npm run check` verifies source checksums,
-derived contours, bundled license files, and social image dimensions.
+derived contours, bundled licenses, social image dimensions, icon directory and
+PNG dimensions, referenced head assets, and linked JSON-LD entities.
+
+Regenerate the icons against the same local preview, from the repository root:
+
+```sh
+mkdir -p output/playwright
+npx --package @playwright/cli playwright-cli -s=a2aviary goto http://127.0.0.1:4173
+npx --package @playwright/cli playwright-cli -s=a2aviary run-code --filename=website/scripts/create-icons.js
+node website/scripts/package-icons.mjs
+```
+
+Rebuild after generation. The intermediate icon PNGs stay in the ignored
+`output/playwright/` directory; only the ICO and Apple touch PNG are delivered.
+
+## Search, sharing, and missing pages
+
+The canonical URL is `https://a2aviary.io/`, including when the same landing is
+served at `/index.html`. Open Graph and explicit X metadata share the same copy
+and image, use English (`en_US` for Open Graph), and credit `@carlos_olivera`.
+The JSON-LD graph links the website, organization in development, Carlos Olivera,
+and Apache-licensed source repository. It deliberately contains no logo.
+
+`public/robots.txt` allows crawling and discovers `public/sitemap.xml`, which
+lists only the canonical homepage with no speculative modification date.
+`public/404.html` is a standalone, noindex page with external CSS and a home
+link; it needs neither JavaScript nor the Three.js scene. CloudFront source maps
+origin 403 and 404 to this page with HTTP 404 and configured error-cache TTL
+zero. S3-backed CloudFront errors have an effective minimum cache floor of one
+second ([AWS error-cache guidance](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages-expiration.html)).
+Vite preview uses its own fallback and does not prove deployed 404 status.
+
+With the rebuilt production preview running, verify search/share delivery and
+the 404 layout in a browser:
+
+```sh
+npx --package @playwright/cli playwright-cli -s=a2aviary goto http://127.0.0.1:4173
+npx --package @playwright/cli playwright-cli -s=a2aviary run-code --filename=website/scripts/verify-seo.js
+```
+
+This checks both homepage URLs, metadata/JSON-LD consistency, sitemap XML,
+crawler discovery, browser icon decoding, the homepage under locally injected
+production CSP, and desktop/mobile 404 behavior with JavaScript disabled.
 
 ## Release delivery
 
 The landing includes a public repository CTA and discreet Carlos Olivera attribution. Private S3/CloudFront delivery and GitHub OIDC deployment are defined in `infra/`; see [runbooks](../docs/runbooks.md) and [release evidence](../docs/release-verification.md). The proposed agency capabilities described in the landing are a vision, not a claim of implemented website generation.
+
+The SEO additions are prepared and locally verified, not deployed. Infrastructure
+and affected scripts require Carlos's current-head PR approval under
+[repository policy](../docs/decisions/005-github-identity-and-policy.md).
+For a separately authorized release, publish and verify the website assets,
+including `/404.html` and `/404.css`, before applying the reviewed website-stack
+CloudFront change. The website CI role cannot deploy infrastructure. Afterward,
+verify a unique missing path returns HTTP 404 and the custom HTML body; check the
+homepage, crawler files, icons, XML/ICO MIME types, and retained security/cache
+headers. The deployment script verifies uploaded file checksums and MIME types;
+it does not execute or verify the CloudFront configuration update. Actual social
+platform previews remain unverified until observed.

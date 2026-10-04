@@ -1,0 +1,20 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  color: #f5f7fa;
+  background: #0b1220;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100svh; display: grid; place-items: center; }
+main { width: min(100%, 640px); padding: 48px 28px; }
+.brand { display: inline-block; }
+.brand img { display: block; width: 172px; height: auto; }
+.status { margin: 64px 0 12px; color: #14f1c8; font-size: 20px; }
+h1 { margin: 0; font-size: clamp(36px, 8vw, 56px); line-height: 1.15; letter-spacing: -.04em; }
+p { color: #b8c3cf; line-height: 1.8; }
+.home-link { display: inline-block; padding-block: 14px; color: #63f5d5; }
+a:focus-visible { outline: 2px solid #63f5d5; outline-offset: 5px; }
+@media (forced-colors: active) {
+  .status, p { color: CanvasText; }
+  .home-link { color: LinkText; }
+}

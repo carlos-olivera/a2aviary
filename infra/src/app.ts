@@ -38,6 +38,8 @@ class Website extends cdk.Stack {
     const origin = S3BucketOrigin.withOriginAccessControl(this.bucket);
     const mutable = new cf.CachePolicy(this, 'Mutable', { minTtl: cdk.Duration.seconds(0), defaultTtl: cdk.Duration.seconds(0), maxTtl: cdk.Duration.days(1), enableAcceptEncodingGzip: true, enableAcceptEncodingBrotli: true });
     this.distribution = new cf.Distribution(this, 'Distribution', { certificate, domainNames: ['a2aviary.io'], defaultRootObject: 'index.html', priceClass: cf.PriceClass.PRICE_CLASS_100,
+      // Private S3 origins return 403 for missing keys without ListBucket permission.
+      errorResponses: [403, 404].map(httpStatus => ({ httpStatus, responseHttpStatus: 404, responsePagePath: '/404.html', ttl: cdk.Duration.seconds(0) })),
       defaultBehavior: { origin, viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS, cachePolicy: mutable, responseHeadersPolicy: headers, compress: true },
       additionalBehaviors: { '/assets/*': { origin, viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS, cachePolicy: cf.CachePolicy.CACHING_OPTIMIZED, responseHeadersPolicy: headers, compress: true } },
     });

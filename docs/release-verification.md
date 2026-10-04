@@ -2,6 +2,19 @@
 
 Evidence date: 2026-10-04 UTC. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
+## Landing SEO changes awaiting release
+
+On 2026-10-04, canonical/Open Graph/X metadata, a logo-free JSON-LD graph,
+robots/sitemap, square-crop-safe share art, derived ICO/Apple touch icons,
+XML/ICO upload MIME mappings, and a standalone noindex 404 page were configured
+in source and locally verified. The CloudFront 403/404-to-custom-404 change is
+prepared for owner review; six synthesized infrastructure assertions pass.
+No website publication or infrastructure deployment was performed for these changes.
+Production SEO/404/MIME behavior and actual social-platform previews remain
+unverified. Publish and verify the static error page before applying the approved
+CloudFront update. See [local evidence](../website/verification.md#seo-additions--2026-10-04-local-verification)
+and [release sequencing](../website/README.md#release-delivery).
+
 ## Published delivery
 
 The first foundation commit is `1903229885f39244b937eaaff8280dfbcc4e5a72`. [Workflow 37169495312](https://github.com/carlos-olivera/a2aviary/actions/runs/37169495312) passed checks and OIDC website delivery. [Live revision](https://a2aviary.io/.well-known/release.json) is the authority for subsequent deliveries. Later fixes are delivered through the repository's PR/CI path; check the merged commit and its successful main workflow rather than equating a prepared change set with deployment.

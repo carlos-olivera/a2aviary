@@ -92,3 +92,36 @@ remain required before publishing. No site was deployed or remote URL claimed.
 ## Public deployment verification — 2026-10-04 UTC
 
 Repeated the existing browser verification script against https://a2aviary.io in headed Chrome 154.0.8037.98 at 1440×900, 1280×720, 390×844, and 360×640. The source scene, motion controls, pointer behavior, reduced motion, loading fallback, unavailable WebGL, and real graphics context loss checks passed without normal-path console warnings/errors or missing assets. Touch/coarse-pointer/DPR checks are emulation; visibility state is synthetic. Physical mobile hardware was not tested. Public TLS/redirects, security/cache/MIME headers, private S3 anonymous denial, the real repository CTA, attribution, and complete social-preview assets were checked. Public revision/workflow and remaining infrastructure gates are recorded in [release verification](../docs/release-verification.md).
+
+## SEO additions — 2026-10-04, local verification
+
+These changes are prepared locally; no website publication or infrastructure
+deployment was performed. Live checks before implementation found HTTP 403 S3
+XML responses for robots, sitemap, ICO, and a missing page.
+
+- `npm run check` and `npm run build` passed with original brand checksums and
+  contours preserved, valid icon directories/PNG dimensions, and resolved
+  JSON-LD entity references. Deployment and rendering scripts passed syntax checks.
+- Infrastructure TypeScript build and all six synthesized assertions passed,
+  including origin 403/404 mappings to `/404.html` with HTTP 404, configured
+  error-cache TTL zero, and preserved private origin/security headers.
+- `verify-seo.js` passed against the rebuilt loopback production preview in
+  headed Chrome 154.0.8037.98. `/` and `/index.html` identify the same canonical;
+  search/share copy and structured-data descriptions agree. The sitemap parses
+  as namespaced XML and contains only the homepage; robots discovers it.
+- Chrome decoded the three-size ICO (selecting its 48-pixel entry) and the
+  180-pixel Apple touch PNG. The homepage scene and JSON-LD work with the
+  production CSP injected locally, without console or failed-request diagnostics.
+- The standalone 404 page was inspected at 1280 × 720 and 390 × 844 with
+  JavaScript disabled and production CSP injected locally. External styling,
+  logo, noindex, visible keyboard focus, and the return-home link passed with no
+  horizontal overflow or console/failed-request diagnostics.
+- The dedicated share image was visually inspected at 1200 × 630 and reduced
+  wide/square card sizes. The generator checks essential element bounds inside
+  the padded central square. The headline and complete bird survive the crop;
+  the attribution replaces the obsolete footer text.
+
+Local screenshots and CLI/JSON evidence are under `output/playwright/`. Actual
+CloudFront missing-path HTTP responses, production XML/ICO MIME delivery, and
+social-platform previews await an authorized release. Vite's unknown-path
+fallback does not simulate CloudFront. See the [release sequence](README.md#release-delivery).
