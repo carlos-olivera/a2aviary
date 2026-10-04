@@ -8,3 +8,5 @@ for(const [path,pkg]of Object.entries(lock.packages)){
  for(const file of await readdir(path))if(/^(LICENSE|LICENCE|NOTICE|COPYING)(\.|$)/i.test(file))await cp(join(path,file),join('dist/licenses',path.replaceAll('/','_')+'_'+file),{recursive:true});
 }
 await writeFile('dist/licenses/inventory.json',JSON.stringify(inventory,null,2)+'\n');
+
+for(const file of ['src/_vendor/zod-to-json-schema/LICENSE','src/_vendor/partial-json-parser/LICENSE','src/internal/qs/LICENSE.md'])await cp(join('node_modules/openai',file),join('dist/licenses','openai_vendor_'+file.replaceAll('/','_')));

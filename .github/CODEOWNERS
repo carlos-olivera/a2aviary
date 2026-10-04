@@ -1,0 +1,3 @@
+# Owner-only fallback while the trusted Operator App is not active.
+# Replace this blanket rule only after App-bound policy enforcement is verified.
+* @carlos-olivera

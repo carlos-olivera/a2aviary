@@ -1,1 +1,13 @@
-{"account":"111111111111","region":"us-east-1","zoneId":"ZEXAMPLE","ownerEmail":"owner@example.com"}
+{
+  "account": "111111111111",
+  "region": "us-east-1",
+  "zoneId": "ZEXAMPLE",
+  "ownerEmail": "owner@example.com",
+  "limits": {
+    "tasksPerDay": 10,
+    "concurrentTasks": 2,
+    "taskSeconds": 300,
+    "taskMicros": 1000000,
+    "monthMicros": 10000000
+  }
+}

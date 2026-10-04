@@ -33,7 +33,7 @@ SES acceptance and delivery are separate states. A timeout or interrupted send b
 
 ## Limits and retention
 
-Defaults are defined in [protocol implementation](../services/src/protocol.ts): 1 MiB raw mail; 128 KiB protocol part; two UTF-8 `.txt` attachments of 128 KiB each; two active tasks; ten accepted submissions per UTC day; five-minute deadline; two research calls and six total application calls; 32,000 input and 8,000 output observed session tokens. The brief and attachments together must fit the initial runtime input allowance.
+Defaults are defined in [limit configuration](../contracts/limits.defaults.json) and enforced by [protocol implementation](../services/src/protocol.ts): 1 MiB raw mail; 128 KiB protocol part; two UTF-8 `.txt` attachments of 128 KiB each; two active tasks; ten accepted submissions per UTC day; five-minute deadline; two research calls and six total application calls; 32,000 input and 8,000 output observed session tokens. The brief and attachments together must fit the 48,000-byte admission bound as well as observed token limits. Owner configuration and partner grants can reduce applicable allowances.
 
 A monthly application ledger starts with $10 and reserves $1 atomically before each execution. Research search fees and observed usage are charged to that reservation. Unknown usage retains the reservation for owner reconciliation. Managed-agent counters and cancellation may lag, so monitored token/dollar thresholds are allowances rather than hard billing caps. AWS budgets notify and do not stop spending. The $25 overall target and dated estimates are in [costs](costs.md).
 

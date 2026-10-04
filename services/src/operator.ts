@@ -18,6 +18,7 @@ async function mint(profile:'policy'|'development') {
   const jwt=await new SignJWT({}).setProtectedHeader({alg:'RS256'}).setIssuedAt(now()-30).setExpirationTime(now()+300).setIssuer(String(app.appId)).sign(await importPKCS8(app.privateKey,'RS256'));
   const permissions=profile==='policy'?{contents:'read',pull_requests:'read',checks:'write'}:{contents:'write',pull_requests:'write',actions:'read'};
   const token=await github(`/app/installations/${app.installationId}/access_tokens`,jwt,'POST',{repository_ids:[1403745581],permissions});
+  await audit('github.token',{profile,installationId:app.installationId},'issued');
   return {token:token.token,expiresAt:token.expires_at};
 }
 async function policyToken(){const r=await new LambdaClient({}).send(new InvokeCommand({FunctionName:process.env.BROKER_FUNCTION!,Payload:Buffer.from(JSON.stringify({profile:'policy'}))}));const p=JSON.parse(Buffer.from(r.Payload!).toString());if(r.FunctionError || !p.token)throw new Error('broker_unavailable');return p.token;}
@@ -38,10 +39,13 @@ export async function webhook(event:any) {
   const body=event.isBase64Encoded?Buffer.from(event.body??'','base64'):Buffer.from(event.body??'');
   if(body.length>1048576)return {statusCode:413,body:'Payload too large'};
   const config=await secret(process.env.APP_WEBHOOK_SECRET!);
+  if(!config.webhookSecret)return {statusCode:503,body:'Operator registration incomplete'};
   const received=Buffer.from(event.headers?.['x-hub-signature-256']??'');
   const expected=Buffer.from('sha256='+createHmac('sha256',config.webhookSecret).update(body).digest('hex'));
   if(received.length!==expected.length || !timingSafeEqual(received,expected))return {statusCode:401,body:'Invalid signature'};
   const payload=JSON.parse(body.toString());
+  if(event.headers?.['x-github-event']==='ping')return {statusCode:200,body:'Verified'};
+  if(payload.pull_request && payload.repository?.id!==1403745581)return {statusCode:403,body:'Repository denied'};
   if(payload.repository?.id!==1403745581 && payload.installation?.account?.login!=='carlos-olivera')return {statusCode:403,body:'Repository denied'};
   if(payload.pull_request){await evaluate(payload.pull_request.number,await policyToken());}
   // Installation completion is reconciled by the owner setup command, not an untrusted caller.
@@ -55,6 +59,8 @@ export async function callback(event:any){
   const response=await fetch(`https://api.github.com/app-manifests/${query.code}/conversions`,{method:'POST',headers:{Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(20000)});
   if(!response.ok)return {statusCode:502,body:'Manifest conversion failed. Restart registration.'};
   const app:any=await response.json();
+  const allowed:Record<string,string>={contents:'write',pull_requests:'write',checks:'write',actions:'read',metadata:'read'};
+  if(app.owner?.id!==1182541 || Object.entries(app.permissions??{}).some(([key,value])=>allowed[key]!==value))return {statusCode:403,body:'Manifest owner or permission scope denied'};
   const sm=new SecretsManagerClient({});
   await sm.send(new PutSecretValueCommand({SecretId:process.env.APP_KEY_SECRET!,SecretString:JSON.stringify({appId:app.id,privateKey:createPrivateKey(app.pem).export({type:'pkcs8',format:'pem'}),installationId:0,slug:app.slug})}));
   await sm.send(new PutSecretValueCommand({SecretId:process.env.APP_WEBHOOK_SECRET!,SecretString:JSON.stringify({webhookSecret:app.webhook_secret})}));
