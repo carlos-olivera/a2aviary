@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-04 — cost transparency prepared for review
+
+- Added the supplied root `COSTS.md` and `website/public/costs.json` unchanged, preserving every figure, status, source, note, and the conflicting domain confirmation note.
+- Added a build-time `/costs` page with all JSON rows and supplied totals, explicit unknown amounts, precise small dollar values, invoice/budget caveats, accessible table navigation, and self-hosted CSS. The page has no browser JavaScript, analytics, or tracking.
+- Added README/footer links and the canonical costs URL to the sitemap. The build emits the exact extensionless `costs` object; the upload script gives it HTML MIME without changing `infra/`.
+- Verified byte-for-byte draft copies, website asset checks/production build, renderer escaping/precision/unknown/range checks, service TypeScript/build and all 24 behavioral tests including upload MIME cases, and direct development/preview GET/HEAD HTML delivery. Documentation links, source-link targets, built JSON bytes, and whitespace checks passed.
+- Verified the costs page in headed Chrome 154.0.8037.98 at 1280 × 900, 390 × 844, and 360 × 640 with JavaScript disabled and enabled under the production CSP injected locally. All JSON fields/totals, keyboard access, responsive scrolling, home/footer/JSON navigation, and exclusively self-hosted resource requests passed with clean browser/network/CSP diagnostics. Existing SEO/homepage/404 browser checks also passed with the updated sitemap. Local evidence is recorded in [website verification](website/verification.md#cost-transparency--2026-10-04-local-verification).
+- Prepared for an Operator App PR and current-head owner review. No website or infrastructure deployment was performed; public S3/CloudFront costs delivery remains unverified.
+
 ## 2026-10-04 — landing SEO improvements prepared locally
 
 - Added the root canonical URL, complete Open Graph/X metadata with Carlos Olivera's creator handle, and a linked website/organization/person/source-code JSON-LD graph without an unapproved logo.

@@ -116,7 +116,7 @@ The JSON-LD graph links the website, organization in development, Carlos Olivera
 and Apache-licensed source repository. It deliberately contains no logo.
 
 `public/robots.txt` allows crawling and discovers `public/sitemap.xml`, which
-lists only the canonical homepage with no speculative modification date.
+lists the canonical homepage and `/costs` with no speculative modification dates.
 `public/404.html` is a standalone, noindex page with external CSS and a home
 link; it needs neither JavaScript nor the Three.js scene. CloudFront source maps
 origin 403 and 404 to this page with HTTP 404 and configured error-cache TTL
@@ -151,3 +151,36 @@ homepage, crawler files, icons, XML/ICO MIME types, and retained security/cache
 headers. The deployment script verifies uploaded file checksums and MIME types;
 it does not execute or verify the CloudFront configuration update. Actual social
 platform previews remain unverified until observed.
+
+## Cost transparency
+
+`public/costs.json` is the supplied cost draft, also documented in the root
+[COSTS.md](../COSTS.md). `src/costs-page.js` renders all rows and supplied totals
+at build time; `scripts/costs-plugin.mjs` emits an extensionless `dist/costs`
+HTML object. It serves directly at `/costs` on the private S3 REST origin,
+without directory-index rewriting or infrastructure changes. The upload script
+maps this exact key to `text/html; charset=utf-8`. Development renders the current
+JSON; preview serves the built object with the same MIME type. Rebuild to update
+preview or production content after editing the JSON.
+
+The page uses local `public/costs.css`, no browser JavaScript, and no analytics or
+tracking. Sources/statuses/notes remain as supplied, including the conflicting
+domain confirmation note. Dollar amounts keep their precision, unknown amounts
+remain unknown, and budgets/reservations are distinguished from spend. Totals are
+supplied values, not a recomputed sum of all rows. The root Markdown and JSON
+remain separate drafts; changing one does not synchronize the other.
+
+With production preview running, verify the costs page under the production CSP
+with and without JavaScript at desktop and mobile sizes:
+
+```sh
+npx --package @playwright/cli playwright-cli -s=a2aviary goto http://127.0.0.1:4173/costs
+npx --package @playwright/cli playwright-cli -s=a2aviary run-code --filename=website/scripts/verify-costs.js
+```
+
+Asset checks include renderer escaping, precision, ranges, unknown values, source
+links, and the sitemap. The service tests cover the extensionless upload MIME
+mapping. Browser checks compare every row and supplied total to the served JSON,
+check keyboard access/navigation, and reject third-party resource requests and
+browser/network/CSP errors. Local preview verifies page rendering; production
+S3/CloudFront delivery remains unverified until a separately authorized release.

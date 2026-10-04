@@ -4,15 +4,15 @@ import { readFile, readdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
+import { websiteContentType } from './website-content-type.mjs';
 const sha=process.env.DEPLOY_COMMIT??execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim();
 const config=process.env.WEBSITE_BUCKET?{WebsiteBucket:process.env.WEBSITE_BUCKET,ReleaseBucket:process.env.RELEASE_BUCKET,DistributionId:process.env.DISTRIBUTION_ID}:JSON.parse(await readFile('.local/website-outputs.json','utf8'))['a2aviary-prod-website'];
 const s3=new S3Client({}),cf=new CloudFrontClient({});
-const mime={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.ico':'image/vnd.microsoft.icon','.woff':'font/woff','.woff2':'font/woff2','.json':'application/json','.txt':'text/plain; charset=utf-8','.xml':'application/xml; charset=utf-8'};
 const upload=async(bucket,key,body,contentType,cache)=>s3.send(new PutObjectCommand({Bucket:bucket,Key:key,Body:body,ContentType:contentType,CacheControl:cache}));
 const get=async(bucket,key)=>(await s3.send(new GetObjectCommand({Bucket:bucket,Key:key}))).Body.transformToByteArray();
 let previous;try{previous=JSON.parse(Buffer.from(await get(config.WebsiteBucket,'.well-known/release.json')).toString());}catch(e){if(!['NoSuchKey','NotFound'].includes(e.name))throw e;}
 const files=[];
-async function collect(dir,prefix=''){for(const item of await readdir(dir,{withFileTypes:true})){const key=prefix+item.name;if(item.isDirectory())await collect(resolve(dir,item.name),key+'/');else{const body=await readFile(resolve(dir,item.name));files.push({key,body,mime:mime[key.slice(key.lastIndexOf('.'))]??'application/octet-stream',sha256:createHash('sha256').update(body).digest('hex')});}}}
+async function collect(dir,prefix=''){for(const item of await readdir(dir,{withFileTypes:true})){const key=prefix+item.name;if(item.isDirectory())await collect(resolve(dir,item.name),key+'/');else{const body=await readFile(resolve(dir,item.name));files.push({key,body,mime:websiteContentType(key),sha256:createHash('sha256').update(body).digest('hex')});}}}
 await collect(resolve('website/dist'));
 const release={commit:sha,workflowRun:process.env.GITHUB_RUN_ID??'bootstrap',releaseId:sha+'-'+randomUUID(),deployedAt:new Date().toISOString()};
 const releaseBody=Buffer.from(JSON.stringify(release));

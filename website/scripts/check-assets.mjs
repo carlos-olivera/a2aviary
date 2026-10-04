@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
+import './check-costs.mjs';
 
 const brand = new URL('../../brand/', import.meta.url);
 const publicRoot = new URL('../public/', import.meta.url);

@@ -1,0 +1,204 @@
+{
+  "updatedAt": "2026-10-04",
+  "currency": "USD",
+  "items": [
+    {
+      "id": "domain-a2aviary-io",
+      "name": "Domain a2aviary.io (registered 2026-10-03, expires 2027-10-03)",
+      "provider": "Amazon Registrar (Route 53 Domains)",
+      "kind": "annual",
+      "amountUsd": 72.0,
+      "period": "year",
+      "status": "confirmed",
+      "source": "WHOIS a2aviary.io; https://d32ze2gidvkk54.cloudfront.net/Amazon_Route_53_Domain_Registration_Pricing_20140731.pdf (.io $71.00 registration/renewal); amount paid $72.00 confirmed by Carlos",
+      "note": "List price; paid amount to be confirmed by Carlos"
+    },
+    {
+      "id": "tls-acm",
+      "name": "TLS certificate (ACM, CloudFront)",
+      "provider": "AWS",
+      "kind": "monthly",
+      "amountUsd": 0.0,
+      "period": "month",
+      "status": "confirmed",
+      "source": "infra/src/app.ts acm.Certificate; https://aws.amazon.com/certificate-manager/pricing/"
+    },
+    {
+      "id": "aws-route53-zone",
+      "name": "Route 53 hosted zone",
+      "provider": "AWS",
+      "kind": "monthly",
+      "amountUsd": 0.5,
+      "period": "month",
+      "status": "estimated",
+      "source": "docs/costs.md; https://aws.amazon.com/route53/pricing/"
+    },
+    {
+      "id": "aws-secrets",
+      "name": "Secrets Manager (4 secrets)",
+      "provider": "AWS",
+      "kind": "monthly",
+      "amountUsd": 1.6,
+      "period": "month",
+      "status": "estimated",
+      "source": "infra/src/email.ts; docs/costs.md"
+    },
+    {
+      "id": "aws-cloudwatch",
+      "name": "CloudWatch: 8 alarms (17 alarm metrics) + 2 custom metrics",
+      "provider": "AWS",
+      "kind": "monthly",
+      "amountUsd": 2.3,
+      "period": "month",
+      "status": "estimated",
+      "source": "infra/src/controls.ts; docs/costs.md"
+    },
+    {
+      "id": "aws-usage",
+      "name": "AWS usage (Lambda incl. 1-min watchdog, DynamoDB, SQS/SNS, S3, logs, API Gateway, CloudFront, SES)",
+      "provider": "AWS",
+      "kind": "usage",
+      "amountUsd": null,
+      "amountUsdMin": 0.2,
+      "amountUsdMax": 3.6,
+      "period": "month",
+      "status": "estimated",
+      "source": "docs/costs.md working scenario"
+    },
+    {
+      "id": "aws-actual",
+      "name": "AWS actual bill since 2026-10-03",
+      "provider": "AWS",
+      "kind": "usage",
+      "amountUsd": null,
+      "period": "to-date",
+      "status": "to-confirm",
+      "source": "AWS Billing/Cost Explorer (payer account); Project cost tag not yet activated"
+    },
+    {
+      "id": "openai-launch-research-task",
+      "name": "Launch research task (22,556 in / 1,177 out tokens, 1 search)",
+      "provider": "OpenAI",
+      "kind": "usage",
+      "amountUsd": 0.015257,
+      "period": "one-time",
+      "status": "estimated",
+      "source": "docs/release-verification.md (tokens measured; $ conservative ledger estimate)"
+    },
+    {
+      "id": "openai-combined-research",
+      "name": "Combined-usage research task, research portion (12,671 in / 381 out)",
+      "provider": "OpenAI",
+      "kind": "usage",
+      "amountUsd": 0.011775,
+      "period": "one-time",
+      "status": "estimated",
+      "source": "docs/release-verification.md; final Agents usage unavailable"
+    },
+    {
+      "id": "openai-final-no-research",
+      "name": "Final no-research task (14,667 tokens)",
+      "provider": "OpenAI",
+      "kind": "usage",
+      "amountUsd": 0.001998,
+      "period": "one-time",
+      "status": "estimated",
+      "source": "docs/release-verification.md"
+    },
+    {
+      "id": "openai-smoke-turn",
+      "name": "Smoke turn (6,759 in / 8 out tokens)",
+      "provider": "OpenAI",
+      "kind": "usage",
+      "amountUsd": null,
+      "period": "one-time",
+      "status": "measured",
+      "source": "docs/release-verification.md (tokens only; no $ recorded)"
+    },
+    {
+      "id": "openai-held-reservations",
+      "name": "Held unknown-usage reservations (4 x $1)",
+      "provider": "OpenAI (internal ledger)",
+      "kind": "reserved",
+      "amountUsd": 4.0,
+      "period": "to-date",
+      "status": "budgeted",
+      "source": "docs/release-verification.md",
+      "note": "Ceiling, not spend"
+    },
+    {
+      "id": "openai-actual",
+      "name": "OpenAI actual bill",
+      "provider": "OpenAI",
+      "kind": "usage",
+      "amountUsd": null,
+      "period": "to-date",
+      "status": "to-confirm",
+      "source": "OpenAI billing dashboard"
+    },
+    {
+      "id": "openai-allowance",
+      "name": "Model allowance ($1 reserved per task)",
+      "provider": "a2aviary ledger",
+      "kind": "budget",
+      "amountUsd": 10.0,
+      "period": "month",
+      "status": "budgeted",
+      "source": "docs/costs.md; docs/decisions/004-openai-runtime-and-limits.md"
+    },
+    {
+      "id": "aws-budget-alert",
+      "name": "AWS notification budget (alert only, no cap)",
+      "provider": "AWS Budgets",
+      "kind": "budget",
+      "amountUsd": 15.0,
+      "period": "month",
+      "status": "budgeted",
+      "source": "infra/src/controls.ts; https://aws.amazon.com/aws-cost-management/aws-budgets/pricing/"
+    },
+    {
+      "id": "github",
+      "name": "GitHub public repo + Actions (standard runners)",
+      "provider": "GitHub",
+      "kind": "monthly",
+      "amountUsd": 0.0,
+      "period": "month",
+      "status": "confirmed",
+      "source": "https://docs.github.com/en/billing/concepts/product-billing/github-actions"
+    },
+    {
+      "id": "chatgpt-pro",
+      "name": "ChatGPT Pro (Codex), shared personal subscription used for a2aviary since 2026-10-03",
+      "provider": "OpenAI",
+      "kind": "subscription",
+      "amountUsd": 100.0,
+      "period": "month",
+      "status": "to-confirm",
+      "source": "Reported by Carlos",
+      "note": "Not project-exclusive; shown at full amount, no prorating (no usage hours)"
+    }
+  ],
+  "totals": {
+    "spentOrCommittedToDateKnownUsd": 72.02903,
+    "spentToDateExcludes": [
+      "aws-actual",
+      "openai-actual",
+      "openai-held-reservations",
+      "chatgpt-pro"
+    ],
+    "monthlyRunRateProjectUsd": {
+      "min": 10.6,
+      "max": 24.0,
+      "basis": "AWS 4.60-8.00 est + domain 72/12=6.00 + model 0-10 cap"
+    },
+    "monthlyRunRateIncludingSharedToolsUsd": {
+      "min": 110.6,
+      "max": 124.0
+    },
+    "configuredCeilingMonthlyUsd": {
+      "operatingTarget": 25.0,
+      "plusDomainAmortized": 6.0,
+      "note": "AWS budget is an alert, not a cap"
+    }
+  }
+}
