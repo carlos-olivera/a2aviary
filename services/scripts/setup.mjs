@@ -33,7 +33,8 @@ if(action==='seed'){
  const enabled=process.argv[3]==='on';await put({pk:'CONTROL#flags',admission:enabled,processing:enabled,sending:enabled,developmentEnabled:false});console.log('Task switches '+(enabled?'enabled':'disabled')+'.');
 }else if(action==='app-registration'){
  const nonce=randomBytes(32).toString('hex');await put({pk:'CONTROL#github-registration',nonce,expiresAt:at()+3600,ttl:at()+86400});
- const manifest={name:process.argv[3]??'a2aviary Operator',url:'https://a2aviary.io',hook_attributes:{url:runtime.OperatorUrl+'/github/webhook',active:true},redirect_url:runtime.OperatorUrl+'/github/setup/callback',public:false,default_permissions:{contents:'write',pull_requests:'write',checks:'write',actions:'read'},default_events:['pull_request','pull_request_review','installation']};
+ // GitHub sends installation lifecycle events automatically; they cannot be selected in a manifest.
+ const manifest={name:process.argv[3]??'a2aviary Operator',url:'https://a2aviary.io',hook_attributes:{url:runtime.OperatorUrl+'/github/webhook',active:true},redirect_url:runtime.OperatorUrl+'/github/setup/callback',public:false,default_permissions:{contents:'write',pull_requests:'write',checks:'write',actions:'read'},default_events:['pull_request','pull_request_review']};
  const safe=JSON.stringify(manifest).replaceAll('&','&amp;').replaceAll("'",'&#39;').replaceAll('<','&lt;');
  await writeFile(root+'/.local/app-registration.html',`<!doctype html><html lang="en"><meta charset="utf-8"><title>a2aviary Operator registration</title><h1>Register the private a2aviary Operator App</h1><p>Owner: Carlos Olivera. Install only on carlos-olivera/a2aviary. Permissions: contents and pull requests write, checks write, Actions read. No administration or workflow write.</p><form method="post" action="https://github.com/settings/apps/new?state=${nonce}"><input type="hidden" name="manifest" value='${safe}'><button>Register App on GitHub</button></form></html>`,{mode:0o600});
  console.log('Private registration form prepared in .local/app-registration.html (valid one hour).');
@@ -45,8 +46,12 @@ if(action==='seed'){
  const r=await fetch('https://api.github.com/app/installations',{headers:{Authorization:'Bearer '+jwt,Accept:'application/vnd.github+json'}});if(!r.ok)throw new Error('Installation listing failed: '+r.status);
  const install=(await r.json()).filter(i=>i.account.login==='carlos-olivera');if(install.length!==1)throw new Error('Install on the owner repository first');
  a.installationId=install[0].id;
- const tr=await fetch(`https://api.github.com/app/installations/${a.installationId}/access_tokens`,{method:'POST',headers:{Authorization:'Bearer '+jwt,Accept:'application/vnd.github+json'},body:JSON.stringify({repository_ids:[1403745581],permissions:{contents:'read'}})});if(!tr.ok)throw new Error('Repository scope verification failed: '+tr.status);
+ // Enumerate the whole installation grant before broker tokens restrict it to the fixed repository.
+ const tr=await fetch(`https://api.github.com/app/installations/${a.installationId}/access_tokens`,{method:'POST',headers:{Authorization:'Bearer '+jwt,Accept:'application/vnd.github+json'},body:JSON.stringify({permissions:{contents:'read'}})});if(!tr.ok)throw new Error('Repository scope verification failed: '+tr.status);
  const token=(await tr.json()).token;
- const rr=await fetch('https://api.github.com/installation/repositories',{headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json'}});const repos=await rr.json();if(repos.total_count!==1 || repos.repositories[0].id!==1403745581)throw new Error('Installation must cover only a2aviary');
+ let repos;
+ try{const rr=await fetch('https://api.github.com/installation/repositories',{headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json'}});if(!rr.ok)throw new Error('Installation repository listing failed: '+rr.status);repos=await rr.json();}
+ finally{const revoked=await fetch('https://api.github.com/installation/token',{method:'DELETE',headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json'}});if(revoked.status!==204)throw new Error('Verification token revocation failed: '+revoked.status);}
+ if(repos.total_count!==1 || repos.repositories[0].id!==1403745581)throw new Error('Installation must cover only a2aviary');
  await setSecret(email.AppKeySecret,a);await writeFile(root+'/.local/app-status.json',JSON.stringify({appId:a.appId,installationId:a.installationId,slug:a.slug},null,2));console.log('Repository-only installation verified; fixed brokers configured.');
 }else throw new Error('Commands: seed KEY_FILE, test-partner, switches on|off, app-registration [NAME], app-installation');
