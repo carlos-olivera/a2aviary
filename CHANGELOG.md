@@ -19,3 +19,15 @@
 - Recorded the accepted landing-only implementation decision and documented setup and deployment prerequisites. The follow-build CTA is omitted until a real public destination is supplied; no hosting or DNS was configured.
 
 No agency API has been implemented, no pilot website has been generated, and no service has been published. The landing has a local production preview; deployment remains unverified.
+
+## Initial operating foundation — implementation in progress
+
+- Integrated the existing English documentation changes and preserved the four original commits and Apache 2.0 provenance.
+- Added the real GitHub follow-build CTA and Carlos Olivera attribution without replacing the Three.js landing or source brand assets.
+- Implemented five CDK stacks, private S3/CloudFront OAC delivery, exact immutable GitHub OIDC trust, signed SES email intake, DynamoDB inbox/task/outbox and budget transactions, queued runtime/sender roles, and scheduled recovery.
+- Implemented the Agents API adapter, scoped input/research tools, saved tool outcomes, schema-valid brief results, session cleanup, and ambiguous submission/send handling.
+- Added the Email Transport v1 schemas, fictional signed example, signing/status client, accepted architecture records, private configuration setup, cost worksheet, and recovery runbooks.
+- Added fixed-profile GitHub App credential brokers and an external trusted policy evaluator; autonomous merging remains disabled pending App/protection verification.
+- Verified website asset checks/build, 18 behavioral service tests, four synthesized infrastructure security assertions, and a real Agents API smoke turn (6,759 input and 8 output tokens); deleted its session. The publication scan checked 162 current/history files and blobs with no matching credentials/private references. Subsequent files must be rescanned before publication.
+- Deployed the website/CI infrastructure. Email deployment exposed duplicate CDK-generated MAIL FROM records; corrected source and removed only empty/bootstrap rollback resources and identified orphan records before retry.
+- Recorded the CDK bundled dependency advisory as an unresolved tooling finding. Full launch and operating controls are not yet declared complete; [release evidence](docs/release-verification.md) is authoritative.

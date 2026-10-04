@@ -1,33 +1,37 @@
-# Guía para trabajar en a2aviary
+# Working on a2aviary
 
-## Contexto
+## Context
 
-Lee README.md, docs/vision.md y docs/decisions/README.md antes de proponer cambios de arquitectura. El proyecto está en diseño; no presentes propuestas, ejemplos o servicios simulados como funciones implementadas.
+Read README.md, docs/vision.md, and docs/decisions/README.md before proposing architecture changes. The initial operating foundation is being implemented. Read docs/release-verification.md for actual configured, deployed, verified, and blocked status; do not present proposals, examples, or simulated services as implemented features.
 
-## Trabajo autorizado
+## Language
 
-- Conserva los cambios del usuario y limita cada entrega al objetivo solicitado.
-- Mantén decisiones, contratos y documentación técnica dentro del repositorio.
-- Diferencia decisiones confirmadas, propuestas y preguntas abiertas.
-- El runtime, lenguaje, infraestructura y estándar A2A todavía deben elegirse.
-- No impongas proveedores o herramientas por su disponibilidad en el entorno.
-- No delegues en subagentes salvo solicitud del usuario o instrucciones aplicables posteriores.
+English is the canonical language for repository documentation, architecture records, contribution guidance, and agent instructions. Preserve established names and identifiers when translating. Use the user's preferred language in conversation unless instructed otherwise.
 
-## Datos y publicación
+## Authorized work
 
-- Usa ejemplos ficticios y verifica que no contengan datos reales de clientes.
-- Excluye credenciales, expedientes de clientes y referencias privadas de Git.
-- Publicar código, enviar mensajes o desplegar requiere el alcance autorizado por el usuario; preparar archivos no ejecuta esas acciones.
-- Respeta la licencia Apache 2.0 y conserva las licencias de dependencias.
-- La identidad visual está en exploración; no presentes un logo o una paleta propuesta como aprobados.
+- Preserve the user's changes and keep each delivery within the requested scope.
+- Keep decisions, contracts, and technical documentation in the repository.
+- Distinguish confirmed decisions, proposals, and open questions.
+- AWS CDK/TypeScript, Node.js 22, and OpenAI Agents API with gpt-6-luna are accepted for this release. The external A2A standard remains open.
+- Do not impose providers or tools simply because they are available in the environment.
+- Do not delegate to subagents unless requested by the user or required by later applicable instructions.
 
-## Verificación
+## Data and publication
 
-- Revisa enlaces relativos y consistencia de documentos cuando cambien.
-- Cuando exista código, usa las verificaciones relevantes para el comportamiento modificado y registra cómo se comprobó.
-- No crees pruebas que solo repitan el texto de documentación.
-- Actualiza el historial con cambios concretos y evidencia; no inventes métricas.
+- Use fictional examples and verify that they contain no real client data.
+- Exclude credentials, client records, and private references from Git.
+- Publishing code, sending messages, or deploying must remain within the scope authorized by the user; preparing files does not perform those actions.
+- Respect the Apache 2.0 license and preserve dependency licenses.
+- The visual identity is being explored; do not present a proposed logo or palette as approved.
 
-## Contexto local
+## Verification
 
-Si existe `.local/space.md`, contiene la referencia al Espacio de trabajo. Es información local, no documentación pública ni una autorización adicional. Una referencia al Espacio no sincroniza su contenido.
+- Check relative links and document consistency when they change.
+- Once code exists, use checks relevant to the modified behavior and record how it was verified.
+- Do not create tests that merely repeat documentation text.
+- Update the changelog with concrete changes and evidence; do not invent metrics.
+
+## Local context
+
+If `.local/space.md` exists, it contains the workspace Space reference. It is local information, not public documentation or additional authorization. A Space reference does not synchronize its content.

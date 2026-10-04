@@ -1,0 +1,13 @@
+{
+  "$schema":"http://json-schema.org/draft-07/schema#","$id":"https://a2aviary.io/contracts/email-v1-request","type":"object","additionalProperties":false,
+  "required":["version","messageId","correlationId","sender","projectId","action","issuedAt","expiresAt","nonce","replyTo","payload"],
+  "properties":{
+    "version":{"const":"1.0"},"messageId":{"type":"string","minLength":16,"maxLength":100,"pattern":"^[A-Za-z0-9_-]+$"},
+    "correlationId":{"type":"string","minLength":1,"maxLength":100,"pattern":"^[A-Za-z0-9_-]+$"},"causationId":{"type":"string","maxLength":100,"pattern":"^[A-Za-z0-9_-]+$"},
+    "sender":{"type":"string","minLength":1,"maxLength":100,"pattern":"^[A-Za-z0-9_-]+$"},"projectId":{"type":"string","minLength":1,"maxLength":100,"pattern":"^[A-Za-z0-9_-]+$"},
+    "taskId":{"type":"string","maxLength":100,"pattern":"^[A-Za-z0-9_-]+$"},"action":{"enum":["capabilities.get","task.submit","task.status"]},
+    "issuedAt":{"type":"integer","minimum":0},"expiresAt":{"type":"integer","minimum":0},"nonce":{"type":"string","minLength":16,"maxLength":100,"pattern":"^[A-Za-z0-9_-]+$"},
+    "replyTo":{"type":"string","maxLength":254,"pattern":"^[^\\s@]+@[^\\s@]+$"},"payload":{"type":"object"},
+    "attachments":{"type":"array","maxItems":2,"items":{"type":"object","additionalProperties":false,"required":["filename","sha256"],"properties":{"filename":{"type":"string","maxLength":128,"pattern":"^[A-Za-z0-9_.-]+\\.txt$"},"sha256":{"type":"string","pattern":"^[a-f0-9]{64}$"}}}}
+  }
+}

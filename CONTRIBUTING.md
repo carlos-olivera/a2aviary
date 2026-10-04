@@ -1,11 +1,9 @@
-# Cómo contribuir
+# Contributing
 
-a2aviary está en fase de diseño. Las contribuciones más útiles ahora son revisar el recorrido del cliente, identificar ambigüedades del contrato entre agentes y proponer pruebas pequeñas del piloto.
+Use [GitHub issues and pull requests](https://github.com/carlos-olivera/a2aviary) for small changes with a concrete problem, resulting behavior, and relevant validation. English is the canonical documentation language. Review the [vision](docs/vision.md), [accepted decisions](docs/decisions/README.md), and [release status](docs/release-verification.md) before proposing architecture changes. Website creation and the Teco pilot remain future work.
 
-Cuando exista un repositorio remoto público, usaremos sus issues y pull requests para coordinar cambios. Su dirección se añadirá al README después de publicarlo.
+Build/check instructions are in [runbooks](docs/runbooks.md). Use fictional examples, preserve licenses, and keep credentials, client materials, private contacts, raw emails, and operational outputs outside Git. AI-assisted contributions must identify their actual authoring actor and describe review and verification. Do not author automated changes as Carlos Olivera.
 
-Antes de una contribución grande, describe el problema, la propuesta y cómo validar el resultado. Mantén cambios pequeños, con documentación y ejemplos ficticios cuando corresponda. El responsable del proyecto revisa y decide qué se incorpora.
+Routine changes require CI and the trusted policy check. Sensitive paths require Carlos's approval for the current PR head, as described in [governance](GOVERNANCE.md). Agent labels, approvals, or descriptions do not grant authority. Infrastructure administration and publication must stay within the user's authorized scope.
 
-Las contribuciones deben poder distribuirse bajo Apache 2.0, respetando las licencias y atribuciones de componentes de terceros. Verifica que tienes derecho a aportar el material. Si utilizas asistencia de IA, revisa el resultado y explica su comportamiento y verificación.
-
-No incluyas secretos, documentos reales de clientes ni datos personales en propuestas, ejemplos o capturas. Consulta SECURITY.md para reportar vulnerabilidades.
+Contributions must be distributable under Apache 2.0 while respecting dependency licenses and third-party attribution. Do not publish exploitable security details in issues; use [private security reporting](SECURITY.md).

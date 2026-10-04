@@ -1,26 +1,26 @@
-# Desarrollo en público
+# Building in public
 
-Decisión confirmada: compartir el progreso desde el inicio en las cuentas sociales del usuario.
+Confirmed decision: share progress from the start on the user's social accounts.
 
-## Relato
+## Narrative
 
-Estamos construyendo una agencia que el cliente puede gestionar desde su propio asistente. Compartimos qué intentamos, qué demostramos, qué aprendimos y qué sigue.
+We are building an agency the client can manage through their own assistant. We share what we tried, what we demonstrated, what we learned, and what comes next.
 
-## Primeras publicaciones propuestas
+## Proposed first posts
 
-1. Visión, problema y decisión de nacer open source.
-2. Primer commit y repositorio público, una vez publicado.
-3. Una decisión de diseño y su razón.
-4. Primera prueba reproducible, resultados y limitaciones.
+1. Vision, problem, and decision to start as open source.
+2. First commit and public repository, once published.
+3. A design decision and its rationale.
+4. First reproducible experiment, results, and limitations.
 
-Ritmo sugerido, aún no acordado: dos publicaciones por semana y demos cuando exista un avance visible. Adaptar las piezas a una o dos cuentas existentes antes de abrir más canales.
+Suggested cadence, not yet agreed: two posts per week and demos when visible progress exists. Adapt content for one or two existing accounts before opening more channels.
 
-## Evidencia y privacidad
+## Evidence and privacy
 
-Separar diseñado, implementado y probado. Publicar métricas solo cuando existan mediciones. Usar datos ficticios o materiales autorizados; excluir secretos, información privada y expedientes de clientes.
+Distinguish designed, implemented, and tested work. Publish metrics only when measurements exist. Use fictional data or authorized materials; exclude secrets, private information, and client records.
 
-El piloto Teco puede ser el hilo conductor, sujeto a autorización para mostrar sus materiales y resultados. Preparar borradores no autoriza enviarlos ni programarlos.
+The Teco pilot can be the narrative thread, subject to authorization to show its materials and results. Preparing drafts does not authorize sending or scheduling them.
 
-## Señales útiles
+## Useful signals
 
-Conversaciones con potenciales clientes, pilotos interesados, personas que logran ejecutar la prueba, contribuciones y problemas detectados. Las métricas de redes acompañan estas señales.
+Conversations with potential clients, interested pilot participants, people who successfully run the experiment, contributions, and problems identified. Social metrics complement these signals.

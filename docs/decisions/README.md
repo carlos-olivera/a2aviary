@@ -1,36 +1,46 @@
-# Decisiones del proyecto
+# Project decisions
 
-## Confirmadas
+## Confirmed
 
-| Decisión | Fecha | Base |
+| Decision | Date | Basis |
 | --- | --- | --- |
-| Nombre a2aviary y dominio a2aviary.io | 2026-10-03 | Elección del usuario |
-| Código, arquitectura y documentación en un mismo repositorio | 2026-10-03 | Directorio elegido por el usuario |
-| Open source desde el primer commit | 2026-10-03 | Instrucción del usuario |
-| Licencia Apache 2.0 | 2026-10-03 | Elección explícita del usuario |
-| Compartir progreso mediante build in public | 2026-10-03 | Instrucción del usuario |
-| Visión de agencia digital para sitios, aplicaciones y servicios; primer piloto web | 2026-10-03 | Introducción vigente del Espacio a2aviary |
+| Name a2aviary and domain a2aviary.io | 2026-10-03 | User's choice |
+| Code, architecture, and documentation in one repository | 2026-10-03 | Directory selected by the user |
+| Open source from the first commit | 2026-10-03 | User's instruction |
+| Apache 2.0 license | 2026-10-03 | User's explicit choice |
+| Share progress through building in public | 2026-10-03 | User's instruction |
+| Digital agency vision for websites, applications, and services; first pilot focused on a website | 2026-10-03 | Current a2aviary Space introduction |
+| English as the canonical language for project documentation | 2026-10-03 | User's instruction |
 
-## Orientación de diseño del recap
+## Design direction from the recap
 
-Agente cliente como interfaz, preparación de materiales del lado del cliente, estado persistente, autonomía dentro de mandato y continuidad asíncrona. Skill más API y piloto Teco son el punto de partida documentado; sus especificaciones operativas no están cerradas.
+The client agent acts as the interface, materials are prepared on the client's side, state is persistent, autonomy operates within a mandate, and work continues asynchronously. Skill plus API and the Teco pilot are the documented starting point; their operational specifications are not finalized.
 
-## Propuestas sin aprobar
+## Unapproved proposals
 
-- Símbolo de bandada geométrica, wordmark en minúsculas y paleta jade, marfil y coral.
-- Dos publicaciones por semana, ajustables según el progreso real.
-- Separación entre software abierto y servicio comercial de operación y soporte.
+- Geometric flock symbol, lowercase wordmark, and jade, ivory, and coral palette.
+- Two posts per week, adjustable to actual progress.
+- Separation between open source software and a commercial operation and support service.
 
-## Preguntas abiertas
+## Open questions
 
-- Alcance, presupuesto, materiales y criterios de aceptación de Teco.
-- Proveedor y modalidad del runtime; lenguaje e infraestructura.
-- Estándar A2A y capacidades mínimas del agente cliente.
-- Proveedor de identidad y alcance jurídico de mandato, KYC y firma.
-- Propiedad y permisos de los entregables de clientes.
-- Precio, límites de consumo, retención de datos y mantenimiento.
-- Cuenta y nombre del repositorio remoto; canal privado de seguridad.
+- Teco scope, budget, materials, and acceptance criteria.
+- A2A standard and minimum client agent capabilities.
+- Identity provider and legal scope of the mandate, KYC, and signatures.
+- Ownership and permissions for client deliverables.
+- Commercial pricing and maintenance beyond the initial operating limits.
+- External partner onboarding and long-term support commitments.
 
-## Registro de decisiones nuevas
+## Recording new decisions
 
-Crear un documento numerado con título, fecha, estado, contexto, decisión y consecuencias cuando una elección afecte la implementación. No promover una propuesta a decisión sin evidencia de aceptación.
+Create a numbered document with a title, date, status, context, decision, and consequences when a choice affects implementation. Do not promote a proposal to a decision without evidence of acceptance.
+
+## Accepted release records
+
+- [001 — Landing page](001-landing-page.md)
+- [002 — AWS serverless foundation](002-serverless-foundation.md)
+- [003 — Signed email and durable processing](003-email-and-durable-processing.md)
+- [004 — Agents API and operating limits](004-openai-runtime-and-limits.md)
+- [005 — GitHub identity and trusted policy](005-github-identity-and-policy.md)
+
+These decisions were accepted in the initial-release implementation plan. Acceptance is distinct from deployment and verification; see [release evidence](../release-verification.md).

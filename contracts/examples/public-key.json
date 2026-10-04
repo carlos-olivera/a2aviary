@@ -1,0 +1,9 @@
+{
+  "kid": "fictional-example",
+  "jwk": {
+    "kty": "EC",
+    "x": "gJjXc6jgD9AXr9ZAg93Ai1fDQg8PGxpN-y7pEprQgFM",
+    "y": "v6xyGXAb7Iy-x44Ues2pvWvdigx1ETV5IHvN1KQiHrw",
+    "crv": "P-256"
+  }
+}

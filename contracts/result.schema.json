@@ -1,0 +1,10 @@
+{
+ "$schema":"http://json-schema.org/draft-07/schema#","type":"object","additionalProperties":false,
+ "required":["goals","audience","pages","missingInputs","assumptions","acceptanceCriteria","references"],
+ "properties":{
+  "goals":{"type":"array","maxItems":20,"items":{"type":"string","maxLength":2000}},"audience":{"type":"string","maxLength":4000},
+  "pages":{"type":"array","maxItems":20,"items":{"type":"object","additionalProperties":false,"required":["name","purpose","sections"],"properties":{"name":{"type":"string","maxLength":200},"purpose":{"type":"string","maxLength":2000},"sections":{"type":"array","maxItems":20,"items":{"type":"string","maxLength":1000}}}}},
+  "missingInputs":{"type":"array","maxItems":30,"items":{"type":"string","maxLength":2000}},"assumptions":{"type":"array","maxItems":30,"items":{"type":"string","maxLength":2000}},
+  "acceptanceCriteria":{"type":"array","maxItems":30,"items":{"type":"string","maxLength":2000}},"references":{"type":"array","maxItems":20,"items":{"type":"object","additionalProperties":false,"required":["title","url"],"properties":{"title":{"type":"string","maxLength":500},"url":{"type":"string","maxLength":2000,"pattern":"^https://"}}}}
+ }
+}

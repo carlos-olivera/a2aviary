@@ -1,27 +1,31 @@
-# Roadmap y piloto Teco
+# Roadmap and Teco pilot
 
-## Base
+## Foundation
 
-- [x] Registrar visión, arquitectura propuesta y decisiones.
-- [x] Elegir licencia para el primer commit.
-- [ ] Publicar el repositorio remoto y habilitar reportes privados de seguridad.
-- [ ] Confirmar identidad visual inicial.
+- [x] Record the vision, proposed architecture, and decisions.
+- [x] Choose the license for the first commit.
+- [ ] Publish the remote repository and enable private security reports.
+- [ ] Confirm the initial visual identity.
 
-## Primer recorrido verificable
+## First verifiable workflow
 
-- [ ] Acordar el brief de Teco y criterios de aceptación del sitio.
-- [ ] Definir mandato, presupuesto y responsables de aprobación.
-- [ ] Especificar contrato mínimo y capacidades del agente cliente.
-- [ ] Comparar opciones de ejecución con una tarea acotada.
-- [ ] Construir una prueba que reciba un brief ficticio, informe estado y devuelva un resultado.
-- [ ] Entregar una preview para el piloto, recoger una revisión y registrar aprobación.
+- [ ] Agree on the Teco brief and website acceptance criteria.
+- [ ] Define the mandate, budget, and approval responsibilities.
+- [ ] Specify the minimum contract and client agent capabilities.
+- [ ] Compare execution options using a bounded task.
+- [ ] Build an experiment that receives a fictional brief, reports state, and returns a result.
+- [ ] Deliver a pilot preview, collect a revision request, and record approval.
 
-## Continuidad y evaluación
+## Continuity and evaluation
 
-- [ ] Recuperar el trabajo después de cerrar una sesión.
-- [ ] Probar polling y callback cuando exista un endpoint compatible.
-- [ ] Validar un Resume Package sin secretos.
-- [ ] Verificar idempotencia y revocación.
-- [ ] Medir costos por etapa, tiempo, revisiones, calidad y soporte.
+- [ ] Recover work after closing a session.
+- [ ] Test polling and callbacks when a compatible endpoint exists.
+- [ ] Validate a Resume Package without secrets.
+- [ ] Verify idempotency and revocation.
+- [ ] Measure costs by stage, time, revisions, quality, and support.
 
-No se han comprometido fechas ni costos. Cada hito requiere evidencia reproducible antes de marcarlo como completado.
+No dates or costs have been committed. Each milestone requires reproducible evidence before it is marked complete.
+
+## Accepted initial release
+
+Publish the licensed repository and landing, then deploy the signed email and durable brief-analysis foundation under the [accepted release decisions](decisions/README.md). Release completion requires independent controlled email execution/recovery and active operational controls, as recorded in [verification evidence](release-verification.md). The Teco pilot and website generation remain subsequent work.

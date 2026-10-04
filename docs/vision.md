@@ -1,28 +1,28 @@
-# Visión y alcance
+# Vision and scope
 
-## Producto
+## Product
 
-Construimos una agencia digital autónoma machine-to-machine para sitios web, aplicaciones y otros servicios digitales. El cliente conversa con su asistente IA habitual; ese agente prepara materiales, coordina con la agencia y presenta resultados y decisiones al humano. El primer recorrido se concentra en un sitio web.
+We are building an autonomous machine-to-machine digital agency for websites, applications, and other digital services. The client talks to their usual AI assistant; that agent prepares materials, coordinates with the agency, and presents results and decisions to the human. The first workflow focuses on a website.
 
-La agencia aporta producción especializada, verificación y continuidad. La autonomía se ejerce dentro del mandato, presupuesto y aprobaciones del cliente.
+The agency provides specialized production, verification, and continuity. Autonomy operates within the client's mandate, budget, and approvals.
 
-## Hipótesis que debemos probar
+## Hypotheses to test
 
-- El agente cliente puede preparar un brief utilizable y operar la integración.
-- Preparar materiales del lado del cliente reduce trabajo duplicado y costo total.
-- El proyecto sobrevive al cierre de una sesión y puede recuperarse desde otro agente autorizado.
-- El servicio puede sostener calidad y margen con costos y soporte medibles.
+- The client agent can prepare a usable brief and operate the integration.
+- Preparing materials on the client's side reduces duplicated work and total cost.
+- The project survives the end of a session and can be recovered by another authorized agent.
+- The service can sustain quality and margin with measurable costs and support effort.
 
-## Alcance inicial
+## Initial scope
 
-Un caso acotado con Teco: brief, producción de una preview, revisión, aprobación y entrega. El alcance concreto del sitio, sus materiales y criterios de aceptación aún deben acordarse.
+A bounded case with Teco: brief, preview production, review, approval, and delivery. The specific website scope, materials, and acceptance criteria still need to be agreed.
 
-La integración parte de una skill y una API, inicialmente sin plugin. El agente cliente debe tener herramientas reales para llamar al servicio; las instrucciones no sustituyen esas capacidades.
+The integration starts with a skill and an API, initially without a plugin. The client agent must have real tools to call the service; instructions do not replace those capabilities.
 
-## Continuidad
+## Continuity
 
-La agencia conserva el estado vigente. Callback y polling permiten seguir tareas; un correo al humano y un Resume Package portable son vías propuestas de recuperación. El paquete no incluye secretos ni concede acceso por sí mismo.
+The agency retains the current state. Callbacks and polling allow tasks to be tracked; an email to the human and a portable Resume Package are proposed recovery paths. The package contains no secrets and does not grant access by itself.
 
-## Origen del contexto
+## Context sources
 
-La base proviene del recap de la conversación «Agente para páginas web», de las decisiones del usuario en esta sesión y de la introducción vigente del Espacio a2aviary, que amplía la visión a aplicaciones y servicios digitales. El recap combina historial recuperado con propuestas; no demuestra una implementación desplegada ni acuerdos operativos cerrados. Las opciones de proveedores y sus precios deben verificarse al tomar decisiones técnicas.
+The foundation comes from the recap of the conversation originally titled “Agente para páginas web” (Website agent), the user's decisions in this session, and the current a2aviary Space introduction, which extends the vision to applications and digital services. The recap combines recovered history with proposals; it does not establish a deployed implementation or finalized operational agreements. Provider options and pricing must be verified when making technical decisions.

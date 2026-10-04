@@ -1,4 +1,4 @@
-# Referencias y datos privados de esta máquina
+# Machine-specific references and private data
 .local/
 private/
 .env
@@ -7,7 +7,7 @@ private/
 *.pem
 *.key
 
-# Archivos del sistema y resultados locales
+# System files and local outputs
 .DS_Store
 work/
 tmp/
@@ -17,3 +17,7 @@ __pycache__/
 dist/
 build/
 coverage/
+output/
+.playwright-cli/
+cdk.out/
+*.tsbuildinfo

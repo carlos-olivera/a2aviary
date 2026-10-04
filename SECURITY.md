@@ -1,7 +1,7 @@
-# Reporte de vulnerabilidades
+# Reporting vulnerabilities
 
-Actualmente no hay versiones operativas ni un servicio desplegado que este repositorio declare mantener.
+Report vulnerabilities privately through [GitHub private vulnerability reporting](https://github.com/carlos-olivera/a2aviary/security/advisories/new). Enablement is verified separately in [release evidence](docs/release-verification.md). If the form is unavailable, ask the maintainer for a private channel before sharing sensitive details.
 
-Antes de publicar el repositorio se debe habilitar un canal privado para reportes, por ejemplo el reporte privado de vulnerabilidades del proveedor de alojamiento. Antes del piloto se documentarán las versiones soportadas y el proceso de respuesta.
+The initial release's website, email contract, validator, runtime, credential brokers, and policy service are the supported scope. Website generation, the Teco pilot, and external A2A compatibility are not operational products. No response-time SLA is promised at launch.
 
-No publiques detalles explotables, credenciales ni datos de clientes en una issue pública. Si aún no hay un canal privado habilitado, solicita al responsable del proyecto un medio privado antes de compartir detalles sensibles.
+Include affected revision, reproduction steps using fictional data, and impact. Never send production credentials or client documents. Do not place exploit details, raw messages, private results, owner contacts, or sensitive audit records in public issues or logs. Dependency/tooling findings and the actual verification state are documented in the release evidence.

@@ -90,30 +90,6 @@ npx --package @playwright/cli playwright-cli -s=a2aviary run-code --filename=web
 Rebuild after regenerating the image. `npm run check` verifies source checksums,
 derived contours, bundled license files, and social image dimensions.
 
-## Deployment preparation: a2aviary.io
+## Release delivery
 
-The chosen domain is a target, not a verified live deployment. No hosting
-provider, deployment credentials, remote repository, or DNS access is configured
-in this repository. These are the missing prerequisites; obtain them before
-publishing. This implementation does not create a hosting account or publish.
-
-On the chosen static host:
-
-1. Use `website/` as the project directory, run `npm ci` and `npm run build`, and
-   publish the contents of `website/dist/` (or `dist/` relative to that directory).
-2. Serve at the domain root with HTTPS, correct MIME types, and the provided
-   `index.html`. No SPA rewrite, server function, or database is needed.
-3. Add `a2aviary.io` as the custom domain. Apply only the DNS records supplied by
-   that host; no host-specific records have been invented here.
-4. Cache hashed files under `/assets/` for a year with `immutable`; revalidate
-   `index.html` and unhashed public assets when deploying updates.
-5. Verify the domain, TLS, font/SVG/JS requests, favicon, and
-   `/social-preview.png` from the public origin. The Open Graph image URL is
-   prepared for `https://a2aviary.io/social-preview.png` and becomes usable only
-   when deployment and DNS are working.
-
-For a preview on another origin, update the absolute Open Graph image URL before
-sharing it. The site currently targets root hosting, not a repository subpath.
-The follow-build link is intentionally omitted: no verified public repository
-or social profile was supplied. Add the exact label `Follow the build →` only
-after verifying a real destination.
+The landing includes a public repository CTA and discreet Carlos Olivera attribution. Private S3/CloudFront delivery and GitHub OIDC deployment are defined in `infra/`; see [runbooks](../docs/runbooks.md) and [release evidence](../docs/release-verification.md). The proposed agency capabilities described in the landing are a vision, not a claim of implemented website generation.

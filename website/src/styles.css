@@ -34,6 +34,10 @@ button { font: inherit; }
 h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(64px, 6.7vw, 108px); font-weight: 500; line-height: 1.025; letter-spacing: -.07em; margin: 0; }
 h1 span { color: #14f1c8; }
 .description { max-width: 380px; font-size: clamp(15px, 1.2vw, 17px); line-height: 1.8; color: #b8c3cf; margin: 29px 0 0; }
+.build-link { display: inline-block; margin-top: 22px; color: #63f5d5; font-size: 13px; text-decoration: none; padding-block: 8px; }
+.build-link:hover { text-decoration: underline; }
+.build-link:focus-visible { outline: 2px solid #63f5d5; outline-offset: 5px; }
+.creator { font-size: 9px; color: #9aa8b8; line-height: 1.6; }
 .visual { position: relative; min-width: 0; height: clamp(370px, 41vw, 610px); }
 .scene-halo { position: absolute; inset: 3% -4% 10%; background: radial-gradient(ellipse at 54% 48%, #1641394d 0, #10233250 27%, transparent 66%); pointer-events: none; }
 .scene-frame { position: absolute; inset: 0; }
@@ -72,7 +76,7 @@ h1 span { color: #14f1c8; }
   .visual { width: min(100%, 570px); height: clamp(280px, 74vw, 430px); margin: 13px auto 0; }
   .scene-caption { left: 0; bottom: 5px; }
   .motion-toggle { bottom: 9px; min-height: 44px; padding-inline: 12px; }
-  .footer { padding-top: 19px; font-size: 9px; }
+  .footer { padding-top: 19px; font-size: 9px; flex-wrap: wrap; gap: 10px; }
   .footer-coordinate { display: none; }
 }
 @media (max-width: 380px) {

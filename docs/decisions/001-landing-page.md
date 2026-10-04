@@ -35,3 +35,7 @@ brand palette. Hosting, DNS access, and a public follow-build URL remain missing
 
 See [setup and deployment](../../website/README.md) and
 [verification evidence](../../website/verification.md).
+
+## Subsequent release decision
+
+The original landing-only decision above preceded the accepted initial operating plan. Records [002](002-serverless-foundation.md)–[005](005-github-identity-and-policy.md) select infrastructure/runtime and add a public CTA and operating foundation. The external A2A standard remains open. Actual deployment and verification are recorded separately.

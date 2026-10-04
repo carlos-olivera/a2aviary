@@ -1,0 +1,9 @@
+{
+  "kid": "a2aviary-signing-2026-10",
+  "jwk": {
+    "kty": "EC",
+    "x": "RSqOOxI6TUDJdX-H0MejaLdX4kNn6VdLZMNJet-3i44",
+    "y": "bZ6Crrsv9AGZc0cARA6WjFKarD7a7a1-W7m2C6KO-8c",
+    "crv": "P-256"
+  }
+}

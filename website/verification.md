@@ -85,6 +85,6 @@ local Git exclude file. The shareable social-preview image is committed under
 `website/public/`. Screenshots and recording contain only the fictional/project
 landing, with no client records or private references.
 
-No public follow-build destination is configured, so the CTA is omitted.
+At this original local verification, the CTA was omitted. The initial release adds the verified GitHub destination and records public verification separately in [release evidence](../docs/release-verification.md).
 Hosting provider/access, remote repository, domain DNS access, and HTTPS setup
 remain required before publishing. No site was deployed or remote URL claimed.

@@ -37,6 +37,8 @@ async (page) => {
   await page.goto(base);
   await ready();
   await page.keyboard.press('Tab');
+  assert(await page.getByRole('link', {name:'Follow the build →'}).evaluate(link => document.activeElement === link && link.href === 'https://github.com/carlos-olivera/a2aviary'), 'Build link is not accessible or has the wrong destination');
+  await page.keyboard.press('Tab');
   assert(await page.getByRole('button', { name: 'Pause animation', exact: true }).evaluate((button) => document.activeElement === button && getComputedStyle(button).outlineStyle !== 'none'), 'Pause control is not keyboard focusable');
   await page.keyboard.press('Enter');
   const frozen = await diagnostics();

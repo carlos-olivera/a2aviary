@@ -1,0 +1,32 @@
+{
+  "name": "a2aviary-services",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-cloudfront": "3.1146.0",
+    "@aws-sdk/client-dynamodb": "3.1146.0",
+    "@aws-sdk/client-lambda": "3.1146.0",
+    "@aws-sdk/client-s3": "3.1146.0",
+    "@aws-sdk/client-secrets-manager": "3.1146.0",
+    "@aws-sdk/client-sesv2": "3.1146.0",
+    "@aws-sdk/client-sqs": "3.1146.0",
+    "@aws-sdk/lib-dynamodb": "3.1146.0",
+    "@aws-sdk/util-dynamodb": "3.996.9",
+    "ajv": "8.20.0",
+    "jose": "6.2.12",
+    "mailparser": "3.9.34",
+    "openai": "7.27.0"
+  },
+  "devDependencies": {
+    "@types/mailparser": "3.4.6",
+    "@types/node": "22.19.15",
+    "esbuild": "0.25.12",
+    "typescript": "7.0.2"
+  }
+}

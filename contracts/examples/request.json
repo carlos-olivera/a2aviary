@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "messageId": "fictional-example-message-0001",
+  "correlationId": "fictional-example-correlation",
+  "sender": "fictional-client-agent",
+  "projectId": "fictional-garden",
+  "action": "task.submit",
+  "issuedAt": 1790985600,
+  "expiresAt": 1790985900,
+  "nonce": "fictional-example-nonce-0001",
+  "replyTo": "agent@example.com",
+  "payload": {
+    "brief": "A fictional community garden needs an informational website for volunteers. Propose goals, page structure, missing details, assumptions, and acceptance criteria.",
+    "research": false
+  }
+}

@@ -1,19 +1,12 @@
 # a2aviary
 
-An autonomous web agency designed to work with the client's assistant: the human defines goals and authorizes actions, their agent prepares the brief, and the agency builds and manages the website.
+An autonomous web agency designed to work with the client's assistant: the human defines goals and authorizes actions, their agent prepares the brief, and the agency works within that mandate.
 
-Chosen domain: **a2aviary.io**. The domain does not imply that a service has been deployed.
+**Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed email operating foundation whose first capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Website generation, autonomous repository engineering, the Teco pilot, and external A2A compliance remain future work.
 
-## Status
+Created by **Carlos Olivera — Founder & Principal Architect**. Licensed Apache 2.0 since the first commit. Automated contributions identify their own author; publication through an owner account is recorded separately.
 
-The agency is in the design phase. This repository records the vision, decisions, and pilot scope, and now includes a runnable static project landing page. No operational agency API, pilot website, or verified deployment is provided.
-
-The project has been licensed under Apache 2.0 since its first commit. The goal is to build in public and publish the repository; remote publication is a separate step from local preparation.
-
-## Landing page
-
-The [static landing page](website/README.md) introduces the project with a genuine
-Three.js bird sculpture, accessible motion controls, and SVG fallbacks.
+## Develop and operate
 
 ```sh
 cd website
@@ -21,50 +14,36 @@ npm ci
 npm run dev
 ```
 
-See [setup and deployment](website/README.md),
-[verification results](website/verification.md), and the
-[landing decision](docs/decisions/001-landing-page.md). Production builds are
-prepared for `a2aviary.io`; hosting and DNS configuration are still required.
+The landing uses genuine Three.js extrusion, accessible motion controls, and SVG fallbacks. See [website setup](website/README.md), [browser verification](website/verification.md), and [landing decision](docs/decisions/001-landing-page.md).
 
-## Planned workflow
+The operating foundation uses TypeScript AWS CDK, Node.js 22 Lambda/CI, SES/S3/SNS/SQS/DynamoDB, and OpenAI Agents API `gpt-6-luna` in environment `none`. Business state survives development-chat and worker interruptions. Only registered signed requests can create work. Default allowance is $1/task against $10/month model spend, within a $25 overall operating target; monitored thresholds are not hard provider billing caps.
+
+See [architecture and limits](docs/operating-foundation.md), [email transport contract](contracts/README.md), [setup and recovery](docs/runbooks.md), and [dated cost assumptions](docs/costs.md). Deployment configuration, credentials, raw emails, results, and owner alert contacts stay private. The initial service analyzes briefs; a missing input does not authorize additional work.
+
+## Agency vision
 
 1. The client provides goals and materials to their own agent.
-2. The agent prepares a brief with sources, open questions, and acceptance criteria.
+2. Their agent prepares a brief, sources, questions, and acceptance criteria.
 3. The agency validates access, mandate, budget, and inputs.
-4. The agency builds a preview and receives revision requests.
-5. Approvals and delivery are recorded in the project.
-6. Work can resume after an interruption using stable identifiers and reauthentication.
+4. Future agency capabilities build a preview and accept authorized revisions.
+5. Approvals and delivery remain recorded in the project.
+6. Work resumes using stable identifiers and reauthentication.
 
-## Principles
-
-- Autonomy within agreed permissions and budget.
-- Prepare materials on the client agent's side first.
-- Business state independent of the chat and AI runtime.
-- Initial integration through a skill and API; the A2A standard remains to be chosen.
-- Asynchronous and idempotent operations.
-- Open source code and fictional examples; private client data and materials.
-- Quality, costs, and support effort measured through a pilot.
+English is the canonical language for repository documentation. The repository is the source of truth for code, contracts, and technical decisions. Conversations in the a2aviary Space do not synchronize automatically; private references may live in excluded `.local/`.
 
 ## Documentation
 
-English is the canonical language for project documentation.
-
 - [Vision and scope](docs/vision.md)
-- [Proposed architecture](docs/architecture/overview.md)
-- [Decisions and open questions](docs/decisions/README.md)
+- [Architecture](docs/architecture/overview.md)
+- [Accepted decisions and open questions](docs/decisions/README.md)
 - [Roadmap and Teco pilot](docs/roadmap.md)
-- [Visual identity exploration](docs/brand.md)
+- [Explored visual identity](docs/brand.md)
 - [Building in public](docs/build-in-public.md)
+- [Governance](GOVERNANCE.md)
 - [Contributing](CONTRIBUTING.md)
-- [Reporting vulnerabilities](SECURITY.md)
+- [Private vulnerability reporting](SECURITY.md)
 - [Changelog](CHANGELOG.md)
-
-## Working organization
-
-This repository is the source of truth for code, contracts, and technical documentation. The a2aviary Space is used for conversations, product decisions, and progress tracking; decisions that affect implementation are transferred to versioned documents.
-
-Machine-specific references and private Space links can be kept in `.local/`, which is excluded from Git. There is no automatic synchronization between the folder and the Space.
 
 ## License
 
-Apache License 2.0. See [LICENSE](LICENSE). Dependencies retain their own licenses. Permissions to use the name, logo, and client materials must be documented separately; this license does not grant rights to third-party assets.
+[Apache License 2.0](LICENSE). Dependencies retain their licenses and notices. This license does not grant rights to third-party client assets or trademarks; visual identity proposals are not automatically approved.

@@ -1,44 +1,48 @@
-# Arquitectura propuesta
+# Architecture
 
-Estado: propuesta conceptual, sin implementación.
+Status: broader agency design, with a scoped initial implementation described below.
 
-## Responsabilidades
+## Responsibilities
 
 ```text
-Humano
-  ↕ objetivos, materiales, autorizaciones y decisiones
-Agente cliente
-  ↕ brief, fuentes, solicitudes, resultados y eventos
-API de agencia
-  ↕ autorización y transiciones de proyecto
-Coordinación de trabajo
-  ↕ tareas duraderas y producción
-Workspace del proyecto y herramientas de ejecución
+Human
+  ↕ goals, materials, authorizations, and decisions
+Client agent
+  ↕ brief, sources, requests, results, and events
+Agency API
+  ↕ authorization and project state transitions
+Work coordination
+  ↕ durable tasks and production
+Project workspace and execution tools
 ```
 
-## Componentes previstos
+## Planned components
 
-- API versionada para crear proyectos, entregar insumos, consultar estados, responder preguntas y registrar aprobaciones.
-- Identidad y autorización por cliente, proyecto y operación.
-- Mandato con acciones, presupuesto, vigencia y revocación.
-- Estado estructurado y registro de eventos independientes de la sesión del modelo.
-- Cola de tareas, reintentos, checkpoints e idempotencia para efectos comerciales.
-- Artefactos y versiones con acceso por proyecto.
-- Adaptador del runtime de producción para evaluar proveedores sin confundirlos con el estado del negocio.
-- Canales de eventos y recuperación que toleren la ausencia del agente cliente.
+- Versioned API to create projects, submit inputs, query state, answer questions, and record approvals.
+- Identity and authorization by client, project, and operation.
+- Mandate defining actions, budget, validity period, and revocation.
+- Structured state and event log independent of the model session.
+- Task queue, retries, checkpoints, and idempotency for commercial effects.
+- Artifacts and versions with project-scoped access.
+- Production runtime adapter to evaluate providers while keeping execution separate from business state.
+- Event and recovery channels that tolerate an unavailable client agent.
 
-## Contrato mínimo por definir
+## Minimum contract to define
 
-Cada intercambio debería identificar versión del esquema, proyecto, tarea, operación, insumos, permisos, estado, próxima acción y entregables. La adopción de un estándar A2A concreto sigue pendiente.
+Each exchange should identify the schema version, project, task, operation, inputs, permissions, state, next action, and deliverables. Adoption of a specific A2A standard remains pending.
 
-Estados candidatos: recibido, pendiente de insumos, en ejecución, pendiente de aprobación, en revisión, completado, fallido recuperable y cancelado. Sus transiciones y condiciones aún deben especificarse.
+Candidate states: received, awaiting inputs, running, awaiting approval, under review, completed, recoverable failure, and canceled. Their transitions and conditions still need to be specified.
 
-## Límites de confianza
+## Trust boundaries
 
-El servidor verifica autorización y mandato en cada operación. Archivos, mensajes de agentes y contenido web son datos; no amplían permisos. Las aprobaciones deben vincularse a la versión de alcance o entregable que autorizan.
+The server verifies authorization and mandate on every operation. Files, agent messages, and web content are data; they do not expand permissions. Approvals must be tied to the version of the scope or deliverable they authorize.
 
-El Resume Package es una referencia portable para localizar el proyecto y consultar su estado después de autenticarse. Cambiar de agente requiere conceder los permisos correspondientes.
+The Resume Package is a portable reference for locating the project and querying its state after authentication. Switching agents requires granting the corresponding permissions.
 
-## Por decidir
+## Pending choices
 
-Lenguaje, base de datos, cola, almacenamiento, runtime de IA, proveedor de identidad, hosting y mecanismos concretos de entrega de eventos. Se elegirán a partir de requisitos del piloto y una prueba reproducible.
+AWS CDK/TypeScript, Node.js 22, DynamoDB/SQS/S3, SES, and OpenAI Agents API are selected for the initial brief-analysis foundation. Broader agency APIs, client onboarding, website production, and the external A2A standard remain open.
+
+## Initial release implementation
+
+The accepted release uses AWS CDK/TypeScript, Node.js 22, signed SES email, durable DynamoDB state, and OpenAI Agents API. The implemented capability is website brief analysis only. The broader agency components above remain design direction. See [operating foundation](../operating-foundation.md), [accepted release decisions](../decisions/README.md), and [verification status](../release-verification.md) for concrete behavior and evidence.

@@ -1,19 +1,25 @@
-# Identidad visual en exploración
+# Visual identity exploration
 
-Confirmado: nombre a2aviary y dominio a2aviary.io.
+Confirmed: name a2aviary and domain a2aviary.io.
 
-Propuesta: una bandada coordinada como metáfora de agentes independientes que colaboran. Explorar dos alas geométricas que avanzan juntas, una letra con gesto de ala y un nido modular antes de elegir.
+Proposal: a coordinated flock as a metaphor for independent agents working together. Explore two geometric wings moving together, a letter shaped by a wing gesture, and a modular nest before choosing.
 
-Wordmark propuesto: a2aviary en minúsculas; el dominio completo se utiliza cuando convenga mostrar la dirección.
+Proposed wordmark: lowercase a2aviary; use the full domain when showing the address is useful.
 
-| Color propuesto | Código | Uso candidato |
+| Proposed color | Code | Candidate use |
 | --- | --- | --- |
-| Tinta profunda | #142B2B | Texto principal y logo |
-| Jade | #147D68 | Color principal y acciones |
-| Marfil | #F7F5EF | Fondos |
-| Coral | #EF795E | Detalles e hitos |
-| Gris pizarra | #596B69 | Texto secundario |
+| Deep ink | #142B2B | Primary text and logo |
+| Jade | #147D68 | Primary color and actions |
+| Ivory | #F7F5EF | Backgrounds |
+| Coral | #EF795E | Details and milestones |
+| Slate gray | #596B69 | Secondary text |
 
-Tipografía candidata: Space Grotesk. Verificar licencias, atribuciones y contraste antes de fijar usos. El logo, la paleta y la tipografía todavía no están aprobados ni existen activos finales.
+Candidate typeface: Space Grotesk. Verify licenses, attribution, and contrast before defining usage. The logo, palette, and typeface have not yet been approved. An exploratory raster kit and later editable SVG reconstructions are now available; no original vector master was supplied.
 
-El primer kit debería contener versiones vectoriales, favicon, avatar, variantes claras y oscuras, plantillas de progreso y una guía breve de uso. Sus permisos de uso deben documentarse por separado de los términos del código.
+The first kit should include vector versions, a favicon, an avatar, light and dark variants, progress templates, and a brief usage guide. Usage permissions must be documented separately from the code terms.
+
+## Imported concept kit
+
+The [brand asset inventory](../brand/readme.md) contains all eight original PNGs from the “Crear logo vectorial” conversation: the initial full-logo presentation, transparent full logo, bird icon, wordmark, visual guidelines, and three construction blueprints. They were imported on 2026-10-03 without changing their bytes; dimensions and SHA-256 checksums are recorded in the [manifest](../brand/manifest.json).
+
+The imported concept uses a circuit-inspired bird and a charcoal/teal palette. Its guide references Space Grotesk, Inter, and JetBrains Mono. This is a separate exploration from the palette above, not an approval or replacement of it. Blueprint measurements require reconciliation before becoming production specifications. The [editable SVG reconstructions](../brand/readme.md#originals-and-editable-sources) follow the imported PNG contours and use the requested exact charcoal/teal fills; the original PNGs are preserved.
