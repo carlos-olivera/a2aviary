@@ -21,9 +21,12 @@ async function terminal(task:any, leaseId:string, state:string, result:unknown, 
     updateTask.Update.UpdateExpression+=', settled = :yes'; // fixed below: SET fields must precede REMOVE
     updateTask.Update.UpdateExpression=updateTask.Update.UpdateExpression.replace(' REMOVE leaseId, leaseUntil, settled = :yes', ', settled = :yes REMOVE leaseId, leaseUntil');
     updateTask.Update.ExpressionAttributeValues[':yes']=true;
+    updateTask.Update.UpdateExpression=updateTask.Update.UpdateExpression.replace(' REMOVE leaseId, leaseUntil', ', slotHeld = :no REMOVE leaseId, leaseUntil');
+    updateTask.Update.ExpressionAttributeValues[':no']=false;
     items.push(txUpdate(task.budgetKey,'ADD reservedMicros :release, spentMicros :spent, availableMicros :refund, activeTasks :minus',{':release':-(task.reservationMicros??LIMITS.taskMicros),':spent':charged,':refund':(task.reservationMicros??LIMITS.taskMicros)-charged,':minus':-1}));
+    if(task.slotHeld)items.push(txUpdate('BUDGET#concurrency','ADD activeTasks :minus',{':minus':-1,':one':1},'activeTasks >= :one'));
   }
-  if(task.reserved && !usage)items.push(txUpdate(task.budgetKey,'ADD activeTasks :minus',{':minus':-1}));
+  // Unknown provider settlement holds both the dollars and its concurrency slot.
   await transact(items);
   await audit('task.execute',{taskId:task.taskId,correlationId:task.correlationId,sessionId:task.sessionId},state,reason??undefined);
 }
@@ -31,9 +34,10 @@ async function defer(task:any,id:string,delay=15) { await update(task.pk,'SET du
 async function reserve(task:any,id:string,limits:typeof LIMITS) {
   const budgetKey='BUDGET#'+new Date().toISOString().slice(0,7);
   try { await transact([
-    {Update:{TableName:table(),Key:{pk:budgetKey},UpdateExpression:'SET #ttl = :ttl ADD reservedMicros :amount, availableMicros :negative, activeTasks :one',ExpressionAttributeNames:{'#ttl':'ttl'},ExpressionAttributeValues:{':ttl':now()+90*86400,':amount':limits.taskMicros,':negative':-limits.taskMicros,':one':1,':activeMax':LIMITS.concurrentTasks},ConditionExpression:'availableMicros >= :amount AND activeTasks < :activeMax'}},
-    {Update:{TableName:table(),Key:{pk:task.pk},UpdateExpression:'SET reserved = :yes, budgetKey = :key, reservationMicros = :amount',ExpressionAttributeValues:{':yes':true,':key':budgetKey,':amount':limits.taskMicros,':id':id},ConditionExpression:'leaseId = :id AND attribute_not_exists(reserved)'}},
-  ]);task.reserved=true;task.budgetKey=budgetKey;task.reservationMicros=limits.taskMicros; }
+    {Update:{TableName:table(),Key:{pk:budgetKey},UpdateExpression:'SET #ttl = :ttl ADD reservedMicros :amount, availableMicros :negative, activeTasks :one',ExpressionAttributeNames:{'#ttl':'ttl'},ExpressionAttributeValues:{':ttl':now()+90*86400,':amount':limits.taskMicros,':negative':-limits.taskMicros,':one':1},ConditionExpression:'availableMicros >= :amount'}},
+    txUpdate('BUDGET#concurrency','ADD activeTasks :one',{':one':1,':max':LIMITS.concurrentTasks},'attribute_not_exists(activeTasks) OR activeTasks < :max'),
+    {Update:{TableName:table(),Key:{pk:task.pk},UpdateExpression:'SET reserved = :yes, slotHeld = :yes, budgetKey = :key, reservationMicros = :amount',ExpressionAttributeValues:{':yes':true,':key':budgetKey,':amount':limits.taskMicros,':id':id},ConditionExpression:'leaseId = :id AND attribute_not_exists(reserved)'}},
+  ]);task.reserved=true;task.slotHeld=true;task.budgetKey=budgetKey;task.reservationMicros=limits.taskMicros; }
   catch(e:any) { if(e.name==='TransactionCanceledException')return false;throw e; }return true;
 }
 
@@ -45,7 +49,11 @@ export async function processTask(pk:string) {
   const client=new OpenAI({apiKey:credentials.apiKey,timeout:20000,maxRetries:0});
   if(task.work==='cleanup') {
     try { await client.beta.agents.sessions.delete(task.sessionId); }catch(e:any){if(e.status===409){console.error({operation:'provider.cleanup',error:'provider_settlement_delayed',taskId:task.taskId});await client.beta.agents.sessions.events.create(task.sessionId,{events:[{type:'agent.session.input.cancel'}]});await defer(task,id);return;}if(e.status!==404)throw e;}
-    await update(pk,'SET #w = :w, providerDeletedAt = :at REMOVE leaseId, leaseUntil',{':w':'none',':at':now(),':id':id},'leaseId = :id',{'#w':'work'});return;
+    if(task.slotHeld){await transact([
+      {Update:{TableName:table(),Key:{pk},UpdateExpression:'SET #w = :w, providerDeletedAt = :at, slotHeld = :no REMOVE leaseId, leaseUntil',ExpressionAttributeNames:{'#w':'work'},ExpressionAttributeValues:{':w':'none',':at':now(),':no':false,':id':id,':yes':true},ConditionExpression:'leaseId = :id AND slotHeld = :yes'}},
+      txUpdate(task.budgetKey,'ADD activeTasks :minus',{':minus':-1,':one':1},'activeTasks >= :one'),
+      txUpdate('BUDGET#concurrency','ADD activeTasks :minus',{':minus':-1,':one':1},'activeTasks >= :one'),
+    ]);}else await update(pk,'SET #w = :w, providerDeletedAt = :at REMOVE leaseId, leaseUntil',{':w':'none',':at':now(),':id':id},'leaseId = :id',{'#w':'work'});return;
   }
   if(task.finishedAt){await defer(task,id,60);return;}
   if(task.deadline<=now()) {

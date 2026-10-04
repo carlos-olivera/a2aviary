@@ -16,7 +16,7 @@ import { Email } from './email.js';
 import type { Config } from './app.js';
 
 export class Runtime extends cdk.Stack {
-  feedbackDlq:sqs.Queue;functions:lambda.Function[]=[];api:apigw.HttpApi;broker:lambda.Function;development:lambda.Function;
+  dispatcherDlq:sqs.Queue;feedbackDlq:sqs.Queue;functions:lambda.Function[]=[];api:apigw.HttpApi;broker:lambda.Function;development:lambda.Function;
   constructor(scope:Construct,id:string,config:Config,email:Email){
     super(scope,id,{env:{account:config.account,region:config.region},terminationProtection:true});
     const code=lambda.Code.fromAsset(resolve('../services/dist'));
@@ -28,7 +28,8 @@ export class Runtime extends cdk.Stack {
     const sender=make('Sender','sender.handler',1,{SIGNING_SECRET:email.signing.secretArn,SES_CONFIG_SET:email.configSet.configurationSetName});writes(sender,['OUT','AUDIT']);email.signing.grantRead(sender);sender.addToRolePolicy(new iam.PolicyStatement({actions:['ses:SendEmail','ses:SendRawEmail'],resources:[`arn:aws:ses:${config.region}:${config.account}:identity/a2aviary.io`,`arn:aws:ses:${config.region}:${config.account}:configuration-set/a2aviary-prod`],conditions:{StringEquals:{'ses:FromAddress':'agent@a2aviary.io'}}}));
     for(const [fn,queue] of [[intake,email.intake],[executor,email.runtime],[sender,email.outbox]] as const)fn.addEventSource(new sources.SqsEventSource(queue,{batchSize:1,...(fn===sender?{}:{maxConcurrency:2}),reportBatchItemFailures:true}));
     const dispatch=make('Dispatcher','dispatcher.handler',1);email.runtime.grantSendMessages(dispatch);email.outbox.grantSendMessages(dispatch);
-    dispatch.addEventSource(new sources.DynamoEventSource(email.state,{startingPosition:lambda.StartingPosition.TRIM_HORIZON,batchSize:50,retryAttempts:5,bisectBatchOnError:true,reportBatchItemFailures:true,onFailure:new sources.SqsDlq(email.queues[1])}));
+    this.dispatcherDlq=new sqs.Queue(this,'DispatcherDlq',{encryption:sqs.QueueEncryption.SQS_MANAGED,retentionPeriod:cdk.Duration.days(14),removalPolicy:cdk.RemovalPolicy.RETAIN});
+    dispatch.addEventSource(new sources.DynamoEventSource(email.state,{startingPosition:lambda.StartingPosition.TRIM_HORIZON,batchSize:50,retryAttempts:5,bisectBatchOnError:true,reportBatchItemFailures:true,onFailure:new sources.SqsDlq(this.dispatcherDlq)}));
     const watchdog=make('Watchdog','watchdog.handler',1);writes(watchdog,['BUDGET','OUT','AUDIT']);email.runtime.grantSendMessages(watchdog);email.outbox.grantSendMessages(watchdog);
     new events.Rule(this,'Reconcile',{schedule:events.Schedule.rate(cdk.Duration.minutes(1)),targets:[new targets.LambdaFunction(watchdog)]});
     this.feedbackDlq=new sqs.Queue(this,'FeedbackDlq',{encryption:sqs.QueueEncryption.SQS_MANAGED,retentionPeriod:cdk.Duration.days(14),removalPolicy:cdk.RemovalPolicy.RETAIN});
