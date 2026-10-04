@@ -13,9 +13,11 @@ import { Email } from './email.js';
 import { Runtime } from './runtime.js';
 import { Controls } from './controls.js';
 
-export type Config = { account: string; region: string; zoneId: string; ownerEmail: string };
+export type Config = { account: string; region: string; zoneId: string; ownerEmail: string; limits?:Record<string,number> };
 export const app = new cdk.App();
 const config: Config = JSON.parse(readFileSync(resolve(process.env.A2AVIARY_CONFIG ?? '../.local/deploy.json'), 'utf8'));
+const defaultLimits=JSON.parse(readFileSync(resolve('../contracts/limits.defaults.json'),'utf8'));
+for(const [key,value]of Object.entries(config.limits??{}))if(!(key in defaultLimits) || !Number.isInteger(value) || value<1 || value>defaultLimits[key])throw new Error('Invalid operating limit: '+key);
 if (config.region !== 'us-east-1') throw new Error('The release requires us-east-1');
 const env = { account: config.account, region: config.region };
 

@@ -30,7 +30,7 @@ export class Email extends cdk.Stack {
     const zone=dns.HostedZone.fromHostedZoneAttributes(this,'Zone',{hostedZoneId:config.zoneId,zoneName:'a2aviary.io'});
     new ses.EmailIdentity(this,'Identity',{identity:ses.Identity.publicHostedZone(zone),mailFromDomain:'bounce.a2aviary.io',mailFromBehaviorOnMxFailure:ses.MailFromBehaviorOnMxFailure.REJECT_MESSAGE});
     new dns.MxRecord(this,'InboundMX',{zone,values:[{priority:10,hostName:'inbound-smtp.us-east-1.amazonaws.com'}],ttl:cdk.Duration.minutes(5)});
-    new dns.TxtRecord(this,'DMARC',{zone,recordName:'_dmarc',values:['v=DMARC1; p=none; adkim=s; aspf=r'],ttl:cdk.Duration.minutes(5)});
+    new dns.TxtRecord(this,'DMARC',{zone,recordName:'_dmarc',values:['v=DMARC1; p=reject; adkim=s; aspf=r'],ttl:cdk.Duration.minutes(5)});
     const rules=new ses.ReceiptRuleSet(this,'Rules',{receiptRuleSetName:'a2aviary-prod'});
     receipt.addToResourcePolicy(new iam.PolicyStatement({principals:[new iam.ServicePrincipal('ses.amazonaws.com')],actions:['sns:Publish'],resources:[receipt.topicArn],conditions:{StringEquals:{'AWS:SourceAccount':config.account},ArnEquals:{'AWS:SourceArn':`arn:aws:ses:${config.region}:${config.account}:receipt-rule-set/a2aviary-prod:receipt-rule/a2aviary-agent`}}}));
     rules.addRule('AgentRule',{receiptRuleName:'a2aviary-agent',recipients:['agent@a2aviary.io'],enabled:true,scanEnabled:true,tlsPolicy:ses.TlsPolicy.REQUIRE,actions:[new actions.S3({bucket:this.raw,objectKeyPrefix:'inbound/',topic:receipt}),new actions.Stop()]});

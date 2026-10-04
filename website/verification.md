@@ -88,3 +88,7 @@ landing, with no client records or private references.
 At this original local verification, the CTA was omitted. The initial release adds the verified GitHub destination and records public verification separately in [release evidence](../docs/release-verification.md).
 Hosting provider/access, remote repository, domain DNS access, and HTTPS setup
 remain required before publishing. No site was deployed or remote URL claimed.
+
+## Public deployment verification — 2026-10-04 UTC
+
+Repeated the existing browser verification script against https://a2aviary.io in headed Chrome 154.0.8037.98 at 1440×900, 1280×720, 390×844, and 360×640. The source scene, motion controls, pointer behavior, reduced motion, loading fallback, unavailable WebGL, and real graphics context loss checks passed without normal-path console warnings/errors or missing assets. Touch/coarse-pointer/DPR checks are emulation; visibility state is synthetic. Physical mobile hardware was not tested. Public TLS/redirects, security/cache/MIME headers, private S3 anonymous denial, the real repository CTA, attribution, and complete social-preview assets were checked. Public revision/workflow and remaining infrastructure gates are recorded in [release verification](../docs/release-verification.md).

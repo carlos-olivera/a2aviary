@@ -1,20 +1,48 @@
 # Initial release verification
 
-Date: 2026-10-03. This record distinguishes configured source, deployed resources, verified behavior, and blockers. It will be completed with deployment and end-to-end evidence before the release is declared operational.
+Evidence date: 2026-10-04 UTC. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; GitHub App enforcement, owner notifications, and confirmed cancellation settlement remain blocked.
 
-| Area | Current evidence |
+## Published delivery
+
+The first foundation commit is `1903229885f39244b937eaaff8280dfbcc4e5a72`. [Workflow 37169495312](https://github.com/carlos-olivera/a2aviary/actions/runs/37169495312) passed checks and OIDC website delivery. [Live revision](https://a2aviary.io/.well-known/release.json) is the authority for subsequent deliveries. Later fixes are delivered through the repository's PR/CI path; check the merged commit and its successful main workflow rather than equating a prepared change set with deployment.
+
+All four original commits remain ancestors, including the Apache-licensed first commit. Bootstrap implementation commits identify Codex Bootstrap; publication uses Carlos's authenticated GitHub account. Origin and default `main` were verified. GitHub private vulnerability reporting was enabled and the API returned true. Current/history pattern scans found no matching credential/private-reference material; these are scoped scans and manual review, not a guarantee about every possible secret. Relative documentation links and `git diff --check` passed. Dependency licenses, bundled SDK vendor notices, and original brand checksums are preserved.
+
+## Observed gates
+
+| Area | Evidence and limits |
 | --- | --- |
-| Website infrastructure | Deployed private S3/OAC CloudFront, ACM, apex aliases, and CI role |
-| Source checks | Website asset checks/build; service TypeScript/build and 14 behavioral tests; four synthesized infrastructure security assertions pass |
-| Email/runtime | Configured; first deployment rolled back because of duplicate CDK-created MAIL FROM records; corrected before retry |
-| Repository | Four original commits preserved locally; public publication pending |
-| Autonomy | Real Agents inference, signed email path, persistence, and reply not yet verified |
-| GitHub App/protection | Prepared implementation; registration/installation not yet verified; development disabled |
+| Source checks | Website assets/production build; service TypeScript/build and 21 behavioral tests; infrastructure TypeScript/synth and five policy/alert assertions pass |
+| Infrastructure | Five CloudFormation stacks: `a2aviary-prod-website`, `-ci`, `-email`, `-runtime`, `-controls`; imported zone/bootstrap/OIDC remain shared. Reviewed change sets deploy without data-resource replacement. Stack status is checked independently of CDK output |
+| Website | Public DNS/TLS, HTTP→HTTPS, private origin anonymous 403, MIME/cache/CSP/HSTS/other security headers, CTA/attribution and preview assets verified. Final delivery checks every file checksum/MIME/cache against the private release snapshot |
+| Browser | Headed Chrome 154.0.8037.98, 1440×900, 1280×720, 390×844, 360×640. Three.js entrance/motion, keyboard pause/resume, reduced motion and live preference changes, pointer limits, WebGL unavailable, real WEBGL_lose_context fallback, asset failure, and normal-path console/network diagnostics pass. Touch/coarse-pointer/DPR are emulated; visibility state is synthetic; these are not physical-device measurements |
+| CI authorization | Actual main OIDC delivery succeeds with the verified immutable repository subject and audience. PR job has contents-read and no identity-token/deployment grant; exact main-only trust is asserted. A real foreign-fork credential denial has not been exercised |
+| Email | Real SES receipt→private S3→SNS→SQS→validation→DynamoDB→runtime→outbox→sender→SES→controlled collector. Capabilities, acceptance, result, and status replies have valid ES256 signatures/correlation. Receipt authentication shows SPF/DKIM/DMARC pass. Identity/DKIM/MAIL FROM succeeded; DMARC enforcement deployed after alignment. Collector does not create tasks |
+| Real task | A fictional garden brief completed with schema-valid goals/audience/pages/missing inputs/assumptions/criteria and six research citations. Two application calls, one research call. Saved state/result, distinct later Lambda invocations, signed reply, delivery event, and provider deletion verified after the initiating local submission process ended |
+| Authorization | Behavioral tests cover tampering, scope/action/destination/schema/expiry/key/algorithm/size/attachment/research restrictions. Real signed duplicate/tamper/replay/conflicting-ID emails left one task and rejected unauthorised variants without additional responses/model work |
+| Durable recovery | Real concurrent DynamoDB reservations admitted one contender and denied the other, without negative balance. With stream dispatcher disabled, a real capabilities response was published by the scheduled watchdog and delivered; stream restored and Enabled/OK verified. A simulated interrupted-send ledger fixture became delivery_unknown without sending. The fixture is not a real SES timeout. A controlled client-verification 503 triggered actual website snapshot restoration and CloudFront invalidation; the public previous revision/manifest was restored exactly. Every run now has a unique snapshot ID, including reruns of one commit |
+| Alerts | Seven alarms, structured failure metrics, committed model-budget metric, AWS $15 notification budget deployed. Real CloudWatch data points observed for committed model dollars and logged worker failures. Owner SNS subscription still PendingConfirmation; notification receipt unverified. Project-tag AWS budget coverage awaits management/payer cost-allocation activation |
+| GitHub identity | Manifest/callback/webhook, secret storage, fixed broker profiles and external policy evaluator deployed. Sensitive-path/current-head/rename approval behavior tested locally, including bundled licenses and architecture decisions. App registration/installation, App-bound checks and live token denial/PR exercises remain blocked. Development broker and repository auto-merge stay disabled; owner-review/Actions-CI fallback is required |
 
-## Known tooling finding
+## Usage and unresolved cancellation
 
-The pinned current CDK library bundles `brace-expansion` 5.0.9 with a reported denial-of-service advisory. npm overrides do not replace this vendored dependency. Service dependency audit reports zero advisories. CDK is used only in the owner-controlled build/deployment path, with trusted configuration. A CDK update removing the bundled advisory remains required; this is not recorded as a clean infrastructure audit.
+The completed research task reported 22,556 Agents input tokens, 1,177 output tokens (23,733 total), including 14,398 cached input tokens and 49 reasoning output tokens. Its conservative application charge was $0.015257, including research/search. This is a ledger estimate, not an invoice. A separate bounded inference smoke turn reported 6,759 input/eight output tokens and its provider session was deleted.
 
-## Evidence handling
+A second real session was given an accelerated deadline through an owner-controlled fault injection. The service recorded `cancelled/deadline_exceeded`, committed its outbound notification, and retained its $1 reservation with zero active ledger tasks. OpenAI accepted cancellation but continued to report a waiting turn and returned 409 on deletion: execution was not confirmed settled. Cleanup now re-requests cancellation on that conflict, defers and emits a redacted failure signal. **Confirmed provider cancellation/deletion for this fault remains unverified.** New task admission is paused while processing, sending, watchdog and cleanup remain enabled. Do not release its reservation without final provider usage evidence. This tests the deadline boundary; it does not claim a naturally elapsed five-minute task or a hard billing cap.
 
-Private deploy logs, CloudFormation outputs, MIME, results, owner contacts, credentials, screenshots of private controls, and operational details stay in `.local/` or private AWS resources. Public evidence contains sanitized resource/workflow identifiers, test outcomes, and fictional task results only. No measured monthly cost is claimed from a launch smoke test.
+Other outstanding exercises are ambiguous session-creation recovery, saved tool-outcome retry injection, retry exhaustion/DLQ redrive, bounce/complaint suppression under real events. Source/runbooks exist, but those production fault paths are not marked verified. A successful normal deployment is not evidence for rollback.
+
+## Owner actions and completion
+
+1. Confirm the prepared private a2aviary Operator App registration and install it only on this repository. Browser action-time confirmation is pending. Regenerate the one-hour registration form if expired, run the sole-repository installation reconciliation, then enable App-bound `a2aviary-policy` and exercise routine/sensitive PRs and token denials. No automated use of Carlos's account may manufacture his approval.
+2. Confirm the SNS subscription at the privately configured owner inbox, then observe an actual test notification.
+3. Have the AWS management/payer owner activate the `Project` cost-allocation tag; this linked account's activation call was denied. Verify tagged-budget coverage afterwards.
+4. Reconcile the unsettled cancellation against provider state/final usage, verify cancellation cleanup and remaining fault exercises, and only then resume new admissions.
+
+The intended email autonomy and operational controls must all pass before full completion. The service implements brief analysis only; website generation, autonomous repository engineering, Teco and external A2A-standard compliance are outside this release.
+
+## Tooling and private evidence
+
+The pinned CDK library bundles `brace-expansion` 5.0.9 with a reported denial-of-service advisory. npm overrides do not replace that vendored dependency. Service dependency audit reports zero advisories. CDK remains in the owner-controlled path with trusted configuration; an upstream update removing the advisory remains outstanding. Infrastructure audit is not recorded as clean.
+
+Private CloudFormation change-set/deployment logs, outputs, raw MIME, results, partner keys, owner contacts, and test records stay in `.local/` or private AWS resources. The duplicate MAIL FROM bootstrap failure was corrected; only empty/bootstrap rollback resources and positively identified orphan records were removed. No imported/shared domain, zone, bootstrap or OIDC provider was deleted. CDK prepare-change-set output is recorded separately from CloudFormation execution/completion. No monthly bill is inferred from launch smoke tests.

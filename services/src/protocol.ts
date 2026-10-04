@@ -4,18 +4,27 @@ import { createHash } from 'node:crypto';
 import { simpleParser } from 'mailparser';
 import requestSchema from '../../contracts/request.schema.json' with { type: 'json' };
 import resultSchema from '../../contracts/result.schema.json' with { type: 'json' };
+import defaults from '../../contracts/limits.defaults.json' with { type: 'json' };
 
 export const MIME = 'application/vnd.a2aviary.email+json';
-export const LIMITS = Object.freeze({ rawBytes: 1048576, payloadBytes: 131072, attachmentBytes: 131072, attachments: 2, tasksPerDay: 10, concurrentTasks: 2, taskSeconds: 300, researchCalls: 2, toolCalls: 6, inputTokens: 32000, outputTokens: 8000, taskMicros: 1000000, monthMicros: 10000000 });
+function reduced(base:typeof defaults, override:Record<string,unknown>) {
+  const result={...base};for(const [key,value]of Object.entries(override)){if(!(key in result) || !Number.isInteger(value) || Number(value)<1 || Number(value)>base[key as keyof typeof base])throw new Error('invalid_limit_configuration');result[key as keyof typeof base]=Number(value);}return Object.freeze(result);
+}
+export const LIMITS = reduced(defaults, JSON.parse(process.env.OPERATING_LIMITS??'{}'));
+export function effectiveLimits(grant?: {limits?:Record<string,unknown>}) {if(grant?.limits && ('monthMicros' in grant.limits || 'concurrentTasks' in grant.limits))throw new Rejection('identity_invalid');return reduced({...LIMITS},grant?.limits??{});}
+
 const ajv = new Ajv({ allErrors: false, strict: false });
 const validate = ajv.compile(requestSchema);
 export const validateResult = ajv.compile(resultSchema);
 export { resultSchema };
 export type Request = { version: string; messageId: string; correlationId: string; causationId?: string; sender: string; projectId: string; taskId?: string; action: string; issuedAt: number; expiresAt: number; nonce: string; replyTo: string; payload: Record<string, unknown>; attachments?: { filename: string; sha256: string }[] };
-export type Grant = { pk?: string; sender: string; kid: string; publicKey: JWK; projects: string[]; actions: string[]; replyTo: string; expiresAt: number; revoked?: boolean; research?: boolean };
+export type Grant = { pk?: string; sender: string; kid: string; publicKey: JWK; projects: string[]; actions: string[]; replyTo: string; expiresAt: number; revoked?: boolean; research?: boolean; limits?: Record<string,number> };
 export class Rejection extends Error { constructor(public code: string) { super(code); } }
 export const hash = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');
-export const capabilities = () => ({ version: '1.0', actions: ['capabilities.get', 'task.submit', 'task.status'], taskTypes: ['website.brief.analyze'], limits: LIMITS, transport: 'a2aviary Email Transport v1' });
+export function bindAttachments(refs: {filename:string;sha256:string}[], attachments: {filename?:string;content:Buffer}[]) {
+  if(refs.length!==attachments.length || new Set(refs.map(r=>r.filename)).size!==refs.length || attachments.some(a=>refs.filter(r=>r.filename===a.filename && r.sha256===hash(a.content)).length!==1))throw new Rejection('attachment_binding');
+}
+export const capabilities = (grant?: Grant) => ({ version: '1.0', actions: ['capabilities.get', 'task.submit', 'task.status'].filter(action=>!grant || grant.actions.includes(action)), taskTypes: !grant || grant.actions.includes('task.submit')?['website.brief.analyze']:[], limits: effectiveLimits(grant), transport: 'a2aviary Email Transport v1' });
 
 export async function parseMime(raw: Buffer) {
   if (raw.length > LIMITS.rawBytes) throw new Rejection('raw_too_large');
@@ -42,7 +51,7 @@ export async function authenticate(jws: string, findGrant: (kid: string) => Prom
   if (!grant || grant.revoked || grant.expiresAt <= now) throw new Rejection('identity_invalid');
   let bytes: Uint8Array;
   try { bytes = (await compactVerify(jws, await importJWK(grant.publicKey, 'ES256'), { algorithms: ['ES256'] })).payload; } catch { throw new Rejection('signature_invalid'); }
-  if (bytes.length > LIMITS.payloadBytes) throw new Rejection('payload_too_large');
+  if (bytes.length > effectiveLimits(grant).payloadBytes) throw new Rejection('payload_too_large');
   let request: Request;
   try { request = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { throw new Rejection('schema_invalid'); }
   if (!validate(request)) throw new Rejection('schema_invalid');
