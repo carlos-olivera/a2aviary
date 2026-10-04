@@ -62,6 +62,10 @@ Inspect sanitized logs and redacted audit IDs before redriving DLQs. Stream fail
 
 Expired task deadlines cancel provider turns, persist a terminal notification, and schedule session cleanup. Unknown usage retains the full reservation. A concurrency slot remains held until provider deletion confirms settlement; unresolved session submission requires owner reconciliation before releasing the slot. A cancellation acceptance response does not prove settlement. If session deletion returns 409, cleanup requests cancellation again and retries later while emitting a failure signal. Keep new admission paused if provider settlement cannot be verified. Check that session deletion has completed (`providerDeletedAt`) and retry cleanup after provider recovery. Provider retention controls are separate from application lifecycle expiration.
 
+## Private content retention
+
+Authenticated inputs are uploaded with a pending tag before the admission transaction. A successful transaction promotes them to accepted; the runtime also promotes committed inputs after an interrupted intake worker. Rejected or abandoned pending inputs expire after seven days; accepted inputs/results and raw accepted email expire after thirty days. Rejected raw email has a seven-day tag. Redacted audit/replay records expire after ninety days. Lifecycle and DynamoDB TTL deletion are asynchronous, not exact deletion deadlines. Retained backups/provider retention are separate; do not place private content in public verification records.
+
 ## Failed stacks and teardown
 
 Use CloudFormation stack events and a reviewed CDK diff to repair a failed stack. Do not force-delete retained buckets/tables or imported resources to clear a deployment. Infrastructure deploys are separate from the website role. Repeated no-change deployment should not replace data resources.
