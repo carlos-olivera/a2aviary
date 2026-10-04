@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectTaggingCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'node:crypto';
 import { get, update, transact, txPut, txUpdate, outbound, flags, now, lease, secret, s3, saveContent, audit, table } from './store.js';
 import { resultSchema, validateResult, LIMITS, effectiveLimits, Rejection, hash } from './protocol.js';
@@ -9,7 +9,7 @@ export const observedUsageExceeded=(usage:any,task:any,limits=LIMITS)=>
   (usage?.input_tokens??0)+(task.toolInputTokens??0)>limits.inputTokens ||
   (usage?.output_tokens??0)+(task.toolOutputTokens??0)>limits.outputTokens ||
   micros(usage)+(task.toolCostMicros??0)>limits.taskMicros;
-const input = async (task:any) => JSON.parse(await (await s3.send(new GetObjectCommand({Bucket:process.env.DATA_BUCKET!,Key:task.contentKey}))).Body!.transformToString());
+const input = async (task:any) => {await s3.send(new PutObjectTaggingCommand({Bucket:process.env.DATA_BUCKET!,Key:task.contentKey,Tagging:{TagSet:[{Key:'Disposition',Value:'accepted'}]}}));return JSON.parse(await (await s3.send(new GetObjectCommand({Bucket:process.env.DATA_BUCKET!,Key:task.contentKey}))).Body!.transformToString());};
 export function publicQuery(query: unknown, topics: unknown[]) {
   if(typeof query!=='string' || !topics.includes(query) || query.length>200 || /@|sk-|password|secret|token|credential|private|confidential|[\r\n]/i.test(query))throw new Rejection('research_query_denied');
   return query;
