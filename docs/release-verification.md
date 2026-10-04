@@ -12,7 +12,7 @@ All four original commits remain ancestors, including the Apache-licensed first 
 
 | Area | Evidence and limits |
 | --- | --- |
-| Source checks | Website assets/production build; service TypeScript/build and 21 behavioral tests; infrastructure TypeScript/synth and five policy/alert assertions pass |
+| Source checks | Website assets/production build; service TypeScript/build and 22 behavioral tests; infrastructure TypeScript/synth and five policy/alert assertions pass |
 | Infrastructure | Five CloudFormation stacks: `a2aviary-prod-website`, `-ci`, `-email`, `-runtime`, `-controls`; imported zone/bootstrap/OIDC remain shared. Reviewed change sets deploy without data-resource replacement. Stack status is checked independently of CDK output |
 | Website | Public DNS/TLS, HTTP→HTTPS, private origin anonymous 403, MIME/cache/CSP/HSTS/other security headers, CTA/attribution and preview assets verified. Final delivery checks every file checksum/MIME/cache against the private release snapshot |
 | Browser | Headed Chrome 154.0.8037.98, 1440×900, 1280×720, 390×844, 360×640. Three.js entrance/motion, keyboard pause/resume, reduced motion and live preference changes, pointer limits, WebGL unavailable, real WEBGL_lose_context fallback, asset failure, and normal-path console/network diagnostics pass. Touch/coarse-pointer/DPR are emulated; visibility state is synthetic; these are not physical-device measurements |

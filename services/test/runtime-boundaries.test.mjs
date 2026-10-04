@@ -1,7 +1,7 @@
 import { policyDecision } from '../dist/policy.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { publicQuery } from '../dist/runtime.js';
+import { publicQuery, observedUsageExceeded } from '../dist/runtime.js';
 import {generateKeyPair,exportJWK,compactVerify,importJWK} from 'jose';
 import {authenticate,sign,parseMime,mimeMessage,LIMITS} from '../dist/protocol.js';
 import {readFile} from 'node:fs/promises';
@@ -16,3 +16,5 @@ test('attachment references bind every byte exactly once',async()=>{const {bindA
 test('owner and partner limits can reduce allowances without expanding authority',async()=>{const {effectiveLimits,capabilities}=await import('../dist/protocol.js');assert.equal(effectiveLimits({limits:{toolCalls:1}}).toolCalls,1);assert.throws(()=>effectiveLimits({limits:{toolCalls:1000}}));assert.throws(()=>effectiveLimits({limits:{monthMicros:1}}));assert.deepEqual(capabilities({...grant,actions:['capabilities.get']}).taskTypes,[]);const limited={...grant,limits:{payloadBytes:10}};const jws=await sign(req,key,grant.kid);await assert.rejects(()=>authenticate(jws,async()=>limited,at),e=>e.code==='payload_too_large');});
 
 test('bundled licenses and architecture authority cannot bypass sensitive-path approval',()=>{for(const filename of ['website/public/licenses/inter-OFL.txt','docs/decisions/005-github-identity-and-policy.md','services/THIRD_PARTY.md'])assert.equal(policyDecision([{filename}],[],'head').allowed,false);});
+
+test('research inference contributes to the task token and dollar allowances',()=>{assert.equal(observedUsageExceeded({input_tokens:31000,output_tokens:1000},{toolInputTokens:1001}),true);assert.equal(observedUsageExceeded({input_tokens:1000,output_tokens:7500},{toolOutputTokens:501}),true);assert.equal(observedUsageExceeded({input_tokens:1000,output_tokens:1000},{toolInputTokens:1000,toolOutputTokens:1000,toolCostMicros:10000}),false);assert.equal(observedUsageExceeded(null,{toolCostMicros:1000001}),true);});

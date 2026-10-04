@@ -5,6 +5,10 @@ import { get, update, transact, txPut, txUpdate, outbound, flags, now, lease, se
 import { resultSchema, validateResult, LIMITS, effectiveLimits, Rejection, hash } from './protocol.js';
 
 const micros = (usage:any) => Math.ceil((usage?.input_tokens??0)*0.125+(usage?.output_tokens??0)*0.5);
+export const observedUsageExceeded=(usage:any,task:any,limits=LIMITS)=>
+  (usage?.input_tokens??0)+(task.toolInputTokens??0)>limits.inputTokens ||
+  (usage?.output_tokens??0)+(task.toolOutputTokens??0)>limits.outputTokens ||
+  micros(usage)+(task.toolCostMicros??0)>limits.taskMicros;
 const input = async (task:any) => JSON.parse(await (await s3.send(new GetObjectCommand({Bucket:process.env.DATA_BUCKET!,Key:task.contentKey}))).Body!.transformToString());
 export function publicQuery(query: unknown, topics: unknown[]) {
   if(typeof query!=='string' || !topics.includes(query) || query.length>200 || /@|sk-|password|secret|token|credential|private|confidential|[\r\n]/i.test(query))throw new Rejection('research_query_denied');
@@ -82,7 +86,7 @@ export async function processTask(pk:string) {
     await update(pk,'SET sessionId = :sid, #s = :s, due = :due REMOVE leaseId, leaseUntil',{':sid':task.sessionId,':s':'running',':due':now()+15,':id':id},'leaseId = :id',{'#s':'state'});return;
   }
   const session=await client.beta.agents.sessions.retrieve(task.sessionId);
-  if(session.usage && (session.usage.input_tokens>limits.inputTokens || session.usage.output_tokens>limits.outputTokens || micros(session.usage)+(task.toolCostMicros??0)>limits.taskMicros)) {
+  if(observedUsageExceeded(session.usage,task,limits)) {
     await client.beta.agents.sessions.events.create(task.sessionId,{events:[{type:'agent.session.input.cancel'}]});await terminal(task,id,'cancelled',null,'usage_limit');return;
   }
   for(const action of session.required_actions) {
@@ -105,10 +109,12 @@ export async function processTask(pk:string) {
         task.researchCount=(task.researchCount??0)+1;
       } else throw new Rejection('tool_denied');
       task.toolCount=(task.toolCount??0)+1;task.toolCostMicros=(task.toolCostMicros??0)+cost;
+      task.toolInputTokens=(task.toolInputTokens??0)+((toolUsage as any)?.input_tokens??0);task.toolOutputTokens=(task.toolOutputTokens??0)+((toolUsage as any)?.output_tokens??0);
       saved={pk:callKey,taskId:task.taskId,sessionId:task.sessionId,turnId:action.turn_id,callId:action.call_id,status:'completed',output:JSON.stringify(output),usage:toolUsage,costMicros:cost,ttl:now()+30*86400};
-      await transact([{Put:{TableName:table(),Item:saved}},{Update:{TableName:table(),Key:{pk},UpdateExpression:'SET toolCount = :count, researchCount = :research, toolCostMicros = :cost',ExpressionAttributeValues:{':count':task.toolCount,':research':task.researchCount??0,':cost':task.toolCostMicros,':id':id},ConditionExpression:'leaseId = :id'}}]);
+      await transact([{Put:{TableName:table(),Item:saved}},{Update:{TableName:table(),Key:{pk},UpdateExpression:'SET toolCount = :count, researchCount = :research, toolCostMicros = :cost, toolInputTokens = :input, toolOutputTokens = :output',ExpressionAttributeValues:{':count':task.toolCount,':research':task.researchCount??0,':cost':task.toolCostMicros,':input':task.toolInputTokens,':output':task.toolOutputTokens,':id':id},ConditionExpression:'leaseId = :id'}}]);
     }
     if(saved.status!=='completed') {await client.beta.agents.sessions.events.create(task.sessionId,{events:[{type:'agent.session.input.cancel'}]});await terminal(task,id,'blocked',null,'tool_outcome_uncertain');return;}
+    if(observedUsageExceeded(session.usage,task,limits)){await client.beta.agents.sessions.events.create(task.sessionId,{events:[{type:'agent.session.input.cancel'}]});await terminal(task,id,'cancelled',null,'usage_limit');return;}
     await client.beta.agents.sessions.events.create(task.sessionId,{events:[{type:'agent.session.input.tool_result',turn_id:action.turn_id,call_id:action.call_id,success:true,output:saved.output}]},{idempotencyKey:hash(task.sessionId+'/'+action.turn_id+'/'+action.call_id)});
   }
   if(session.status==='idle' || session.status==='failed') {
