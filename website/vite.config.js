@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
+import { costsPage } from './scripts/costs-plugin.mjs';
 
 export default defineConfig({
+  plugins: [costsPage()],
   build: {
     rolldownOptions: {
       output: {

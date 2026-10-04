@@ -33,6 +33,7 @@ English is the canonical language for repository documentation. The repository i
 
 ## Documentation
 
+- [Cost transparency](COSTS.md) and the [public costs page](https://a2aviary.io/costs)
 - [Vision and scope](docs/vision.md)
 - [Architecture](docs/architecture/overview.md)
 - [Accepted decisions and open questions](docs/decisions/README.md)

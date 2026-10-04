@@ -125,3 +125,41 @@ Local screenshots and CLI/JSON evidence are under `output/playwright/`. Actual
 CloudFront missing-path HTTP responses, production XML/ICO MIME delivery, and
 social-platform previews await an authorized release. Vite's unknown-path
 fallback does not simulate CloudFront. See the [release sequence](README.md#release-delivery).
+
+## Cost transparency — 2026-10-04, local verification
+
+The supplied Markdown and JSON drafts were copied byte-for-byte, including the
+conflicting domain confirmation note. No figures/statuses/sources were changed,
+and no invoice or billing reconciliation was performed.
+
+- Website asset checks and production build passed. Renderer checks cover
+  escaping untrusted fictional strings, tiny dollar precision, ranges, unknown
+  amounts versus confirmed zero, evidence links, and both sitemap URLs without
+  invented modification dates. The built JSON is byte-identical to its source.
+- Service TypeScript check/build and all 24 behavioral tests passed, including
+  the exact extensionless `costs` HTML MIME mapping and retention of existing
+  asset MIME types; unrelated extensionless keys remain binary.
+- Direct GET and HEAD requests to `/costs?verify=1` on development and production
+  preview returned HTTP 200 with `text/html; charset=utf-8`. GET matched the
+  generated HTML object; HEAD had an empty body. This verifies local handling
+  and the uploader's MIME selection, not live S3/CloudFront delivery.
+- `verify-costs.js` passed in headed Chrome 154.0.8037.98 against the rebuilt
+  loopback preview at 1280 × 900, 390 × 844, and 360 × 640 with JavaScript
+  disabled and enabled and the production CSP injected locally. Every item
+  field, optional note, amount, supplied total/basis/caveat, and exclusion
+  matched the served JSON. The page contains no browser script.
+- Canonical/date, visible keyboard focus, skip link, focusable table region,
+  independent mobile table scrolling, home/footer/JSON navigation, and local
+  stylesheet delivery passed. Every requested resource stayed on the preview
+  origin, with no browser/network/CSP errors or warnings. Desktop/mobile
+  screenshots were inspected and saved as `output/playwright/costs-*.png`.
+- The existing `verify-seo.js` checks passed for homepage search/share metadata,
+  the updated two-URL sitemap, icon decoding, Three.js under the production CSP,
+  and desktop/mobile 404 rendering with JavaScript disabled. Source scripts
+  passed syntax checks; documentation/source-link targets and whitespace checks
+  passed. `infra/` has no changes in this delivery.
+
+These results are local verification. Public `/costs` rendering, HTML/JSON/CSS
+MIME/cache behavior, and deployment checks remain unverified until a separately
+authorized release. The PR requires current-head owner review for the build and
+upload controls. No website publication or infrastructure deployment was run.
