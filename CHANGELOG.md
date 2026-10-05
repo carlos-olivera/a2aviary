@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-05 — human-support forwarding activated
+
+- After owner approval/merge of PR #10 and separate deployment authorization, inspected and executed the email/runtime/controls change sets; all three stacks reached UPDATE_COMPLETE. Existing owner-attribution tags and shared worker assets were updated; no existing resources were removed, definitely replaced, or given DNS template changes.
+- Verified active hello@ receipt routing, preserved agent/test rules, the Active Node.js 22 forwarding worker, Enabled SQS trigger, fixed private destination, support retention/TTL, and empty support queue/DLQ. SES sending identity/DKIM/MAIL FROM and production sending are enabled; owner-alert subscription is confirmed and support alarms are connected. See [deployment evidence](docs/release-verification.md#human-support-forwarding--2026-10-05-deployed).
+- No external test message was sent; actual inbox arrival, received attachment bytes, reply delivery and real alert receipt remain unverified. Basic checkout and site production/hosting are unaffected.
+
 ## 2026-10-05 — launch copy and human-support forwarding prepared
 
 - Presented Basic as the upcoming $10/month · $100/year software subscription with an ordered automated site-kit flow, one pricing launch status and a disabled “Coming soon” CTA. Preserved the hero and distinguished upcoming site production/hosting from verified brief analysis. Removed public Paddle names/links, repeated no-sales and mailbox disclaimers, and commissioned-work terms; deferred credit quantities and subscription/refund conditions until before checkout opens.

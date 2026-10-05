@@ -87,7 +87,10 @@ Confirm the AWS SNS subscription email sent to the configured owner address. Unt
 `hello@a2aviary.io` is the human support/privacy/refund contact. On 2026-10-05,
 a read-only check found only agent/test rules in the active `a2aviary-prod` SES
 rule set. SES production sending was enabled. Neither observation establishes
-hello@ delivery. This delivery prepares forwarding code without deploying it.
+hello@ delivery. After separate owner authorization, the email, runtime and
+controls stacks were deployed on 2026-10-05. The support rule and worker trigger
+are active; actual inbox/reply delivery remains unverified. See the
+[deployment evidence](release-verification.md#human-support-forwarding--2026-10-05-deployed).
 
 ### Prepared forwarding behavior
 
