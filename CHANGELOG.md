@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-05 — public policies and contact prepared locally
+
+- Added exact static `/terms`, `/privacy`, `/refunds`, and `/pricing` pages, shared accessible navigation, a visible hello@ human contact block, HTML MIME handling, page metadata/logo-free JSON-LD, and the new sitemap URLs while preserving `/costs` and its supplied figures.
+- Documented human authorization, discovery versus execution, budget limits, Apache 2.0 source versus future commercial services, data/retention boundaries, and future refund rules. Pricing publishes no amounts, catalog or checkout and states Paddle is not yet merchant of record.
+- Updated Carlos Olivera Terrazas attribution throughout project text and regenerated the social image. The only CDK change is the approved owner-tag spelling; original brand assets and dependency licenses are preserved.
+- Verified Node.js 22 website checks/build, service check/build and all 24 tests, infrastructure TypeScript build, exact emitted HTML/MIME and development/preview GET/HEAD, links/anchors/assets, sitemap and metadata/JSON-LD. Headed Chrome desktop/two mobile checks passed with JavaScript disabled/enabled under locally injected production CSP, clean diagnostics and self-hosted requests. Existing costs/SEO checks, source syntax, relative documentation links and whitespace checks passed; see [dated website evidence](website/verification.md#public-policies-and-contact--2026-10-05-local-verification).
+- Recorded disabled Operator broker publication access and unverified hello@ delivery as owner follow-ups. No branch publication, PR creation, main push, merge, deployment, SES forwarding or payment setup was performed; Paddle submission and eventual catalog prices remain owner work.
+
 ## 2026-10-04 — cost transparency prepared for review
 
 - Added the supplied root `COSTS.md` and `website/public/costs.json` unchanged, preserving every figure, status, source, note, and the conflicting domain confirmation note.
@@ -11,7 +19,7 @@
 
 ## 2026-10-04 — landing SEO improvements prepared locally
 
-- Added the root canonical URL, complete Open Graph/X metadata with Carlos Olivera's creator handle, and a linked website/organization/person/source-code JSON-LD graph without an unapproved logo.
+- Added the root canonical URL, complete Open Graph/X metadata with Carlos Olivera Terrazas's creator handle, and a linked website/organization/person/source-code JSON-LD graph without an unapproved logo.
 - Added crawler discovery and a canonical-only sitemap, a standalone noindex 404 page, and XML/ICO upload MIME mappings. Prepared CloudFront origin 403/404 handling that returns the custom page with HTTP 404; owner review and infrastructure deployment remain pending.
 - Replaced the stale share screenshot with a reproducible 1200 × 630 composition whose headline, complete bird, identity, and updated attribution survive the centered square crop. Added derived 16/32/48-pixel ICO and 180-pixel Apple touch assets without modifying original artwork.
 - Verified website asset checks/build, browser metadata/XML/icon checks, desktop/mobile 404 behavior without JavaScript under locally injected production CSP, script syntax, and six synthesized infrastructure assertions. Recorded local evidence and the assets-before-CloudFront release sequence in the website documentation. No website delivery, infrastructure deployment, or social-platform preview validation was performed.
@@ -39,7 +47,7 @@ The entries above describe the original local landing delivery. The operating fo
 ## 2026-10-04 — published operating foundation, remaining release gates
 
 - Integrated the existing English documentation changes and preserved the four original commits and Apache 2.0 provenance.
-- Added the real GitHub follow-build CTA and Carlos Olivera attribution without replacing the Three.js landing or source brand assets.
+- Added the real GitHub follow-build CTA and Carlos Olivera Terrazas attribution without replacing the Three.js landing or source brand assets.
 - Implemented five CDK stacks, private S3/CloudFront OAC delivery, exact immutable GitHub OIDC trust, signed SES email intake, DynamoDB inbox/task/outbox and budget transactions, queued runtime/sender roles, and scheduled recovery.
 - Implemented the Agents API adapter, scoped input/research tools, saved tool outcomes, schema-valid brief results, session cleanup, and ambiguous submission/send handling.
 - Added the Email Transport v1 schemas, fictional signed example, signing/status client, accepted architecture records, private configuration setup, cost worksheet, and recovery runbooks.

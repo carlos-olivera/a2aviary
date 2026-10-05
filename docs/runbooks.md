@@ -44,7 +44,7 @@ node services/scripts/setup.mjs app-registration
 node services/scripts/setup.mjs app-installation
 ```
 
-The owner registers the private **a2aviary Operator** App (fallback name **a2aviary Operator Carlos Olivera**) and installs it only on this repository. The callback validates a one-hour nonce, exchanges the manifest, and stores the key and webhook secret directly in Secrets Manager. The owner setup command enumerates the whole installation grant (without pre-filtering it to the expected repository), verifies that only a2aviary is included, and revokes that temporary read token. Installation lifecycle events are delivered automatically by GitHub and must be omitted from manifest default_events. Tokens are installation-scoped and short-lived. Only broker Lambda roles read the App key; callback can write it. Do not store keys in GitHub Actions secrets or issue a broad PAT to an agent.
+The owner registers the private **a2aviary Operator** App (fallback name **a2aviary Operator Carlos Olivera Terrazas**) and installs it only on this repository. The callback validates a one-hour nonce, exchanges the manifest, and stores the key and webhook secret directly in Secrets Manager. The owner setup command enumerates the whole installation grant (without pre-filtering it to the expected repository), verifies that only a2aviary is included, and revokes that temporary read token. Installation lifecycle events are delivered automatically by GitHub and must be omitted from manifest default_events. Tokens are installation-scoped and short-lived. Only broker Lambda roles read the App key; callback can write it. Do not store keys in GitHub Actions secrets or issue a broad PAT to an agent.
 
 Require CI `checks` and App-bound `a2aviary-policy` on `main`, deny force pushes and deletion, dismiss stale approvals, and give the App no bypass. If registration or required protection fails, leave development disabled and autonomous merge unavailable. Until that check is active, retain blanket owner CODEOWNERS, one owner review with stale approval dismissal, required App-bound Actions CI, and force-push/deletion denial on main; repository auto-merge and the development broker remain disabled. Test both routine and protected-path PRs. Sensitive PRs require Carlos's real approval for the current head; automation must not manufacture that approval through his authenticated account.
 
@@ -81,3 +81,34 @@ Changing monthly allowance does not reset an existing ledger. Reconcile committe
 ## Alert activation
 
 Confirm the AWS SNS subscription email sent to the configured owner address. Until confirmed, failure/model-budget alerts are configured but cannot reach that inbox. The project-tag AWS budget also requires the `Project` cost-allocation tag to be active in the AWS management/payer account. The current linked account cannot activate it; a management-account owner must perform that step. Do not treat an inactive tagged budget as verified spending coverage. AWS budget emails and alarms are notifications, not spending stops.
+
+## Human support and public commercial pages
+
+The prepared homepage contact block publishes `hello@a2aviary.io`. This is human
+support and the privacy/refund contact, separate from the registered signed-agent
+pipeline at `agent@a2aviary.io`. A read-only check on 2026-10-05 found neither an
+explicit hello@ recipient nor a domain catchall in the active SES receipt rules.
+That check does not establish outbound sending or human mailbox delivery.
+
+The owner must configure the human mailbox/forwarding and any required DNS,
+without routing unsigned human mail into the agent pipeline. Verify inbound
+delivery with a controlled message, then a human reply and its authentication;
+record dated evidence and the support-mail retention policy. DNS records alone
+do not prove mailbox delivery. No support forwarding or SES changes are part of
+this website delivery.
+
+The website build emits `/terms`, `/privacy`, `/refunds`, and `/pricing` as exact
+HTML objects. Existing upload MIME selection covers these keys. After owner
+review/merge and the normal website release, verify their public HTTP status,
+HTML MIME/cache behavior, navigation, sitemap, and contact link. Until observed,
+record public delivery as unverified. `/pricing` has no prices, catalog, checkout,
+or active merchant of record. Owner Paddle submission and catalog alignment
+remain separate from preparing website files.
+
+Publish this branch and its PR only with the a2aviary Operator App's fixed
+repository development token. The development broker was observed disabled on
+2026-10-05. Finish local checks first; the owner must activate broker access under
+the existing policy before publication. Do not change that switch automatically,
+use Carlos Olivera Terrazas's personal login, manufacture owner approval, merge,
+or deploy as part of this delivery. If access remains unavailable, retain the
+verified local branch and prepared PR description and report publication blocked.

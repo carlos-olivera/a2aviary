@@ -66,7 +66,7 @@ for (const bucket of [website.bucket, website.releases]) {
 }
 deployRole.addToPolicy(new iam.PolicyStatement({ actions: ['cloudfront:CreateInvalidation', 'cloudfront:GetInvalidation', 'cloudfront:GetDistribution'], resources: [`arn:aws:cloudfront::${config.account}:distribution/${website.distribution.distributionId}`] }));
 new cdk.CfnOutput(ci, 'WebsiteDeploymentRole', { value: deployRole.roleArn });
-cdk.Tags.of(app).add('Project', 'a2aviary'); cdk.Tags.of(app).add('Environment', 'prod'); cdk.Tags.of(app).add('Owner', 'Carlos Olivera');
+cdk.Tags.of(app).add('Project', 'a2aviary'); cdk.Tags.of(app).add('Environment', 'prod'); cdk.Tags.of(app).add('Owner', 'Carlos Olivera Terrazas');
 
 const email = new Email(app, 'a2aviary-prod-email', config);
 const runtime = new Runtime(app, 'a2aviary-prod-runtime', config, email);

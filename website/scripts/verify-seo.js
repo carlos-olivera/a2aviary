@@ -49,7 +49,7 @@ async (page) => {
     };
   }, await sitemap.text());
   assert(sitemapData.valid && sitemapData.root === 'urlset' && sitemapData.namespace === 'http://www.sitemaps.org/schemas/sitemap/0.9', 'Valid sitemap XML');
-  assert(JSON.stringify(sitemapData.urls) === JSON.stringify([canonical, canonical + 'costs']) && sitemapData.lastmod === 0, 'Sitemap contains canonical homepage and costs page without invented dates');
+  assert(JSON.stringify(sitemapData.urls) === JSON.stringify([canonical, ...['costs', 'terms', 'privacy', 'refunds', 'pricing'].map(path => canonical + path)]) && sitemapData.lastmod === 0, 'Sitemap contains canonical homepage, costs, and public policies without invented dates');
   const icons = await page.evaluate(async () => {
     return Promise.all(['/favicon.ico', '/apple-touch-icon.png'].map(async path => {
       const image = new Image();
@@ -59,7 +59,7 @@ async (page) => {
     }));
   });
   assert(icons[0].width === 48 && icons[0].height === 48 && icons[1].width === 180 && icons[1].height === 180, 'Browser decodes favicon and touch icon');
-  report.checks.push('Robots discovery, valid homepage/costs sitemap, and browser icon decoding');
+  report.checks.push('Robots discovery, valid six-URL sitemap, and browser icon decoding');
 
   const browser = page.context().browser();
   const csp = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'";

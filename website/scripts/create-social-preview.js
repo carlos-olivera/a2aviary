@@ -11,7 +11,7 @@ async (page) => {
         <div class="share-name">a2aviary</div>
         <img class="share-bird" src="/brand/a2aviary-bird-inverse.svg" alt="" />
         <h1>Your agent.<br /><span>Our agency.</span></h1>
-        <p class="share-creator">Created by Carlos Olivera</p>
+        <p class="share-creator">Created by Carlos Olivera Terrazas</p>
       </div>
     </main>`;
   });
@@ -25,7 +25,7 @@ async (page) => {
     .share-bird { display: block; width: 280px; height: 185px; object-fit: contain; margin: 24px 0 28px; }
     .share-card h1 { font: 500 70px/1.06 'Space Grotesk', sans-serif; letter-spacing: -.06em; margin: 0; }
     .share-card h1 span { color: #14f1c8; }
-    .share-creator { font: 400 32px/1.4 'Inter', sans-serif; color: #b8c3cf; margin: 38px 0 0; }
+    .share-creator { font: 400 26px/1.4 'Inter', sans-serif; color: #b8c3cf; margin: 38px 0 0; }
   ` });
   await page.evaluate(async () => {
     await document.fonts.ready;
