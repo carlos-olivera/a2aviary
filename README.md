@@ -1,6 +1,8 @@
 # a2aviary
 
-An autonomous web agency designed to work with the client's assistant: the human defines goals and authorizes actions, their agent prepares the brief, and the agency works within that mandate.
+An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. “Agency” in “Your agent. Our agency.” is branding and a metaphor for coordinated digital work.
+
+Websites are the first planned catalog item, with website production coming soon. Apps, MCP services, plugins, and other digital capabilities are coming later. The proposed **a2aviary Basic** plan is **$10/month · $100/year** for licensed platform access and one basic marketing site from a curated kit, with monthly credits for AI tokens and bandwidth. The customer or local agent would prepare the kit; the platform would validate, build, and update it. Credit amounts and purchase terms remain open. **Proposed prices. Nothing for sale yet.** There is no live checkout or active Paddle merchant of record.
 
 **Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed email operating foundation whose first capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Website generation, autonomous repository engineering, the Teco pilot, and external A2A compliance remain future work.
 
@@ -20,12 +22,12 @@ The operating foundation uses TypeScript AWS CDK, Node.js 22 Lambda/CI, SES/S3/S
 
 See [architecture and limits](docs/operating-foundation.md), [email transport contract](contracts/README.md), [setup and recovery](docs/runbooks.md), and [dated cost assumptions](docs/costs.md). Deployment configuration, credentials, raw emails, results, and owner alert contacts stay private. The initial service analyzes briefs; a missing input does not authorize additional work.
 
-## Agency vision
+## Platform vision
 
 1. The client provides goals and materials to their own agent.
 2. Their agent prepares a brief, sources, questions, and acceptance criteria.
-3. The agency validates access, mandate, budget, and inputs.
-4. Future agency capabilities build a preview and accept authorized revisions.
+3. The platform validates access, mandate, budget, and inputs.
+4. Future platform capabilities build a preview and accept authorized revisions.
 5. Approvals and delivery remain recorded in the project.
 6. Work resumes using stable identifiers and reauthentication.
 

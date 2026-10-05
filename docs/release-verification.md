@@ -2,6 +2,44 @@
 
 Evidence date: 2026-10-04 UTC. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
+## Software platform and proposed Basic — 2026-10-05, local verification
+
+- **Configured:** software-platform landing/metadata/JSON-LD copy, explicit agency
+  metaphor, and proposed Basic prices of $10/month and $100/year beside a no-sales
+  notice and native disabled coming-soon CTA. The proposed plan covers licensed
+  platform access for one curated-kit marketing site, prepared by the customer or
+  local agent and validated/built/updated within monthly AI-token and bandwidth
+  credits. Credit amounts remain unspecified. Websites are the first planned
+  catalog item; production is coming soon. Apps, MCP services, plugins, and other
+  capabilities are coming later without prices. Terms/privacy/refunds describe
+  future software access; subscription purchase/cancellation/refund details are
+  deferred until before checkout opens. Existing navigation and six-URL sitemap
+  remain valid. No analytics, checkout, runtime, or infrastructure changes.
+- **Locally verified:** Node.js 22 website checks/build, exact emitted HTML and
+  development/preview GET/HEAD MIME/body delivery, internal links/anchors/assets,
+  sitemap and metadata/JSON-LD. Headed Chrome desktop/two mobile viewports passed
+  with JavaScript disabled/enabled and production CSP injected locally; pointer
+  and programmatic disabled-CTA activation caused no focus, navigation, submission,
+  or checkout requests. Existing costs/SEO checks and visual inspection passed.
+  See [website evidence](../website/verification.md#software-platform-and-proposed-basic--2026-10-05-local-verification).
+- **Observed publication access:** Operator App 5185075 / installation 167790436,
+  slug `a2aviary-operator`, is unsuspended and installed only on this repository.
+  Its existing permissions and fixed development broker were verified; the live
+  development flag is enabled, repository auto-merge is disabled, and main is
+  protected with required `checks` (App 15368) and `a2aviary-policy` (App 5185075).
+  The App's development token cannot read administration-only protection details
+  (HTTP 403); permissions were not expanded. Publication uses the Operator App;
+  owner review remains a separate gate.
+- **Public baseline:** the earlier public-policy [PR #7](https://github.com/carlos-olivera/a2aviary/pull/7)
+  was observed merged. Both remote main and the public release manifest report
+  `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`. This is evidence for that earlier
+  release, not deployment of the new platform/Basic copy. This task has not merged
+  or deployed this update. The earlier dated observations below remain historical.
+- **Owner follow-up:** review/approval of this delivery, a separately authorized
+  release and verification of its public content/route/cache behavior, hello@
+  mailbox delivery, and eventual payment/catalog readiness. Nothing is for sale;
+  no live checkout or active Paddle merchant of record is claimed.
+
 ## Public policies and contact — 2026-10-05, prepared locally
 
 - **Configured:** exact static `/terms`, `/privacy`, `/refunds`, and `/pricing`

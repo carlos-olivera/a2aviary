@@ -34,6 +34,9 @@ button { font: inherit; }
 h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(64px, 6.7vw, 108px); font-weight: 500; line-height: 1.025; letter-spacing: -.07em; margin: 0; }
 h1 span { color: #14f1c8; }
 .description { max-width: 380px; font-size: clamp(15px, 1.2vw, 17px); line-height: 1.8; color: #b8c3cf; margin: 29px 0 0; }
+.product-status { max-width: 430px; font-size: 13px; line-height: 1.8; color: #b8c3cf; margin: 12px 0 0; }
+.product-status a { color: #63f5d5; text-underline-offset: 3px; }
+.product-status a:focus-visible { outline: 2px solid #63f5d5; outline-offset: 5px; }
 .build-link { display: inline-block; margin-top: 22px; color: #63f5d5; font-size: 13px; text-decoration: none; padding-block: 8px; }
 .build-link:hover { text-decoration: underline; }
 .build-link:focus-visible { outline: 2px solid #63f5d5; outline-offset: 5px; }
@@ -90,7 +93,7 @@ h1 span { color: #14f1c8; }
 }
 @media (forced-colors: active) {
   .motion-toggle { border: 1px solid ButtonText; }
-  h1 span, .description, .footer { color: CanvasText; }
+  h1 span, .description, .product-status, .footer { color: CanvasText; }
 }
 
 .contact { padding: 20px 0 24px; border-top: 1px solid #263241; }

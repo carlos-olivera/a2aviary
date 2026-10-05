@@ -1,5 +1,53 @@
 # Landing verification
 
+## Software platform and proposed Basic — 2026-10-05, local verification
+
+These results verify the software-platform copy and coming-soon Basic proposal
+locally, separate from the earlier public-page release. The proposal is not a
+live catalog or subscription; no checkout, analytics, runtime, or infrastructure
+implementation was added.
+
+- Node.js 22.22.3 website `npm run check` and `npm run build` passed. Original
+  brand checksums/contours, dependency licenses, icons, linked JSON-LD entities,
+  and the cost-sheet rendering/data checks remain valid.
+- `check-public-pages.mjs --built --origin http://127.0.0.1:4175` and the same
+  check against development port 5175 without `--built` passed. All four policy
+  routes returned HTTP 200 and HTML MIME for GET/HEAD; GET matched the renderer
+  and HEAD returned no body. Exact built objects were independently compared.
+  Footer/contact links, internal anchors/assets, canonical URLs, search/share
+  metadata, structured-data references, and the existing six-route sitemap passed.
+  No commercial Offer schema or speculative sitemap dates were added.
+- `verify-public-pages.js` passed in headed Chrome 154.0.8037.98 at 1280 × 900,
+  390 × 844, and 360 × 640 with JavaScript disabled/enabled and production CSP
+  injected locally. The Basic CTA is a visible, native disabled button outside
+  a form, associated with the proposed-price/no-sales notice. Pointer and
+  programmatic activation did not focus it, navigate, or issue checkout requests.
+  Links, mailto, visible keyboard focus, skip links, self-hosted resources, and
+  clean browser/network/CSP diagnostics passed, without horizontal overflow.
+- Existing `verify-costs.js` and `verify-seo.js` passed: supplied costs and totals,
+  navigation, six-route XML sitemap, icons, matching homepage metadata/JSON-LD,
+  Three.js readiness under local CSP, and desktop/mobile 404 layout remain valid.
+- Desktop and mobile screenshots were inspected for the homepage and policy
+  pages, including the proposed pricing card and disabled CTA. Screenshots are
+  `output/playwright/policies-*.png`; reports are `platform-public-pages.log`,
+  `platform-costs.log`, and `platform-seo.log` in that ignored directory.
+- Repository documentation checks resolved 114 relative links and Markdown
+  anchors across 28 tracked documents. Changed JavaScript syntax checks and
+  `git diff --check` passed. Scoped review of the changed files found no
+  credential or private-reference material; private publication credentials and
+  verification artifacts remain ignored.
+
+Mobile dimensions are browser emulation, not physical-device tests. Vite preview
+does not establish S3/CloudFront delivery or missing-path status. The public
+release manifest reports the earlier public-page commit
+`7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`; the new copy awaits owner review and
+a separately authorized release. Human mailbox delivery and payment readiness
+remain unverified. See [release evidence](../docs/release-verification.md#software-platform-and-proposed-basic--2026-10-05-local-verification)
+for Operator access and approval gates. Earlier dated results below are retained
+as historical observations.
+
+## Original landing — 2026-10-03
+
 Date: 2026-10-03. Tested locally against the production build; this is not a
 deployment report. The agency API and pilot remain unimplemented.
 

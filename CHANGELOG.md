@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-05 — software platform and proposed Basic plan
+
+- Reframed the landing, search/social descriptions, structured data, and product documentation around an open-source software platform for agent-to-agent digital work. Retained the slogan and visual design, with “agency” explicitly described as a brand metaphor.
+- Updated `/pricing` with proposed a2aviary Basic prices of $10/month and $100/year, one curated-kit marketing site, customer/local-agent kit preparation, and future validation/build/updates within monthly AI-token and bandwidth credits. The visible no-sales notice and native disabled “Coming soon” button accompany the prices; credit amounts remain unspecified. Websites are the first planned catalog item; apps, MCP services, plugins, and other capabilities are coming later without prices.
+- Updated terms/privacy/refunds for future licensed platform access, preserved Apache 2.0 source rights and current data disclosures, and deferred purchase/cancellation/refund conditions until before checkout opens. No analytics, checkout, payment integration, runtime, or infrastructure changes were added. Existing footer/contact links and the six-URL sitemap remain valid.
+- Verified Node.js 22 website checks/build, exact emitted HTML and development/preview GET/HEAD, links/anchors/assets, sitemap, metadata and JSON-LD. Headed Chrome desktop/two mobile checks passed with JavaScript disabled/enabled, locally injected production CSP, self-hosted requests, and clean diagnostics. Disabled CTA activation, existing costs/SEO checks, visual inspection, repository documentation links/anchors, source syntax, and whitespace checks passed; see [dated evidence](website/verification.md#software-platform-and-proposed-basic--2026-10-05-local-verification).
+- Rechecked Operator identity, repository-only installation, fixed development access, disabled auto-merge, and protected main with App-bound required checks. The earlier public-page PR #7 is merged and the live release manifest reports `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`; this update remains a separate review delivery. No owner approval, merge, deployment, payment setup, or mailbox configuration was performed by this task.
+
 ## 2026-10-05 — public policies and contact prepared locally
 
 - Added exact static `/terms`, `/privacy`, `/refunds`, and `/pricing` pages, shared accessible navigation, a visible hello@ human contact block, HTML MIME handling, page metadata/logo-free JSON-LD, and the new sitemap URLs while preserving `/costs` and its supplied figures.
