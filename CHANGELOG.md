@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-05 — support permission repair activated and receipts recovered
+
+- After the owner merged PR #12 and authorized activation/recovery, inspected and executed the runtime change set; UPDATE_COMPLETE confirms deployment. Added only the approved raw-send permission under unchanged sender/recipient/identity restrictions and shared worker-code updates, with no resources added or removed.
+- Conditionally released only the two prior-denial receipts for processing of their original notifications, preserving receipt IDs/timestamps and duplicate protection. Actual SES acceptance is recorded in [activation evidence](docs/release-verification.md#human-support-permission-repair--2026-10-05-activated); inbox, original attachment and reply delivery remain owner verification steps.
+
 ## 2026-10-05 — raw support-send permission repair prepared
 
 - Traced two missing support messages to successful SES receipt/storage and held forwarding records. The worker lacked ses:SendRawEmail; a same-restriction live diagnostic reproduced a 403 denial naming that action. Prepared the missing raw-send permission without broadening sender, identity or recipient restrictions, plus definite access-denial handling and redacted send-error logging.

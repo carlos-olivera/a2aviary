@@ -2,6 +2,32 @@
 
 Latest evidence: 2026-10-05 local checks and publication-baseline reads; earlier dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
+## Human-support permission repair — 2026-10-05, activated
+
+The owner merged PR #12 and separately authorized deployment and recovery of
+both stored test messages. Approved source `ac73e6f4ca16612bc7fc9b0b2f1322ce251c3d0f`
+matches merged main `73998a1c7ee11548a9106a7eead5e37d6204e430`.
+
+- **Deployed:** the runtime stack reached UPDATE_COMPLETE. Change-set review
+  confirmed one support-role permission change and eleven shared worker-code
+  asset updates, with no resources added, removed or definitely replaced.
+  SendRawEmail now accompanies SendEmail under the same identity, hello@ From
+  and private owner-recipient restrictions. The worker update is Successful.
+- **Recovery:** only the two receipts affected by the confirmed prior raw-send
+  denial were conditionally released from delivery_unknown to ready. Entries
+  required the recorded uncertainty reason, unexpired TTL and no SES acceptance
+  ID. Original notifications retain their receipt IDs and timestamps; exhausted
+  notifications are returned individually from the support DLQ. Unrelated
+  uncertain outcomes remain held, and completed duplicates remain suppressed.
+- **Delivery result:** both recovered receipts reached accepted_by_ses with
+  distinct SES acceptance IDs. The support queue had zero visible/in-flight
+  messages and the DLQ was empty after processing. Inbox arrival, original
+  attachment integrity and reply delivery still require owner confirmation.
+  Private receipt IDs, acceptance IDs, notifications and addresses remain in
+  local evidence. No additional diagnostic email was sent during this recovery.
+
+Earlier prepared/deployment observations below remain historical.
+
 ## Human-support send refusal — 2026-10-05, repair prepared
 
 - **Received:** two real owner-reported test messages reached SES and private
