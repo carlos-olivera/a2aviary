@@ -3,7 +3,8 @@
 Date: 2026-10-05
 
 Status: Accepted for implementation by the owner's launch-copy/support plan;
-prepared locally, not deployed or delivery-verified.
+deployed on 2026-10-05 after separate owner authorization; configuration
+verified, real inbox/reply delivery not yet verified.
 
 ## Context
 
@@ -28,8 +29,9 @@ and DLQ entries after fourteen days; owner inbox retention is separate.
 ## Consequences
 
 Support forwarding adds bounded AWS resources and owner activation work. SES
-acceptance is not inbox delivery. Deployment, real inbound/attachment/reply tests,
-alert confirmation and inbox retention remain owner actions. The website release
+acceptance is not inbox delivery. Deployment and alert-subscription confirmation are recorded in release
+verification. Real inbound/attachment/reply tests, actual alert receipt and
+inbox retention remain owner actions. The website release
 workflow deploys no email infrastructure. No checkout, model execution, agent
 permissions or external messaging is enabled by preparing this code.
 

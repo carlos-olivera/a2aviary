@@ -74,3 +74,14 @@ test('concurrent support receipts claim only one send', async () => {
 
 test('expired support redrives cannot resend after ledger expiry', async () => { const f = fixture(); f.ports.now = () => 1000 + 7 * 86400; assert.equal(await processSupport(notification(), config, f.ports), 'expired'); assert.equal(f.sent.length, 0); assert.equal(f.ledger.size, 0); });
 test('future timestamps and invalid owner destinations are refused', async () => { const f = fixture(); f.ports.now = () => 0; await assert.rejects(() => processSupport(notification(), config, f.ports), /support_timestamp_invalid/); await assert.rejects(() => processSupport(notification(), { ...config, owner: 'hello@a2aviary.io' }, f.ports), /support_configuration_invalid/); assert.equal(f.sent.length, 0); });
+
+test('explicit SES access denial is a definite refusal and can retry after permission repair', async () => {
+  const options = { sendFailure: 'AccessDeniedException' }; const f = fixture(options);
+  await assert.rejects(() => processSupport(notification(), config, f.ports), /support_send_failed/);
+  assert.equal(f.ledger.get('fictional-id').status, 'ready');
+  assert.equal(f.ledger.get('fictional-id').reason, 'AccessDeniedException');
+  options.sendFailure = undefined;
+  assert.equal(await processSupport(notification(), config, f.ports), 'accepted_by_ses');
+  assert.equal(await processSupport(notification(), config, f.ports), 'accepted_by_ses');
+  assert.equal(f.sent.length, 2);
+});

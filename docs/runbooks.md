@@ -87,7 +87,10 @@ Confirm the AWS SNS subscription email sent to the configured owner address. Unt
 `hello@a2aviary.io` is the human support/privacy/refund contact. On 2026-10-05,
 a read-only check found only agent/test rules in the active `a2aviary-prod` SES
 rule set. SES production sending was enabled. Neither observation establishes
-hello@ delivery. This delivery prepares forwarding code without deploying it.
+hello@ delivery. After separate owner authorization, the email, runtime and
+controls stacks were deployed on 2026-10-05. The support rule and worker trigger
+are active; actual inbox/reply delivery remains unverified. See the
+[deployment evidence](release-verification.md#human-support-forwarding--2026-10-05-deployed).
 
 ### Prepared forwarding behavior
 
@@ -159,6 +162,19 @@ alerts; the owner's SNS subscription must be confirmed for alerts to arrive.
    privately, with only redacted status in release verification. Confirm the
    owner inbox retention policy separately. Do not claim delivery from SES
    acceptance, DNS, stack completion, or a passing local test alone.
+
+### Raw send permission and refusal diagnostics
+
+SESv2 raw-content forwarding requires the SendRawEmail action in addition to
+SendEmail in this worker's policy. Keep both actions restricted to the existing
+sending identity, hello@ From address and private owner recipient. The 2026-10-05
+live diagnostic reproduced AccessDeniedException under the original policy;
+SendEmail-only IAM simulation did not detect the missing raw action. An explicit
+SES access denial is a definite refusal, while transport uncertainty stays held.
+Log only known error names and receipt identifiers, never provider messages
+containing addresses or message content. Empty MIME is not a safe no-send probe:
+SES accepted it in the corrected diagnostic session. Use local tests and IAM
+simulation for routine checks, and authorize any actual sending test explicitly.
 
 ### Held delivery recovery
 

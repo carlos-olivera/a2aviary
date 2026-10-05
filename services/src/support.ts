@@ -9,7 +9,7 @@ export const MAX_SUPPORT_RAW_BYTES = 28_000_000;
 export const MAX_SUPPORT_SEND_BYTES = 40_000_000;
 const address = 'hello@a2aviary.io';
 const terminal = new Set(['accepted_by_ses', 'quarantined']);
-const definite = new Set(['MessageRejected', 'MailFromDomainNotVerifiedException', 'BadRequestException', 'NotFoundException', 'AccountSuspendedException', 'SendingPausedException', 'TooManyRequestsException']);
+const definite = new Set(['AccessDeniedException', 'MessageRejected', 'MailFromDomainNotVerifiedException', 'BadRequestException', 'NotFoundException', 'AccountSuspendedException', 'SendingPausedException', 'TooManyRequestsException']);
 export type SupportConfig = { bucket: string; topic: string; owner: string };
 export type SupportPorts = {
   get(id: string): Promise<any>;
@@ -92,6 +92,7 @@ export async function processSupport(envelope: any, config: SupportConfig, ports
   let sesMessageId: string;
   try { sesMessageId = await ports.send(data); }
   catch (e: any) {
+    console.error({ operation: 'support.send', receiptId: id, error: definite.has(e.name) ? e.name : 'send_outcome_uncertain' });
     await ports.transition(id, 'sending', definite.has(e.name) ? 'ready' : 'delivery_unknown', { reason: definite.has(e.name) ? e.name : 'send_outcome_uncertain' });
     throw new Error(definite.has(e.name) ? 'support_send_failed' : 'support_delivery_held');
   }
