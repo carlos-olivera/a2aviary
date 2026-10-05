@@ -81,13 +81,13 @@ export function renderPolicyPage(path) {
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:type" content="image/png">
-  <meta property="og:image:alt" content="a2aviary. Your agent. Our agency. Created by Carlos Olivera Terrazas, with the complete circuit-inspired bird on charcoal.">
+  <meta property="og:image:alt" content="a2aviary. Your agent. Your control. Our build. Created by Carlos Olivera Terrazas, with the complete circuit-inspired bird on charcoal.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:creator" content="@carlos_olivera">
   <meta name="twitter:title" content="${escape(title)} | a2aviary">
   <meta name="twitter:description" content="${escape(description)}">
   <meta name="twitter:image" content="https://a2aviary.io/social-preview.png">
-  <meta name="twitter:image:alt" content="a2aviary. Your agent. Our agency. Created by Carlos Olivera Terrazas, with the complete circuit-inspired bird on charcoal.">
+  <meta name="twitter:image:alt" content="a2aviary. Your agent. Your control. Our build. Created by Carlos Olivera Terrazas, with the complete circuit-inspired bird on charcoal.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/policies.css">
   <script type="application/ld+json">${JSON.stringify(graph)}</script>

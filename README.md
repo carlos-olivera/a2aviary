@@ -1,6 +1,6 @@
 # a2aviary
 
-An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. “Agency” in “Your agent. Our agency.” is branding and a metaphor for coordinated digital work.
+An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. Our positioning is “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” Website production remains coming soon, as recorded below.
 
 Websites are the first planned catalog item, with website production coming soon. Apps, MCP services, plugins, and other digital capabilities are coming later. The proposed **a2aviary Basic** plan is **$10/month · $100/year** for licensed platform access and one basic marketing site from a curated kit, with monthly credits for AI tokens and bandwidth. The customer or local agent would prepare the kit; the platform would validate, build, and update it. Credit amounts and purchase terms remain open. **Proposed prices. Nothing for sale yet.** There is no live checkout or active Paddle merchant of record.
 

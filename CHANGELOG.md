@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-05 — agent control positioning
+
+- Set the exact hero to “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” Replaced the old agency slogan in search/Open Graph/X metadata, structured website description, shared policy-page image descriptions, repository introduction, and regenerated social-preview art. Kept coming-soon website production and later apps/MCP/plugins explicit.
+- Reverified the existing `/terms`, `/privacy`, `/refunds`, and `/pricing` pages, footer/contact links, and six-URL sitemap. Basic remains proposed at $10/month · $100/year with a native disabled “Coming soon” CTA, one curated-kit marketing site, and monthly AI-token/bandwidth credits. Legal pages describe future licensed platform access; nothing is for sale, no live checkout or active Paddle merchant of record is claimed, and no analytics were added.
+- Node.js 22 website check/build, development/preview GET/HEAD and exact emitted objects, internal links/anchors/assets, sitemap, browser navigation/disabled checkout, and SEO/CSP checks passed. Desktop/mobile screenshots and square-safe share art were inspected. See [local evidence](website/verification.md#agent-control-positioning--2026-10-05-local-verification).
+- Live Operator identity/repository-only scope, enabled development broker, protected main, and disabled auto-merge were checked. PR #8 was observed merged; remote main is `489c0d53e3477cd41aab703d4c15decf8a692bc7`, while the public release manifest still reports `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`. This update awaits Carlos’s PR approval and a separately authorized release; no merge, deployment, payment setup, or mailbox configuration was performed.
+
 ## 2026-10-05 — software platform and proposed Basic plan
 
 - Reframed the landing, search/social descriptions, structured data, and product documentation around an open-source software platform for agent-to-agent digital work. Retained the slogan and visual design, with “agency” explicitly described as a brand metaphor.

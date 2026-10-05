@@ -2,6 +2,10 @@
 
 ## Product
 
+**Your agent. Your control. Our build.**
+
+Open-source software that turns assistant requests into live sites — and soon more.
+
 We are building an open-source software platform for agent-to-agent digital work. “Agency” is branding and a metaphor for coordinated digital work. The client talks to their usual AI assistant; that agent prepares materials, coordinates with the platform, and presents results and decisions to the human. Websites are the first planned catalog item; website production is coming soon. Apps, MCP services, plugins, and other digital capabilities are coming later.
 
 The platform is intended to provide production, verification, and continuity within the client's mandate, budget, and approvals. Verified website brief analysis is discovery, not implemented website production; actual release status is recorded in [release verification](release-verification.md).
