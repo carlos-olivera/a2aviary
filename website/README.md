@@ -1,5 +1,7 @@
 # a2aviary landing page
 
+The hero uses “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” Website production remains coming soon.
+
 A static introduction to an open-source software platform for agent-to-agent
 digital work. “Agency” is branding and a metaphor. Websites are the first planned
 catalog item; website production, apps, MCP services, plugins, and other digital
@@ -224,12 +226,15 @@ so a preview fallback cannot stand in for the emitted objects. Browser checks
 cover desktop/mobile, disabled/enabled JavaScript, keyboard access, contact and
 policy navigation, production CSP injected locally, resource origins, and the
 disabled pricing CTA under pointer/programmatic activation.
-See [current dated evidence](verification.md#software-platform-and-proposed-basic--2026-10-05-local-verification)
+See [current dated evidence](verification.md#agent-control-positioning--2026-10-05-local-verification)
 and the [earlier public-page checks](verification.md#public-policies-and-contact--2026-10-05-local-verification).
 
-The original public pages were merged through Operator PR #7; the live release
-manifest now reports commit `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`.
-The software-platform and proposed Basic updates are locally verified and await
-owner review and a separately authorized release. Their public route/content
-verification, hello@ forwarding and delivery, and payment/catalog readiness remain
-outstanding. This update changes no infrastructure, runtime, or payment integration.
+The original public pages were merged through Operator PR #7; the observed live
+release manifest still reports commit `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`.
+The software-platform/Basic update was merged through Operator PR #8; remote main
+now reports `489c0d53e3477cd41aab703d4c15decf8a692bc7`, without public delivery
+inferred from that merge. The new hero/SEO/share-art update awaits Carlos’s review
+and a separately authorized release. See [positioning checks](verification.md#agent-control-positioning--2026-10-05-local-verification).
+Public route/content verification, hello@ forwarding and delivery, and payment/
+catalog readiness remain outstanding. This update changes no infrastructure,
+runtime, or payment integration.

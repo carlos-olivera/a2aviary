@@ -1,5 +1,41 @@
 # Landing verification
 
+## Agent control positioning — 2026-10-05, local verification
+
+The exact hero and corresponding search/social metadata now use “Your agent.
+Your control. Our build.” and “Open-source software that turns assistant requests
+into live sites — and soon more.” Website production remains coming soon; other
+capabilities remain coming later. The prior agency slogan is absent from website
+source and regenerated share art.
+
+- Node.js 22.22.3 `npm run check` and `npm run build` passed, including brand
+  checksums/contours, licenses, icons, costs, internal links, and structured data.
+- `check-public-pages.mjs --built --origin http://127.0.0.1:4176` and the development
+  check against port 5176 passed: exact emitted policy objects, GET/HEAD HTML
+  MIME/body, footer/contact navigation, assets/anchors, metadata/JSON-LD, and the
+  existing six-URL sitemap. It already includes all four required policy routes;
+  no new route or speculative modification date was necessary.
+- `verify-public-pages.js` passed in headed Chrome 154.0.8037.98 at 1280 × 900,
+  390 × 844, and 360 × 640, with JavaScript disabled/enabled and production CSP
+  injected locally. Navigation, hello@ mailto, focus/skip links, no horizontal
+  overflow, only self-hosted requests, and clean diagnostics passed. The visible
+  Basic button remained natively disabled; pointer/programmatic activation
+  caused no focus, navigation, submission, or checkout requests.
+- `verify-seo.js` passed for matching root/index metadata and JSON-LD, crawler
+  discovery, six-route XML sitemap, icons, Three.js readiness under local CSP,
+  and desktop/mobile 404 presentation. No deployment status is inferred.
+- `create-social-preview.js` regenerated the share art and passed its central
+  square bounds check. The complete image and desktop/mobile homepage screenshots
+  were visually inspected. Local reports are `positioning-public-pages.log` and
+  `positioning-seo.log` in ignored `output/playwright/`; existing policy screenshot
+  filenames contain this run’s new hero. Mobile dimensions are browser emulation.
+
+The existing proposed Basic plan/legal/contact content remains valid: future
+licensed platform access, one curated-kit marketing site, monthly token/bandwidth
+credits with no specified allowance, proposed prices, no sales or active payment
+operation, and no analytics. Public delivery, mailbox delivery, and payment
+readiness remain separate gates. See [release evidence](../docs/release-verification.md#agent-control-positioning--2026-10-05-local-verification).
+
 ## Software platform and proposed Basic — 2026-10-05, local verification
 
 These results verify the software-platform copy and coming-soon Basic proposal
