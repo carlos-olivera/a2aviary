@@ -12,6 +12,7 @@
 | Digital agency vision for websites, applications, and services; first pilot focused on a website | 2026-10-03 | Current a2aviary Space introduction |
 | English as the canonical language for project documentation | 2026-10-03 | User's instruction |
 | Software-platform framing for agent-to-agent digital work; “agency” as branding/metaphor; websites first, other capabilities coming later | 2026-10-05 | Owner's approved website implementation plan |
+| Basic launch presentation at $10/month · $100/year, automated site-kit flow, provider-neutral public copy, and isolated human-support forwarding preparation | 2026-10-05 | Owner’s explicit implementation request; delivery and deployment remain separate |
 
 The 2026-10-05 framing clarifies the earlier agency vision; it does not establish live website production or a commercial catalog.
 
@@ -24,7 +25,7 @@ The client agent acts as the interface, materials are prepared on the client's s
 - Geometric flock symbol, lowercase wordmark, and jade, ivory, and coral palette.
 - Two posts per week, adjustable to actual progress.
 - Commercial operation and support commitments beyond future licensed platform access.
-- a2aviary Basic at $10/month or $100/year for licensed platform access and one curated-kit marketing site, with monthly token/bandwidth credits. Publication as a coming-soon proposal is approved; sales readiness, credit amounts, and subscription conditions remain open. Nothing is for sale and no checkout is enabled.
+- Basic credit quantities, subscription conditions, and sales readiness remain open. The approved launch presentation above does not enable checkout or establish website production/hosting.
 
 ## Open questions
 
@@ -46,5 +47,6 @@ Create a numbered document with a title, date, status, context, decision, and co
 - [003 — Signed email and durable processing](003-email-and-durable-processing.md)
 - [004 — Agents API and operating limits](004-openai-runtime-and-limits.md)
 - [005 — GitHub identity and trusted policy](005-github-identity-and-policy.md)
+- [006 — Human-support forwarding](006-human-support-forwarding.md)
 
 These decisions were accepted in the initial-release implementation plan. Acceptance is distinct from deployment and verification; see [release evidence](../release-verification.md).

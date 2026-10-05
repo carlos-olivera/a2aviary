@@ -2,6 +2,45 @@
 
 Latest evidence: 2026-10-05 local checks and publication-baseline reads; earlier dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
+## Launch copy and human support — 2026-10-05, prepared locally
+
+- **Configured:** Basic launch copy at $10/month · $100/year, automated future
+  site-kit flow, neutral payment-provider references, software permissions in
+  Terms, concise future cancellation/refund disclosures and disabled checkout
+  CTA. The hero is unchanged. Credit amounts and subscription policies remain
+  open. Basic website production/hosting and checkout are not live.
+- **Prepared infrastructure:** explicit hello@ receipt rule, separate private
+  support S3/SNS/SQS/DynamoDB resources and Node.js 22 forwarding worker. Its
+  destination is private ownerEmail; it preserves original mail/attachments and
+  grants no access to signed-agent state or secrets. Conditional delivery claims
+  and seven-day receipt expiry prevent automatic duplicate/uncertain resends.
+  Storage/ledger: seven days; redacted logs: thirty days; DLQ: fourteen days.
+- **Locally verified:** website checks/build, emitted objects, development/preview
+  GET/HEAD delivery, desktop/two-mobile public-page checks with JS off/on and
+  local production CSP, disabled CTA, links, sitemap and metadata. Service
+  check/build and 47 tests; infrastructure build/synthesis and seven tests passed.
+  See [website evidence](../website/verification.md#launch-copy-and-human-support--2026-10-05-local-verification).
+- **Read-only live observations:** active us-east-1 SES rule set still contains
+  agent/test recipients only; production sending is enabled. Operator App
+  5185075 / installation 167790436 remains repository-only and unsuspended with
+  its existing grant, development enabled, protected main and disabled
+  auto-merge. Administration-only protection details remain unavailable (403);
+  no permissions were expanded. Remote main is
+  `9c3d09a46a523760b6add23148df0b7f767587e8`; it has the same tree as the original
+  local positioning baseline. These observations do not establish hello@ or
+  public delivery of this update.
+- **Owner actions:** review this PR, separately authorize merge/release and AWS
+  activation, confirm private owner destination and alert subscription, then
+  verify inbound/attachment/reply delivery and authentication. Exact activation
+  and held-send recovery steps are in the
+  [runbook](runbooks.md#human-support-and-public-commercial-pages).
+  Read-only CDK diff/template comparison found support additions, agent-rule
+  ordering and shared worker asset updates, plus pre-existing owner attribution
+  tag drift and CDK metadata. No existing resource removals or DNS changes were
+  found. Main's branch endpoint confirms App-bound required `checks` (15368)
+  and `a2aviary-policy` (5185075). No merge, deployment or external test email
+  is part of this delivery.
+
 ## Agent control positioning — 2026-10-05, local verification
 
 - **Configured:** the exact primary “Your agent. Your control. Our build.” and secondary “Open-source software that turns assistant requests into live sites — and soon more.” now appear in the hero and corresponding search/social metadata; the structured website description uses the secondary. The old agency slogan was removed from landing/share metadata and regenerated 1200 × 630 share art. Website production remains coming soon; apps, MCP services, plugins, and other capabilities remain coming later.
