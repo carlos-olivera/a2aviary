@@ -101,14 +101,22 @@ The website build emits `/terms`, `/privacy`, `/refunds`, and `/pricing` as exac
 HTML objects. Existing upload MIME selection covers these keys. After owner
 review/merge and the normal website release, verify their public HTTP status,
 HTML MIME/cache behavior, navigation, sitemap, and contact link. Until observed,
-record public delivery as unverified. `/pricing` has no prices, catalog, checkout,
-or active merchant of record. Owner Paddle submission and catalog alignment
-remain separate from preparing website files.
+record public delivery as unverified. `/pricing` displays proposed Basic prices
+of $10/month and $100/year with a disabled coming-soon CTA. Nothing is for sale;
+there is no live checkout or active merchant of record. Websites are the first
+planned catalog item; apps, MCP services, plugins, and other capabilities are
+coming later. Owner Paddle submission, real catalog alignment, credit allowances,
+and software-access purchase/cancellation/refund terms remain separate from
+preparing website files.
 
 Publish this branch and its PR only with the a2aviary Operator App's fixed
-repository development token. The development broker was observed disabled on
-2026-10-05. Finish local checks first; the owner must activate broker access under
-the existing policy before publication. Do not change that switch automatically,
-use Carlos Olivera Terrazas's personal login, manufacture owner approval, merge,
-or deploy as part of this delivery. If access remains unavailable, retain the
-verified local branch and prepared PR description and report publication blocked.
+repository development token. The earlier 2026-10-05 observation found the broker
+disabled; a later read during this delivery found it enabled. Recheck live App
+identity, repository-only scope, access, policy protections, and disabled
+repository auto-merge before publication. The owner's persistent instructions
+authorize enabling the existing development broker subject to those gates;
+change only that flag if needed, preserving task switches and existing App
+permissions. Finish local checks first. Do not use Carlos Olivera Terrazas's
+personal login, manufacture owner approval, merge, or deploy as part of this
+delivery. If access remains unavailable, retain the verified local branch and
+prepared PR description and report the observed publication blocker.

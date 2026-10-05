@@ -11,6 +11,10 @@ p { color: #b8c3cf; line-height: 1.75; }
 a { color: #63f5d5; text-underline-offset: 3px; overflow-wrap: anywhere; }
 a:focus-visible, [tabindex]:focus-visible { outline: 2px solid #63f5d5; outline-offset: 4px; }
 .updated { font-size: 14px; color: #9aa8b8; }
+.basic-plan { border: 1px solid #354353; border-radius: 12px; padding: 20px clamp(16px, 4vw, 28px); }
+.plan-price { font-size: clamp(24px, 5vw, 32px); line-height: 1.4; color: #f5f7fa; margin-top: 0; }
+.plan-status { color: #f5f7fa; font-weight: 600; }
+.coming-soon { font: inherit; color: #b8c3cf; background: #16212f; border: 1px solid #627386; border-radius: 24px; padding: 12px 24px; min-height: 44px; cursor: not-allowed; }
 code { font-size: .95em; overflow-wrap: anywhere; }
 .skip-link { position: absolute; left: 20px; top: -100px; background: #0b1220; padding: 12px; }
 .skip-link:focus { top: 8px; }
@@ -18,4 +22,4 @@ footer { border-top: 1px solid #263241; padding-top: 20px; font-size: 14px; }
 .policy-links { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .policy-links a { padding-block: 10px; }
 @media (max-width: 600px) { main { padding-block: 32px; } h2 { font-size: 22px; } }
-@media (forced-colors: active) { a { color: LinkText; } p, .updated, .brand { color: CanvasText; } a:focus-visible, [tabindex]:focus-visible { outline-color: Highlight; } }
+@media (forced-colors: active) { a { color: LinkText; } p, .updated, .brand { color: CanvasText; } .coming-soon:disabled { color: GrayText; border-color: GrayText; } a:focus-visible, [tabindex]:focus-visible { outline-color: Highlight; } }

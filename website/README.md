@@ -1,7 +1,10 @@
 # a2aviary landing page
 
-A static introduction to a project in development. The agency runtime, API,
-pilot workflow, and deployment are not implemented by this website.
+A static introduction to an open-source software platform for agent-to-agent
+digital work. “Agency” is branding and a metaphor. Websites are the first planned
+catalog item; website production, apps, MCP services, plugins, and other digital
+capabilities are coming soon. This website does not implement those capabilities;
+actual runtime and deployment evidence is in [release verification](../docs/release-verification.md).
 
 ## Run locally
 
@@ -138,7 +141,7 @@ production CSP, and desktop/mobile 404 behavior with JavaScript disabled.
 
 ## Release delivery
 
-The landing includes a public repository CTA and discreet Carlos Olivera Terrazas attribution. Private S3/CloudFront delivery and GitHub OIDC deployment are defined in `infra/`; see [runbooks](../docs/runbooks.md) and [release evidence](../docs/release-verification.md). The proposed agency capabilities described in the landing are a vision, not a claim of implemented website generation.
+The landing includes a public repository CTA and discreet Carlos Olivera Terrazas attribution. Private S3/CloudFront delivery and GitHub OIDC deployment are defined in `infra/`; see [runbooks](../docs/runbooks.md) and [release evidence](../docs/release-verification.md). The proposed platform capabilities described in the landing are a vision, not a claim of implemented website generation.
 
 The SEO additions are prepared and locally verified, not deployed. Infrastructure
 and affected scripts require Carlos's current-head PR approval under
@@ -196,9 +199,14 @@ only to the explicit page keys; private S3 REST delivery needs no path rewrite.
 
 The homepage contact block and shared page footer link to human support at
 `hello@a2aviary.io`. Delivery is not yet verified; the signed-agent address is
-not human support. `/pricing` publishes no amounts or purchasable offers.
-It separates verified brief discovery from future agency production and says
-there is no catalog, checkout, or merchant of record yet. Existing cost-sheet
+not human support. `/pricing` displays a2aviary Basic at proposed $10/month and
+$100/year with a native disabled “Coming soon” button and an adjacent no-sales
+notice. The plan would provide licensed platform access for one basic marketing
+site from a customer/local-agent-prepared curated kit, with monthly AI-token and
+bandwidth credits. Credit amounts are unspecified. Apps, MCP services, plugins,
+and other digital capabilities are coming later, without prices.
+It separates verified brief discovery from future platform production and says
+there is no live catalog, checkout, or active merchant of record yet. Existing cost-sheet
 figures are project operating costs, not customer prices.
 
 After building and starting the production preview, run:
@@ -214,10 +222,14 @@ Repeat the HTTP check against the development origin without `--built`.
 JSON-LD reference, and MIME checks. Production artifacts are compared separately
 so a preview fallback cannot stand in for the emitted objects. Browser checks
 cover desktop/mobile, disabled/enabled JavaScript, keyboard access, contact and
-policy navigation, production CSP injected locally, and resource origins.
-See [dated evidence](verification.md#public-policies-and-contact--2026-10-05-local-verification).
+policy navigation, production CSP injected locally, resource origins, and the
+disabled pricing CTA under pointer/programmatic activation.
+See [current dated evidence](verification.md#software-platform-and-proposed-basic--2026-10-05-local-verification)
+and the [earlier public-page checks](verification.md#public-policies-and-contact--2026-10-05-local-verification).
 
-These additions are prepared locally, not deployed. Owner review and release,
-public route/MIME/cache verification, hello@ forwarding and delivery, and Paddle
-submission/catalog preparation remain outstanding. The only CDK source change
-is the owner-tag spelling approved for this delivery; no infrastructure was deployed.
+The original public pages were merged through Operator PR #7; the live release
+manifest now reports commit `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`.
+The software-platform and proposed Basic updates are locally verified and await
+owner review and a separately authorized release. Their public route/content
+verification, hello@ forwarding and delivery, and payment/catalog readiness remain
+outstanding. This update changes no infrastructure, runtime, or payment integration.

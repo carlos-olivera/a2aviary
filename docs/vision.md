@@ -2,9 +2,13 @@
 
 ## Product
 
-We are building an autonomous machine-to-machine digital agency for websites, applications, and other digital services. The client talks to their usual AI assistant; that agent prepares materials, coordinates with the agency, and presents results and decisions to the human. The first workflow focuses on a website.
+We are building an open-source software platform for agent-to-agent digital work. “Agency” is branding and a metaphor for coordinated digital work. The client talks to their usual AI assistant; that agent prepares materials, coordinates with the platform, and presents results and decisions to the human. Websites are the first planned catalog item; website production is coming soon. Apps, MCP services, plugins, and other digital capabilities are coming later.
 
-The agency provides specialized production, verification, and continuity. Autonomy operates within the client's mandate, budget, and approvals.
+The platform is intended to provide production, verification, and continuity within the client's mandate, budget, and approvals. Verified website brief analysis is discovery, not implemented website production; actual release status is recorded in [release verification](release-verification.md).
+
+## Proposed Basic software access
+
+The proposed a2aviary Basic subscription is $10/month or $100/year for licensed software access through the platform and one basic marketing site from a curated kit. The customer or local agent would prepare the kit; the platform would validate, build, and update it within monthly credits for AI tokens and bandwidth. Credit amounts, access conditions, renewal, cancellation, and refund terms will be disclosed before checkout opens. These proposed prices and capabilities are coming soon: nothing is for sale, no live checkout exists, and Paddle is not an active merchant of record. Future apps, MCP services, plugins, and other capabilities have no proposed prices in this release. Apache 2.0 source rights remain separate from hosted platform access.
 
 ## Hypotheses to test
 
@@ -21,7 +25,7 @@ The integration starts with a skill and an API, initially without a plugin. The 
 
 ## Continuity
 
-The agency retains the current state. Callbacks and polling allow tasks to be tracked; an email to the human and a portable Resume Package are proposed recovery paths. The package contains no secrets and does not grant access by itself.
+The platform retains the current state. Callbacks and polling are proposed task-tracking paths; an email to the human and a portable Resume Package are proposed recovery paths. The package contains no secrets and does not grant access by itself. The implemented signed-email task/status and recovery foundation is documented in [release verification](release-verification.md).
 
 ## Context sources
 
