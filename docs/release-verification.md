@@ -2,6 +2,67 @@
 
 Latest evidence: 2026-10-05 local checks and publication-baseline reads; earlier dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
+## Human-support send refusal — 2026-10-05, repair prepared
+
+- **Received:** two real owner-reported test messages reached SES and private
+  support storage. Their forwarding ledger entries are held as delivery_unknown;
+  no SES acceptance IDs were recorded and neither original was replayed.
+- **Confirmed blocker:** the deployed support role allows SendEmail but lacks
+  SendRawEmail. A temporary diagnostic session restricted to that same sender,
+  recipient and identity policy reproduced HTTP 403 AccessDeniedException for
+  ses:SendRawEmail using an empty MIME payload. This confirms the API's raw-content
+  permission requirement; IAM simulation of SendEmail alone was insufficient.
+- **Diagnostic caveat:** after adding SendRawEmail only to the temporary diagnostic
+  policy, SES unexpectedly accepted the second empty-MIME request. The expectation
+  that empty MIME could not be delivered was incorrect; the owner may receive a
+  blank test email. Its SES ID was not captured. No original test message was
+  resent, and no inbox arrival is claimed. Temporary credential files were removed.
+- **Repair prepared, not deployed:** add SendRawEmail to the support worker's
+  existing identity/hello@ From/private-owner recipient restriction. Classify
+  explicit AccessDeniedException as a definite refusal that can safely retry,
+  and log the sanitized SES error name without addresses, message text or keys.
+  Other uncertain sends remain held. Forty-eight service tests and seven
+  synthesized infrastructure tests pass, including denial/retry and unchanged
+  destination restrictions.
+- **Owner gate:** review/approve the repair PR before separately authorized
+  activation. Once the permission repair is deployed, reconcile the two held
+  receipts against the established raw-send denial, conditionally reset only
+  those eligible entries and perform one bounded replay. Real inbox/attachment/
+  reply verification remains pending. Do not blindly replay other unknown sends.
+
+## Human-support forwarding — 2026-10-05, deployed
+
+The owner approved/merged PR #10 and separately authorized AWS activation in
+this session. The deployed source is `6990b7384cc082671d109b5acec6de27028b4342`,
+matching the merged main tree at `c3a5378873dfbb5a5f71af3d492c6cf3e4008c66`.
+
+- **Deployed:** the email, runtime and controls stacks reached UPDATE_COMPLETE
+  after their prepared change sets were inspected and explicitly executed.
+  No existing resource removals, definite replacements or DNS template changes
+  were accepted. Existing owner-attribution tags and shared worker code assets
+  were updated alongside the new support resources.
+- **Configuration verified:** active SES rule set a2aviary-prod contains enabled
+  hello@ support routing before the preserved agent/test rules. The Node.js 22
+  support worker is Active with a Successful update and its SQS trigger Enabled.
+  Its destination matches the private owner configuration; no address is copied
+  here. Support S3 remains private with seven-day expiration; ledger TTL is
+  enabled; queue retries lead to the fourteen-day DLQ. Both support queues were
+  empty at the verification read.
+- **Sending prerequisites observed:** SES production sending is enabled; domain
+  sending identity, DKIM and MAIL FROM report success. The existing owner-alert
+  email subscription is confirmed. Support worker/log/DLQ alarms target that
+  owner-alert topic; real alert receipt has not been tested in this delivery.
+- **Unverified:** no external test email was sent. SES/routing/worker checks do
+  not prove inbox arrival, attachment integrity at the inbox, or reply delivery.
+  The owner should send a fictional message and attachment from a different
+  mailbox to hello@, confirm inbox receipt, and reply to verify the return path.
+  The forwarding loop guard rejects hello@/owner reply destinations; use a
+  distinct test sender. Keep message content and receipt evidence private.
+
+Private deployment/change-set and verification records are retained under
+.local. Earlier prepared-only observations below remain historical. This
+activation does not enable Basic checkout, site generation or hosting sales.
+
 ## Launch copy and human support — 2026-10-05, prepared locally
 
 - **Configured:** Basic launch copy at $10/month · $100/year, automated future
