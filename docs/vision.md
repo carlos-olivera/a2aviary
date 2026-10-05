@@ -10,9 +10,11 @@ We are building an open-source software platform for agent-to-agent digital work
 
 The platform is intended to provide production, verification, and continuity within the client's mandate, budget, and approvals. Verified website brief analysis is discovery, not implemented website production; actual release status is recorded in [release verification](release-verification.md).
 
-## Proposed Basic software access
+## Basic launch subscription
 
-The proposed a2aviary Basic subscription is $10/month or $100/year for licensed software access through the platform and one basic marketing site from a curated kit. The customer or local agent would prepare the kit; the platform would validate, build, and update it within monthly credits for AI tokens and bandwidth. Credit amounts, access conditions, renewal, cancellation, and refund terms will be disclosed before checkout opens. These proposed prices and capabilities are coming soon: nothing is for sale, no live checkout exists, and Paddle is not an active merchant of record. Future apps, MCP services, plugins, and other capabilities have no proposed prices in this release. Apache 2.0 source rights remain separate from hosted platform access.
+The owner-approved launch presentation is a2aviary Basic at $10/month or $100/year: a software subscription for one basic marketing site. When Basic launches, the customer's AI assistant submits a site kit containing content, brand, and pages. The software validates the kit, builds, deploys, hosts the site, and automatically applies assistant-requested updates within monthly AI-token and bandwidth credits and granted agent permissions. Credit amounts, access conditions, renewal, cancellation, and refund terms will be published before checkout opens.
+
+Launching soon. Checkout opens when payments are enabled. These are launch capabilities, not evidence of operational website production, hosting through Basic, or an enabled checkout. Apps, MCP services, plugins, and other capabilities are coming later without prices. Apache 2.0 source rights remain separate from hosted platform access.
 
 ## Hypotheses to test
 

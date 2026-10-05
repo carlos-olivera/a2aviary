@@ -16,12 +16,20 @@ import { Email } from './email.js';
 import type { Config } from './app.js';
 
 export class Runtime extends cdk.Stack {
+  supportFunction:lambda.Function;
   dispatcherDlq:sqs.Queue;feedbackDlq:sqs.Queue;functions:lambda.Function[]=[];api:apigw.HttpApi;broker:lambda.Function;development:lambda.Function;
   constructor(scope:Construct,id:string,config:Config,email:Email){
     super(scope,id,{env:{account:config.account,region:config.region},terminationProtection:true});
     const code=lambda.Code.fromAsset(resolve('../services/dist'));
     const shared={OPERATING_LIMITS:JSON.stringify(config.limits??{}),STATE_TABLE:email.state.tableName,RAW_BUCKET:email.raw.bucketName,DATA_BUCKET:email.data.bucketName,RUNTIME_QUEUE:email.runtime.queueUrl,OUTBOX_QUEUE:email.outbox.queueUrl};
     const make=(name:string,handler:string,concurrency:number,environment:Record<string,string>={})=>{const group=new logs.LogGroup(this,name+'Logs',{retention:logs.RetentionDays.THREE_MONTHS,removalPolicy:cdk.RemovalPolicy.RETAIN});const f=new lambda.Function(this,name,{runtime:lambda.Runtime.NODEJS_22_X,code,handler,timeout:cdk.Duration.seconds(60),memorySize:256,reservedConcurrentExecutions:concurrency,environment:{...shared,...environment},logGroup:group,loggingFormat:lambda.LoggingFormat.JSON});email.state.grantReadData(f);this.functions.push(f);return f;};
+    const supportLogs=new logs.LogGroup(this,'SupportLogs',{retention:logs.RetentionDays.ONE_MONTH,removalPolicy:cdk.RemovalPolicy.RETAIN});
+    const support=new lambda.Function(this,'Support',{runtime:lambda.Runtime.NODEJS_22_X,code,handler:'support.handler',timeout:cdk.Duration.seconds(60),memorySize:512,reservedConcurrentExecutions:1,environment:{SUPPORT_BUCKET:email.supportRaw.bucketName,SUPPORT_TABLE:email.supportState.tableName,SUPPORT_TOPIC:email.supportTopic.topicArn,SUPPORT_OWNER:config.ownerEmail},logGroup:supportLogs,loggingFormat:lambda.LoggingFormat.JSON});
+    support.addToRolePolicy(new iam.PolicyStatement({actions:['s3:GetObject'],resources:[email.supportRaw.arnForObjects('support/*')]}));
+    support.addToRolePolicy(new iam.PolicyStatement({actions:['dynamodb:GetItem','dynamodb:PutItem','dynamodb:UpdateItem'],resources:[email.supportState.tableArn]}));
+    support.addToRolePolicy(new iam.PolicyStatement({actions:['ses:SendEmail'],resources:[`arn:aws:ses:${config.region}:${config.account}:identity/a2aviary.io`],conditions:{StringEquals:{'ses:FromAddress':'hello@a2aviary.io'},'ForAllValues:StringEquals':{'ses:Recipients':[config.ownerEmail]}}}));
+    support.addEventSource(new sources.SqsEventSource(email.supportQueue,{batchSize:1,reportBatchItemFailures:true}));this.supportFunction=support;
+    new cdk.CfnOutput(this,'SupportFunction',{value:support.functionName});
     const writes=(f:lambda.Function,prefixes:string[])=>f.addToRolePolicy(new iam.PolicyStatement({actions:['dynamodb:PutItem','dynamodb:UpdateItem','dynamodb:DeleteItem'],resources:[email.state.tableArn],conditions:{'ForAllValues:StringLike':{'dynamodb:LeadingKeys':prefixes.map(p=>p+'#*')}}}));
     const intake=make('Intake','intake.handler',2);writes(intake,['IN','NONCE','TASK','OUT','DAY','AUDIT']);email.raw.grantRead(intake);email.data.grantPut(intake,'inputs/*');intake.addToRolePolicy(new iam.PolicyStatement({actions:['s3:PutObjectTagging'],resources:[email.raw.arnForObjects('inbound/*')]}));
     const executor=make('Executor','runtime.handler',2,{OPENAI_SECRET:email.openai.secretArn});writes(executor,['TASK','TOOL','OUT','BUDGET','AUDIT']);email.openai.grantRead(executor);email.data.grantRead(executor,'inputs/*');email.data.grantPut(executor,'results/*');

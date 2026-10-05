@@ -1,5 +1,37 @@
 # Landing verification
 
+## Launch copy and human support — 2026-10-05, local verification
+
+- Preserved both exact hero lines and existing visual assets. Public pages,
+  metadata and JSON-LD contain provider-neutral payment language; removed
+  no-sales banners, mailbox disclaimers and commissioned-work wording.
+- Basic is presented at $10/month · $100/year with the single visible status
+  “Launching soon. Checkout opens when payments are enabled.” Its ordered
+  automated site-kit flow is explicitly future behavior; credit amounts and
+  subscription policies remain unpublished until before checkout opens.
+- Node.js 22.22.3 website check/build, exact emitted policy objects, development
+  (5173) and preview (4173) GET/HEAD MIME/body, navigation/anchors/assets,
+  six-route sitemap and metadata/JSON-LD checks passed.
+- Headed Chrome 154.0.8037.98 public-page checks passed at 1280 × 900,
+  390 × 844 and 360 × 640 with JavaScript off/on and production CSP injected
+  locally. Disabled CTA activation caused no focus, navigation or requests.
+  Keyboard/skip access, contact links, self-hosted requests and diagnostics
+  passed. Mobile homepage and pricing screenshots were inspected.
+- SEO browser checks passed for canonical/search/social/JSON-LD consistency,
+  crawler discovery, icons, Three.js under production CSP and desktop/mobile
+  404 accessibility. The verification scripts now drain routed requests before
+  closing contexts; a fresh browser run passed without teardown diagnostics.
+- Support forwarding is prepared in source, not deployed. Service typecheck/
+  build and 47 tests, infrastructure build/synthesis and seven tests passed,
+  covering original MIME/attachments, fixed recipients, validation, quarantine,
+  duplicate/concurrent receipts, retries, uncertain sends and expired redrives.
+  Unit tests use fictional messages and injected local adapters, not live sends.
+
+Public release, hello@ activation and real inbox/reply delivery remain owner
+steps in the [runbook](../docs/runbooks.md#human-support-and-public-commercial-pages).
+No merge, deployment, checkout activation or external test email was performed.
+Earlier dated sections describe historical deliveries.
+
 ## Agent control positioning — 2026-10-05, local verification
 
 The exact hero and corresponding search/social metadata now use “Your agent.

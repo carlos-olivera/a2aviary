@@ -80,6 +80,7 @@ async (page) => {
     assert(await securePage.locator('script[type="application/ld+json"]').evaluate(element => JSON.parse(element.textContent)['@graph'].length === 4), 'JSON-LD readable under production CSP');
     assert(secureErrors.length === 0, 'Homepage scene, JSON-LD, and asset/CSP diagnostics clean');
   } finally {
+    await secureContext.unrouteAll({ behavior: 'wait' });
     await secureContext.close();
   }
   report.checks.push('Homepage: production CSP injected locally, Three.js ready, JSON-LD readable, no console/network errors');
@@ -116,6 +117,7 @@ async (page) => {
     }
     assert(missing.length === 0 && diagnostics.length === 0, '404 and home asset/CSP diagnostics clean');
   } finally {
+    await context.unrouteAll({ behavior: 'wait' });
     await context.close();
   }
   report.checks.push('404 desktop/mobile: JavaScript disabled, production CSP injected locally, assets, noindex, focus, and return link');

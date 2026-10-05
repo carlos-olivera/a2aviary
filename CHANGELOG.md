@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-05 — launch copy and human-support forwarding prepared
+
+- Presented Basic as the upcoming $10/month · $100/year software subscription with an ordered automated site-kit flow, one pricing launch status and a disabled “Coming soon” CTA. Preserved the hero and distinguished upcoming site production/hosting from verified brief analysis. Removed public Paddle names/links, repeated no-sales and mailbox disclaimers, and commissioned-work terms; deferred credit quantities and subscription/refund conditions until before checkout opens.
+- Prepared an isolated SES hello@ forwarding route, private storage, receipt queue/DLQ, delivery ledger and Node.js 22 worker targeting private ownerEmail. Original MIME and attachments are preserved; scan failures, invalid input, loops and oversize mail are quarantined. Conditional claims and receipt expiry suppress duplicates and hold uncertain sends. Added support-only permissions, bounded retention, alarms, and owner activation/recovery instructions.
+- Node.js 22.22.3 website check/build, development/preview GET/HEAD, emitted objects, links/sitemap/metadata and desktop/two-mobile public-page browser checks passed. Service check/build and 47 tests; infrastructure build/synthesis and seven tests passed. See [local evidence](website/verification.md#launch-copy-and-human-support--2026-10-05-local-verification). No live forwarding, payment activation, merge, deployment or external test message was performed.
+
 ## 2026-10-05 — agent control positioning
 
 - Set the exact hero to “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” Replaced the old agency slogan in search/Open Graph/X metadata, structured website description, shared policy-page image descriptions, repository introduction, and regenerated social-preview art. Kept coming-soon website production and later apps/MCP/plugins explicit.

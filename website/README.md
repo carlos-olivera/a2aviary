@@ -200,16 +200,19 @@ only to the explicit page keys; private S3 REST delivery needs no path rewrite.
 `public/policies.css` is self-hosted, and the pages need no executable JavaScript.
 
 The homepage contact block and shared page footer link to human support at
-`hello@a2aviary.io`. Delivery is not yet verified; the signed-agent address is
-not human support. `/pricing` displays a2aviary Basic at proposed $10/month and
-$100/year with a native disabled “Coming soon” button and an adjacent no-sales
-notice. The plan would provide licensed platform access for one basic marketing
-site from a customer/local-agent-prepared curated kit, with monthly AI-token and
-bandwidth credits. Credit amounts are unspecified. Apps, MCP services, plugins,
-and other digital capabilities are coming later, without prices.
-It separates verified brief discovery from future platform production and says
-there is no live catalog, checkout, or active merchant of record yet. Existing cost-sheet
-figures are project operating costs, not customer prices.
+`hello@a2aviary.io`, separate from signed-agent processing. `/pricing` presents
+Basic at $10/month · $100/year with the single status “Launching soon. Checkout
+opens when payments are enabled.” and a native disabled “Coming soon” button.
+The launch flow covers assistant-submitted kits, automated validation/build/
+deployment/hosting of one basic marketing site, and automatic updates within
+monthly AI-token and bandwidth credits. Credit amounts and subscription terms
+will be published before checkout opens. Basic site production/hosting remains
+coming soon; apps, MCP services, and plugins are coming later. Verified brief
+analysis remains distinct. Existing cost-sheet figures are project costs.
+
+Public copy is provider-neutral, with plan/credit/permission limits instead of
+commissioned-work language. Prepared support forwarding and its pending owner
+activation are documented in the [support runbook](../docs/runbooks.md#human-support-and-public-commercial-pages).
 
 After building and starting the production preview, run:
 
@@ -226,15 +229,10 @@ so a preview fallback cannot stand in for the emitted objects. Browser checks
 cover desktop/mobile, disabled/enabled JavaScript, keyboard access, contact and
 policy navigation, production CSP injected locally, resource origins, and the
 disabled pricing CTA under pointer/programmatic activation.
-See [current dated evidence](verification.md#agent-control-positioning--2026-10-05-local-verification)
+See [current dated evidence](verification.md#launch-copy-and-human-support--2026-10-05-local-verification)
 and the [earlier public-page checks](verification.md#public-policies-and-contact--2026-10-05-local-verification).
 
-The original public pages were merged through Operator PR #7; the observed live
-release manifest still reports commit `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`.
-The software-platform/Basic update was merged through Operator PR #8; remote main
-now reports `489c0d53e3477cd41aab703d4c15decf8a692bc7`, without public delivery
-inferred from that merge. The new hero/SEO/share-art update awaits Carlos’s review
-and a separately authorized release. See [positioning checks](verification.md#agent-control-positioning--2026-10-05-local-verification).
-Public route/content verification, hello@ forwarding and delivery, and payment/
-catalog readiness remain outstanding. This update changes no infrastructure,
-runtime, or payment integration.
+Public delivery of this update remains pending owner review and a separately
+authorized release. Support forwarding code is prepared, with no deployment or
+real inbox/reply verification performed. Checkout, site production/hosting through
+Basic, payment integration, and credit quantities remain future work.

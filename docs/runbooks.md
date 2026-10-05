@@ -84,30 +84,105 @@ Confirm the AWS SNS subscription email sent to the configured owner address. Unt
 
 ## Human support and public commercial pages
 
-The prepared homepage contact block publishes `hello@a2aviary.io`. This is human
-support and the privacy/refund contact, separate from the registered signed-agent
-pipeline at `agent@a2aviary.io`. A read-only check on 2026-10-05 found neither an
-explicit hello@ recipient nor a domain catchall in the active SES receipt rules.
-That check does not establish outbound sending or human mailbox delivery.
+`hello@a2aviary.io` is the human support/privacy/refund contact. On 2026-10-05,
+a read-only check found only agent/test rules in the active `a2aviary-prod` SES
+rule set. SES production sending was enabled. Neither observation establishes
+hello@ delivery. This delivery prepares forwarding code without deploying it.
 
-The owner must configure the human mailbox/forwarding and any required DNS,
-without routing unsigned human mail into the agent pipeline. Verify inbound
-delivery with a controlled message, then a human reply and its authentication;
-record dated evidence and the support-mail retention policy. DNS records alone
-do not prove mailbox delivery. No support forwarding or SES changes are part of
-this website delivery.
+### Prepared forwarding behavior
 
-The website build emits `/terms`, `/privacy`, `/refunds`, and `/pricing` as exact
-HTML objects. Existing upload MIME selection covers these keys. After owner
-review/merge and the normal website release, verify their public HTTP status,
-HTML MIME/cache behavior, navigation, sitemap, and contact link. Until observed,
-record public delivery as unverified. `/pricing` displays proposed Basic prices
-of $10/month and $100/year with a disabled coming-soon CTA. Nothing is for sale;
-there is no live checkout or active merchant of record. Websites are the first
-planned catalog item; apps, MCP services, plugins, and other capabilities are
-coming later. Owner Paddle submission, real catalog alignment, credit allowances,
-and software-access purchase/cancellation/refund terms remain separate from
-preparing website files.
+The hello@ rule stores mail in a separate private support bucket, publishes its
+receipt to a dedicated SNS/SQS path, and runs a Node.js 22 support worker. It runs
+before the agent rule without stopping further evaluation, preserving agent/test
+routing for mail with multiple recipients. The worker validates the SNS topic,
+receipt recipient, timestamp, S3 bucket and exact `support/<messageId>` key.
+Only PASS spam/virus verdicts proceed; other verdicts, malformed sender/reply
+addresses (single ASCII mailboxes), loops and oversized mail are quarantined. Raw messages are bounded
+at 28,000,000 bytes and encoded outbound messages at 40,000,000 bytes.
+
+The worker sends from hello@ to private `config.ownerEmail` only. It includes a
+plain-text summary and the original `.eml` attachment; validated original
+Reply-To (or From when absent) is retained. Incoming addresses cannot change
+the forwarding destination. The worker has no agent-state, model or secret
+access, and sends no automatic response to the original sender. Owner replies
+use the owner's mail application; this delivery does not configure an outbound
+hello@ mailbox or send-as identity in that application.
+
+A separate ledger conditionally claims each SES receipt before sending. SES
+acceptance means `accepted_by_ses`, not inbox delivery. Completed duplicates
+are suppressed. Pre-send errors and definite SES refusals retry through SQS;
+uncertain sends and interrupted claims remain held and ultimately enter the
+DLQ. The SES SDK has sending retries disabled. An expired seven-day receipt
+cannot resend after its ledger entry expires. Support objects/ledger expire
+seven days after storage/receipt respectively; expiry is asynchronous. Support
+logs are redacted and retained thirty days; DLQ envelopes are retained fourteen
+days and may include original receipt metadata. Inbox/provider copies follow
+separate retention. Quarantines, processing errors and DLQ depth use owner
+alerts; the owner's SNS subscription must be confirmed for alerts to arrive.
+
+### Owner activation and delivery verification
+
+1. Review and approve the PR as Carlos Olivera Terrazas. Merge/release and AWS
+   deployment need separate authorization. The existing main workflow deploys
+   website files only; it does not activate support infrastructure.
+2. Privately confirm `.local/deploy.json` `ownerEmail` is the intended inbox and
+   is not hello@. Keep the real address/configuration out of Git.
+3. With Node.js 22, build and check all packages using the reproducible setup
+   above. From `infra`, run `npx cdk diff a2aviary-prod-email
+   a2aviary-prod-runtime a2aviary-prod-controls --output ../.local/support-cdk`.
+   Review the support resources, agent rule ordering, worker permissions and
+   alarms. The live-template comparison also includes pre-existing owner-name
+   tag drift; review that attribution change separately. Existing Lambda code assets also change because workers share the
+   service bundle. Do not replace unrelated resources or alter DNS.
+4. After separate deployment authorization, from `infra` run `npx cdk deploy
+   a2aviary-prod-email a2aviary-prod-runtime a2aviary-prod-controls --output
+   ../.local/support-cdk --outputs-file ../.local/services-outputs.json` and wait
+   for all stack updates to complete. Inspect any prepared change set before
+   execution; preparation is not deployment.
+5. Run `aws ses describe-active-receipt-rule-set --region us-east-1` and confirm
+   the hello@ rule, support S3/SNS action, and preserved agent/test rules. Run
+   `aws sesv2 get-email-identity --email-identity a2aviary.io --region us-east-1`
+   and `aws sesv2 get-account --region us-east-1`; confirm sending identity,
+   DKIM/MAIL FROM and enabled sending. If sandboxed, verify the private owner
+   recipient in SES before testing. Preserve the existing inbound MX.
+6. Confirm the existing OwnerAlerts SNS subscription in the owner inbox and
+   observe an owner-authorized test alert. Inspect the support Lambda event
+   source mapping and empty support DLQ before testing delivery.
+7. From a separately authorized external test address, send a unique fictional
+   support message and attachment to hello@. Confirm owner inbox arrival,
+   original attachment bytes, From and Reply-To, and ledger SES acceptance.
+   Reply from the inbox and confirm arrival at the test sender. Check the
+   forwarding message's authentication results; the owner's reply uses its
+   own mailbox authentication. Verify agent/test routing with separately
+   authorized controlled checks. Do not send client data.
+8. Record dated deployment, receipt, inbox/reply and authentication evidence
+   privately, with only redacted status in release verification. Confirm the
+   owner inbox retention policy separately. Do not claim delivery from SES
+   acceptance, DNS, stack completion, or a passing local test alone.
+
+### Held delivery recovery
+
+Inspect the support ledger and private SES/inbox evidence before any redrive.
+For `sending` or `delivery_unknown`, reconcile whether the owner actually
+received the message. If confirmed, conditionally change that exact ledger
+status to `accepted_by_ses` and remove the recovered failure envelope. Only
+when non-delivery is established and the receipt is still younger than seven
+days may the owner conditionally reset it to `ready` and redrive that one
+receipt. Uncertainty is not permission to resend. Quarantined messages require
+owner inspection, a confirmed reason/fix and the same bounded recovery; never
+route them into the agent queue. Expired receipts require independent owner
+handling, not resetting timestamps to bypass expiry.
+
+### Public launch status
+
+The build emits exact `/terms`, `/privacy`, `/refunds`, and `/pricing` HTML
+objects. Pricing presents Basic at $10/month · $100/year with a disabled CTA
+and “Launching soon. Checkout opens when payments are enabled.” Credit amounts
+and subscription policies will be published before checkout opens. Automated
+site production/hosting is upcoming; verified brief analysis is distinct.
+After an authorized website release, verify public route/MIME/cache behavior,
+copy, metadata, navigation, contact, and sitemap. Payment activation remains a
+separate owner action; no payment integration is included here.
 
 Publish this branch and its PR only with the a2aviary Operator App's fixed
 repository development token. The earlier 2026-10-05 observation found the broker

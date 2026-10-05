@@ -35,7 +35,7 @@ async (page) => {
             const button = view.getByRole('button', { name: 'Coming soon', exact: true });
             assert(await button.isVisible() && await button.isDisabled(), 'Coming-soon CTA is visible and natively disabled');
             assert(await button.evaluate(element => element.tagName === 'BUTTON' && element.type === 'button' && !element.form && !element.hasAttribute('onclick')), 'CTA has no submission or inline payment handler');
-            assert(await button.getAttribute('aria-describedby') === 'basic-status' && await view.locator('#basic-status').isVisible(), 'CTA references visible proposed-price status');
+            assert(await button.getAttribute('aria-describedby') === 'basic-status' && await view.locator('#basic-status').isVisible(), 'CTA references visible launch status');
             const before = view.url(), count = requests.length, bounds = await button.boundingBox();
             await view.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
             await button.evaluate(element => { element.focus(); element.click(); });
@@ -61,7 +61,7 @@ async (page) => {
       assert(requests.every(url => new URL(url).origin === base), 'Only self-hosted network requests');
       assert(diagnostics.length === 0, `Clean browser/network/CSP diagnostics: ${diagnostics.join('; ')}`);
       report.checks.push(`All public pages and homepage: desktop/two mobile viewports, JavaScript ${javaScriptEnabled}, disabled checkout CTA, navigation, mailto, focus, skip links, CSP, and self-hosted requests`);
-    } finally { await context.close(); }
+    } finally { await context.unrouteAll({ behavior: 'wait' }); await context.close(); }
   }
   return report;
 }

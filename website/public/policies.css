@@ -7,7 +7,7 @@ header { display: flex; align-items: center; justify-content: space-between; gap
 main { padding-block: 48px; }
 h1 { font-size: clamp(32px, 6vw, 52px); line-height: 1.15; letter-spacing: -.03em; margin: 0; }
 h2 { font-size: 24px; line-height: 1.3; margin: 36px 0 12px; }
-p { color: #b8c3cf; line-height: 1.75; }
+p, .plan-flow { color: #b8c3cf; line-height: 1.75; }
 a { color: #63f5d5; text-underline-offset: 3px; overflow-wrap: anywhere; }
 a:focus-visible, [tabindex]:focus-visible { outline: 2px solid #63f5d5; outline-offset: 4px; }
 .updated { font-size: 14px; color: #9aa8b8; }
@@ -23,3 +23,6 @@ footer { border-top: 1px solid #263241; padding-top: 20px; font-size: 14px; }
 .policy-links a { padding-block: 10px; }
 @media (max-width: 600px) { main { padding-block: 32px; } h2 { font-size: 22px; } }
 @media (forced-colors: active) { a { color: LinkText; } p, .updated, .brand { color: CanvasText; } .coming-soon:disabled { color: GrayText; border-color: GrayText; } a:focus-visible, [tabindex]:focus-visible { outline-color: Highlight; } }
+
+.plan-flow { padding-left: 24px; }
+.plan-flow li + li { margin-top: 8px; }
