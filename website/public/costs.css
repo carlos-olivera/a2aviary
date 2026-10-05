@@ -47,3 +47,5 @@ footer { border-top: 1px solid #263241; padding-top: 24px; color: #9aa8b8; font-
   p, li, dd, td, caption, .note, .updated, .period, thead th, summary { color: CanvasText; }
   a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline-color: Highlight; }
 }
+
+.policy-links a { padding-block: 10px; }

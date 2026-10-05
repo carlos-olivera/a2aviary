@@ -2,6 +2,39 @@
 
 Evidence date: 2026-10-04 UTC. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
+## Public policies and contact — 2026-10-05, prepared locally
+
+- **Configured:** exact static `/terms`, `/privacy`, `/refunds`, and `/pricing`
+  objects, homepage/contact and footer navigation, six-URL sitemap, HTML MIME
+  selection, page metadata and logo-free JSON-LD. Pricing contains no amounts,
+  live catalog, checkout, or active merchant of record. Brief discovery is
+  distinguished from future website/application/digital-service production.
+  Full-name attribution is updated, including derived share art and the approved
+  CDK owner-tag string; no infrastructure behavior was changed.
+- **Locally verified:** Node.js 22 website checks/build, service check/build and
+  all 24 tests; direct development/preview GET/HEAD HTML delivery and exact built
+  objects; internal links/anchors/assets, sitemap, metadata and JSON-LD; headed
+  Chrome desktop/two mobile viewports with JavaScript disabled/enabled and
+  production CSP injected locally. Navigation, mailto, keyboard focus, skip
+  links, responsive layout and exclusively self-hosted requests passed with
+  clean diagnostics. Existing costs and SEO checks were repeated. See
+  [website evidence](../website/verification.md#public-policies-and-contact--2026-10-05-local-verification).
+- **Deployed:** no publication or deployment of this change set. Read-only
+  baseline inspection found the public release at `ded2b8a1fc733243ba0da2ebb07f95dbb0e3af30`
+  (workflow `37229373600`), matching remote main and including `/costs`.
+  That baseline is distinct from these prepared pages and does not establish
+  deployment of the earlier proposed infrastructure changes.
+- **Blocked / owner follow-up:** the Operator development broker is disabled;
+  branch push and App-authored PR creation await owner activation. Owner review,
+  merge/release and public route/MIME/cache checks remain pending. Paddle seller
+  submission/approval and eventual catalog prices are owner work; there is no
+  claim of KYC, account setup or payment availability.
+- **Human support:** a read-only active SES receipt-rule check found no explicit
+  hello@ recipient or domain catchall. `hello@a2aviary.io` is published in source;
+  forwarding/DNS setup and real inbound/reply delivery remain unverified owner
+  tasks. The signed-agent address is not human support. No SES or forwarding
+  implementation was performed; see [runbook](runbooks.md#human-support-and-public-commercial-pages).
+
 ## Landing SEO changes awaiting release
 
 On 2026-10-04, canonical/Open Graph/X metadata, a logo-free JSON-LD graph,

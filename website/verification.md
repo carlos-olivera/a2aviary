@@ -163,3 +163,49 @@ These results are local verification. Public `/costs` rendering, HTML/JSON/CSS
 MIME/cache behavior, and deployment checks remain unverified until a separately
 authorized release. The PR requires current-head owner review for the build and
 upload controls. No website publication or infrastructure deployment was run.
+
+## Public policies and contact — 2026-10-05, local verification
+
+The delivery is configured and locally verified on a branch based on remote
+main, preserving `/costs` and its supplied figures. It has not been published
+or deployed. The pages state no sales, prices, checkout, catalog, or active MoR.
+
+- Node.js 22 website checks/production build and service TypeScript/build plus
+  all 24 behavioral tests passed. The infrastructure TypeScript build passed
+  for the owner-tag spelling change; no synth or deployment was run. MIME cases cover all exact extensionless page
+  keys; nested/unrelated keys remain binary. Original brand checksums/contours,
+  dependency licenses and icon dimensions remain verified.
+- Direct GET and HEAD to each new route with a query string returned HTTP 200,
+  `text/html; charset=utf-8`, exact rendered HTML for GET and no body for HEAD,
+  on development and production preview. The emitted objects were independently
+  compared to their renderers, and the built cost JSON matches its original.
+- Internal navigation, homepage/contact anchors, referenced assets, canonical
+  URLs, Open Graph/X/search copy, JSON-LD references and six sitemap URLs passed.
+  There are no structured commercial offers or logos and no invented sitemap
+  modification dates.
+- `verify-public-pages.js` passed in headed Chrome 154.0.8037.98 at 1280 × 900,
+  390 × 844 and 360 × 640 with JavaScript disabled and enabled and production CSP
+  injected locally. All four pages are readable; external CSS loads, no page
+  overflows horizontally, focus is visible, and skip links reach content.
+  Contact links reach the visible homepage mailto block; homepage and costs
+  footer navigation reaches the new pages. Requested resources are self-hosted,
+  with no browser/network/CSP errors or warnings.
+- Existing `verify-costs.js` passed at its desktop/two mobile sizes, with
+  JavaScript disabled/enabled and local CSP. Every supplied JSON field, amount,
+  total and note remains intact. `verify-seo.js` passed for homepage metadata,
+  six-URL XML sitemap, icons, Three.js readiness and desktop/mobile 404 behavior.
+- Social artwork was regenerated with Carlos Olivera Terrazas at 1200 × 630.
+  The generator's padded-square bounds check passed; the full image and
+  wide/square reductions were inspected. Page screenshots were inspected for
+  desktop and mobile readability and contact/footer layout.
+- Source syntax, relative repository documentation links and anchors, scoped
+  credential/private-reference review, and `git diff --check` passed.
+
+Local screenshots are `output/playwright/policies-*.png`; cost and SEO logs
+are `policies-costs.log` and `policies-seo.log`. All verification outputs remain
+ignored. Mobile dimensions are browser emulation, not physical-device evidence.
+Local preview checks do not prove S3/CloudFront HTTP behavior or email delivery.
+The existing Operator development broker is disabled, so branch publication
+and PR creation await owner activation. Public release, hello@ mailbox delivery,
+and Paddle submission/catalog remain owner follow-ups. No main push, merge,
+website/infra deployment, payment setup, or SES change was performed.

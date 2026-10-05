@@ -1,7 +1,7 @@
 # a2aviary brand assets
 
 This folder preserves the visual resources generated in the ChatGPT conversation
-“Crear logo vectorial” and imported on 2026-10-03. a2aviary is Carlos Olivera's
+“Crear logo vectorial” and imported on 2026-10-03. a2aviary is Carlos Olivera Terrazas's
 open source project, developed through build in public. Its visual direction is
 technical, modular, and welcoming to developers and contributors.
 

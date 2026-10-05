@@ -1,3 +1,5 @@
+import { publicNavigation } from './site-navigation.js';
+
 const repository = 'https://github.com/carlos-olivera/a2aviary/blob/main/';
 
 function escape(value) {
@@ -107,7 +109,7 @@ export function renderCosts(data) {
         </ul>
       </section>
     </main>
-    <footer><a href="/">Return to the homepage →</a><span>Open source. Building in public.</span></footer>
+    <footer><a href="/">Return to the homepage →</a>${publicNavigation()}<span>Open source. Building in public.</span></footer>
   </div>
 </body>
 </html>

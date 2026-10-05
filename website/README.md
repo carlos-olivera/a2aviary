@@ -61,7 +61,7 @@ runtime loading. The inverse logo and bird replace only `#0B1220` fills with
 and 48-pixel PNG variants; the Apple touch icon is 180 × 180. Both center the
 existing bird on charcoal. `public/social-preview.png` is a dedicated 1200 × 630
 browser-rendered composition using the inverse SVG and the landing's local
-fonts. Its identity, complete bird, headline, and Carlos Olivera attribution
+fonts. Its identity, complete bird, headline, and Carlos Olivera Terrazas attribution
 fit inside the centered 630 × 630 crop with padding. No source PNG or SVG was
 overwritten; these derivations do not approve a global visual identity.
 
@@ -112,11 +112,11 @@ Rebuild after generation. The intermediate icon PNGs stay in the ignored
 The canonical URL is `https://a2aviary.io/`, including when the same landing is
 served at `/index.html`. Open Graph and explicit X metadata share the same copy
 and image, use English (`en_US` for Open Graph), and credit `@carlos_olivera`.
-The JSON-LD graph links the website, organization in development, Carlos Olivera,
+The JSON-LD graph links the website, organization in development, Carlos Olivera Terrazas,
 and Apache-licensed source repository. It deliberately contains no logo.
 
 `public/robots.txt` allows crawling and discovers `public/sitemap.xml`, which
-lists the canonical homepage and `/costs` with no speculative modification dates.
+lists the canonical homepage, `/costs`, `/terms`, `/privacy`, `/refunds`, and `/pricing` with no speculative modification dates.
 `public/404.html` is a standalone, noindex page with external CSS and a home
 link; it needs neither JavaScript nor the Three.js scene. CloudFront source maps
 origin 403 and 404 to this page with HTTP 404 and configured error-cache TTL
@@ -138,7 +138,7 @@ production CSP, and desktop/mobile 404 behavior with JavaScript disabled.
 
 ## Release delivery
 
-The landing includes a public repository CTA and discreet Carlos Olivera attribution. Private S3/CloudFront delivery and GitHub OIDC deployment are defined in `infra/`; see [runbooks](../docs/runbooks.md) and [release evidence](../docs/release-verification.md). The proposed agency capabilities described in the landing are a vision, not a claim of implemented website generation.
+The landing includes a public repository CTA and discreet Carlos Olivera Terrazas attribution. Private S3/CloudFront delivery and GitHub OIDC deployment are defined in `infra/`; see [runbooks](../docs/runbooks.md) and [release evidence](../docs/release-verification.md). The proposed agency capabilities described in the landing are a vision, not a claim of implemented website generation.
 
 The SEO additions are prepared and locally verified, not deployed. Infrastructure
 and affected scripts require Carlos's current-head PR approval under
@@ -184,3 +184,40 @@ mapping. Browser checks compare every row and supplied total to the served JSON,
 check keyboard access/navigation, and reject third-party resource requests and
 browser/network/CSP errors. Local preview verifies page rendering; production
 S3/CloudFront delivery remains unverified until a separately authorized release.
+
+## Public policies, pricing status, and contact
+
+`src/policy-pages.js` contains the English policy and service-status content.
+The Vite plugin emits exact extensionless `terms`, `privacy`, `refunds`, and
+`pricing` HTML objects, using the existing `/costs` pattern. Development and
+preview serve these routes for GET and HEAD. The uploader assigns HTML MIME
+only to the explicit page keys; private S3 REST delivery needs no path rewrite.
+`public/policies.css` is self-hosted, and the pages need no executable JavaScript.
+
+The homepage contact block and shared page footer link to human support at
+`hello@a2aviary.io`. Delivery is not yet verified; the signed-agent address is
+not human support. `/pricing` publishes no amounts or purchasable offers.
+It separates verified brief discovery from future agency production and says
+there is no catalog, checkout, or merchant of record yet. Existing cost-sheet
+figures are project operating costs, not customer prices.
+
+After building and starting the production preview, run:
+
+```sh
+node website/scripts/check-public-pages.mjs --built --origin http://127.0.0.1:4173
+npx --package @playwright/cli playwright-cli -s=a2aviary goto http://127.0.0.1:4173
+npx --package @playwright/cli playwright-cli -s=a2aviary run-code --filename=website/scripts/verify-public-pages.js
+```
+
+Repeat the HTTP check against the development origin without `--built`.
+`npm run check` includes navigation, internal asset/anchor, sitemap, metadata,
+JSON-LD reference, and MIME checks. Production artifacts are compared separately
+so a preview fallback cannot stand in for the emitted objects. Browser checks
+cover desktop/mobile, disabled/enabled JavaScript, keyboard access, contact and
+policy navigation, production CSP injected locally, and resource origins.
+See [dated evidence](verification.md#public-policies-and-contact--2026-10-05-local-verification).
+
+These additions are prepared locally, not deployed. Owner review and release,
+public route/MIME/cache verification, hello@ forwarding and delivery, and Paddle
+submission/catalog preparation remain outstanding. The only CDK source change
+is the owner-tag spelling approved for this delivery; no infrastructure was deployed.

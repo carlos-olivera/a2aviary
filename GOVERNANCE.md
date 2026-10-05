@@ -1,6 +1,6 @@
 # Governance
 
-Created by Carlos Olivera — Founder & Principal Architect.
+Created by Carlos Olivera Terrazas — Founder & Principal Architect.
 
 Carlos owns the project's direction, architectural foundations, domain, and account administration. Agents perform engineering and operations within explicit authority, project scope, and budgets. Public issues and pull requests welcome contributions.
 

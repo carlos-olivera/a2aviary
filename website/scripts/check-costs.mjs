@@ -28,6 +28,6 @@ assert(rendered.includes('href="https://github.com/carlos-olivera/a2aviary/blob/
 assert(rendered.includes('href="https://example.com/prices?a=1&amp;b=2"'), 'Provider URL attributes are escaped');
 assert(rendered.includes('href="#unknown"'), 'Exclusions link to evidence rows');
 const sitemap = await readFile(new URL('../public/sitemap.xml', import.meta.url), 'utf8');
-assert.deepEqual([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]), ['https://a2aviary.io/', 'https://a2aviary.io/costs']);
+assert.deepEqual([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]), ['https://a2aviary.io/', 'https://a2aviary.io/costs', 'https://a2aviary.io/terms', 'https://a2aviary.io/privacy', 'https://a2aviary.io/refunds', 'https://a2aviary.io/pricing']);
 assert(!sitemap.includes('<lastmod>'), 'No invented modification dates');
 console.log('Costs JSON, rendering, precision, escaping, source links, and sitemap verified.');

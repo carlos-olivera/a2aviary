@@ -21,7 +21,7 @@ button { font: inherit; }
   margin-inline: auto;
   padding: 42px clamp(28px, 5.2vw, 88px) 30px;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr auto auto;
 }
 .header { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .logo { width: 172px; height: auto; display: block; }
@@ -54,7 +54,7 @@ h1 span { color: #14f1c8; }
 .motion-toggle .play-icon { display: none; }
 .motion-toggle[aria-pressed='true'] .pause-icon { display: none; }
 .motion-toggle[aria-pressed='true'] .play-icon { display: block; }
-.footer { border-top: 1px solid #263241; padding-top: 22px; display: flex; align-items: center; justify-content: space-between; gap: 20px; color: #a6b4c2; font-size: 10px; letter-spacing: .025em; }
+.footer { border-top: 1px solid #263241; padding-top: 22px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; color: #a6b4c2; font-size: 10px; letter-spacing: .025em; }
 .footer p { margin: 0; display: flex; align-items: center; gap: 10px; }
 .costs-link { color: #63f5d5; text-underline-offset: 3px; padding-block: 10px; }
 .costs-link:focus-visible { outline: 2px solid #63f5d5; outline-offset: 5px; }
@@ -92,3 +92,12 @@ h1 span { color: #14f1c8; }
   .motion-toggle { border: 1px solid ButtonText; }
   h1 span, .description, .footer { color: CanvasText; }
 }
+
+.contact { padding: 20px 0 24px; border-top: 1px solid #263241; }
+.contact h2 { margin: 0; font-size: 18px; font-weight: 500; }
+.contact p { color: #b8c3cf; font-size: 13px; line-height: 1.7; margin-bottom: 0; }
+.contact .contact-status { color: #9aa8b8; font-size: 12px; }
+.contact a, .policy-links a { color: #63f5d5; text-underline-offset: 3px; }
+.contact a:focus-visible, .policy-links a:focus-visible { outline: 2px solid #63f5d5; outline-offset: 5px; }
+.policy-links { display: flex; gap: 8px 18px; flex-wrap: wrap; }
+.policy-links a { padding-block: 10px; }

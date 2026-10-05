@@ -2,9 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { websiteContentType } from '../scripts/website-content-type.mjs';
 
-test('exact extensionless costs key is HTML; unrelated extensionless keys remain binary', () => {
-  assert.equal(websiteContentType('costs'), 'text/html; charset=utf-8');
-  for (const key of ['other', 'nested/costs', 'costs.backup']) assert.equal(websiteContentType(key), 'application/octet-stream');
+test('exact extensionless page keys are HTML; unrelated keys remain binary', () => {
+  for (const key of ['costs', 'terms', 'privacy', 'refunds', 'pricing']) {
+    assert.equal(websiteContentType(key), 'text/html; charset=utf-8');
+    for (const unrelated of ['nested/' + key, key + '.backup']) assert.equal(websiteContentType(unrelated), 'application/octet-stream');
+  }
+  assert.equal(websiteContentType('other'), 'application/octet-stream');
 });
 
 test('existing website asset MIME types remain intact', () => {
