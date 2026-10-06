@@ -61,7 +61,7 @@ Docker/CDK/worker diagnostics or captured MIME as public evidence.
 | Area | Behavior and limits |
 | --- | --- |
 | Website S3 | Normal production build uploaded to local S3; local HTTP server reads those objects with the production CSP. CloudFront/TLS caching is not emulated. |
-| Signed email receipt | Local adapter reads the active deployed SES rules, stores raw MIME using their S3 actions, and publishes their SNS notifications. It does not receive internet email, authenticate SMTP, or prove SPF/DKIM/DMARC. |
+| Signed email receipt | Community CFN does not provision receipt rules/configuration sets; local deploy materializes them through SES v1 from the synthesized CDK specification. The local adapter reads the active rules, stores raw MIME using their S3 actions, and publishes their SNS notifications. It does not receive internet email, authenticate SMTP, or prove SPF/DKIM/DMARC. |
 | Processing | SNS/SQS, intake, DynamoDB/Streams, dispatcher, executor, outbox/sender, EventBridge watchdog and provider cleanup run asynchronously in deployed Lambda containers. |
 | OpenAI | Local HTTP session/tool/turn/item protocol returns a fixed schema-valid analysis with synthetic usage. No inference, paid call, research, or real API key. |
 | Signed reply | Sender's SES v2 raw request is bridged to Community SES v1 SendRawEmail. LocalStack captures it; the test verifies the original ES256 signature and correlation. No real mailbox delivery. |

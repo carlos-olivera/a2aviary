@@ -55,6 +55,25 @@ async function deploy() {
   await run(cli, ['bootstrap', 'aws://' + '0'.repeat(12) + '/us-east-1', '--context', 'target=local'], resolve(root, 'infra'));
   await run(cli, ['deploy','--all','--context','target=local','--require-approval','never','--outputs-file',resolve(state,'outputs.json'),'--output',resolve(state,'cdk.out')], resolve(root,'infra'));
   const c = await clients(), o = await outputs();
+  // Community CFN acknowledges SES receipt resources without provisioning them.
+  // Materialize only these adapter resources from the same synthesized CDK rules.
+  const emailTemplate=JSON.parse(await readFile(resolve(state,'cdk.out/a2aviary-local-email.template.json')));
+  const deployed=(await c.cf.send(new c.DescribeStackResourcesCommand({StackName:'a2aviary-local-email'}))).StackResources;
+  const refs=Object.fromEntries(deployed.map(r=>[r.LogicalResourceId,r.PhysicalResourceId]));
+  for(const [id,r] of Object.entries(emailTemplate.Resources)) if(r.Type==='AWS::SES::ReceiptRule') refs[id]=r.Properties.Rule.Name;
+  const materialize=value=>{
+    if(Array.isArray(value)) return value.map(materialize);
+    if(value && typeof value==='object') {
+      if(value.Ref) { if(!(value.Ref in refs)) throw new Error('local_rule_reference_missing'); return refs[value.Ref]; }
+      if(value['Fn::GetAtt']) { const [id,attribute]=value['Fn::GetAtt']; if(attribute!=='TopicArn'||!(id in refs)) throw new Error('local_rule_attribute_unsupported'); return refs[id]; }
+      return Object.fromEntries(Object.entries(value).map(([k,v])=>[k,materialize(v)]));
+    } return value;
+  };
+  try { await c.ses.send(new c.CreateReceiptRuleSetCommand({RuleSetName:'a2aviary-local'})); } catch(error) { if(error.name!=='AlreadyExistsException') throw error; }
+  for(const resource of Object.values(emailTemplate.Resources)) if(resource.Type==='AWS::SES::ReceiptRule') {
+    const props=resource.Properties;
+    try { await c.ses.send(new c.CreateReceiptRuleCommand({RuleSetName:'a2aviary-local',Rule:materialize(props.Rule),...(props.After?{After:materialize(props.After)}:{})})); } catch(error) { if(error.name!=='AlreadyExistsException') throw error; }
+  }
   await c.ses.send(new c.SetActiveReceiptRuleSetCommand({ RuleSetName: 'a2aviary-local' }));
   try { await c.ses.send(new c.CreateConfigurationSetCommand({ConfigurationSet:{Name:'a2aviary-local'}})); } catch(error) { if(error.name!=='ConfigurationSetAlreadyExistsException') throw error; }
   try { await c.ses.send(new c.CreateConfigurationSetEventDestinationCommand({ConfigurationSetName:'a2aviary-local',EventDestination:{Name:'local-feedback',Enabled:true,MatchingEventTypes:['delivery','bounce','complaint'],SNSDestination:{TopicARN:o.FeedbackTopic}}})); } catch(error) { if(error.name!=='EventDestinationAlreadyExistsException') throw error; }
