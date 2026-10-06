@@ -5,7 +5,7 @@ import { siteRuntime } from '@a2aviary/generator';
 import { fixture } from './helpers.mjs';
 import { fixtureSubmission } from '../../../packages/generator/scripts/fixture-lib.mjs';
 test(
-  'live fixture: approved spec → bucket → Astro/Agents sandbox checks → isolated Railway site and CMS',
+  'live fixture: approved spec → bucket → Astro/Agents sandbox checks → isolated Railway site/CMS; opt-in tester reset',
   {
     skip: process.env.RUN_SITE_CLOUD_E2E !== 'true',
     timeout: 60 * 60 * 1000
@@ -22,8 +22,11 @@ test(
     });
     assert.ok(runtime);
     const f = await fixture(runtime);
+    const testerMode = process.env.RUN_TESTER_CLOUD_E2E === 'true';
     let saved,
-      verified = false;
+      verified = false,
+      resetVerified = false,
+      deploymentEvidence;
     t.after(async () => {
       try {
         if (saved) {
@@ -40,6 +43,9 @@ test(
                 siteId: saved.siteId,
                 specId: saved.specId,
                 ...rows.rows[0],
+                deploymentEvidence,
+                test: testerMode,
+                resetVerified,
                 cloudGatePassed: verified,
                 createdAt: new Date().toISOString()
               },
@@ -53,7 +59,10 @@ test(
         await f.close();
       }
     });
+    const owner = await f.user('owner@example.invalid');
     const user = await f.user('fixture-owner@example.invalid');
+    if (testerMode)
+      await f.app.store.tester(owner.id, 'testers.add', user.email);
     const submission = await fixtureSubmission();
     submission.slug = 'fixture-' + Date.now().toString(36);
     const sites = f.app.sites;
@@ -79,6 +88,17 @@ test(
     await sites.processOne();
     status = await sites.status(user.id, saved.siteId);
     assert.equal(status.specs[0].state, 'live');
+    assert.equal(status.test, testerMode);
+    deploymentEvidence = (
+      await f.pool.query('SELECT resources FROM platform_site WHERE id=$1', [
+        saved.siteId
+      ])
+    ).rows[0];
+    if (testerMode)
+      assert.match(
+        new URL(status.siteUrl).hostname,
+        /^[a-z0-9-]+\.up\.railway\.app$/
+      );
     assert.ok(status.siteUrl?.startsWith('https://'));
     const response = await fetch(status.siteUrl, {
       redirect: 'error',
@@ -96,13 +116,59 @@ test(
       }
     );
     assert.equal(cms.status, 200);
+    if (testerMode) {
+      const credentials = await cms.json();
+      const record = await fetch(
+        status.siteUrl + '/api/cms/api/collections/catalog/records',
+        {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            authorization: credentials.token
+          },
+          body: JSON.stringify({
+            title: 'Fictional smoke content',
+            body: 'Fictional test record',
+            published: true
+          }),
+          signal: AbortSignal.timeout(30000)
+        }
+      );
+      assert.equal(record.status, 200);
+      assert.equal(
+        (await sites.status(user.id, saved.siteId)).monthlyRequestsRemaining,
+        4
+      );
+      await assert.rejects(
+        sites.reset(owner.id, saved.siteId, 'yes'),
+        /confirmation_required/
+      );
+      assert.equal(
+        (await sites.reset(owner.id, saved.siteId, 'RESET ' + saved.siteId))
+          .reset,
+        true
+      );
+      assert.equal(
+        (await sites.inspect(owner.id, saved.siteId)).lifecycle,
+        'archived'
+      );
+      assert.equal((await f.app.store.principal(user.id)).role, 'tester');
+      assert.equal(
+        (await sites.reset(owner.id, saved.siteId, 'RESET ' + saved.siteId))
+          .reset,
+        true
+      );
+      resetVerified = true;
+    }
     verified = true;
     console.log(
       JSON.stringify({
         event: 'site.fixture.cloud.verified',
         specSha256: status.specs[0].specSha256,
         outputSha256: status.specs[0].outputSha256,
-        credentialsLogged: false
+        credentialsLogged: false,
+        test: testerMode,
+        resetVerified
       })
     );
   }

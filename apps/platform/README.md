@@ -45,3 +45,7 @@ requires a later reviewed workflow change with appropriate owner authorization.
 No Operator App permission expansion is included.
 
 Project code is Apache 2.0; [dependency notices](THIRD_PARTY.md) remain intact.
+
+Phase 4 tester enrollment and chat-only superadmin tools are described in
+[test operations](../../docs/testers-and-admin.md). Migration 005 is required;
+fixture site cleanup needs narrowly scoped provider delete/list permissions.

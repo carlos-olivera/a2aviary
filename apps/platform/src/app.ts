@@ -2,7 +2,7 @@ import { createMcpHandler } from '@modelcontextprotocol/server';
 import { requireMcpAuth } from '@better-auth/mcp';
 import { createPool } from './database.ts';
 import { createAuth } from './auth.ts';
-import { AccessError, Store } from './store.ts';
+import { AccessError, Store, TOOL_ROLES, isAdminTool } from './store.ts';
 import { createServer } from './tools.ts';
 import { loadPlans } from './plans.ts';
 import { page } from './pages.ts';
@@ -30,6 +30,7 @@ export async function createApp(
 ) {
   const auth = createAuth(config, pool);
   const store = new Store(pool, config);
+  await store.seedTesters();
   const plans = await loadPlans();
   const sites = siteDependencies
     ? new Sites(
@@ -49,15 +50,75 @@ export async function createApp(
           { status: 403 }
         );
       const principal = await store.admitRequest(claims.sub);
+      const body = await request
+        .clone()
+        .json()
+        .catch(() => null);
+      const name =
+        body?.method === 'tools/call' ? body.params?.name : undefined;
+      const validProtocol =
+        body?.jsonrpc === '2.0' &&
+        (typeof body?.id === 'string' || typeof body?.id === 'number') &&
+        request.headers.get('mcp-protocol-version') === '2026-07-28' &&
+        request.headers.get('mcp-method') === 'tools/call' &&
+        request.headers.get('mcp-name') === name &&
+        body?.params?._meta?.['io.modelcontextprotocol/protocolVersion'] ===
+          '2026-07-28';
+      const siteId =
+        typeof body?.params?.arguments?.siteId === 'string' &&
+        /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(
+          body.params.arguments.siteId
+        )
+          ? body.params.arguments.siteId
+          : undefined;
+      if (
+        validProtocol &&
+        typeof name === 'string' &&
+        Object.hasOwn(TOOL_ROLES, name) &&
+        !TOOL_ROLES[name].includes(principal.role)
+      ) {
+        await store.adminResult(principal.id, name, 'forbidden');
+        return Response.json({
+          jsonrpc: '2.0',
+          id: body.id ?? null,
+          result: {
+            isError: true,
+            content: [
+              { type: 'text', text: JSON.stringify({ error: 'forbidden' }) }
+            ]
+          }
+        });
+      }
+      let test = principal.testMode;
+      if (validProtocol && siteId)
+        test = test || Boolean(
+          (
+            await pool.query(
+              'SELECT test_mode FROM platform_site WHERE id=$1 AND (owner_id=$2 OR $3)',
+              [siteId, principal.id, principal.role === 'superadmin']
+            )
+          ).rows[0]?.test_mode
+        );
+      if (principal.role === 'superadmin' && validProtocol) {
+        if (
+          typeof name === 'string' &&
+          (name.startsWith('testers.') ||
+            body?.params?.arguments?.test === true)
+        )
+          test = true;
+        if (typeof name === 'string' && isAdminTool(name))
+          await store.recordToolCall(principal.id, name, siteId, test);
+      }
       console.info(
         JSON.stringify({
           event: 'mcp.request',
           role: principal.role,
-          testMode: principal.testMode
+          testMode: test,
+          test
         })
       );
       const handler = createMcpHandler(
-        () => createServer(principal, store, plans, sites),
+        () => createServer(principal, store, plans, sites, validProtocol),
         { legacy: 'reject', maxSubscriptions: 0 }
       );
       return handler.fetch(request, {
@@ -192,9 +253,9 @@ export async function createApp(
         response = new Response('Invalid origin', { status: 400 });
       else if (url.pathname === '/healthz' && request.method === 'GET') {
         const readiness = await pool.query(
-          "SELECT count(*)::int AS count FROM platform_migration WHERE name IN ('001-better-auth.sql','002-platform.sql','003-mcp-rate.sql','004-sites.sql')"
+          "SELECT count(*)::int AS count FROM platform_migration WHERE name IN ('001-better-auth.sql','002-platform.sql','003-mcp-rate.sql','004-sites.sql','005-testers-admin.sql')"
         );
-        if (readiness.rows[0].count !== 4)
+        if (readiness.rows[0].count !== 5)
           throw new Error('Migrations required');
         response = Response.json({
           status: 'ok',
@@ -270,7 +331,7 @@ export async function createApp(
           }
         );
       else {
-        console.error(JSON.stringify({ event: 'request.failed' }));
+        console.error(JSON.stringify({ event: 'request.failed', test: false }));
         response = Response.json(
           { error: 'service_unavailable' },
           { status: 503 }

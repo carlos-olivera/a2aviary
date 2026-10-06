@@ -39,6 +39,7 @@ English is the canonical language for repository documentation. The repository i
 - [Plan policies and site contracts](docs/plans.md)
 - [Discovery platform auth, MCP and roles](docs/platform.md)
 - [Catalog generation, CMS and client hosting](docs/sites.md)
+- [Testers and chat-only superadmin](docs/testers-and-admin.md)
 - [Vision and scope](docs/vision.md)
 - [Architecture](docs/architecture/overview.md)
 - [Accepted decisions and open questions](docs/decisions/README.md)

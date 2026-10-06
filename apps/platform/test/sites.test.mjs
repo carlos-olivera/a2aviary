@@ -13,103 +13,7 @@ import {
   SiteError,
   VerificationFailure
 } from '@a2aviary/generator';
-function testDependencies() {
-  const data = new Map();
-  let verifies = 0,
-    deploys = 0,
-    failVerify = false,
-    failDeploy = false,
-    unknown = false;
-  return {
-    key: 'a'.repeat(64),
-    objects: {
-      async put(k, b) {
-        data.set(k, Buffer.from(b));
-      },
-      async get(k) {
-        if (!data.has(k)) throw Error('missing');
-        return data.get(k);
-      }
-    },
-    verifier: {
-      async verify(source, spec) {
-        verifies++;
-        const files = {};
-        for (const p of spec.pages)
-          files[
-            p.path === '/' ? 'index.html' : p.path.slice(1) + 'index.html'
-          ] = Buffer.from('Fictional provider test double').toString('base64');
-        for (const [p, b] of Object.entries(source.binaryFiles))
-          files[p.slice(7)] = b;
-        const checks = [
-          'catalog-syntax',
-          'astro-build',
-          ...spec.pages.flatMap((p) => [
-            'a11y:' + p.path,
-            'links:' + p.path,
-            'lighthouse:' + p.path,
-            'visual:' + p.path + ':390',
-            'visual:' + p.path + ':1280'
-          ])
-        ].map((name) => ({
-          name,
-          passed: !failVerify,
-          details: { testDouble: true }
-        }));
-        const build = {
-          files,
-          report: {
-            version: 1,
-            passed: !failVerify,
-            sourceSha256: source.sourceSha256,
-            specSha256: source.specSha256,
-            outputSha256: sha256(canonicalJson(files)),
-            checks
-          },
-          artifacts: {},
-          sessionId: 'fictional-session'
-        };
-        build.artifacts['report.json'] = Buffer.from(
-          JSON.stringify(build.report)
-        ).toString('base64');
-        if (failVerify) throw new VerificationFailure(build);
-        return build;
-      }
-    },
-    deployer: {
-      async deploy(input) {
-        deploys++;
-        if (failDeploy)
-          throw new SiteError(
-            unknown ? 'deployment_outcome_unknown' : 'deployment_failed'
-          );
-        const resources = {
-          projectId: 'fictional-project',
-          environmentId: 'fixture',
-          webServiceId: 'web',
-          cmsServiceId: 'cms',
-          domain: 'fixture.example.invalid',
-          cmsConfigured: true
-        };
-        await input.saveResources(resources);
-        return resources;
-      },
-      async status() {
-        return { testDouble: true };
-      }
-    },
-    get counts() {
-      return { verifies, deploys };
-    },
-    failVerification(v) {
-      failVerify = v;
-    },
-    failDeployment(v, u = false) {
-      failDeploy = v;
-      unknown = u;
-    }
-  };
-}
+import {testDependencies} from './site-dependencies.mjs';
 test('site intake, role visibility, owned jobs, atomic audit and successful-change accounting in Postgres', async (t) => {
   const d = testDependencies(),
     f = await fixture(d);
@@ -128,7 +32,7 @@ test('site intake, role visibility, owned jobs, atomic audit and successful-chan
   await t.test(
     'site tools require feature activation, verified human role and OAuth audience; intake enforces origin',
     async () => {
-      for (const user of [client, owner]) {
+      for (const user of [client, owner, tester]) {
         const list = await (await f.rpc(await f.token(user))).json();
         for (const n of [
           'site.build',
@@ -138,13 +42,6 @@ test('site intake, role visibility, owned jobs, atomic audit and successful-chan
         ])
           assert.ok(list.result.tools.some((t) => t.name === n));
       }
-      const list = await (await f.rpc(await f.token(tester))).json();
-      assert.equal(
-        list.result.tools.some(
-          (t) => t.name.startsWith('site.') || t.name === 'change.request'
-        ),
-        false
-      );
       const capabilities = await (
         await f.rpc(await f.token(tester), 'tools/call', {
           name: 'capabilities.get',
@@ -155,8 +52,8 @@ test('site intake, role visibility, owned jobs, atomic audit and successful-chan
         capabilities.result.content[0].text
       );
       assert.equal(testerCapabilities.websiteProduction, false);
-      assert.equal(testerCapabilities.mandate, 'discovery-only');
-      await assert.rejects(sites.submit(tester.id, input), /forbidden/);
+      assert.equal(testerCapabilities.mandate, 'approved-catalog-sites');
+      assert.equal(testerCapabilities.freePlan.planId,'web-simple');
       assert.equal(
         (
           await f.request('/api/site-specs', {

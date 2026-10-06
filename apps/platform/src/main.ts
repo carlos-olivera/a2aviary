@@ -7,7 +7,7 @@ const stopWorker = app.sites ? await app.sites.startWorker() : async () => {};
 const server = createHttpServer(config, app);
 server.listen(config.port, '0.0.0.0', () =>
   console.info(
-    JSON.stringify({ event: 'platform.listening', port: config.port })
+    JSON.stringify({ event: 'platform.listening', port: config.port, test: false })
   )
 );
 for (const signal of ['SIGINT', 'SIGTERM'] as const)

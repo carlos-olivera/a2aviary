@@ -1,12 +1,15 @@
 import {
   S3Client,
   GetObjectCommand,
+  ListObjectsV2Command,
+  DeleteObjectsCommand,
   PutObjectCommand
 } from '@aws-sdk/client-s3';
 import { SiteError } from './render.ts';
 export interface ObjectStore {
   put(key: string, bytes: Uint8Array): Promise<void>;
   get(key: string): Promise<Uint8Array>;
+  deletePrefix(prefix: string): Promise<void>;
 }
 export class BucketStore implements ObjectStore {
   readonly client: S3Client;
@@ -24,6 +27,39 @@ export class BucketStore implements ObjectStore {
         ContentType: 'application/octet-stream'
       })
     );
+  }
+  async deletePrefix(prefix: string) {
+    if (
+      !/^specs\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/$/.test(
+        prefix
+      )
+    )
+      throw new SiteError('unsafe_reset_prefix');
+    // Restart each page from the prefix: deleting a page must not make a
+    // provider continuation token skip objects. Repeat safely after a failure.
+    for (let page = 0; page < 1000; page++) {
+      const listed = await this.client.send(
+        new ListObjectsV2Command({
+          Bucket: this.bucket,
+          Prefix: prefix,
+          MaxKeys: 1000
+        })
+      );
+      const keys = (listed.Contents ?? [])
+        .map((o) => o.Key)
+        .filter((k): k is string => Boolean(k));
+      if (!keys.length) return;
+      if (keys.some((k) => !k.startsWith(prefix)))
+        throw new SiteError('unsafe_reset_prefix');
+      const result = await this.client.send(
+        new DeleteObjectsCommand({
+          Bucket: this.bucket,
+          Delete: { Objects: keys.map((Key) => ({ Key })), Quiet: true }
+        })
+      );
+      if (result.Errors?.length) throw new SiteError('asset_reset_failed');
+    }
+    throw new SiteError('asset_reset_incomplete');
   }
   async get(key: string) {
     const r = await this.client.send(

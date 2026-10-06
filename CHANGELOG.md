@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-06 — testers and chat-only superadmin verified locally
+
+- Added durable tester enrollment, automatic free pinned-plan discovery, immutable site/spec/job test classification and tester access to the existing approved-spec workflow. Test sites always use dedicated Railway fixture projects and managed staging hosts; customer-domain bindings are rejected. The policy's successful-change allowance remains unchanged.
+- Added superadmin-only tester management, site inventory/inspection and bounded redacted log queries. Admin revocation now accepts email and safely repeats; the legacy user-ID form remains supported. Cross-client administrative/audit tools, including the legacy audit reader, are superadmin-only. Login and consent remain the only platform pages.
+- Added confirmed, audited test-only reset with active-job/protected-resource guards, retryable partial cleanup, accepted-artifact/history deletion and archived site identities. Accounts, allowlists and audits remain; off-volume backups and bucket object versions remain private archives under owner-controlled retention. Duplicate submissions no longer write unused copies of assets.
+- Node.js 22 generator/platform/service/website/infrastructure checks passed: 12 generator tests, 51 platform tests (one credential-dependent cloud test skipped), 112 service tests and seven infrastructure tests. The local non-root platform container passed readiness with five migrations, discovery, login and default-off site workflow. Contracts, licenses, documentation links, whitespace and scoped credential-pattern review were checked.
+- Added [tester/admin operations](docs/testers-and-admin.md) and decision 010. No new required environment variables or remote resources were created. Review/merge, staging rollout, narrow provider list/delete permissions, real hosted tester/reset verification and authenticated Claude/ChatGPT smoke tests remain owner gates. Production AWS configuration, DNS, the production MCP origin, payments and Teco were untouched.
+
 ## 2026-10-06 — catalog site workflow verified locally; cloud fixture pending
 
 - Added deterministic approved-spec Astro catalog generation with original asset bytes, pinned local fonts, preview/hash gates, hosted Agents verification source and private bucket storage. No research, OCR, image adaptation, AI-generated CSS, policy mutation or AWS brief-analysis extension was added.

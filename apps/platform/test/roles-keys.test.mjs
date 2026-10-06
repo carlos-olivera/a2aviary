@@ -8,12 +8,12 @@ import {fixture} from './helpers.mjs';
 const discoveryAndOwnKeys = ['capabilities.get','plans.list','plan.get_manifest','plan.get_schemas','policy.version','agent_keys.register','agent_keys.list','agent_keys.revoke'];
 // Independent permission expectations: widening the implementation map must fail.
 const expectedTools = {client: discoveryAndOwnKeys, tester: discoveryAndOwnKeys,
-  admin: [...discoveryAndOwnKeys,'admin.audit.list'],
-  superadmin: [...discoveryAndOwnKeys,'admin.audit.list','admin.invite','admin.revoke']};
+  admin: discoveryAndOwnKeys,
+  superadmin: [...discoveryAndOwnKeys,'admin.audit.list','admin.invite','admin.revoke','testers.add','testers.remove','testers.list','logs.query']};
 
 test('all role/tool permission combinations',()=>{
   for(const role of ALL_ROLES) for(const tool of new Set([...Object.keys(TOOL_ROLES),...expectedTools.superadmin])) {
-    if(expectedTools[role].includes(tool)||(['site.build','site.status','site.deploy','change.request'].includes(tool)&&role!=='tester')) assert.doesNotThrow(()=>requireRole({id:'fictional',role,testMode:role==='tester'},tool));
+    if((role==='superadmin'&&['sites.list','site.inspect','tester.reset'].includes(tool))||expectedTools[role].includes(tool)||(['site.build','site.status','site.deploy','change.request'].includes(tool))) assert.doesNotThrow(()=>requireRole({id:'fictional',role,testMode:role==='tester'},tool));
     else assert.throws(()=>requireRole({id:'fictional',role,testMode:false},tool),/forbidden/);
   }
   for(const role of ALL_ROLES) assert.throws(()=>requireRole({id:'fictional',role,testMode:false},'policy.write'),/forbidden/);
@@ -35,7 +35,7 @@ test('Postgres roles, key ownership and atomic audit writes',async t=>{
     const log=(await f.pool.query("SELECT action,details FROM platform_audit WHERE actor_user_id=$1 AND action='role.resolve'",[owner.id])).rows;
     assert.equal(log.length,1);assert.equal(log[0].details.role,'superadmin');
     const otherConfig={...f.config,superadminEmail:'other-owner@example.invalid',testerEmails:new Set()};
-    const other=new Store(f.pool,otherConfig);assert.equal((await other.principal(owner.id)).role,'client');assert.equal((await other.principal(tester.id)).role,'client');
+    const other=new Store(f.pool,otherConfig);assert.equal((await other.principal(owner.id)).role,'client');assert.equal((await other.principal(tester.id)).role,'tester');
     await f.app.store.principal(owner.id);await f.app.store.principal(tester.id);
     const spoofed=await f.rpc(await f.token(client,{role:'superadmin',email:owner.email}));assert.equal((await spoofed.json()).result.tools.some(t=>t.name==='admin.invite'),false);
   });
@@ -89,10 +89,11 @@ test('Postgres roles, key ownership and atomic audit writes',async t=>{
     const testLog=(await f.pool.query("SELECT test_mode FROM platform_audit WHERE actor_user_id=$1 AND action='tool.call'",[tester.id])).rows;assert.ok(testLog.length);assert.ok(testLog.every(r=>r.test_mode));
     await assert.rejects(f.app.store.auditList(client.id,undefined,1,'READ_PRIVATE_AUDIT_LOG'),/forbidden/);
     await assert.rejects(f.app.store.auditList(admin.id,undefined,1,'yes'),/confirmation_required/);
-    const first=await f.app.store.auditList(admin.id,undefined,2,'READ_PRIVATE_AUDIT_LOG');assert.equal(first.records.length,2);assert.ok(first.nextBefore);
-    const second=await f.app.store.auditList(admin.id,first.nextBefore,2,'READ_PRIVATE_AUDIT_LOG');assert.ok(second.records.every(r=>BigInt(r.id)<BigInt(first.nextBefore)));
-    assert.ok((await f.pool.query("SELECT id FROM platform_audit WHERE action='audit.read' AND actor_user_id=$1",[admin.id])).rowCount);
-    const invalid=await call(admin,'admin.audit.list',{limit:101,confirmation:'READ_PRIVATE_AUDIT_LOG'});assert.ok(invalid.error||invalid.result?.isError);
+    await assert.rejects(f.app.store.auditList(admin.id,undefined,2,'READ_PRIVATE_AUDIT_LOG'),/forbidden/);
+    const first=await f.app.store.auditList(owner.id,undefined,2,'READ_PRIVATE_AUDIT_LOG');assert.equal(first.records.length,2);assert.ok(first.nextBefore);
+    const second=await f.app.store.auditList(owner.id,first.nextBefore,2,'READ_PRIVATE_AUDIT_LOG');assert.ok(second.records.every(r=>BigInt(r.id)<BigInt(first.nextBefore)));
+    assert.ok((await f.pool.query("SELECT id FROM platform_audit WHERE action='audit.read' AND actor_user_id=$1",[owner.id])).rowCount);
+    const invalid=await call(owner,'admin.audit.list',{limit:101,confirmation:'READ_PRIVATE_AUDIT_LOG'});assert.ok(invalid.error||invalid.result?.isError);
   });
   await t.test('read-only plan tools serve exact generated artifacts and reject unsupported versions and capabilities',async()=>{
     const plans=await call(client,'plans.list');assert.deepEqual(JSON.parse(plans.result.content[0].text).plans,[{planId:'web-simple',policyVersion:'1.0.0',status:'contract-only'}]);

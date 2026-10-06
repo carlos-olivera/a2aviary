@@ -58,6 +58,8 @@ type SiteRow = {
   current_spec_id: string | null;
   resources: SiteResources;
   policy_version: string;
+  test_mode: boolean;
+  lifecycle: string;
 };
 export class Sites {
   readonly store: Store;
@@ -110,6 +112,17 @@ export class Sites {
       )
     ).rows[0];
     if (!site) throw new SiteError('owned_site_required');
+    if (site.lifecycle !== 'active')
+      throw new SiteError('site_' + site.lifecycle);
+    const tester = Boolean(
+      (
+        await c.query(
+          'SELECT 1 FROM platform_tester t JOIN "user" u ON lower(u.email)=t.email WHERE u.id=$1 AND t.enabled',
+          [actor]
+        )
+      ).rowCount
+    );
+    if (site.test_mode !== tester) throw new SiteError('site_mode_mismatch');
     if (site.policy_version !== defaultPolicy.version.value)
       throw new SiteError('unsupported_pinned_policy');
     return site;
@@ -137,7 +150,7 @@ export class Sites {
         p.id,
         'site.tool.result',
         tool,
-        JSON.stringify({ tool, specSha256: hash, result }),
+        JSON.stringify({ tool, specSha256: hash, result, test: p.testMode }),
         p.testMode
       ]
     );
@@ -160,13 +173,6 @@ export class Sites {
       if (!assets.ok) throw new SiteError('invalid_assets', assets.errors);
       validatePreview(spec.value, input.preview);
       const specId = randomUUID();
-      // Immutable prepared bytes and previews are bucket objects, never Railway volumes.
-      for (const [id, bytes] of buffers)
-        await this.objects.put('specs/' + specId + '/assets/' + id, bytes);
-      await this.objects.put(
-        'specs/' + specId + '/preview.json',
-        Buffer.from(canonicalJson(input.preview))
-      );
       return await this.store.siteAction(actor, 'site.build', async (c, p) => {
         let site: SiteRow;
         if (input.siteId) site = await this.owned(c, actor, input.siteId);
@@ -175,17 +181,22 @@ export class Sites {
             throw new SiteError('slug_required');
           site = (
             await c.query(
-              'INSERT INTO platform_site(id,owner_id,slug,plan_id,policy_version) VALUES($1,$2,$3,$4,$5) ON CONFLICT(owner_id,slug) DO UPDATE SET slug=excluded.slug RETURNING *',
+              'INSERT INTO platform_site(id,owner_id,slug,plan_id,policy_version,test_mode) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(owner_id,slug) DO UPDATE SET slug=excluded.slug RETURNING *',
               [
                 randomUUID(),
                 actor,
                 input.slug,
                 spec.value.planId,
-                spec.value.policyVersion
+                spec.value.policyVersion,
+                p.testMode
               ]
             )
           ).rows[0];
         }
+        if (site.lifecycle !== 'active')
+          throw new SiteError('site_' + site.lifecycle);
+        if (site.test_mode !== p.testMode)
+          throw new SiteError('site_mode_mismatch');
         const existing = (
           await c.query(
             'SELECT id,state FROM platform_site_spec WHERE site_id=$1 AND spec_sha256=$2',
@@ -197,15 +208,29 @@ export class Sites {
           return {
             siteId: site.id,
             specId: existing.id,
-            state: existing.state
+            state: existing.state,
+            test: site.test_mode
           };
         }
+        // Immutable prepared bytes and previews are bucket objects, never Railway volumes.
+        for (const [id, bytes] of buffers)
+          await this.objects.put('specs/' + specId + '/assets/' + id, bytes);
+        await this.objects.put(
+          'specs/' + specId + '/preview.json',
+          Buffer.from(canonicalJson(input.preview))
+        );
         await c.query(
           'INSERT INTO platform_site_spec(id,site_id,spec,spec_sha256) VALUES($1,$2,$3,$4)',
           [specId, site.id, JSON.stringify(spec.value), hash]
         );
         await this.audit(c, p, 'site.submit', hash, 'accepted');
-        return { siteId: site.id, specId, state: 'staged' };
+        return {
+          siteId: site.id,
+          specId,
+          state: 'staged',
+          test: site.test_mode,
+          free: site.test_mode
+        };
       });
     } catch (error) {
       await this.store.recordSiteResult(
@@ -220,12 +245,13 @@ export class Sites {
   async build(actor: string, specId: string) {
     return this.store.siteAction(actor, 'site.build', async (c, p) => {
       const row = await this.row(c, actor, specId);
-      await this.owned(c, actor, row.site_id);
+      const site = await this.owned(c, actor, row.site_id);
+      p.testMode = site.test_mode;
       if (['deploying', 'unknown'].includes(row.state))
         throw new SiteError('spec_busy');
       if (['verified', 'live'].includes(row.state)) {
         await this.audit(c, p, 'site.build', row.spec_sha256, 'cached');
-        return { specId, state: row.state };
+        return { specId, state: row.state, test: site.test_mode };
       }
       const job = (
         await c.query(
@@ -234,7 +260,7 @@ export class Sites {
         )
       ).rows[0];
       await this.audit(c, p, 'site.build', row.spec_sha256, 'queued');
-      return { specId, jobId: job.id, state: job.state };
+      return { specId, jobId: job.id, state: job.state, test: site.test_mode };
     });
   }
   async change(
@@ -250,6 +276,7 @@ export class Sites {
         'site-allowance:' + actor
       ]);
       const site = await this.owned(c, actor, siteId);
+      p.testMode = site.test_mode;
       if (!site.current_spec_id) throw new SiteError('live_site_required');
       const current = await this.row(c, actor, site.current_spec_id),
         candidate = await this.row(c, actor, specId);
@@ -270,7 +297,8 @@ export class Sites {
         return {
           specId,
           state: candidate.state,
-          accounting: candidate.accounting
+          accounting: candidate.accounting,
+          test: site.test_mode
         };
       }
       const now = (await c.query('SELECT now() AS now')).rows[0].now as Date;
@@ -304,7 +332,8 @@ export class Sites {
       return {
         specId,
         accounting: checked.value.accounting,
-        state: candidate.state
+        state: candidate.state,
+        test: site.test_mode
       };
     });
   }
@@ -338,6 +367,12 @@ export class Sites {
       ]);
       const site = await this.owned(c, actor, siteId),
         row = await this.row(c, actor, specId);
+      p.testMode = site.test_mode;
+      if (
+        site.test_mode &&
+        (domain || site.resources.customDomain || site.resources.customDomainId)
+      )
+        throw new SiteError('test_custom_domain_forbidden');
       if (row.site_id !== siteId)
         throw new SiteError('candidate_site_mismatch');
       if (
@@ -348,7 +383,7 @@ export class Sites {
         throw new SiteError('domain_change_unsupported');
       if (row.state === 'live' && site.current_spec_id === specId) {
         await this.audit(c, p, 'site.deploy', row.spec_sha256, 'cached');
-        return { siteId, state: 'live' };
+        return { siteId, state: 'live', test: site.test_mode };
       }
       if (row.state !== 'verified')
         throw new SiteError('verified_build_required');
@@ -379,7 +414,13 @@ export class Sites {
         [specId, this.seal(password), domain ?? null]
       );
       await this.audit(c, p, 'site.deploy', row.spec_sha256, 'queued');
-      return { siteId, specId, jobId: job.id, state: 'queued' };
+      return {
+        siteId,
+        specId,
+        jobId: job.id,
+        state: 'queued',
+        test: site.test_mode
+      };
     });
   }
   async status(actor: string, siteId: string) {
@@ -388,9 +429,10 @@ export class Sites {
       'site.status',
       async (c, p) => {
         const site = await this.owned(c, actor, siteId);
+        p.testMode = site.test_mode;
         const specs = (
           await c.query(
-            'SELECT id AS "specId",state,spec_sha256 AS "specSha256",source_sha256 AS "sourceSha256",output_sha256 AS "outputSha256",error_code AS "error",accounting,applied_at AS "appliedAt" FROM platform_site_spec WHERE site_id=$1 ORDER BY created_at DESC LIMIT 20',
+            'SELECT id AS "specId",state,spec_sha256 AS "specSha256",source_sha256 AS "sourceSha256",output_sha256 AS "outputSha256",error_code AS "error",test_mode AS test,accounting,applied_at AS "appliedAt" FROM platform_site_spec WHERE site_id=$1 ORDER BY created_at DESC LIMIT 20',
             [siteId]
           )
         ).rows;
@@ -403,6 +445,8 @@ export class Sites {
         );
         return {
           siteId,
+          test: site.test_mode,
+          free: site.test_mode,
           currentSpecId: site.current_spec_id,
           policyVersion: site.policy_version,
           siteUrl: site.resources.domain
@@ -426,7 +470,7 @@ export class Sites {
     let domainStatus: unknown = null;
     if (resources.domain) {
       try {
-        domainStatus = await this.deployer.status(resources, name);
+        domainStatus = await this.deployer.status(resources, name, result.test);
       } catch {
         domainStatus = { error: 'railway_status_unavailable' };
       }
@@ -486,7 +530,8 @@ export class Sites {
     actor: string,
     tool: string,
     specId: string | undefined,
-    code: string
+    code: string,
+    siteId?: string
   ) {
     let hash: string | null = null;
     if (specId)
@@ -497,7 +542,17 @@ export class Sites {
             [specId, actor]
           )
         ).rows[0]?.spec_sha256 ?? null;
-    await this.store.recordSiteResult(actor, tool, hash, code);
+    const test = siteId
+      ? Boolean(
+          (
+            await this.store.pool.query(
+              'SELECT test_mode FROM platform_site WHERE id=$1 AND owner_id=$2',
+              [siteId, actor]
+            )
+          ).rows[0]?.test_mode
+        )
+      : undefined;
+    await this.store.recordSiteResult(actor, tool, hash, code, test || undefined);
   }
   private async saveBuild(specId: string, build: VerifiedBuild) {
     const artifactNames = Object.keys(build.artifacts).filter(
@@ -545,6 +600,7 @@ export class Sites {
       const site = await this.store.transaction((c) =>
         this.owned(c, p.id, row.site_id)
       );
+      p.testMode = site.test_mode;
       hash = row.spec_sha256;
       const validated = validateSiteSpec(row.spec);
       if (!validated.ok) throw new SiteError('invalid_spec', validated.errors);
@@ -566,7 +622,9 @@ export class Sites {
           "UPDATE platform_site_spec SET state='building' WHERE id=$1",
           [row.id]
         );
-        const build = await this.verifier.verify(source, row.spec, preview);
+        const build = await this.verifier.verify(source, row.spec, preview, {
+          test: site.test_mode
+        });
         assertVerified(build, source, row.spec);
         await this.saveBuild(row.id, build);
         await this.store.pool.query(
@@ -599,6 +657,7 @@ export class Sites {
           ])
         ).rows[0].email;
         const resources = await this.deployer.deploy({
+          test: site.test_mode,
           name: this.name(site),
           spec: row.spec,
           build,
@@ -639,7 +698,8 @@ export class Sites {
         job.actor_id,
         'site.' + job.kind,
         hash,
-        'success'
+        'success',
+        job.test_mode
       );
     } catch (error) {
       if (error instanceof VerificationFailure) {
@@ -651,7 +711,10 @@ export class Sites {
           );
         } catch {
           console.error(
-            JSON.stringify({ event: 'site.report.storage_failed' })
+            JSON.stringify({
+              event: 'site.report.storage_failed',
+              test: job.test_mode
+            })
           );
         }
       }
@@ -672,16 +735,242 @@ export class Sites {
         job.actor_id,
         'site.' + job.kind,
         hash,
-        code
+        code,
+        job.test_mode
       );
     }
     return true;
+  }
+  async list(
+    actor: string,
+    input: {
+      test?: boolean;
+      owner?: string;
+      status?: string;
+      limit: number;
+      after?: string;
+    }
+  ) {
+    return this.store.siteAction(actor, 'sites.list', async (c, p) => {
+      const rows = (
+        await c.query(
+          `SELECT s.id AS "siteId",s.owner_id AS "ownerId",s.slug,s.test_mode AS test,s.lifecycle,s.policy_version AS "policyVersion", CASE WHEN s.lifecycle='active' THEN COALESCE(cur.state,v.state,'staged') ELSE s.lifecycle END AS status
+        FROM platform_site s LEFT JOIN platform_site_spec cur ON cur.id=s.current_spec_id LEFT JOIN LATERAL (SELECT state FROM platform_site_spec WHERE site_id=s.id ORDER BY created_at DESC,id DESC LIMIT 1) v ON true
+        WHERE ($1::boolean IS NULL OR s.test_mode=$1) AND ($2::text IS NULL OR s.owner_id=$2) AND ($3::text IS NULL OR CASE WHEN s.lifecycle='active' THEN COALESCE(cur.state,v.state,'staged') ELSE s.lifecycle END=$3) AND ($4::uuid IS NULL OR s.id>$4) ORDER BY s.id LIMIT $5`,
+          [
+            input.test ?? null,
+            input.owner ?? null,
+            input.status ?? null,
+            input.after ?? null,
+            input.limit
+          ]
+        )
+      ).rows;
+      p.testMode = input.test === true;
+      await this.audit(c, p, 'sites.list', null, 'read');
+      return {
+        sites: rows,
+        nextAfter: rows.length === input.limit ? rows.at(-1).siteId : null
+      };
+    });
+  }
+  async inspect(actor: string, siteId: string) {
+    return this.store.siteAction(actor, 'site.inspect', async (c, p) => {
+      const site = (
+        await c.query('SELECT * FROM platform_site WHERE id=$1', [siteId])
+      ).rows[0] as SiteRow | undefined;
+      if (!site) throw new SiteError('site_not_found');
+      const specs = (
+        await c.query(
+          'SELECT id AS "specId",state,spec_sha256 AS "specSha256",source_sha256 AS "sourceSha256",output_sha256 AS "outputSha256",accounting,applied_at AS "appliedAt",test_mode AS test,error_code AS error FROM platform_site_spec WHERE site_id=$1 ORDER BY created_at DESC,id DESC LIMIT 20',
+          [siteId]
+        )
+      ).rows;
+      const currentState = site.current_spec_id
+        ? (
+            await c.query('SELECT state FROM platform_site_spec WHERE id=$1', [
+              site.current_spec_id
+            ])
+          ).rows[0]?.state
+        : undefined;
+      const lastDeploy =
+        (
+          await c.query(
+            `SELECT j.id AS "jobId",j.state,j.finished_at AS "finishedAt" FROM platform_site_job j JOIN platform_site_spec p ON p.id=j.spec_id WHERE p.site_id=$1 AND j.kind='deploy' ORDER BY j.created_at DESC LIMIT 1`,
+            [siteId]
+          )
+        ).rows[0] ?? null;
+      p.testMode = site.test_mode;
+      await this.audit(
+        c,
+        p,
+        'site.inspect',
+        specs[0]?.specSha256 ?? null,
+        'read'
+      );
+      return {
+        siteId,
+        ownerId: site.owner_id,
+        test: site.test_mode,
+        free: site.test_mode,
+        lifecycle: site.lifecycle,
+        status:
+          site.lifecycle === 'active'
+            ? (currentState ?? specs[0]?.state ?? 'staged')
+            : site.lifecycle,
+        policyVersion: site.policy_version,
+        currentSpecId: site.current_spec_id,
+        lastDeploy,
+        specs,
+        monthlyRequestsUsed: await this.usage(c, site.owner_id),
+        siteUrl: site.resources.domain
+          ? 'https://' + site.resources.domain
+          : null
+      };
+    });
+  }
+  async reset(actor: string, siteId: string, confirmation: string) {
+    // This connection-level lock prevents concurrent provider cleanup attempts;
+    // lifecycle remains resetting after errors/crashes for an explicit retry.
+    requireRole(await this.store.principal(actor), 'tester.reset');
+    requireConfirmation(confirmation, 'RESET ' + siteId);
+    const lease = await this.store.pool.connect();
+    const lock = 'tester-reset:' + siteId;
+    let locked = false;
+    try {
+      locked = (
+        await lease.query(
+          'SELECT pg_try_advisory_lock(hashtext($1)) AS locked',
+          [lock]
+        )
+      ).rows[0].locked;
+      if (!locked) throw new SiteError('reset_busy');
+      const snapshot = await this.store.siteAction(
+        actor,
+        'tester.reset',
+        async (c, p) => {
+          const site = (
+            await c.query(
+              'SELECT * FROM platform_site WHERE id=$1 FOR UPDATE',
+              [siteId]
+            )
+          ).rows[0] as SiteRow | undefined;
+          if (!site?.test_mode) throw new SiteError('test_site_required');
+          const active = await c.query(
+            `SELECT 1 FROM platform_site_job j JOIN platform_site_spec s ON s.id=j.spec_id WHERE s.site_id=$1 AND j.state IN ('queued','running')`,
+            [siteId]
+          );
+          if (active.rowCount) throw new SiteError('site_busy');
+          const specs = (
+            await c.query(
+              'SELECT id FROM platform_site_spec WHERE site_id=$1',
+              [siteId]
+            )
+          ).rows.map((r) => r.id as string);
+          await c.query(
+            "UPDATE platform_site SET lifecycle='resetting' WHERE id=$1 AND lifecycle<>'archived'",
+            [siteId]
+          );
+          await c.query(
+            `INSERT INTO platform_audit(actor_user_id,action,target,details,test_mode) VALUES($1,'tester.reset',$2,$3,true)`,
+            [
+              p.id,
+              siteId,
+              JSON.stringify({
+                siteId,
+                confirmation,
+                result:
+                  site.lifecycle === 'archived' ? 'already_reset' : 'started',
+                test: true
+              })
+            ]
+          );
+          return { site, specs };
+        }
+      );
+      if (snapshot.site.lifecycle === 'archived')
+        return { siteId, test: true, state: 'archived', reset: true };
+      await this.deployer.reset(
+        snapshot.site.resources,
+        this.name(snapshot.site),
+        true
+      );
+      // Persist provider deletion before bucket deletion. A bucket failure retries
+      // only remaining objects, without depending on provider not-found errors.
+      await this.store.pool.query(
+        "UPDATE platform_site SET resources='{}' WHERE id=$1",
+        [siteId]
+      );
+      for (const specId of snapshot.specs)
+        await this.objects.deletePrefix('specs/' + specId + '/');
+      await this.store.siteAction(actor, 'tester.reset', async (c, p) => {
+        await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [
+          'site-allowance:' + snapshot.site.owner_id
+        ]);
+        await c.query(
+          'UPDATE platform_site SET current_spec_id=NULL WHERE id=$1',
+          [siteId]
+        );
+        await c.query(
+          'DELETE FROM platform_site_job WHERE spec_id IN (SELECT id FROM platform_site_spec WHERE site_id=$1)',
+          [siteId]
+        );
+        await c.query('DELETE FROM platform_site_spec WHERE site_id=$1', [
+          siteId
+        ]);
+        await c.query(
+          "UPDATE platform_site SET lifecycle='archived' WHERE id=$1",
+          [siteId]
+        );
+        await c.query(
+          `INSERT INTO platform_audit(actor_user_id,action,target,details,test_mode) VALUES($1,'tester.reset',$2,$3,true)`,
+          [
+            p.id,
+            siteId,
+            JSON.stringify({
+              siteId,
+              confirmation,
+              result: 'success',
+              test: true
+            })
+          ]
+        );
+      });
+      return { siteId, test: true, state: 'archived', reset: true };
+    } catch (error) {
+      await this.store.transaction(async (c) => {
+        await c.query(
+          `INSERT INTO platform_audit(actor_user_id,action,target,details,test_mode) VALUES($1,'tester.reset',$2,$3,true)`,
+          [
+            actor,
+            siteId,
+            JSON.stringify({
+              siteId,
+              confirmation,
+              result: error instanceof SiteError ? error.code : 'reset_failed',
+              test: true
+            })
+          ]
+        );
+      });
+      await this.store.adminResult(
+        actor,
+        'tester.reset',
+        error instanceof SiteError ? error.code : 'reset_failed',
+        siteId
+      );
+      throw error;
+    } finally {
+      if (locked)
+        await lease.query('SELECT pg_advisory_unlock(hashtext($1))', [lock]);
+      lease.release();
+    }
   }
   async recoverInterrupted() {
     await this.store.transaction(async (c) => {
       const jobs = (
         await c.query(
-          "UPDATE platform_site_job SET state=CASE WHEN kind='deploy' THEN 'unknown' ELSE 'failed' END,finished_at=now() WHERE state='running' RETURNING spec_id,kind,actor_id"
+          "UPDATE platform_site_job SET state=CASE WHEN kind='deploy' THEN 'unknown' ELSE 'failed' END,finished_at=now() WHERE state='running' RETURNING spec_id,kind,actor_id,test_mode"
         )
       ).rows;
       for (const job of jobs) {
@@ -694,11 +983,16 @@ export class Sites {
           ]
         );
         await c.query(
-          "INSERT INTO platform_audit(actor_user_id,action,target,details,test_mode) VALUES($1,'site.worker.recovery',$2,$3,false)",
+          "INSERT INTO platform_audit(actor_user_id,action,target,details,test_mode) VALUES($1,'site.worker.recovery',$2,$3,$4)",
           [
             job.actor_id,
             job.spec_id,
-            JSON.stringify({ result: 'worker_interrupted', kind: job.kind })
+            JSON.stringify({
+              result: 'worker_interrupted',
+              kind: job.kind,
+              test: job.test_mode
+            }),
+            job.test_mode
           ]
         );
       }
@@ -727,7 +1021,9 @@ export class Sites {
             if (!(await this.processOne()))
               await new Promise((r) => setTimeout(r, 1000));
           } catch {
-            console.error(JSON.stringify({ event: 'site.worker.failed' }));
+            console.error(
+              JSON.stringify({ event: 'site.worker.failed', test: false })
+            );
             await new Promise((r) => setTimeout(r, 1000));
           }
         }
