@@ -95,7 +95,7 @@ export function renderPolicyPage(path) {
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
   <div class="page">
-    <header><a class="brand" href="/" aria-label="a2aviary homepage">a2aviary</a><a href="/costs">What it costs</a></header>
+    <header><a class="brand" href="/" aria-label="a2aviary homepage">a2aviary</a><nav aria-label="Project resources"><a href="/costs">What it costs</a><a href="/architecture">Architecture</a></nav></header>
     <main id="content" tabindex="-1">
       <h1>${escape(title)}</h1>
       <p class="updated">Updated <time datetime="2026-10-05">October 5, 2026</time>.</p>

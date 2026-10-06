@@ -123,6 +123,44 @@ See [platform operations](platform.md) and [decision 008](decisions/008-platform
   editing, persistent/concurrent monthly accounting, site generation/deployment,
   checkout or sales. No legacy brief-analysis extension, merge or deployment.
 
+## Architecture and local environment — 2026-10-06, prepared
+
+- **Configured:** the editable architecture map, coverage metadata and generation
+  provenance produce the prepared `/architecture` page. Archify 3.0.1 passed
+  validation, delivery, geometry/source checks and browser gates at showcase
+  quality against committed implementation source. The required source-fingerprint
+  check rejects stale infrastructure/service evidence without installing Archify
+  in CI. The session-only skill and its dependencies are excluded from Git;
+  generated drawing notices preserve MIT alongside repository Apache 2.0.
+- **Local verification:** Community 4.12.0 deploys shared S3, DynamoDB/Streams,
+  SNS/SQS/DLQs, Secrets Manager, Node.js 22 workers, EventBridge and supported
+  logs/alarms. Production worker logic completes a fictional signed request,
+  stores input/result, deletes the mock provider session, releases concurrency
+  and emits an ES256-signed correlated result. Duplicate/tamper rejection and
+  deployed broker/mock PR recording pass. Scheduled watchdog log activity,
+  alarms and configured retention are checked; accelerated expiry, notification
+  delivery and production IAM enforcement are not claimed.
+- **Adapters:** Community CloudFormation does not materialize SES rules/configuration
+  sets; local deployment creates them through SES v1 from synthesized CDK rules.
+  The inbound adapter follows their S3/SNS actions. The outbound bridge preserves
+  signed MIME while mapping SES v2 to v1. OpenAI/GitHub are deterministic local
+  stand-ins. Real SMTP/delivery, CloudFront, public DNS/TLS, production OIDC/API
+  hosting and billing budgets are cloud-only. See [local development](local-development.md).
+- **Source checks:** website check/build and link checks; service check/build and
+  all 49 behavioral tests; infrastructure build/synthesis and all nine tests pass.
+  All five production templates are identical to remote main using the same
+  worker artifact (production worker assets themselves change). Desktop/mobile
+  browser verification under the production CSP passes keyboard activation,
+  views/highlighting, source details and JavaScript-free evidence. Zero automatic
+  requests to other domains and no CSP/console errors were observed.
+- **CI/release gates:** the new read-only local integration job is initially
+  advisory/non-blocking with bounded timeout and unconditional cleanup. Existing
+  required checks/protection remain unchanged. Its real GitHub runner outcome is
+  unverified until publication. Carlos Olivera Terrazas must review the exact
+  PR head; merge and automatic website delivery follow approval. This page is
+  prepared, not publicly released or verified. Infrastructure activation remains
+  separately owner controlled; no production infrastructure deployment occurred.
+
 ## Human-support permission repair — 2026-10-05, activated
 
 The owner merged PR #12 and separately authorized deployment and recovery of

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-06 — architecture and local verification prepared
+
+- Added a source-backed Archify 3.0.1 interactive architecture map with editable metadata, pinned source provenance, same-origin assets, local coverage and explicit planned capabilities. Integrated `/architecture`, navigation, sitemap and HTML MIME without changing CSP; no external resources load automatically.
+- Added an isolated CDK local target, pinned token-free Community 4.12.0 Compose environment, production workers, safe OpenAI/GitHub stand-ins and explicit SES adapters. Fresh signed fixtures exercise queued processing, storage, cleanup, signed replies, rejection, broker recording and scheduled controls. Cloud-only boundaries and legacy image maintenance are documented.
+- Added a read-only advisory integration workflow, source-fingerprint freshness gate and contribution guidance. Website checks/build, service checks/build and 49 tests, infrastructure build and nine tests pass; all five production templates match remote main when synthesized with the same worker artifact. Browser checks under production CSP cover desktop/mobile, keyboard controls and zero other-domain requests. See [release evidence](docs/release-verification.md#architecture-and-local-environment--2026-10-06-prepared).
+- This is prepared source and local verification. Owner review/approval, approved merge, website release and public route verification remain separate gates; no production infrastructure was deployed.
+
 ## 2026-10-06 — testers and chat-only superadmin verified locally
 
 - Added durable tester enrollment, automatic free pinned-plan discovery, immutable site/spec/job test classification and tester access to the existing approved-spec workflow. Test sites always use dedicated Railway fixture projects and managed staging hosts; customer-domain bindings are rejected. The policy's successful-change allowance remains unchanged.

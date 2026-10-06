@@ -1,10 +1,11 @@
+import { architecturePage } from './scripts/architecture-plugin.mjs';
 import { defineConfig } from 'vite';
 import { changelogSection } from './scripts/changelog-plugin.mjs';
 import { costsPage } from './scripts/costs-plugin.mjs';
 import { policyPages } from './scripts/policies-plugin.mjs';
 
 export default defineConfig({
-  plugins: [costsPage(), policyPages(), changelogSection()],
+  plugins: [architecturePage(), costsPage(), policyPages(), changelogSection()],
   build: {
     rolldownOptions: {
       output: {

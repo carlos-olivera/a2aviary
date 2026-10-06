@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
+import './check-architecture.mjs';
 import './check-costs.mjs';
 import './check-public-pages.mjs';
 import './check-changelog.mjs';
