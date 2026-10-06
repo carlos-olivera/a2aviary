@@ -20,8 +20,9 @@ Pilot production does not research, OCR, edit images or interpret free text.
 Legacy `website.brief.analyze` remains supported without extension.
 
 [Phase 1 contracts](plans.md) define schemas, manifests, local validators and
-fictional examples. Auth, MCP, site generation/deployment and PocketBase remain
-future integration. Fixed monthly change requests replace credits for this pilot;
+fictional examples. [Phase 2 discovery auth/MCP](platform.md) provides a locally
+verifiable service prepared for Railway; deployment and real client connections
+remain unverified. Site generation/deployment and PocketBase remain future integration. Fixed monthly change requests replace credits for this pilot;
 CMS content edits will not consume that allowance. Initial numerical limits await
 owner PR review. Nothing is for sale; no live checkout or active Paddle merchant
 of record exists. Earlier Basic pricing/credit presentation is historical and
@@ -38,7 +39,8 @@ public website copy is unchanged by Phase 1.
 
 A bounded case with Teco: brief, preview production, review, approval, and delivery. The specific website scope, materials, and acceptance criteria still need to be agreed.
 
-The owner selected a future MCP connector for the pilot; it is outside Phase 1. The client agent must have real tools to call an implemented service; instructions and contracts do not replace those capabilities.
+The owner selected an MCP connector for the pilot; Phase 2 prepares its discovery
+service, without activating website production. The client agent must have real tools to call an implemented service; instructions and contracts do not replace those capabilities.
 
 ## Continuity
 

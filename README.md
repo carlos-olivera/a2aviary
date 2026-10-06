@@ -2,7 +2,7 @@
 
 An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. Our positioning is “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” Website production remains coming soon, as recorded below.
 
-Websites come first. The owner-approved pilot has the client agent understand intent, research, prepare images and copy, and obtain human approval of a catalog-expressible preview before submission. a2aviary validates a structured site spec and will generate/deploy it through fixed Astro components and design tokens. It does not research, OCR, edit images or interpret free-text website instructions. [Plan policies and contracts](docs/plans.md) define Phase 1; rendering, hosting, auth and MCP integration remain future work. The pilot proposes fixed monthly change requests, replacing the earlier credit model for this plan. Nothing is for sale; there is no live checkout or active Paddle merchant of record. Public website copy remains a separate delivery.
+Websites come first. The owner-approved pilot has the client agent understand intent, research, prepare images and copy, and obtain human approval of a catalog-expressible preview before submission. a2aviary validates a structured site spec and will generate/deploy it through fixed Astro components and design tokens. It does not research, OCR, edit images or interpret free-text website instructions. [Plan policies and contracts](docs/plans.md) define Phase 1; [Phase 2 discovery auth/MCP](docs/platform.md) is implemented for local verification and prepared for Railway, with deployment and real client connections still unverified. Rendering and client-site hosting remain future work. The pilot proposes fixed monthly change requests, replacing the earlier credit model for this plan. Nothing is for sale; there is no live checkout or active Paddle merchant of record. Public website copy remains a separate delivery.
 
 **Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed email operating foundation whose first capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Website generation, autonomous repository engineering, the Teco pilot, and external A2A compliance remain future work.
 
@@ -37,6 +37,7 @@ English is the canonical language for repository documentation. The repository i
 
 - [Cost transparency](COSTS.md) and the [public costs page](https://a2aviary.io/costs)
 - [Plan policies and site contracts](docs/plans.md)
+- [Discovery platform auth, MCP and roles](docs/platform.md)
 - [Vision and scope](docs/vision.md)
 - [Architecture](docs/architecture/overview.md)
 - [Accepted decisions and open questions](docs/decisions/README.md)

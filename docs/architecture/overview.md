@@ -23,7 +23,9 @@ assets and a catalog-expressible preview, approved by the human before submissio
 a2aviary validates the versioned policy and will generate/deploy through fixed
 Astro templates. It does not research, OCR, edit images or interpret free text for
 pilot production. Phase 1 provides isolated contracts/local validation; the
-selected Railway/OAuth/MCP/PocketBase integration remains future work. Existing
+[Phase 2](../platform.md) implements local discovery OAuth/MCP and prepares a
+Railway service. Deployment and real client compatibility are unverified;
+PocketBase and website production remain future work. Existing
 AWS brief analysis and signed email v1 remain supported. See [plans](../plans.md)
 and [decision 007](../decisions/007-pilot-policy-and-site-contracts.md).
 

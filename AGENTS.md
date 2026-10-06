@@ -25,6 +25,20 @@ English is the canonical language for repository documentation, architecture rec
 - Respect the Apache 2.0 license and preserve dependency licenses.
 - The visual identity is being explored; do not present a proposed logo or palette as approved.
 
+## Persistent owner instructions for future tasks
+
+Confirmed by the owner on 2026-10-05; apply to future work in this project unless the owner explicitly changes the scope or rules.
+
+- For authorized implementation deliveries, use a `codex/` feature branch and a pull request. Never push directly to `main`.
+- Publish branches and create PRs only through the **a2aviary Operator App** (`app/a2aviary-operator`, PR author `a2aviary-operator[bot]`). Never use Carlos Olivera Terrazas's personal GitHub login or credentials as a fallback.
+- The owner authorized enabling the existing Operator development broker for App-authored PRs. Keep repository auto-merge **disabled**. Verify current access and settings rather than treating this recorded authorization as proof of live configuration; do not expand App permissions or bypass policy checks.
+- After opening the PR, stop for the owner's review and approval. Do not manufacture owner approval, merge, or deploy unless separately and explicitly authorized.
+- Complete relevant local checks before publication. In the PR, describe the changes, observed verification, and remaining owner-only actions. Do not equate a branch, PR, successful build, or provider configuration with deployment or verified operation.
+- Use **Carlos Olivera Terrazas** in project attribution and public/legal content. Preserve established GitHub usernames, URLs, App slugs, and other stable identifiers.
+- Human support and privacy/refund contact use **hello@a2aviary.io**. **agent@a2aviary.io** is the registered signed-agent pipeline, not human support. Do not claim mailbox delivery until verified.
+- Do not invent commercial prices or metrics. Until a real catalog and sales readiness are confirmed, clearly state that nothing is for sale and there is no live checkout or active Paddle merchant of record; distinguish verified brief discovery from future agency services. Record later status changes only against evidence.
+- Do not add infrastructure, analytics/tracking, payment integrations, or unrelated branding outside the explicitly authorized task scope. Preserve Apache 2.0 and dependency licenses, exclude secrets and client data, and keep English documentation and confirmed/proposed/unverified distinctions.
+
 ## Verification
 
 - Check relative links and document consistency when they change.
