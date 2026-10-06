@@ -157,6 +157,14 @@ See [platform operations](platform.md) and [decision 008](decisions/008-platform
   browser verification under the production CSP passes keyboard activation,
   views/highlighting, source details and JavaScript-free evidence. Zero automatic
   requests to other domains and no CSP/console errors were observed.
+- **Publication blocked:** live Operator App identity, repository-only scope,
+  enabled development broker, protected main/required App checks and disabled
+  auto-merge were verified. GitHub rejected the branch push because the existing
+  App grant cannot create `.github/workflows/local-integration.yml` without
+  workflow-write permission. No branch or PR was published; the token was revoked.
+  Permissions were not expanded and no personal GitHub credentials were used.
+  The owner must commit the prepared CI workflow through an authorized route
+  before this branch can be rebased and published by the App.
 - **CI/release gates:** the new read-only local integration job is initially
   advisory/non-blocking with bounded timeout and unconditional cleanup. Existing
   required checks/protection remain unchanged. Its real GitHub runner outcome is
