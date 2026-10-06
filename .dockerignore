@@ -1,0 +1,14 @@
+.git
+.local
+private
+**/node_modules
+**/dist
+**/cdk.out
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+work
+tmp
+output
+coverage

@@ -1,7 +1,9 @@
 # Plan policies and site contracts
 
 Status: Phase 1 contract implementation, locally verifiable only. No auth, MCP,
-site renderer, PocketBase service, hosting activation or deployment is added.
+site renderer, PocketBase service, hosting activation or deployment is added by
+Phase 1. [Phase 2 discovery service](platform.md) reads these artifacts with OAuth
+and role checks; site approval binding and production remain future work.
 Nothing is for sale; no checkout or active Paddle merchant of record exists.
 The [pilot decision](decisions/007-pilot-policy-and-site-contracts.md) records the
 owner-approved direction. The initial numerical allowances are proposed for

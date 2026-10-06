@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-06 — discovery OAuth/MCP platform verified locally
+
+- Added an isolated Node.js 22/TypeScript Railway service with pinned Better Auth JWT/MCP/CIMD, Google login/consent, July 2026 POST-only official MCP v2, resource-bound OAuth, Postgres migrations and discovery-only plan tools. DCR is off by default; no site production, payments or live connector activation was added.
+- Added verified configuration-pinned owner bootstrap, invited admins, clients and allowlisted testers; role-filtered tools, explicit confirmations, atomic audit records and own-user ES256 public-key registration/revocation. The existing AWS email registry stays owner-controlled through a documented manual enrollment/revocation bridge, without platform AWS credentials or transport changes.
+- Added container/compose/Railway preparation, DB readiness and rate limits, safe bigint parsing, dependency notice preservation, source protection for apps and Docker context rules, and [endpoint/environment/client instructions](docs/platform.md). Deployed trusted-policy activation remains separately authorized.
+- Node.js 22.23.3 platform check/build and 26 Postgres-backed tests, existing service check/build and 111 tests, website checks/build and seven infrastructure tests passed. Container build, non-root runtime/migrations/readiness/auth smoke, generated contracts, published Railway schema structure, documentation links, whitespace and secret checks were verified locally. External Google sign-in and actual ChatGPT/Claude compatibility remain unverified. Owner review, merge, private configuration and deployment remain separate actions.
+
 ## 2026-10-06 — web-simple policy and site contracts verified locally
 
 - Added an owner-reviewable versioned web-simple policy with rationale fields, immutable version snapshot, generated site/change schemas, Markdown/JSON client manifests, and fictional seven-page examples with original PNG pixels. Read-only artifact drift checks run in the service check path.

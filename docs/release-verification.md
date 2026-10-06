@@ -1,6 +1,42 @@
 # Initial release verification
 
-Latest evidence: 2026-10-06 local contract checks and Operator publication-baseline reads; earlier dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+Latest evidence: 2026-10-06 local discovery-platform OAuth/Postgres/container and contract checks; earlier dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+
+## Discovery auth/MCP platform — 2026-10-06, verified locally
+
+- **Configured source:** isolated `apps/platform` Node.js 22/TypeScript service,
+  Better Auth 1.7.7 JWT/MCP/CIMD, official MCP server 2.3.1 with July 2026 strict
+  POST serving, DCR disabled, Google login/consent and Postgres migrations.
+  Discovery tools serve the Phase 1 artifacts; no website production or payments.
+- **Locally verified:** Node.js 22.23.3 platform check/build and all 26 tests,
+  including real Postgres OAuth discovery/consent/S256/token/refresh, audience and
+  signature/issuer/expiry/scope and DPoP possession/replay boundaries, live roles, confirmations, public-key
+  ownership, concurrent registration and rollback on audit failure. Google users
+  and OAuth clients were fictional fixtures; only the Google redirect preparation
+  was observed, not external identity authentication.
+- **Container evidence:** Docker build, SQL migrations, non-root UID 1000 runtime,
+  readiness, login page, discovery, unauthenticated challenge and POST-only gate
+  passed. Production dependency tree and notices remain in the runtime image.
+  Railway config was structurally validated against its published JSON Schema.
+- **Regression checks:** existing service check/build and 111 tests, website
+  checks/build, infrastructure build and seven tests, generated-contract checks,
+  documentation links and whitespace passed. Public website files were unchanged.
+  Better Auth's read-only schema planner warns about its generated rateLimit int8
+  column; it reports no required schema changes. Numeric parsing and actual 429
+  retry behavior are separately tested; no vendor schema patch was applied.
+- **Preserved boundaries:** platform public-key registration does not enroll or
+  revoke DynamoDB grants. No AWS credentials are used by the platform; the email
+  transport/workers are unchanged. App/key mutations audit in the same transaction.
+  Source sensitive-path additions for apps and Docker context rules were tested;
+  no deployed evaluator activation was performed.
+- **Still unverified/not activated:** Railway resources, Postgres backups/restore,
+  domain/SSL, private Google client and actual callback, ChatGPT/Claude protocol
+  compatibility and live enrollment. Already-issued JWT access tokens can survive
+  OAuth revocation until their five-minute expiry; role revocations are live.
+  No merge, cloud deployment, site approval binding, renderer, PocketBase,
+  persistent monthly allowance accounting or payment integration.
+
+See [platform operations](platform.md) and [decision 008](decisions/008-platform-auth-and-mcp.md).
 
 ## Pilot policy and site contracts — 2026-10-06, verified locally
 
