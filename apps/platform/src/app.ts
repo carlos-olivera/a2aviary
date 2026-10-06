@@ -44,7 +44,10 @@ export async function createApp(config: Config, pool = createPool(config.databas
     if (response.status === 429 && response.headers.has('x-retry-after')) response.headers.set('retry-after', response.headers.get('x-retry-after')!);
     response.headers.set('cache-control', 'no-store');
     response.headers.set('x-content-type-options', 'nosniff');
-    response.headers.set('referrer-policy', 'no-referrer');
+    // no-referrer makes native HTML POST forms send Origin: null. Keep exact
+    // Origin checks and disclose only the origin (never OAuth path/query) here.
+    const formPage = ['/sign-in', '/consent'].includes(new URL(request.url).pathname);
+    response.headers.set('referrer-policy', formPage ? 'strict-origin' : 'no-referrer');
     response.headers.set('content-security-policy', "default-src 'none'; frame-ancestors 'none'; base-uri 'none'");
     return response;
   }

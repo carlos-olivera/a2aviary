@@ -76,7 +76,7 @@ test('Postgres OAuth integration and strict authenticated MCP transport', async 
     const content=await consent.text(); assert.match(content,/Fictional &lt;connector&gt;/); assert.match(content,/Discovery-only mandate/); assert.match(content,/4 successful changes/);assert.match(content,/7 authored pages/);
     assert.ok(!content.includes('<script'));
     const query = new URL(auth.location,f.config.origin).search.slice(1);
-    for (const origin of [undefined, 'https://attacker.example.invalid']) {
+    for (const origin of [undefined, 'null', 'https://attacker.example.invalid']) {
       const headers={cookie:user.cookie,'content-type':'application/x-www-form-urlencoded',...(origin?{origin}:{})};
       assert.equal((await f.request('/consent',{method:'POST',headers,body:new URLSearchParams({accept:'true',oauth_query:query})})).status,403);
     }
@@ -85,6 +85,20 @@ test('Postgres OAuth integration and strict authenticated MCP transport', async 
     const login=await f.authorize(user,cli,{prompt:'login'});assert.ok(login.location.startsWith('/sign-in?'));
     const google=await f.request('/sign-in',{method:'POST',headers:{origin:f.config.origin,'content-type':'application/x-www-form-urlencoded'},body:new URLSearchParams({oauth_query:new URL(login.location,f.config.origin).search.slice(1)})});
     assert.equal(google.status,303);assert.equal(new URL(google.headers.get('location')).hostname,'accounts.google.com');assert.ok(google.headers.getSetCookie().length);
+  });
+  await t.test('native form policy preserves Origin without disclosing OAuth paths; null and foreign origins remain denied',async()=>{
+    const login=await f.request('/sign-in');assert.equal(login.status,200);
+    assert.equal(login.headers.get('referrer-policy'),'strict-origin');
+    const authorization=await f.authorize(user,cli);
+    const consent=await f.request(authorization.location,{headers:{cookie:user.cookie}});
+    assert.equal(consent.status,200);assert.equal(consent.headers.get('referrer-policy'),'strict-origin');
+    assert.equal((await f.request('/healthz')).headers.get('referrer-policy'),'no-referrer');
+    for(const origin of [undefined,'null','https://attacker.example.invalid']) {
+      assert.equal((await f.request('/sign-in',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded',...(origin?{origin}:{})},body:''})).status,403);
+    }
+    const google=await f.request('/sign-in',{method:'POST',headers:{origin:f.config.origin,'content-type':'application/x-www-form-urlencoded'},body:''});
+    assert.equal(google.status,303);assert.equal(google.headers.get('referrer-policy'),'strict-origin');
+    assert.equal(new URL(google.headers.get('location')).hostname,'accounts.google.com');
   });
   let tokens;
   await t.test('authorization code + S256 + consent yields audience-bound token, issuer echo and verified UserInfo', async () => {

@@ -1,9 +1,11 @@
 # Discovery platform: auth, MCP and roles
 
-Status: Phase 2 source and local verification only. The owner requested a
-Railway Node/TypeScript service with Better Auth and official MCP v2. Deployment,
-DNS/SSL, private Google settings and real ChatGPT/Claude connections require
-separate owner authorization and verification. No site submission, production,
+Status: Phase 2 source verified locally; Carlos reported Railway deployment on
+2026-10-06. Public health, OAuth discovery and login responses were observed.
+Chrome reproduced a native login form failure (`Origin: null`, HTTP 403); the
+referrer-policy repair is verified locally and awaits owner review/redeployment.
+External Google authentication and real ChatGPT/Claude tool calls remain
+unverified. No site submission, production,
 plan activation, payment, PocketBase provisioning or authenticated site-approval
 binding is enabled. The AWS signed-email v1 workers remain unchanged.
 
@@ -63,7 +65,13 @@ revocation is checked live regardless of token expiry.
 
 Forms require the exact Origin and a signed, unexpired OAuth query for consent
 or OAuth login continuation. Client text/claims are escaped, scripts and frames
-are blocked, responses are not cached, and no admin web UI exists. HTTP bodies
+are blocked, responses are not cached, and no admin web UI exists. Responses
+from login/consent pages use `Referrer-Policy: strict-origin`: native HTML form
+POSTs retain their real Origin while referrers omit paths and OAuth query strings.
+Other routes use `no-referrer`. A `no-referrer` policy on the form document makes
+browsers submit `Origin: null` and triggers `Origin required`; missing, null and
+foreign origins remain rejected. See [MDN's Origin/referrer policy behavior](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Referrer-Policy#effect_on_the_origin_header).
+HTTP bodies
 are capped at 512 KiB. Better Auth uses database rate limits, keyed by the socket
 address supplied by our adapter, not caller-supplied IP headers. Railway proxies
 can share a bucket; MCP separately admits at most 60 requests per human per DB

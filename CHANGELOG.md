@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-06 — native login and consent form Origin repair verified locally
+
+- Reproduced the reported deployed Google-button failure in Chrome: `no-referrer` made the HTML form submit `Origin: null`, rejected with HTTP 403. Login/consent now use `strict-origin`, preserving browser Origin while withholding paths/queries from referrers; other routes retain `no-referrer`. Missing, null and foreign Origin checks remain enforced.
+- Node.js 22 platform check/build, all 30 Postgres-backed tests, documentation links and whitespace passed. Real Chrome native login and consent clicks passed locally with fictional users/clients, correct Origin, origin-only Referer and HTTP 303 Google/client redirects; the consent callback carried a code. No external Google authentication, cloud repair deployment or live connector operation was claimed.
+
 ## 2026-10-06 — explicit staging origin opt-in verified locally
 
 - Added `PLATFORM_ALLOWED_ORIGINS` for exact alternate HTTPS deployment origins, with an empty default preserving the canonical production restriction. Invalid or wildcard entries fail closed; issuer/resource/login trust remain bound to the single selected origin.
