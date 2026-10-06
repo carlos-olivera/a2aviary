@@ -1,0 +1,16 @@
+import {readFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import {defaultPolicy} from '../../../services/src/site/policy.ts';
+import {assertPolicySnapshot, generateContracts} from '../../../services/src/site/generator.ts';
+const root = new URL('../../../', import.meta.url);
+const read = async path => JSON.parse(await readFile(new URL(path,root),'utf8'));
+assertPolicySnapshot(defaultPolicy, await read(`plans/versions/${defaultPolicy.planId.value}/${defaultPolicy.version.value}.policy.json`));
+const generated=generateContracts(defaultPolicy);
+assert.deepEqual(await read('contracts/site/v1/site-spec.schema.json'),generated.siteSchema);
+assert.deepEqual(await read('contracts/site/v1/change-request.schema.json'),generated.changeSchema);
+const manifest=await read('contracts/site/v1/manifest.json');
+assert.equal(manifest.planId,defaultPolicy.planId.value);
+for(const key of ['includes','firstVersion','changes']) assert.deepEqual(manifest[key],defaultPolicy[key]);
+assert.equal(manifest.policyVersion,generated.provenance.policyVersion);
+assert.equal(manifest.policySha256,generated.provenance.policySha256);
+console.log('Packaged plan contracts match Phase 1 generator.');

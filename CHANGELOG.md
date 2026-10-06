@@ -1,5 +1,27 @@
 # Changelog
 
+## 2026-10-06 — platform retry evidence and saved owner instructions
+
+- Recorded Carlos's successful retry report and the independently observed HTTP 200 login response with `Referrer-Policy: strict-origin`. Preserved prior local verification records and distinguished this evidence from independently verified authenticated ChatGPT/Claude admin-tool calls.
+- Included the previously saved owner instructions and their original changelog entry unchanged for PR review. Documented that Phase 2 and the form repair were merged into `codex/web-simple-contracts`, while main still contains Phase 1 only. Documentation links, consistency and whitespace passed; no runtime code, cloud settings, merge or deployment was changed by this delivery.
+
+## 2026-10-06 — native login and consent form Origin repair verified locally
+
+- Reproduced the reported deployed Google-button failure in Chrome: `no-referrer` made the HTML form submit `Origin: null`, rejected with HTTP 403. Login/consent now use `strict-origin`, preserving browser Origin while withholding paths/queries from referrers; other routes retain `no-referrer`. Missing, null and foreign Origin checks remain enforced.
+- Node.js 22 platform check/build, all 30 Postgres-backed tests, documentation links and whitespace passed. Real Chrome native login and consent clicks passed locally with fictional users/clients, correct Origin, origin-only Referer and HTTP 303 Google/client redirects; the consent callback carried a code. No external Google authentication, cloud repair deployment or live connector operation was claimed.
+
+## 2026-10-06 — explicit staging origin opt-in verified locally
+
+- Added `PLATFORM_ALLOWED_ORIGINS` for exact alternate HTTPS deployment origins, with an empty default preserving the canonical production restriction. Invalid or wildcard entries fail closed; issuer/resource/login trust remain bound to the single selected origin.
+- Documented the requested Railway staging origin, Google callback and private configuration in [platform operations](docs/platform.md). Node.js 22 platform check/build, all 29 Postgres-backed tests, documentation links and whitespace checks passed locally. No merge, deployment or external Google/client verification was performed.
+
+## 2026-10-06 — discovery OAuth/MCP platform verified locally
+
+- Added an isolated Node.js 22/TypeScript Railway service with pinned Better Auth JWT/MCP/CIMD, Google login/consent, July 2026 POST-only official MCP v2, resource-bound OAuth, Postgres migrations and discovery-only plan tools. DCR is off by default; no site production, payments or live connector activation was added.
+- Added verified configuration-pinned owner bootstrap, invited admins, clients and allowlisted testers; role-filtered tools, explicit confirmations, atomic audit records and own-user ES256 public-key registration/revocation. The existing AWS email registry stays owner-controlled through a documented manual enrollment/revocation bridge, without platform AWS credentials or transport changes.
+- Added container/compose/Railway preparation, DB readiness and rate limits, safe bigint parsing, dependency notice preservation, source protection for apps and Docker context rules, and [endpoint/environment/client instructions](docs/platform.md). Deployed trusted-policy activation remains separately authorized.
+- Node.js 22.23.3 platform check/build and 26 Postgres-backed tests, existing service check/build and 111 tests, website checks/build and seven infrastructure tests passed. Container build, non-root runtime/migrations/readiness/auth smoke, generated contracts, published Railway schema structure, documentation links, whitespace and secret checks were verified locally. External Google sign-in and actual ChatGPT/Claude compatibility remain unverified. Owner review, merge, private configuration and deployment remain separate actions.
+
 ## 2026-10-06 — web-simple policy and site contracts verified locally
 
 - Added an owner-reviewable versioned web-simple policy with rationale fields, immutable version snapshot, generated site/change schemas, Markdown/JSON client manifests, and fictional seven-page examples with original PNG pixels. Read-only artifact drift checks run in the service check path.
@@ -51,6 +73,10 @@
 - Updated terms/privacy/refunds for future licensed platform access, preserved Apache 2.0 source rights and current data disclosures, and deferred purchase/cancellation/refund conditions until before checkout opens. No analytics, checkout, payment integration, runtime, or infrastructure changes were added. Existing footer/contact links and the six-URL sitemap remain valid.
 - Verified Node.js 22 website checks/build, exact emitted HTML and development/preview GET/HEAD, links/anchors/assets, sitemap, metadata and JSON-LD. Headed Chrome desktop/two mobile checks passed with JavaScript disabled/enabled, locally injected production CSP, self-hosted requests, and clean diagnostics. Disabled CTA activation, existing costs/SEO checks, visual inspection, repository documentation links/anchors, source syntax, and whitespace checks passed; see [dated evidence](website/verification.md#software-platform-and-proposed-basic--2026-10-05-local-verification).
 - Rechecked Operator identity, repository-only installation, fixed development access, disabled auto-merge, and protected main with App-bound required checks. The earlier public-page PR #7 is merged and the live release manifest reports `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`; this update remains a separate review delivery. No owner approval, merge, deployment, payment setup, or mailbox configuration was performed by this task.
+
+## 2026-10-05 — persistent project instructions
+
+- Recorded the owner's future-task rules in `AGENTS.md`: Operator App publication, feature branches and PRs, disabled repository auto-merge, owner review before merge/deployment, evidence-based release and pricing claims, full-name attribution, and separate human/agent contact addresses. These instruction changes are saved locally; no additional publication or deployment was performed.
 
 ## 2026-10-05 — public policies and contact prepared locally
 
