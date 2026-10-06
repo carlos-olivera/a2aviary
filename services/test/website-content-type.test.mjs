@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { websiteContentType } from '../scripts/website-content-type.mjs';
 
 test('exact extensionless page keys are HTML; unrelated keys remain binary', () => {
-  for (const key of ['costs', 'terms', 'privacy', 'refunds', 'pricing']) {
+  for (const key of ['architecture', 'costs', 'terms', 'privacy', 'refunds', 'pricing']) {
     assert.equal(websiteContentType(key), 'text/html; charset=utf-8');
     for (const unrelated of ['nested/' + key, key + '.backup']) assert.equal(websiteContentType(unrelated), 'application/octet-stream');
   }

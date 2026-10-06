@@ -2,6 +2,6 @@ const mime = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascri
 
 export function websiteContentType(key) {
   // The private S3 REST origin serves these exact objects without a rewrite.
-  if (['costs', 'terms', 'privacy', 'refunds', 'pricing'].includes(key)) return mime['.html'];
+  if (['architecture', 'costs', 'terms', 'privacy', 'refunds', 'pricing'].includes(key)) return mime['.html'];
   return mime[key.slice(key.lastIndexOf('.'))] ?? 'application/octet-stream';
 }

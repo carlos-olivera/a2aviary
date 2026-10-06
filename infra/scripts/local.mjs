@@ -18,7 +18,8 @@ try {
     env[match[1]] = match[2].trim();
   }
 } catch (error) { if (error.code !== 'ENOENT') throw error; }
-for (const name of ['AWS_PROFILE','AWS_DEFAULT_PROFILE','AWS_SESSION_TOKEN','AWS_SECURITY_TOKEN','A2AVIARY_CONFIG','CDK_DEFAULT_ACCOUNT','CDK_DEFAULT_REGION','CDK_OUTDIR','CDK_CONTEXT_JSON']) delete env[name];
+for (const name of Object.keys(env)) if (name.startsWith('AWS_ENDPOINT_URL_') && name !== 'AWS_ENDPOINT_URL_S3') delete env[name];
+for (const name of ['AWS_CONFIG_FILE','AWS_SHARED_CREDENTIALS_FILE','OPENAI_API_KEY','GITHUB_TOKEN','GH_TOKEN','AWS_PROFILE','AWS_DEFAULT_PROFILE','AWS_SESSION_TOKEN','AWS_SECURITY_TOKEN','A2AVIARY_CONFIG','CDK_DEFAULT_ACCOUNT','CDK_DEFAULT_REGION','CDK_OUTDIR','CDK_CONTEXT_JSON']) delete env[name];
 assert.equal(env.AWS_ACCESS_KEY_ID, 'test', 'Only fake credentials are accepted'); assert.equal(env.AWS_SECRET_ACCESS_KEY, 'test'); assert.equal(env.AWS_REGION, 'us-east-1'); assert.equal(env.AWS_EC2_METADATA_DISABLED, 'true');
 for (const [name, expected] of Object.entries({AWS_ENDPOINT_URL:'http://127.0.0.1:4566',OPENAI_BASE_URL:'http://127.0.0.1:8090/v1',GITHUB_BASE_URL:'http://127.0.0.1:8090/github',LOCAL_SES_ENDPOINT:'http://127.0.0.1:8090'})) assert.equal(env[name], expected, 'Local endpoints must use the Compose loopback defaults');
 if (command !== 'down' && Number(process.versions.node.split('.')[0]) !== 22) throw new Error('Use Node.js 22');
@@ -26,7 +27,10 @@ await mkdir(state, { recursive: true, mode: 0o700 });
 async function run(program, args, cwd = root) {
   const log = await open(resolve(state, 'commands.log'), 'a', 0o600);
   const child = spawn(program, args, { cwd, env, stdio: ['ignore', log.fd, log.fd] });
-  const code = await new Promise((done, reject) => { child.on('error', reject); child.on('exit', done); }); await log.close();
+  const timer = setTimeout(() => child.kill('SIGTERM'), 600000);
+  let code;
+  try { code = await new Promise((done, reject) => { child.on('error', reject); child.on('exit', done); }); }
+  finally { clearTimeout(timer); await log.close(); }
   if (code !== 0) throw new Error('local_command_failed: ' + program + ' (private diagnostics in .local/local/commands.log)');
 }
 const compose = (...args) => run('docker', ['compose', '-f', 'docker-compose.local.yml', ...args]);
