@@ -105,12 +105,12 @@ architecture` command with `--repo-root`, `--quality showcase`, `--json`, and
 Integrate the passing generated artifact from the repository root:
 
 ```sh
-node website/scripts/integrate-architecture.mjs .local/architecture/raw.html
+node website/scripts/integrate-architecture.mjs .local/architecture/raw-final.html
 npm --prefix website run check
 npm --prefix website run build
 ```
 
-Integration extracts generated SVG/CSS, adds accessible site controls and
+Integration extracts generated SVG, adds accessible site controls and
 same-origin assets, and updates source fingerprints/provenance. Preserve MIT
 notices, inspect the final page under the production CSP, and remove the
 session-only skill. Commit neither the skill package nor its dependencies.

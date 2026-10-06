@@ -1,5 +1,26 @@
 # Landing verification
 
+## Architecture — 2026-10-06, local verification
+
+Archify 3.0.1 showcase finalization passed all four gates with no diagnostics.
+The integrated drawing retains editable JSON, source ranges, a committed
+implementation revision, sanitized provenance and MIT notices. The standard
+header/footer, dark theme, extensionless HTML output/MIME, canonical/OG tags,
+sitemap and navigation are prepared for release.
+
+Website checks/build and internal link checks pass. The built page was served
+from deployed local S3 with the production CSP, inspected at 1440 × 1000 and
+390 × 844, and tested with keyboard activation/focus, flow views, local coverage,
+all 36 main-source links and JavaScript-disabled details. No automatic request to
+another domain or CSP/console error was observed. Mobile overflow stays inside
+the diagram region; the full native node list remains usable.
+
+Customer website production, payments/checkout, apps, MCP services and plugins
+remain planned. Local emulation, mocks, adapters and cloud-only controls have
+separate annotations. This verifies local behavior, not live `/architecture`,
+CloudFront caching, real mailbox delivery or production alarms. Owner approval,
+approved merge and the existing website release workflow precede public checks.
+
 ## Changelog and author profile — 2026-10-05, local verification
 
 - **Configured locally:** header hash navigation and a semantic `#changelog`

@@ -1,0 +1,970 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "a2aviary architecture",
+    "output": ".local/architecture/raw-final.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/carlos-olivera/a2aviary.git",
+      "revision": "736948102739fa7dcf2b7e1800a0e7f60cdd846f",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "visitor",
+      "type": "external",
+      "label": "Visitor",
+      "sublabel": "Project landing",
+      "pos": [
+        40,
+        70
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/app.ts",
+          "line": 47,
+          "end_line": 49
+        }
+      ]
+    },
+    {
+      "id": "cdn",
+      "type": "cloud",
+      "label": "CloudFront",
+      "sublabel": "TLS / private origin",
+      "pos": [
+        350,
+        70
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Cloud-only",
+      "sources": [
+        {
+          "path": "infra/src/app.ts",
+          "line": 47,
+          "end_line": 49
+        }
+      ]
+    },
+    {
+      "id": "site",
+      "type": "database",
+      "label": "Website S3",
+      "sublabel": "Static build / snapshots",
+      "pos": [
+        660,
+        70
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/app.ts",
+          "line": 30,
+          "end_line": 32
+        }
+      ]
+    },
+    {
+      "id": "request",
+      "type": "external",
+      "label": "Signed request",
+      "sublabel": "Registered ES256 identity",
+      "pos": [
+        40,
+        270
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "services/src/client.ts",
+          "line": 12,
+          "end_line": 14
+        }
+      ]
+    },
+    {
+      "id": "ses",
+      "type": "cloud",
+      "label": "SES receipt",
+      "sublabel": "Local receipt-rule adapter",
+      "pos": [
+        350,
+        270
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Adapter",
+      "sources": [
+        {
+          "path": "infra/src/email.ts",
+          "line": 46,
+          "end_line": 48
+        }
+      ]
+    },
+    {
+      "id": "raw",
+      "type": "database",
+      "label": "Raw email S3",
+      "sublabel": "30 days / rejected 7 days",
+      "pos": [
+        660,
+        270
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/email.ts",
+          "line": 23,
+          "end_line": 25
+        }
+      ]
+    },
+    {
+      "id": "receipt",
+      "type": "messagebus",
+      "label": "SNS / intake SQS",
+      "sublabel": "Receipt notifications",
+      "pos": [
+        970,
+        270
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/email.ts",
+          "line": 34,
+          "end_line": 36
+        }
+      ]
+    },
+    {
+      "id": "intake",
+      "type": "backend",
+      "label": "Intake Lambda",
+      "sublabel": "Validate / admit",
+      "pos": [
+        970,
+        470
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "services/src/intake.ts",
+          "line": 8,
+          "end_line": 10
+        }
+      ]
+    },
+    {
+      "id": "state",
+      "type": "database",
+      "label": "DynamoDB state",
+      "sublabel": "Tasks 30 / replay 90 days",
+      "pos": [
+        660,
+        470
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "services/src/intake.ts",
+          "line": 23,
+          "end_line": 25
+        }
+      ]
+    },
+    {
+      "id": "dispatcher",
+      "type": "backend",
+      "label": "Stream dispatcher",
+      "sublabel": "DynamoDB Streams",
+      "pos": [
+        350,
+        470
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "services/src/dispatcher.ts",
+          "line": 3,
+          "end_line": 5
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "type": "messagebus",
+      "label": "Runtime SQS",
+      "sublabel": "Retries / 14-day DLQ",
+      "pos": [
+        40,
+        470
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/runtime.ts",
+          "line": 32,
+          "end_line": 34
+        }
+      ]
+    },
+    {
+      "id": "runtime",
+      "type": "backend",
+      "label": "Executor Lambda",
+      "sublabel": "Analyze / durable cleanup",
+      "pos": [
+        40,
+        690
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "services/src/runtime.ts",
+          "line": 49,
+          "end_line": 51
+        }
+      ]
+    },
+    {
+      "id": "outbox",
+      "type": "messagebus",
+      "label": "Outbox / SQS",
+      "sublabel": "Durable signed-reply work",
+      "pos": [
+        350,
+        690
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "services/src/store.ts",
+          "line": 26,
+          "end_line": 27
+        }
+      ]
+    },
+    {
+      "id": "sender",
+      "type": "security",
+      "label": "Sender Lambda",
+      "sublabel": "ES256 / delivery ledger",
+      "pos": [
+        660,
+        690
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "services/src/sender.ts",
+          "line": 5,
+          "end_line": 7
+        }
+      ]
+    },
+    {
+      "id": "reply",
+      "type": "cloud",
+      "label": "Signed SES reply",
+      "sublabel": "Local SES v2 \u2192 v1 bridge",
+      "pos": [
+        970,
+        690
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Adapter",
+      "sources": [
+        {
+          "path": "services/src/sender.ts",
+          "line": 2,
+          "end_line": 4
+        }
+      ]
+    },
+    {
+      "id": "openai",
+      "type": "external",
+      "label": "OpenAI analysis",
+      "sublabel": "Fixed local fixture",
+      "pos": [
+        40,
+        910
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Mock",
+      "sources": [
+        {
+          "path": "services/src/runtime.ts",
+          "line": 84,
+          "end_line": 86
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "type": "database",
+      "label": "Input / result S3",
+      "sublabel": "30 days / pending 7 days",
+      "pos": [
+        350,
+        910
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/email.ts",
+          "line": 24,
+          "end_line": 26
+        }
+      ]
+    },
+    {
+      "id": "watchdog",
+      "type": "backend",
+      "label": "EventBridge watchdog",
+      "sublabel": "1-minute reconciliation",
+      "pos": [
+        660,
+        910
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/runtime.ts",
+          "line": 44,
+          "end_line": 46
+        }
+      ]
+    },
+    {
+      "id": "feedback",
+      "type": "backend",
+      "label": "SES feedback Lambda",
+      "sublabel": "Delivery / suppression",
+      "pos": [
+        970,
+        910
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "services/src/feedback.ts",
+          "line": 4,
+          "end_line": 6
+        }
+      ]
+    },
+    {
+      "id": "support",
+      "type": "backend",
+      "label": "Isolated human support",
+      "sublabel": "7-day content / 30-day logs",
+      "pos": [
+        40,
+        1110
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/runtime.ts",
+          "line": 28,
+          "end_line": 30
+        }
+      ]
+    },
+    {
+      "id": "alarms",
+      "type": "cloud",
+      "label": "CloudWatch controls",
+      "sublabel": "Failures / DLQ / $8 warning",
+      "pos": [
+        350,
+        1110
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "infra/src/controls.ts",
+          "line": 17,
+          "end_line": 19
+        }
+      ]
+    },
+    {
+      "id": "budget",
+      "type": "cloud",
+      "label": "AWS billing budget",
+      "sublabel": "$15 / notification only",
+      "pos": [
+        660,
+        1110
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Cloud-only",
+      "sources": [
+        {
+          "path": "infra/src/controls.ts",
+          "line": 28,
+          "end_line": 30
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "type": "security",
+      "label": "Application limits",
+      "sublabel": "$1 task / $10 month",
+      "pos": [
+        970,
+        1110
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Local emulation",
+      "sources": [
+        {
+          "path": "contracts/limits.defaults.json",
+          "line": 1,
+          "end_line": 1
+        }
+      ]
+    },
+    {
+      "id": "agentwork",
+      "type": "external",
+      "label": "Agent-authored change",
+      "sublabel": "Authorized contributions",
+      "pos": [
+        40,
+        1380
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Cloud-only",
+      "sources": [
+        {
+          "path": "CONTRIBUTING.md",
+          "line": 5,
+          "end_line": 7
+        }
+      ]
+    },
+    {
+      "id": "broker",
+      "type": "security",
+      "label": "Operator broker",
+      "sublabel": "Fixed App permission profile",
+      "pos": [
+        350,
+        1380
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Mock",
+      "sources": [
+        {
+          "path": "services/src/operator.ts",
+          "line": 15,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "id": "pr",
+      "type": "external",
+      "label": "Pull request",
+      "sublabel": "App-authored publication",
+      "pos": [
+        660,
+        1380
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Mock",
+      "sources": [
+        {
+          "path": "docs/runbooks.md",
+          "line": 203,
+          "end_line": 205
+        }
+      ]
+    },
+    {
+      "id": "prchecks",
+      "type": "security",
+      "label": "PR checks / policy",
+      "sublabel": "Checks before approval",
+      "pos": [
+        970,
+        1380
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Cloud-only",
+      "sources": [
+        {
+          "path": "services/src/operator.ts",
+          "line": 27,
+          "end_line": 29
+        }
+      ]
+    },
+    {
+      "id": "approval",
+      "type": "security",
+      "label": "Owner approval",
+      "sublabel": "Current head / human gate",
+      "pos": [
+        970,
+        1580
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Cloud-only",
+      "sources": [
+        {
+          "path": "services/src/policy.ts",
+          "line": 6,
+          "end_line": 8
+        }
+      ]
+    },
+    {
+      "id": "merge",
+      "type": "security",
+      "label": "Approved merge",
+      "sublabel": "Owner-controlled action",
+      "pos": [
+        660,
+        1580
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Cloud-only",
+      "sources": [
+        {
+          "path": "CONTRIBUTING.md",
+          "line": 7,
+          "end_line": 9
+        }
+      ]
+    },
+    {
+      "id": "mainci",
+      "type": "backend",
+      "label": "Main CI",
+      "sublabel": "Main-only OIDC",
+      "pos": [
+        350,
+        1580
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Cloud-only",
+      "sources": [
+        {
+          "path": ".github/workflows/release.yml",
+          "line": 32,
+          "end_line": 34
+        }
+      ]
+    },
+    {
+      "id": "deploy",
+      "type": "backend",
+      "label": "Website deploy",
+      "sublabel": "Verify / restore snapshot",
+      "pos": [
+        40,
+        1580
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Cloud-only",
+      "sources": [
+        {
+          "path": "services/scripts/deploy-website.mjs",
+          "line": 25,
+          "end_line": 27
+        }
+      ]
+    },
+    {
+      "id": "production",
+      "type": "external",
+      "label": "Customer websites",
+      "sublabel": "Planned capability",
+      "pos": [
+        40,
+        1850
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Planned",
+      "sources": [
+        {
+          "path": "docs/vision.md",
+          "line": 9,
+          "end_line": 11
+        }
+      ]
+    },
+    {
+      "id": "payments",
+      "type": "external",
+      "label": "Payments / checkout",
+      "sublabel": "Planned capability",
+      "pos": [
+        350,
+        1850
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Planned",
+      "sources": [
+        {
+          "path": "docs/vision.md",
+          "line": 9,
+          "end_line": 11
+        }
+      ]
+    },
+    {
+      "id": "apps",
+      "type": "external",
+      "label": "Apps",
+      "sublabel": "Planned capability",
+      "pos": [
+        660,
+        1850
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Planned",
+      "sources": [
+        {
+          "path": "docs/vision.md",
+          "line": 9,
+          "end_line": 11
+        }
+      ]
+    },
+    {
+      "id": "mcp",
+      "type": "external",
+      "label": "MCP services",
+      "sublabel": "Planned capability",
+      "pos": [
+        970,
+        1850
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Planned",
+      "sources": [
+        {
+          "path": "docs/vision.md",
+          "line": 9,
+          "end_line": 11
+        }
+      ]
+    },
+    {
+      "id": "plugins",
+      "type": "external",
+      "label": "Plugins",
+      "sublabel": "Planned capability",
+      "pos": [
+        40,
+        2030
+      ],
+      "size": [
+        210,
+        68
+      ],
+      "tag": "Planned",
+      "sources": [
+        {
+          "path": "docs/vision.md",
+          "line": 9,
+          "end_line": 11
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "from": "visitor",
+      "to": "cdn",
+      "label": "HTTPS",
+      "variant": "emphasis"
+    },
+    {
+      "from": "cdn",
+      "to": "site",
+      "label": "Origin access",
+      "variant": "security"
+    },
+    {
+      "from": "request",
+      "to": "ses",
+      "label": "Signed MIME",
+      "variant": "emphasis"
+    },
+    {
+      "from": "ses",
+      "to": "raw",
+      "label": "S3 action",
+      "variant": "emphasis"
+    },
+    {
+      "from": "raw",
+      "to": "receipt",
+      "label": "Notify",
+      "variant": "emphasis"
+    },
+    {
+      "from": "receipt",
+      "to": "intake",
+      "label": "SQS trigger",
+      "variant": "emphasis"
+    },
+    {
+      "from": "intake",
+      "to": "state",
+      "label": "Commit",
+      "variant": "emphasis"
+    },
+    {
+      "from": "state",
+      "to": "dispatcher",
+      "label": "Stream",
+      "variant": "emphasis"
+    },
+    {
+      "from": "dispatcher",
+      "to": "work",
+      "label": "Enqueue",
+      "variant": "emphasis"
+    },
+    {
+      "from": "work",
+      "to": "runtime",
+      "label": "SQS trigger",
+      "variant": "emphasis"
+    },
+    {
+      "from": "runtime",
+      "to": "outbox",
+      "label": "Result",
+      "variant": "emphasis"
+    },
+    {
+      "from": "outbox",
+      "to": "sender",
+      "label": "SQS trigger",
+      "variant": "emphasis"
+    },
+    {
+      "from": "sender",
+      "to": "reply",
+      "label": "Signed MIME",
+      "variant": "emphasis"
+    },
+    {
+      "from": "runtime",
+      "to": "openai",
+      "label": "Analyze / cleanup",
+      "variant": "default"
+    },
+    {
+      "from": "runtime",
+      "to": "data",
+      "label": "Read / write",
+      "variant": "default"
+    },
+    {
+      "from": "agentwork",
+      "to": "broker",
+      "label": "Authorized",
+      "variant": "security"
+    },
+    {
+      "from": "broker",
+      "to": "pr",
+      "label": "App token",
+      "variant": "security"
+    },
+    {
+      "from": "pr",
+      "to": "prchecks",
+      "label": "Validate",
+      "variant": "security"
+    },
+    {
+      "from": "prchecks",
+      "to": "approval",
+      "label": "Review",
+      "variant": "security"
+    },
+    {
+      "from": "approval",
+      "to": "merge",
+      "label": "Approve head",
+      "variant": "security"
+    },
+    {
+      "from": "merge",
+      "to": "mainci",
+      "label": "Main push",
+      "variant": "security"
+    },
+    {
+      "from": "mainci",
+      "to": "deploy",
+      "label": "Website only",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Read the map",
+      "items": [
+        "Project landing, signed-email foundation and Operator contribution workflow.",
+        "Local emulation, Mock, Adapter, Cloud-only and Planned are separate claims."
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Operational limits",
+      "items": [
+        "Lifecycle/TTL deletion is asynchronous; no exact deletion deadline is claimed.",
+        "Budget notifications are not hard provider billing caps; real alerts and tagged coverage remain owner work."
+      ]
+    },
+    {
+      "dot": "slate",
+      "title": "Review boundary",
+      "items": [
+        "Customer website production, checkout, apps, MCP services and plugins are planned.",
+        "Local checks and prepared source do not establish a production release."
+      ]
+    }
+  ]
+}

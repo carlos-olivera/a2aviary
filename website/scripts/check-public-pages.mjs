@@ -11,6 +11,7 @@ const documents = new Map([
   ['/', (await readFile(new URL('index.html', root), 'utf8')).replace('<!-- CHANGELOG_SECTION -->', renderChangelog(JSON.parse(await readFile(new URL('public/changelog.json', root), 'utf8'))))],
   ['/costs', renderCosts(JSON.parse(await readFile(new URL('public/costs.json', root), 'utf8')))],
   ...publicPages.map(path => ['/' + path, renderPolicyPage(path)]),
+  ['/architecture', await readFile(new URL('architecture/index.html', root), 'utf8')],
 ]);
 const sitemap = await readFile(new URL('public/sitemap.xml', root), 'utf8');
 assert.deepEqual([...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]), [...documents.keys()].map(path => 'https://a2aviary.io' + path));

@@ -1,0 +1,146 @@
+{
+  "visitor": {
+    "mode": "Local emulation",
+    "note": "The project landing is deployed. Local HTTP serves the same built objects; it does not verify cloud caching."
+  },
+  "cdn": {
+    "mode": "Cloud-only",
+    "note": "HTTPS, origin access control, security headers and cache policies remain production infrastructure."
+  },
+  "site": {
+    "mode": "Local emulation",
+    "note": "Private website and release buckets exist in both CDK targets. The local server reads local S3."
+  },
+  "request": {
+    "mode": "Local emulation",
+    "note": "The local seed generates an ephemeral ES256 identity and one fictional signed MIME request."
+  },
+  "ses": {
+    "mode": "Adapter",
+    "note": "Cloud SES receives email. Community receipt rules are materialized from CDK; the local adapter executes their S3/SNS actions. No SMTP or real delivery."
+  },
+  "raw": {
+    "mode": "Local emulation",
+    "note": "Accepted raw email: 30 days. Rejected raw email: 7 days. Private data never enters this page."
+  },
+  "receipt": {
+    "mode": "Local emulation",
+    "note": "SES action publishes a receipt notification to SNS, which delivers it to intake SQS. Retries have a separate DLQ."
+  },
+  "intake": {
+    "mode": "Local emulation",
+    "note": "Validates signature, scope, expiry, attachments, replay and admission before writing durable business state."
+  },
+  "state": {
+    "mode": "Local emulation",
+    "note": "Tasks and outbox expire after 30 days. Replay, nonce, admission and audit records use 90 days. TTL deletion is asynchronous."
+  },
+  "dispatcher": {
+    "mode": "Local emulation",
+    "note": "DynamoDB Streams dispatches due work into runtime and outbound queues; watchdog reconciles interrupted dispatch."
+  },
+  "work": {
+    "mode": "Local emulation",
+    "note": "The production executor runs from SQS. Main queues retain 4 days; dead letters retain 14 days."
+  },
+  "runtime": {
+    "mode": "Local emulation",
+    "note": "Reserves budget, retrieves authenticated inputs, handles tool outcomes, saves results and cleans up provider sessions."
+  },
+  "outbox": {
+    "mode": "Local emulation",
+    "note": "A durable outbound record is committed with the result. Dispatcher/watchdog enqueue it for the sender."
+  },
+  "sender": {
+    "mode": "Local emulation",
+    "note": "Uses the service signing secret, checks the grant and destination, claims a send, and preserves uncertain outcomes without blind resend."
+  },
+  "reply": {
+    "mode": "Adapter",
+    "note": "The local bridge maps SES v2 raw sends to SES v1 and captures the unchanged MIME. The test verifies ES256 signature and correlation; no inbox delivery."
+  },
+  "openai": {
+    "mode": "Mock",
+    "note": "Production uses Agents API gpt-6-luna, environment none. Local HTTP returns a fixed fictional fixture, exercises the input tool and deletes the mock session."
+  },
+  "data": {
+    "mode": "Local emulation",
+    "note": "Accepted inputs/results: 30 days. Abandoned pending inputs: 7 days. Lifecycle expiration and backups have distinct behavior."
+  },
+  "watchdog": {
+    "mode": "Local emulation",
+    "note": "Scheduled every minute. Requeues due runtime, cleanup and outbox work, reconciles stuck sends, and observes committed model dollars."
+  },
+  "feedback": {
+    "mode": "Local emulation",
+    "note": "SNS delivery/bounce/complaint events update outbox state and suppression. Local sending events are synthetic; real production fault exercises remain separate."
+  },
+  "support": {
+    "mode": "Local emulation",
+    "note": "Separate support S3/SNS/SQS, ledger and Lambda. Content/ledger: 7 days; logs: 30 days; DLQ: 14 days. Local signed-agent tests do not prove support delivery."
+  },
+  "alarms": {
+    "mode": "Local emulation",
+    "note": "Worker failures and DLQ depth alarm at 1. Model committed-dollar warning: $8. Main worker logs: 90 days; support logs: 30 days. Real alerts remain unverified."
+  },
+  "budget": {
+    "mode": "Cloud-only",
+    "note": "$15 monthly AWS notification budget, thresholds 50/80/100 percent. Application allowance: $1/task and $10/month. Alerts are not hard provider billing caps; tagged coverage remains owner work."
+  },
+  "limits": {
+    "mode": "Local emulation",
+    "note": "Defaults: $1 per task, $10 monthly model allowance, 2 concurrent tasks, 10 tasks/day, 300-second task deadline. Unknown usage stays reserved."
+  },
+  "agentwork": {
+    "mode": "Cloud-only",
+    "note": "Agent-authored repository work is a contribution workflow. The brief-analysis service does not autonomously engineer repositories."
+  },
+  "broker": {
+    "mode": "Mock",
+    "note": "Production broker issues fixed repository-scoped App tokens when enabled. Local deployed broker talks only to mock GitHub; PR requests are recorded."
+  },
+  "pr": {
+    "mode": "Mock",
+    "note": "Production branch/PR publication uses the Operator App only. Local PR requests create no GitHub resources and grant no real authority."
+  },
+  "prchecks": {
+    "mode": "Cloud-only",
+    "note": "Read-only PR checks and App-bound policy evaluate changed paths, renames and current-head owner approval. Local integration CI starts advisory."
+  },
+  "approval": {
+    "mode": "Cloud-only",
+    "note": "Carlos Olivera Terrazas must approve sensitive paths at the current PR head. Automation cannot manufacture approval. Auto-merge remains disabled."
+  },
+  "merge": {
+    "mode": "Cloud-only",
+    "note": "Owner-controlled merge is distinct from branch/PR publication. This delivery stops at review."
+  },
+  "mainci": {
+    "mode": "Cloud-only",
+    "note": "Main runs package checks and the separate website deployment job with main-only OIDC. PR jobs cannot deploy."
+  },
+  "deploy": {
+    "mode": "Cloud-only",
+    "note": "Uploads the built website, invalidates CloudFront and verifies public checksums/MIME/cache, with snapshot restoration on failure. Infrastructure deployment is separately owner controlled."
+  },
+  "production": {
+    "mode": "Planned",
+    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
+  },
+  "payments": {
+    "mode": "Planned",
+    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
+  },
+  "apps": {
+    "mode": "Planned",
+    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
+  },
+  "mcp": {
+    "mode": "Planned",
+    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
+  },
+  "plugins": {
+    "mode": "Planned",
+    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
+  }
+}

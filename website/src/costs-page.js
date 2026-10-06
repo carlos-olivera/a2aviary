@@ -59,7 +59,7 @@ export function renderCosts(data) {
   <div class="page">
     <header>
       <a class="brand" href="/" aria-label="a2aviary homepage"><img src="/brand/a2aviary-logo-inverse.svg" width="1923" height="456" alt="a2aviary"></a>
-      <nav aria-label="Cost resources"><a href="${repository}COSTS.md">Repository cost sheet</a><a href="/costs.json">Raw JSON</a></nav>
+      <nav aria-label="Cost resources"><a href="/architecture">Architecture</a><a href="${repository}COSTS.md">Repository cost sheet</a><a href="/costs.json">Raw JSON</a></nav>
     </header>
     <main>
       <h1>What a2aviary costs</h1>
