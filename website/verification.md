@@ -3,6 +3,7 @@
 ## Architecture — 2026-10-06, local verification
 
 Archify 3.0.1 showcase finalization passed all four gates with no diagnostics.
+[Reviewed diagram screenshot](../docs/architecture/architecture-preview.png).
 The integrated drawing retains editable JSON, source ranges, a committed
 implementation revision, sanitized provenance and MIT notices. The standard
 header/footer, dark theme, extensionless HTML output/MIME, canonical/OG tags,

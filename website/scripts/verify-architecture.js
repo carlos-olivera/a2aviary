@@ -27,6 +27,7 @@ async (page) => {
     await page.getByRole('checkbox', { name: 'Highlight local coverage' }).uncheck();
     await page.getByRole('button', { name: 'Overview', exact: true }).click();
     await page.screenshot({ path: 'output/playwright/architecture-desktop.png', fullPage: true });
+    await page.locator('.canvas').screenshot({ path: 'output/playwright/architecture-map.png' });
     await page.setViewportSize({ width: 390, height: 844 });
     await page.screenshot({ path: 'output/playwright/architecture-mobile.png', fullPage: true });
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Mobile overflow contained inside map');
