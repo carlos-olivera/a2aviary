@@ -6,7 +6,7 @@ Chrome reproduced a native login form failure (`Origin: null`, HTTP 403); the
 repair was merged in PR #17. Following the corrected deployment, the live login
 response returned HTTP 200 with `Referrer-Policy: strict-origin`, and Carlos
 reported a successful retry. Authenticated ChatGPT/Claude admin tool calls have
-not been independently recorded; see [deployment evidence](release-verification.md#platform-origin-repair--2026-10-06-owner-reported-retry). Phase 3 adds optional approved-spec build/deploy jobs and PocketBase provisioning behind `SITE_WORKFLOW_ENABLED`, disabled by default. See [site operations](sites.md) for the new variables, ownership/confirmation gates, sandbox verification, DNS status, and separate fixture deployment. No payments or new signed human-approval protocol is enabled. The AWS signed-email v1 workers remain unchanged.
+not been independently recorded; see [deployment evidence](release-verification.md#platform-origin-repair--2026-10-06-owner-reported-retry). Phase 3 adds optional approved-spec build/deploy jobs and PocketBase provisioning behind `SITE_WORKFLOW_ENABLED`, disabled by default. See [site operations](sites.md) for the new variables, ownership/confirmation gates, sandbox verification, DNS status, and separate fixture deployment. No payments or new signed human-approval protocol is enabled. The AWS signed-email v1 workers remain unchanged. Phase 4 adds [testers and chat-only superadmin](testers-and-admin.md), with separate staging-only sites and audited reset; deployment evidence remains separate.
 
 ## Package and identity choices
 
@@ -74,8 +74,7 @@ HTTP bodies
 are capped at 512 KiB. Better Auth uses database rate limits, keyed by the socket
 address supplied by our adapter, not caller-supplied IP headers. Railway proxies
 can share a bucket; MCP separately admits at most 60 requests per human per DB
-calendar minute, including malformed authenticated requests. Concurrency controls
-and monthly plan accounting remain separate later work. pg int8 timestamps are safely parsed as numbers so provider retry arithmetic
+calendar minute, including malformed authenticated requests. Site jobs use the separate concurrency and monthly accounting controls described in [site operations](sites.md). pg int8 timestamps are safely parsed as numbers so provider retry arithmetic
 works; audit IDs are read as text. Secrets, tokens and key material are not included in app logs.
 
 ## Private configuration and Railway preparation
@@ -88,7 +87,7 @@ works; audit IDs are read as text. Secrets, tokens and key material are not incl
 | `BETTER_AUTH_SECRET` | Random secret, at least 32 characters; protects sessions, OAuth context and stored signing keys |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Private Google web OAuth client; exact callback above and local callback as needed |
 | `PLATFORM_SUPERADMIN_EMAIL` | Exact owner-approved verified email, privately configured; sole superadmin identity |
-| `PLATFORM_TESTER_EMAILS` | Optional comma-separated verified-email allowlist; cannot include the owner |
+| `PLATFORM_TESTER_EMAILS` | Optional startup seed for the durable tester allowlist; chat removal persists across restart; cannot include the owner |
 | `OAUTH_ENABLE_DCR` | `false` by default; `true` enables unauthenticated legacy OAuth client registration |
 | `PORT` | Railway-injected listener port; local default 3000 |
 | `NODE_ENV` | `production` in the container |
@@ -141,12 +140,14 @@ changes; no down/reset/drop tool is provided.
 | `agent_keys.register` | All roles, own identity only | `REGISTER_MY_AGENT_KEY` |
 | `agent_keys.revoke` | All roles, own active key only | `REVOKE_MY_AGENT_KEY:<keyId>` |
 | `admin.invite` | Superadmin | `INVITE_ADMIN:<lowercase-email>` |
-| `admin.revoke` | Superadmin; cannot revoke configured owner | `REVOKE_ADMIN:<userId>` |
-| `admin.audit.list` | Admin/superadmin | `READ_PRIVATE_AUDIT_LOG` |
+| `admin.revoke` | Superadmin; cannot revoke configured owner | `REVOKE_ADMIN:<lowercase-email>` (legacy user ID still supported) |
+| `admin.audit.list` | Superadmin | `READ_PRIVATE_AUDIT_LOG` |
+
+See [the full Phase 4 tool list](testers-and-admin.md#tool-list) for enrollment, tester reset, site inventory/inspection and filtered redacted logs. Only superadmin can use those administrative tools.
 
 Default role is client. Verified allowlisted testers receive tester role, with
-`testMode` on MCP request logs, tool-call audits and privileged-action records.
-No payment or enrollment exists, so the role does not imply a free hosted plan.
+`test:true` on site/build/change metadata, MCP and verification logs, and audit records (the earlier `testMode` alias is retained). Free tester enrollment uses the same pinned plan limits; test sites use isolated staging hosts only.
+No payment integration exists. Tester enrollment grants the test-only free plan, while hosting still requires workflow activation and validated approved submissions.
 The verified configured owner bootstraps automatically with an audit record.
 Admin invitations last seven days and are consumed on verified sign-in/use;
 acceptance is durable. No email or other invitation message is sent. An admin
@@ -160,7 +161,7 @@ also recorded. Logs are private application records, not cryptographic or
 operator-proof storage. Plan artifacts are packaged from Phase 1, checked
 against its generator at build/check time, and checked for pinned provenance at
 startup. Tools require the exact plan ID/version; there is no latest fallback,
-file path input, policy editing, sale or plan enrollment.
+file path input, policy editing or sale in discovery tools. Tester enrollment is separate from plan discovery and cannot change its rules.
 
 ## Existing signed-email registry bridge
 

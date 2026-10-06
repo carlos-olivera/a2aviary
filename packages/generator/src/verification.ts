@@ -33,7 +33,8 @@ export interface BuildVerifier {
   verify(
     source: SourceBundle,
     spec: SiteSpec,
-    preview: PreviewBundle
+    preview: PreviewBundle,
+    context?: { test: boolean }
   ): Promise<VerifiedBuild>;
 }
 export function safePath(path: string): boolean {
@@ -118,6 +119,7 @@ export function assertVerified(
 export class AgentsVerifier implements BuildVerifier {
   readonly client: OpenAI;
   private readonly onCall: (event: {
+    test?: boolean;
     event: string;
     specSha256: string;
     sourceSha256: string;
@@ -133,8 +135,11 @@ export class AgentsVerifier implements BuildVerifier {
   async verify(
     source: SourceBundle,
     spec: SiteSpec,
-    preview: PreviewBundle
+    preview: PreviewBundle,
+    context: { test: boolean } = { test: false }
   ): Promise<VerifiedBuild> {
+    const emit = (event: Parameters<AgentsVerifier['onCall']>[0]) =>
+      this.onCall({ ...event, test: context.test });
     validatePreview(spec, preview);
     // The approval also binds prepared asset hashes; previews may reference these
     // supplied bytes without duplicating them in the approved HTML/CSS artifact.
@@ -174,7 +179,7 @@ export class AgentsVerifier implements BuildVerifier {
         ).toString('base64')
       }
     ];
-    this.onCall({
+    emit({
       event: 'agents.verification.started',
       specSha256: source.specSha256,
       sourceSha256: source.sourceSha256
@@ -240,7 +245,7 @@ export class AgentsVerifier implements BuildVerifier {
       )
       .catch(() => {
         clearTimeout(timer);
-        this.onCall({
+        emit({
           event: 'agents.verification.completed',
           specSha256: source.specSha256,
           sourceSha256: source.sourceSha256,
@@ -295,7 +300,7 @@ export class AgentsVerifier implements BuildVerifier {
       } catch {
         throw new VerificationFailure(build);
       }
-      this.onCall({
+      emit({
         event: 'agents.verification.completed',
         specSha256: source.specSha256,
         sourceSha256: source.sourceSha256,
@@ -303,7 +308,7 @@ export class AgentsVerifier implements BuildVerifier {
       });
       return build;
     } catch (error) {
-      this.onCall({
+      emit({
         event: 'agents.verification.completed',
         specSha256: source.specSha256,
         sourceSha256: source.sourceSha256,
@@ -329,7 +334,7 @@ export class AgentsVerifier implements BuildVerifier {
                 setTimeout(resolve, 250 * (attempt + 1))
               );
             if (attempt === 2)
-              this.onCall({
+              emit({
                 event: 'agents.cleanup.pending',
                 specSha256: source.specSha256,
                 sourceSha256: source.sourceSha256

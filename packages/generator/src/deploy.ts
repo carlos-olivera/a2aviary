@@ -27,6 +27,7 @@ export interface SiteResources {
   customDomain?: string;
   customDomainId?: string;
   cmsConfigured?: boolean;
+  test?: boolean;
 }
 export interface DeploymentInput {
   name: string;
@@ -36,11 +37,17 @@ export interface DeploymentInput {
   clientEmail: string;
   clientPassword: string;
   domain?: string;
+  test?: boolean;
   saveResources: (value: SiteResources) => Promise<void>;
 }
 export interface SiteDeployer {
   deploy(input: DeploymentInput): Promise<SiteResources>;
-  status(resources: SiteResources, name: string): Promise<unknown>;
+  status(
+    resources: SiteResources,
+    name: string,
+    test?: boolean
+  ): Promise<unknown>;
+  reset(resources: SiteResources, name: string, test: boolean): Promise<void>;
 }
 export interface RailwayOptions {
   apiToken: string;
@@ -82,7 +89,12 @@ export class RailwayDeployer implements SiteDeployer {
         return r.data;
       });
   }
-  private async guard(resources: SiteResources, name: string) {
+  private async guard(
+    resources: SiteResources,
+    name: string,
+    test = false,
+    allowMissing = false
+  ) {
     if (
       !resources.projectId ||
       this.options.protectedProjectIds.has(resources.projectId)
@@ -96,16 +108,30 @@ export class RailwayDeployer implements SiteDeployer {
         { id: resources.projectId }
       )
     ).project;
+    if (!p && allowMissing) return false;
+    if (!p) throw new SiteError('deployment_target_missing');
     if (
       p.name !== name ||
       p.workspaceId !== this.options.workspaceId ||
       !p.environments.edges.some(
         (e: any) =>
           e.node.id === resources.environmentId &&
-          e.node.name === (this.options.test ? 'fixture' : 'production')
+          e.node.name === (test || this.options.test ? 'fixture' : 'production')
       )
     )
       throw new SiteError('deployment_target_mismatch');
+    if (
+      test &&
+      (p.environments.edges.length !== 1 ||
+        p.services.edges.some(
+          (e: any) =>
+            !(
+              (e.node.id === resources.webServiceId && e.node.name === 'web') ||
+              (e.node.id === resources.cmsServiceId && e.node.name === 'cms')
+            )
+        ))
+    )
+      throw new SiteError('test_project_not_isolated');
     for (const [id, expected] of [
       [resources.webServiceId, 'web'],
       [resources.cmsServiceId, 'cms']
@@ -117,9 +143,16 @@ export class RailwayDeployer implements SiteDeployer {
         )
       )
         throw new SiteError('deployment_service_mismatch');
+    return true;
   }
   async deploy(input: DeploymentInput): Promise<SiteResources> {
+    const test = input.test === true;
     const r = { ...input.resources };
+    if (test && (input.domain || r.customDomain || r.customDomainId))
+      throw new SiteError('test_custom_domain_forbidden');
+    if (r.test !== undefined && r.test !== test)
+      throw new SiteError('deployment_test_mismatch');
+    r.test = test;
     if (
       input.domain &&
       (!/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/.test(
@@ -145,10 +178,11 @@ export class RailwayDeployer implements SiteDeployer {
               workspaceId: this.options.workspaceId,
               isPublic: false,
               prDeploys: false,
-              defaultEnvironmentName: this.options.test
-                ? 'fixture'
-                : 'production',
-              description: 'a2aviary managed catalog site'
+              defaultEnvironmentName:
+                test || this.options.test ? 'fixture' : 'production',
+              description: test
+                ? 'a2aviary test=true catalog site'
+                : 'a2aviary managed catalog site'
             }
           }
         )
@@ -156,12 +190,12 @@ export class RailwayDeployer implements SiteDeployer {
       r.projectId = p.id;
       r.environmentId = p.environments.edges.find(
         (e: any) =>
-          e.node.name === (this.options.test ? 'fixture' : 'production')
+          e.node.name === (test || this.options.test ? 'fixture' : 'production')
       )?.node.id;
       if (!r.environmentId) throw new SiteError('railway_environment_missing');
       await input.saveResources(r);
     }
-    await this.guard(r, input.name);
+    await this.guard(r, input.name, test);
     for (const [key, name] of [
       ['webServiceId', 'web'],
       ['cmsServiceId', 'cms']
@@ -176,7 +210,7 @@ export class RailwayDeployer implements SiteDeployer {
         r[key] = service.id;
         await input.saveResources(r);
       }
-    await this.guard(r, input.name);
+    await this.guard(r, input.name, test);
     if (!r.volumeId) {
       r.volumeId = (
         await this.query(
@@ -227,6 +261,7 @@ export class RailwayDeployer implements SiteDeployer {
     if (!r.cmsConfigured) {
       await this.variables(r, r.cmsServiceId!, {
         PORT: '8090',
+        A2AVIARY_TEST_MODE: String(test),
         PB_ADMIN_EMAIL: 'cms-admin@internal.invalid',
         PB_ADMIN_PASSWORD: randomBytes(32).toString('base64url'),
         PB_CLIENT_EMAIL: input.clientEmail,
@@ -240,6 +275,7 @@ export class RailwayDeployer implements SiteDeployer {
     }
     await this.variables(r, r.webServiceId!, {
       PORT: '8080',
+      A2AVIARY_TEST_MODE: String(test),
       CMS_UPSTREAM: 'cms.railway.internal:8090'
     });
     const directory = await mkdtemp(join(tmpdir(), 'a2aviary-deploy-'));
@@ -324,6 +360,25 @@ export class RailwayDeployer implements SiteDeployer {
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
+  }
+  async reset(resources: SiteResources, name: string, test: boolean) {
+    if (
+      !test ||
+      resources.test === false ||
+      resources.customDomain ||
+      resources.customDomainId
+    )
+      throw new SiteError('test_site_required');
+    if (!resources.projectId) return;
+    // Never infer absence from access errors; only an explicit null project is
+    // an idempotent success. Workspace/name/fixture/service guards precede delete.
+    if (!(await this.guard(resources, name, true, true))) return;
+    const result = await this.query(
+      'mutation($id:String!){projectDelete(id:$id)}',
+      { id: resources.projectId }
+    );
+    if (result.projectDelete !== true)
+      throw new SiteError('test_reset_unconfirmed');
   }
   private async variables(
     r: SiteResources,
@@ -432,8 +487,8 @@ export class RailwayDeployer implements SiteDeployer {
     }
     throw new SiteError('deployment_outcome_unknown');
   }
-  async status(resources: SiteResources, name: string) {
-    await this.guard(resources, name);
+  async status(resources: SiteResources, name: string, test = false) {
+    await this.guard(resources, name, test);
     return this.query(
       'query($projectId:String!,$environmentId:String!,$serviceId:String!){domains(projectId:$projectId,environmentId:$environmentId,serviceId:$serviceId){serviceDomains{id domain} customDomains{id domain status{verificationToken certificateStatus dnsRecords{hostlabel requiredValue currentValue status}}}}}',
       {

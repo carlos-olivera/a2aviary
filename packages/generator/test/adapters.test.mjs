@@ -105,8 +105,10 @@ test('Agents adapter sends a fixed checker with no credentials/tools, consumes o
   const build = await new AgentsVerifier(client, (e) => logs.push(e)).verify(
     source,
     input.spec,
-    input.preview
+    input.preview,
+    { test: true }
   );
+  assert.ok(logs.every((e) => e.test === true));
   assert.equal(build.report.passed, true);
   assert.equal(deleted, 1);
   assert.deepEqual(sent.agent.tools, []);
@@ -315,4 +317,196 @@ test('managed-domain readiness requires HTTPS and exact verified bytes; it canno
   } finally {
     globalThis.fetch = savedFetch;
   }
+});
+
+test('tester deploy overrides production default, provisions only a dedicated fixture project and reset checks every resource boundary', async () => {
+  const mutations = [];
+  let project = null;
+  const provider = new RailwayDeployer(
+    {
+      apiToken: 'fictional',
+      workspaceId: 'workspace',
+      protectedProjectIds: new Set(['platform']),
+      test: false,
+      backupVariables: {}
+    },
+    async (q, v) => {
+      if (q.startsWith('query')) return { project };
+      mutations.push({ q, v });
+      if (q.includes('projectCreate')) {
+        assert.equal(v.input.defaultEnvironmentName, 'fixture');
+        assert.ok(v.input.description.includes('test=true'));
+        project = {
+          name: v.input.name,
+          workspaceId: 'workspace',
+          environments: {
+            edges: [{ node: { id: 'fixture-environment', name: 'fixture' } }]
+          },
+          services: { edges: [] }
+        };
+        return {
+          projectCreate: {
+            id: 'test-project',
+            environments: project.environments
+          }
+        };
+      }
+      if (q.includes('serviceCreate')) {
+        const id = 'test-' + v.input.name;
+        project.services.edges.push({ node: { id, name: v.input.name } });
+        return { serviceCreate: { id } };
+      }
+      if (q.includes('volumeCreate'))
+        return { volumeCreate: { id: 'test-volume' } };
+      if (q.includes('serviceDomainCreate'))
+        return {
+          serviceDomainCreate: {
+            id: 'test-domain',
+            domain: 'fictional-test.up.railway.app'
+          }
+        };
+      if (q.includes('projectDelete')) {
+        assert.equal(v.id, 'test-project');
+        project = null;
+        return { projectDelete: true };
+      }
+      return {};
+    }
+  );
+  provider.upload = async () => 'fictional-upload';
+  provider.waitHealthy = async () => {};
+  provider.waitPublic = async (domain) =>
+    assert.equal(domain, 'fictional-test.up.railway.app');
+  const build = { report, files, artifacts: {}, sessionId: 'fictional' };
+  await assert.rejects(
+    provider.deploy({
+      name: 'cli-001-fictional',
+      spec: input.spec,
+      build,
+      resources: {},
+      test: true,
+      domain: 'customer.example.invalid',
+      saveResources: async () => {}
+    }),
+    /test_custom_domain_forbidden/
+  );
+  assert.equal(mutations.length, 0);
+  const r = await provider.deploy({
+    name: 'cli-001-fictional',
+    spec: input.spec,
+    build,
+    resources: {},
+    test: true,
+    clientEmail: 'tester@example.invalid',
+    clientPassword: 'fictional-password-only',
+    saveResources: async () => {}
+  });
+  assert.equal(r.test, true);
+  assert.equal(r.domain, 'fictional-test.up.railway.app');
+  const pristine = structuredClone(project),
+    before = mutations.length;
+  for (const problem of [
+    'environment',
+    'extra-environment',
+    'service',
+    'extra-service',
+    'workspace',
+    'name'
+  ]) {
+    project = structuredClone(pristine);
+    if (problem === 'environment')
+      project.environments.edges[0].node.name = 'production';
+    if (problem === 'extra-environment')
+      project.environments.edges.push({
+        node: { id: 'other', name: 'production' }
+      });
+    if (problem === 'service') project.services.edges[0].node.name = 'platform';
+    if (problem === 'extra-service')
+      project.services.edges.push({ node: { id: 'other', name: 'customer' } });
+    if (problem === 'workspace') project.workspaceId = 'other';
+    if (problem === 'name') project.name = 'platform';
+    await assert.rejects(provider.reset(r, 'cli-001-fictional', true));
+    assert.equal(mutations.length, before);
+  }
+  project = pristine;
+  await assert.rejects(
+    provider.reset({ ...r, projectId: 'platform' }, 'cli-001-fictional', true),
+    /protected_project/
+  );
+  await assert.rejects(
+    provider.reset(r, 'cli-001-fictional', false),
+    /test_site_required/
+  );
+  await assert.rejects(
+    provider.reset(
+      { ...r, customDomain: 'customer.example.invalid' },
+      'cli-001-fictional',
+      true
+    ),
+    /test_site_required/
+  );
+  await provider.reset(r, 'cli-001-fictional', true);
+  assert.equal(
+    mutations.filter((m) => m.q.includes('projectDelete')).length,
+    1
+  );
+  await provider.reset(r, 'cli-001-fictional', true);
+  assert.equal(
+    mutations.filter((m) => m.q.includes('projectDelete')).length,
+    1
+  );
+  assert.ok(
+    mutations
+      .filter((m) => m.q.includes('variableCollectionUpsert'))
+      .every((m) => m.v.input.variables.A2AVIARY_TEST_MODE === 'true')
+  );
+});
+
+test('bucket reset deletes all pages of exactly one spec prefix, rejects traversal and retains failed cleanup for retry', async () => {
+  const { BucketStore } = await import('../dist/index.js');
+  const prefix = 'specs/00000000-0000-0000-0000-000000000001/';
+  const data = new Set(
+    Array.from({ length: 1001 }, (_, i) => prefix + 'artifact-' + i)
+  );
+  data.add('specs/other/keep');
+  let sends = 0,
+    fail = true;
+  const store = new BucketStore(
+    {
+      async send(command) {
+        sends++;
+        if (command.constructor.name === 'ListObjectsV2Command')
+          return {
+            Contents: [...data]
+              .filter((k) => k.startsWith(command.input.Prefix))
+              .slice(0, 1000)
+              .map((Key) => ({ Key }))
+          };
+        assert.equal(command.constructor.name, 'DeleteObjectsCommand');
+        assert.ok(
+          command.input.Delete.Objects.every((o) => o.Key.startsWith(prefix))
+        );
+        if (fail) return { Errors: [{ Code: 'AccessDenied' }] };
+        for (const o of command.input.Delete.Objects) data.delete(o.Key);
+        return {};
+      }
+    },
+    'fictional'
+  );
+  for (const bad of [
+    '',
+    'specs/',
+    '../',
+    'specs/other/',
+    'specs/00000000-0000-0000-0000-000000000001/../'
+  ])
+    await assert.rejects(store.deletePrefix(bad), /unsafe_reset_prefix/);
+  assert.equal(sends, 0);
+  await assert.rejects(store.deletePrefix(prefix), /asset_reset_failed/);
+  assert.equal(data.size, 1002);
+  fail = false;
+  await store.deletePrefix(prefix);
+  assert.deepEqual([...data], ['specs/other/keep']);
+  await store.deletePrefix(prefix);
+  assert.deepEqual([...data], ['specs/other/keep']);
 });

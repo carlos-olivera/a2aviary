@@ -5,7 +5,7 @@ owned MCP jobs, PocketBase and Railway client-site provisioning. Production is
 disabled unless `SITE_WORKFLOW_ENABLED=true`. Local tests and cloud verification
 are distinct; consult [release verification](release-verification.md). This
 delivery does not activate AWS policy enforcement, change DNS, deploy the
-platform, implement payments/tester enrollment, or start the Teco pilot.
+platform, implement payments, or start the Teco pilot. Phase 4 adds the separate [tester and superadmin path](testers-and-admin.md).
 
 ## Contract and intake
 
@@ -57,7 +57,7 @@ an assertion of human approval, not a new human-signature protocol.
 | `site.deploy` | `siteId`, `specId`, `cmsPassword`, `confirmation`, optional initial `domain` | Queue deployment of verified bytes only |
 | `change.request` | `siteId`, `specId`, `spec` (change-request v1), `confirmation` | Validate the structured diff and reserve its allowance |
 
-These tools are visible to client/admin/superadmin when enabled. Ownership
+These tools are visible to client/admin/superadmin/tester when enabled. Tester sites remain immutable test-only staging deployments. Ownership
 applies to all roles; administrators cannot access another human's site through
 these tools. Testers remain discovery-only in Phase 3. Policies cannot be
 modified by a tool. OAuth consent describes the enabled mandate; a connector's

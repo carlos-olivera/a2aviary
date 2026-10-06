@@ -22,7 +22,7 @@ Legacy `website.brief.analyze` remains supported without extension.
 [Phase 1 contracts](plans.md) define schemas, manifests, local validators and
 fictional examples. [Phase 2 discovery auth/MCP](platform.md) provides a locally
 verifiable service prepared for Railway; deployment and real client connections
-remain unverified. [Phase 3](sites.md) adds opt-in catalog generation, verification, PocketBase and Railway client-site provisioning; activation and live cloud proof remain separate release gates. Fixed monthly change requests replace credits for this pilot;
+remain unverified. [Phase 3](sites.md) adds opt-in catalog generation, verification, PocketBase and Railway client-site provisioning; activation and live cloud proof remain separate release gates. [Phase 4](testers-and-admin.md) adds free staging-only testers and audited chat-only superadmin operations; activation and provider cleanup verification remain separate. Fixed monthly change requests replace credits for this pilot;
 CMS content edits will not consume that allowance. Initial numerical limits await
 owner PR review. Nothing is for sale; no live checkout or active Paddle merchant
 of record exists. Earlier Basic pricing/credit presentation is historical and

@@ -5,6 +5,7 @@ import {
 import { z } from 'zod';
 import {
   AccessError,
+  isAdminTool,
   TOOL_ROLES,
   requireRole,
   validatePublicKey,
@@ -19,7 +20,8 @@ export function createServer(
   principal: Principal,
   store: Store,
   plans: Plans,
-  sites?: Sites
+  sites?: Sites,
+  adminCallsAudited = false
 ) {
   const server = new McpServer(
     {
@@ -61,14 +63,36 @@ export function createServer(
         try {
           const current = await store.principal(principal.id);
           requireRole(current, name);
-          await store.recordToolCall(principal.id, name);
+          if (!adminCallsAudited || !isAdminTool(name))
+            await store.recordToolCall(
+              principal.id,
+              name,
+              (args as { siteId?: string }).siteId,
+              (args as { test?: boolean }).test
+            );
           const result = await action(args as z.infer<T>);
+          if (isAdminTool(name))
+            await store.adminResult(
+              principal.id,
+              name,
+              'success',
+              (args as { siteId?: string }).siteId,
+              (args as { test?: boolean }).test
+            );
           return { content: [{ type: 'text', text: JSON.stringify(result) }] };
         } catch (error) {
           const code =
             error instanceof AccessError || error instanceof SiteError
               ? error.code
               : 'operation_failed';
+          if (isAdminTool(name))
+            await store.adminResult(
+              principal.id,
+              name,
+              code,
+              (args as { siteId?: string }).siteId,
+              (args as { test?: boolean }).test
+            );
           if (
             sites &&
             [
@@ -82,7 +106,8 @@ export function createServer(
               principal.id,
               name,
               (args as { specId?: string }).specId,
-              code
+              code,
+              (args as { siteId?: string }).siteId
             );
           return {
             isError: true,
@@ -107,12 +132,16 @@ export function createServer(
     'Read active mandate and role-scoped tools. Site work requires exact approval and confirmation.',
     empty,
     () => ({
-      mandate:
-        sites && principal.role !== 'tester'
-          ? 'approved-catalog-sites'
-          : 'discovery-only',
+      mandate: sites ? 'approved-catalog-sites' : 'discovery-only',
       role: principal.role,
       testMode: principal.testMode,
+      test: principal.testMode,
+      ...(principal.testMode
+        ? {
+            freePlan: { planId: plans.id, policyVersion: plans.version },
+            paymentBypass: true
+          }
+        : {}),
       tools: Object.keys(TOOL_ROLES).filter(
         (name) =>
           TOOL_ROLES[name].includes(principal.role) &&
@@ -121,7 +150,10 @@ export function createServer(
               'site.build',
               'site.status',
               'site.deploy',
-              'change.request'
+              'change.request',
+              'sites.list',
+              'site.inspect',
+              'tester.reset'
             ].includes(name))
       ),
       websiteProduction: Boolean(sites) && principal.role !== 'tester',
@@ -228,6 +260,95 @@ export function createServer(
       false
     );
   }
+  const email = z
+    .email()
+    .max(254)
+    .transform((v) => v.toLowerCase());
+  for (const name of ['testers.add', 'testers.remove'] as const)
+    add(
+      name,
+      'Superadmin only: ' +
+        (name === 'testers.add'
+          ? 'allowlist a free web-simple tester'
+          : 'remove tester eligibility; existing test sites stay test-only') +
+        '. No message is sent.',
+      z.object({ email }).strict(),
+      (args) => store.tester(principal.id, name, args.email),
+      false
+    );
+  add(
+    'testers.list',
+    'Superadmin only: list tester eligibility, including disabled entries.',
+    z
+      .object({
+        after: email.optional(),
+        limit: z.number().int().min(1).max(100).default(25)
+      })
+      .strict(),
+    (args) => store.tester(principal.id, 'testers.list', undefined, args)
+  );
+  add(
+    'logs.query',
+    'Superadmin only: query redacted audit events, up to 31 days, with bounded pagination; excludes provider logs.',
+    z
+      .object({
+        from: z.iso.datetime().optional(),
+        to: z.iso.datetime().optional(),
+        actor: z.string().min(1).max(128).optional(),
+        tool: z
+          .enum(Object.keys(TOOL_ROLES) as [string, ...string[]])
+          .optional(),
+        test: z.boolean().optional(),
+        before: z
+          .string()
+          .regex(/^[1-9][0-9]{0,17}$/)
+          .optional(),
+        limit: z.number().int().min(1).max(100).default(25)
+      })
+      .strict(),
+    (args) => store.logs(principal.id, args)
+  );
+  if (sites) {
+    add(
+      'sites.list',
+      'Superadmin only: list sites by test/live classification, owner or status; bounded cursor pagination.',
+      z
+        .object({
+          test: z.boolean().optional(),
+          owner: z.string().min(1).max(128).optional(),
+          status: z
+            .enum([
+              'staged',
+              'building',
+              'verified',
+              'deploying',
+              'live',
+              'failed',
+              'unknown',
+              'resetting',
+              'archived'
+            ])
+            .optional(),
+          after: z.uuid().optional(),
+          limit: z.number().int().min(1).max(100).default(25)
+        })
+        .strict(),
+      (args) => sites.list(principal.id, args)
+    );
+    add(
+      'site.inspect',
+      'Superadmin only: inspect status, deployment, hashes and successful/reserved UTC monthly usage. No credentials or client copy.',
+      z.object({ siteId: z.uuid() }).strict(),
+      (args) => sites.inspect(principal.id, args.siteId)
+    );
+    add(
+      'tester.reset',
+      'Superadmin only: archive a test site and delete its isolated Railway project, PocketBase volume, bucket artifacts and site change history. Requires RESET <siteId>. Busy jobs must finish first; partial cleanup can be retried.',
+      z.object({ siteId: z.uuid(), confirmation: z.string().max(42) }).strict(),
+      (args) => sites.reset(principal.id, args.siteId, args.confirmation),
+      false
+    );
+  }
   add(
     'agent_keys.register',
     'Bind a public ES256 key to yourself. Requires REGISTER_MY_AGENT_KEY. Does not enroll signed email.',
@@ -290,14 +411,26 @@ export function createServer(
   );
   add(
     'admin.revoke',
-    'Superadmin only: revoke an invited admin. Requires REVOKE_ADMIN:<userId>; the configured owner cannot be revoked.',
+    'Superadmin only: revoke an admin or pending invitation by email. Requires REVOKE_ADMIN:<email>. Legacy userId remains supported. The configured owner cannot be revoked.',
     z
       .object({
-        userId: z.string().min(1).max(128),
-        confirmation: z.string().max(150)
+        email: z
+          .email()
+          .max(254)
+          .transform((v) => v.toLowerCase())
+          .optional(),
+        userId: z.string().min(1).max(128).optional(),
+        confirmation: z.string().max(280)
       })
-      .strict(),
-    (args) => store.revokeAdmin(principal.id, args.userId, args.confirmation),
+      .strict()
+      .refine(
+        (a) => Boolean(a.email) !== Boolean(a.userId),
+        'Provide exactly one email or userId'
+      ),
+    (args) =>
+      args.email
+        ? store.revokeAdminEmail(principal.id, args.email, args.confirmation)
+        : store.revokeAdmin(principal.id, args.userId!, args.confirmation),
     false
   );
   add(
