@@ -1,6 +1,55 @@
 # Initial release verification
 
-Latest evidence: 2026-10-06 observed live login-header repair and owner-reported successful retry; earlier local checks and dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+Latest evidence: 2026-10-06 Phase 3 local generator/platform/CMS verification and owner-reported Phase 2 deployment; earlier local checks and dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+
+## Catalog site workflow — 2026-10-06, verified locally; cloud gate pending
+
+- **Prerequisite source:** main at `455df4f` includes the Phase 2 reconciliation
+  from [PR #18](https://github.com/carlos-olivera/a2aviary/pull/18). Carlos reported
+  its deployment before authorizing Phase 3. This report does not establish a
+  new authenticated connector transcript; earlier evidence remains below.
+- **Configured source:** `packages/generator` covers the twelve fixed Astro
+  catalog blocks, original image validation, approval/preview digests, deterministic
+  source/output hashes, secret-free hosted Agents verification and bucket objects.
+  Optional platform MCP jobs have owned access, confirmations, durable Postgres
+  state, atomic audit admission and concurrent monthly reservations. Railway/PocketBase
+  provisioning is guarded by workspace/project/environment/service identity and
+  protected target lists. Site tools default off; no policy rules were changed.
+- **Local checks:** Node.js 22.23.3 generator check/build and ten tests, platform
+  check/build and 38 passing tests (one opt-in cloud test skipped), existing service
+  check/build and 112 tests, website check/build, infrastructure build and seven
+  tests, generated-contract consistency, documentation links and whitespace.
+  Provider adapter/workflow tests use explicit doubles, not live cloud services.
+- **Actual browser evidence:** the fictional seven-page Astro fixture passed all
+  37 syntax/build/axe/link/Lighthouse/visual checks at 390 and 1280 px. Repeated
+  builds produced output SHA-256
+  `f10ccf6f9877b005f73652715ac4d963498705c93bf852e95047fb141ba52fb3`.
+  A separately approved preview with a changed background failed both viewport
+  comparisons while Astro build passed. These checks ran locally, not in OpenAI.
+- **Actual containers:** platform image builds and runs as UID 1000; four SQL
+  migrations, readiness/login/discovery, default-disabled site intake and the
+  SHA-pinned Railway CLI passed. PocketBase 0.40.4 and Caddy 2.11.2 containers
+  passed editor login, published-only reads, blocked signup/anonymous writes,
+  bounded content edits without redeploy, proxy routes, 404 behavior and blocked
+  settings/superuser routes. Backup schedule/encryption/rate-limit settings exist;
+  a remote backup/restore has not been executed.
+- **Cloud gate pending:** development OpenAI API, Railway API and bucket/backup
+  credential references were unavailable. The real hosted-sandbox → bucket →
+  isolated Railway fixture end-to-end test has not run; no Railway projects,
+  services, volumes, buckets, domains or certificates were created by this Phase 3
+  work. Provisioning API behavior, remote caps, private networking and HTTPS/SSL
+  remain unverified. A successful local build or provider double is not deployment.
+- **Remaining owner actions:** supply the private development environment reference
+  for the live fixture gate; review the PR; separately authorize platform activation
+  and any expanded trusted-policy enforcement. Review/merge does not itself enable
+  `SITE_WORKFLOW_ENABLED`. The existing GitHub workflow covers legacy website/service/
+  infrastructure checks; Phase 3 local and cloud checks are separate evidence.
+  No production AWS configuration, DNS, platform service, Teco site or public
+  website copy was changed. Payments, tester enrollment and chat admin tools remain
+  outside this phase.
+
+See [site operations](sites.md), [generator checks](../packages/generator/README.md)
+and [decision 009](decisions/009-catalog-generation-and-client-hosting.md).
 
 ## Platform Origin repair — 2026-10-06, owner-reported retry
 

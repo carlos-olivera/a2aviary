@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "erasableSyntaxOnly": true,
+    "declaration": true,
+    "rootDir": "../..",
+    "outDir": "dist",
+    "rewriteRelativeImportExtensions": true,
+    "types": [
+      "node"
+    ],
+    "paths": {
+      "ajv": [
+        "./node_modules/ajv/dist/ajv.d.ts"
+      ],
+      "sharp": [
+        "./node_modules/sharp/lib/index.d.ts"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "../../services/src/site/*.ts"
+  ]
+}

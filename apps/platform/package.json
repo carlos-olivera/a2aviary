@@ -17,6 +17,7 @@
     "contracts:check": "node scripts/check-contracts.mjs"
   },
   "dependencies": {
+    "@a2aviary/generator": "file:../../packages/generator",
     "@better-auth/cimd": "1.7.7",
     "@better-auth/mcp": "1.7.7",
     "@better-auth/oauth-provider": "1.7.7",

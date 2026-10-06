@@ -13,7 +13,7 @@ const expectedTools = {client: discoveryAndOwnKeys, tester: discoveryAndOwnKeys,
 
 test('all role/tool permission combinations',()=>{
   for(const role of ALL_ROLES) for(const tool of new Set([...Object.keys(TOOL_ROLES),...expectedTools.superadmin])) {
-    if(expectedTools[role].includes(tool)) assert.doesNotThrow(()=>requireRole({id:'fictional',role,testMode:role==='tester'},tool));
+    if(expectedTools[role].includes(tool)||(['site.build','site.status','site.deploy','change.request'].includes(tool)&&role!=='tester')) assert.doesNotThrow(()=>requireRole({id:'fictional',role,testMode:role==='tester'},tool));
     else assert.throws(()=>requireRole({id:'fictional',role,testMode:false},tool),/forbidden/);
   }
   for(const role of ALL_ROLES) assert.throws(()=>requireRole({id:'fictional',role,testMode:false},'policy.write'),/forbidden/);

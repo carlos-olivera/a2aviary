@@ -1,4 +1,4 @@
-# Discovery platform: auth, MCP and roles
+# Platform: auth, MCP, roles and approved site jobs
 
 Status: Phase 2 source verified locally; Carlos reported Railway deployment on
 2026-10-06. Public health, OAuth discovery and login responses were observed.
@@ -6,9 +6,7 @@ Chrome reproduced a native login form failure (`Origin: null`, HTTP 403); the
 repair was merged in PR #17. Following the corrected deployment, the live login
 response returned HTTP 200 with `Referrer-Policy: strict-origin`, and Carlos
 reported a successful retry. Authenticated ChatGPT/Claude admin tool calls have
-not been independently recorded; see [deployment evidence](release-verification.md#platform-origin-repair--2026-10-06-owner-reported-retry). No site submission, production,
-plan activation, payment, PocketBase provisioning or authenticated site-approval
-binding is enabled. The AWS signed-email v1 workers remain unchanged.
+not been independently recorded; see [deployment evidence](release-verification.md#platform-origin-repair--2026-10-06-owner-reported-retry). Phase 3 adds optional approved-spec build/deploy jobs and PocketBase provisioning behind `SITE_WORKFLOW_ENABLED`, disabled by default. See [site operations](sites.md) for the new variables, ownership/confirmation gates, sandbox verification, DNS status, and separate fixture deployment. No payments or new signed human-approval protocol is enabled. The AWS signed-email v1 workers remain unchanged.
 
 ## Package and identity choices
 

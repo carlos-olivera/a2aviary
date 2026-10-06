@@ -1,0 +1,42 @@
+{
+  "name": "@a2aviary/generator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.23.3 <23"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/packages/generator/src/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "tsc --emitDeclarationOnly && node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "fixture": "node scripts/fixture.mjs",
+    "test:cms": "node scripts/test-cms.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1146.0",
+    "@axe-core/playwright": "4.13.0",
+    "@fontsource/eb-garamond": "5.3.0",
+    "@fontsource/inter": "5.3.0",
+    "ajv": "8.20.0",
+    "astro": "7.3.6",
+    "lighthouse": "13.5.0",
+    "openai": "7.27.0",
+    "pixelmatch": "7.1.0",
+    "playwright": "1.63.0",
+    "pngjs": "7.0.0",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.15",
+    "esbuild": "0.25.12",
+    "typescript": "7.0.2"
+  }
+}
