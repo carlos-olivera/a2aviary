@@ -2,7 +2,7 @@
 
 An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. Our positioning is “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” Website production remains coming soon, as recorded below.
 
-Websites come first, with website production and hosting through Basic coming soon. Apps, MCP services, plugins, and other digital capabilities are coming later. **a2aviary Basic — $10/month · $100/year** is the launch software subscription for one basic marketing site. When it launches, your AI assistant submits a site kit (content, brand, pages); the software validates, builds, deploys, hosts, and applies assistant-requested updates within monthly AI-token and bandwidth credits. Credit amounts and subscription terms will be published before checkout opens. **Launching soon. Checkout opens when payments are enabled.** No checkout or Basic site production/hosting is live. Payments will use our merchant of record; preparing this copy does not enable payments.
+Websites come first. The owner-approved pilot has the client agent understand intent, research, prepare images and copy, and obtain human approval of a catalog-expressible preview before submission. a2aviary validates a structured site spec and will generate/deploy it through fixed Astro components and design tokens. It does not research, OCR, edit images or interpret free-text website instructions. [Plan policies and contracts](docs/plans.md) define Phase 1; rendering, hosting, auth and MCP integration remain future work. The pilot proposes fixed monthly change requests, replacing the earlier credit model for this plan. Nothing is for sale; there is no live checkout or active Paddle merchant of record. Public website copy remains a separate delivery.
 
 **Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed email operating foundation whose first capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Website generation, autonomous repository engineering, the Teco pilot, and external A2A compliance remain future work.
 
@@ -25,17 +25,18 @@ See [architecture and limits](docs/operating-foundation.md), [email transport co
 ## Platform vision
 
 1. The client provides goals and materials to their own agent.
-2. Their agent prepares a brief, sources, questions, and acceptance criteria.
-3. The platform validates access, mandate, budget, and inputs.
-4. Future platform capabilities build a preview and accept authorized revisions.
-5. Approvals and delivery remain recorded in the project.
-6. Work resumes using stable identifiers and reauthentication.
+2. Their agent prepares the structured site spec and catalog-expressible preview.
+3. The human approves the proposed result before submission.
+4. a2aviary validates the pinned policy, spec, prepared asset bytes and approval declaration.
+5. Future capabilities generate/deploy faithfully and apply bounded approved changes.
+6. Work and policy versions remain recorded; later auth will bind the approving human.
 
 English is the canonical language for repository documentation. The repository is the source of truth for code, contracts, and technical decisions. Conversations in the a2aviary Space do not synchronize automatically; private references may live in excluded `.local/`.
 
 ## Documentation
 
 - [Cost transparency](COSTS.md) and the [public costs page](https://a2aviary.io/costs)
+- [Plan policies and site contracts](docs/plans.md)
 - [Vision and scope](docs/vision.md)
 - [Architecture](docs/architecture/overview.md)
 - [Accepted decisions and open questions](docs/decisions/README.md)

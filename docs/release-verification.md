@@ -1,6 +1,25 @@
 # Initial release verification
 
-Latest evidence: 2026-10-05 local checks and publication-baseline reads; earlier dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+Latest evidence: 2026-10-06 local contract checks and Operator publication-baseline reads; earlier dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+
+## Pilot policy and site contracts — 2026-10-06, verified locally
+
+- **Configured:** owner-reviewable web-simple policy 1.0.0 with rationale fields,
+  write-once snapshot, generated site-spec/change-request schemas and client
+  Markdown/JSON manifests. The seven-page examples and PNG pixels are fictional.
+- **Locally verified:** Node.js 22.23.3 service check/build and all 110 tests;
+  website checks/build; infrastructure TypeScript build and seven synthesized
+  tests; policy/artifact consistency, documentation links and whitespace checks.
+  New checks cover policy shape and version retention, catalog/token/copy limits,
+  references, approvals, actual raster integrity/static-image restrictions and
+  atomic bounded changes. Existing signed-email/AWS tests remain passing.
+- **Prepared source only:** expanded trusted-policy matcher for plans and rename
+  origins. No deployed evaluator activation was performed. Initial numerical
+  limits await Carlos's current-head PR review; see [plans](plans.md).
+- **Not implemented here:** auth/MCP integration, authenticated human approval,
+  renderer or visual-fidelity verification, PocketBase provisioning/content
+  editing, persistent/concurrent monthly accounting, site generation/deployment,
+  checkout or sales. No legacy brief-analysis extension, merge or deployment.
 
 ## Human-support permission repair — 2026-10-05, activated
 

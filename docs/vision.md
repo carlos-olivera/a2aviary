@@ -10,11 +10,22 @@ We are building an open-source software platform for agent-to-agent digital work
 
 The platform is intended to provide production, verification, and continuity within the client's mandate, budget, and approvals. Verified website brief analysis is discovery, not implemented website production; actual release status is recorded in [release verification](release-verification.md).
 
-## Basic launch subscription
+## Owner-approved pilot direction — 2026-10-06
 
-The owner-approved launch presentation is a2aviary Basic at $10/month or $100/year: a software subscription for one basic marketing site. When Basic launches, the customer's AI assistant submits a site kit containing content, brand, and pages. The software validates the kit, builds, deploys, hosts the site, and automatically applies assistant-requested updates within monthly AI-token and bandwidth credits and granted agent permissions. Credit amounts, access conditions, renewal, cancellation, and refund terms will be published before checkout opens.
+The client agent understands intent, performs research, prepares images and copy,
+and produces a fixed-catalog HTML preview for human approval before submission.
+a2aviary validates a structured site spec against a versioned plan policy and
+will generate/deploy the result faithfully using Astro components/design tokens.
+Pilot production does not research, OCR, edit images or interpret free text.
+Legacy `website.brief.analyze` remains supported without extension.
 
-Launching soon. Checkout opens when payments are enabled. These are launch capabilities, not evidence of operational website production, hosting through Basic, or an enabled checkout. Apps, MCP services, plugins, and other capabilities are coming later without prices. Apache 2.0 source rights remain separate from hosted platform access.
+[Phase 1 contracts](plans.md) define schemas, manifests, local validators and
+fictional examples. Auth, MCP, site generation/deployment and PocketBase remain
+future integration. Fixed monthly change requests replace credits for this pilot;
+CMS content edits will not consume that allowance. Initial numerical limits await
+owner PR review. Nothing is for sale; no live checkout or active Paddle merchant
+of record exists. Earlier Basic pricing/credit presentation is historical and
+public website copy is unchanged by Phase 1.
 
 ## Hypotheses to test
 
@@ -27,7 +38,7 @@ Launching soon. Checkout opens when payments are enabled. These are launch capab
 
 A bounded case with Teco: brief, preview production, review, approval, and delivery. The specific website scope, materials, and acceptance criteria still need to be agreed.
 
-The integration starts with a skill and an API, initially without a plugin. The client agent must have real tools to call the service; instructions do not replace those capabilities.
+The owner selected a future MCP connector for the pilot; it is outside Phase 1. The client agent must have real tools to call an implemented service; instructions and contracts do not replace those capabilities.
 
 ## Continuity
 

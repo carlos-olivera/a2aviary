@@ -4,8 +4,11 @@ const lock=JSON.parse(await readFile('package-lock.json','utf8'));const inventor
 await mkdir('dist/licenses',{recursive:true});
 for(const [path,pkg]of Object.entries(lock.packages)){
  if(!path.startsWith('node_modules/')||pkg.dev)continue;
+ let files;
+ try { files=await readdir(path); }
+ catch(error) { if(pkg.optional && error.code==='ENOENT')continue; throw error; }
  inventory.push({name:path.replace('node_modules/',''),version:pkg.version,license:pkg.license??'see distributed license'});
- for(const file of await readdir(path))if(/^(LICENSE|LICENCE|NOTICE|COPYING)(\.|$)/i.test(file))await cp(join(path,file),join('dist/licenses',path.replaceAll('/','_')+'_'+file),{recursive:true});
+ for(const file of files)if(/^(LICENSE|LICENCE|NOTICE|COPYING)(\.|$)/i.test(file))await cp(join(path,file),join('dist/licenses',path.replaceAll('/','_')+'_'+file),{recursive:true});
 }
 await writeFile('dist/licenses/inventory.json',JSON.stringify(inventory,null,2)+'\n');
 

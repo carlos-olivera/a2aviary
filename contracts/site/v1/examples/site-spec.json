@@ -1,0 +1,461 @@
+{
+  "contractVersion": "1.0",
+  "planId": "web-simple",
+  "policyVersion": "1.0.0",
+  "pages": [
+    {
+      "id": "home",
+      "path": "/",
+      "seo": {
+        "title": "Fictional guide — home",
+        "description": "Offline demonstration using fictional content and original generated pixels."
+      },
+      "sections": [
+        {
+          "id": "section-0",
+          "blocks": [
+            {
+              "id": "block-0",
+              "component": "hero",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "text": "Prepared by a fictional client for this offline example.",
+                "image": "fictional-pixel",
+                "action": {
+                  "label": "Explore",
+                  "pageId": "home"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-1",
+          "blocks": [
+            {
+              "id": "block-1",
+              "component": "rich-text",
+              "variant": "standard",
+              "props": {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "text": "Fictional community information."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-2",
+          "blocks": [
+            {
+              "id": "block-2",
+              "component": "feature-grid",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "items": [
+                  {
+                    "heading": "A prepared step",
+                    "text": "Use supplied facts."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-3",
+          "blocks": [
+            {
+              "id": "block-3",
+              "component": "steps",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "items": [
+                  {
+                    "heading": "A prepared step",
+                    "text": "Use supplied facts."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-4",
+          "blocks": [
+            {
+              "id": "block-4",
+              "component": "link-cards",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "items": [
+                  {
+                    "heading": "Explore a neighborhood",
+                    "text": "An offline example.",
+                    "link": {
+                      "label": "Explore",
+                      "pageId": "home"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-5",
+          "blocks": [
+            {
+              "id": "block-5",
+              "component": "gallery",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "images": [
+                  "fictional-pixel"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-6",
+          "blocks": [
+            {
+              "id": "block-6",
+              "component": "faq",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "items": [
+                  {
+                    "question": "How do we start?",
+                    "answer": "Prepare the materials and approve the result."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-7",
+          "blocks": [
+            {
+              "id": "block-7",
+              "component": "cta",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "text": "Prepared by a fictional client for this offline example.",
+                "action": {
+                  "label": "Explore",
+                  "pageId": "home"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-8",
+          "blocks": [
+            {
+              "id": "block-8",
+              "component": "contact",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "text": "Prepared by a fictional client for this offline example.",
+                "links": [
+                  {
+                    "label": "Explore",
+                    "pageId": "home"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-9",
+          "blocks": [
+            {
+              "id": "block-9",
+              "component": "catalog",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "collection": "catalog",
+                "emptyText": "Prepared by a fictional client for this offline example."
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-10",
+          "blocks": [
+            {
+              "id": "block-10",
+              "component": "blog",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "collection": "blog",
+                "emptyText": "Prepared by a fictional client for this offline example."
+              }
+            }
+          ]
+        },
+        {
+          "id": "section-11",
+          "blocks": [
+            {
+              "id": "block-11",
+              "component": "announcements",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "collection": "announcements",
+                "emptyText": "Prepared by a fictional client for this offline example."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "about",
+      "path": "/about/",
+      "seo": {
+        "title": "Fictional guide — about",
+        "description": "Offline demonstration using fictional content and original generated pixels."
+      },
+      "sections": [
+        {
+          "id": "section-0",
+          "blocks": [
+            {
+              "id": "block-0",
+              "component": "rich-text",
+              "variant": "standard",
+              "props": {
+                "content": [
+                  {
+                    "type": "paragraph",
+                    "text": "Fictional community information."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "north",
+      "path": "/north/",
+      "seo": {
+        "title": "Fictional guide — north",
+        "description": "Offline demonstration using fictional content and original generated pixels."
+      },
+      "sections": [
+        {
+          "id": "section-0",
+          "blocks": [
+            {
+              "id": "block-0",
+              "component": "feature-grid",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "items": [
+                  {
+                    "heading": "A prepared step",
+                    "text": "Use supplied facts."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "south",
+      "path": "/south/",
+      "seo": {
+        "title": "Fictional guide — south",
+        "description": "Offline demonstration using fictional content and original generated pixels."
+      },
+      "sections": [
+        {
+          "id": "section-0",
+          "blocks": [
+            {
+              "id": "block-0",
+              "component": "steps",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "items": [
+                  {
+                    "heading": "A prepared step",
+                    "text": "Use supplied facts."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "west",
+      "path": "/west/",
+      "seo": {
+        "title": "Fictional guide — west",
+        "description": "Offline demonstration using fictional content and original generated pixels."
+      },
+      "sections": [
+        {
+          "id": "section-0",
+          "blocks": [
+            {
+              "id": "block-0",
+              "component": "link-cards",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "items": [
+                  {
+                    "heading": "Explore a neighborhood",
+                    "text": "An offline example.",
+                    "link": {
+                      "label": "Explore",
+                      "pageId": "home"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "privacy",
+      "path": "/privacy/",
+      "seo": {
+        "title": "Fictional guide — privacy",
+        "description": "Offline demonstration using fictional content and original generated pixels."
+      },
+      "sections": [
+        {
+          "id": "section-0",
+          "blocks": [
+            {
+              "id": "block-0",
+              "component": "gallery",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "images": [
+                  "fictional-pixel"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "path": "/contact/",
+      "seo": {
+        "title": "Fictional guide — contact",
+        "description": "Offline demonstration using fictional content and original generated pixels."
+      },
+      "sections": [
+        {
+          "id": "section-0",
+          "blocks": [
+            {
+              "id": "block-0",
+              "component": "faq",
+              "variant": "standard",
+              "props": {
+                "heading": "Fictional neighborhood guide",
+                "items": [
+                  {
+                    "question": "How do we start?",
+                    "answer": "Prepare the materials and approve the result."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "tokens": {
+    "colors": {
+      "background": "#FAFAFA",
+      "surface": "#EEEEEE",
+      "text": "#222222",
+      "muted": "#555555",
+      "primary": "#334455",
+      "accent": "#557799",
+      "border": "#CCCCCC"
+    },
+    "fonts": {
+      "heading": "Inter",
+      "body": "Inter"
+    },
+    "spacing": 4,
+    "radius": 0
+  },
+  "navigation": {
+    "primary": [
+      {
+        "label": "Explore",
+        "pageId": "home"
+      }
+    ],
+    "footer": [
+      {
+        "label": "Explore",
+        "pageId": "home"
+      }
+    ]
+  },
+  "assets": [
+    {
+      "id": "fictional-pixel",
+      "format": "png",
+      "bytes": 70,
+      "width": 1,
+      "height": 1,
+      "alt": "Fictional demonstration pixel",
+      "sha256": "e170956d97f8838503784272b9c3f916bcc8cab2289cfca8b1b578645c05d95c"
+    }
+  ],
+  "cms": {
+    "collections": [
+      "catalog",
+      "blog",
+      "announcements"
+    ]
+  },
+  "approval": {
+    "approved": true,
+    "approvedAt": "2026-10-06T12:00:00.000Z",
+    "specSha256": "421441025efcd4217188aee1d2c45941033d6d6bdded90a367e1767b399b933e"
+  }
+}
