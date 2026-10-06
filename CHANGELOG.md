@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-06 — explicit staging origin opt-in verified locally
+
+- Added `PLATFORM_ALLOWED_ORIGINS` for exact alternate HTTPS deployment origins, with an empty default preserving the canonical production restriction. Invalid or wildcard entries fail closed; issuer/resource/login trust remain bound to the single selected origin.
+- Documented the requested Railway staging origin, Google callback and private configuration in [platform operations](docs/platform.md). Node.js 22 platform check/build, all 29 Postgres-backed tests, documentation links and whitespace checks passed locally. No merge, deployment or external Google/client verification was performed.
+
 ## 2026-10-06 — discovery OAuth/MCP platform verified locally
 
 - Added an isolated Node.js 22/TypeScript Railway service with pinned Better Auth JWT/MCP/CIMD, Google login/consent, July 2026 POST-only official MCP v2, resource-bound OAuth, Postgres migrations and discovery-only plan tools. DCR is off by default; no site production, payments or live connector activation was added.

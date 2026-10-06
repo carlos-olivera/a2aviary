@@ -28,8 +28,9 @@ identity semantics.
 
 ## Endpoints
 
-Production origin/resource are pinned to `https://mcp.a2aviary.io` and
-`https://mcp.a2aviary.io/mcp`. Bare HTTP loopback origins are allowed locally.
+The production default accepts only `https://mcp.a2aviary.io`, with resource
+`https://mcp.a2aviary.io/mcp`. Alternate staging deployments require an explicit
+`PLATFORM_ALLOWED_ORIGINS` allowlist. Bare HTTP loopback origins are allowed locally.
 The server constructs URLs from configuration, ignoring Host/proxy URL overrides.
 
 | Endpoint | Purpose |
@@ -74,7 +75,8 @@ works; audit IDs are read as text. Secrets, tokens and key material are not incl
 
 | Variable | Meaning |
 | --- | --- |
-| `PLATFORM_ORIGIN` | Production canonical origin above; local `http://localhost:3000` |
+| `PLATFORM_ORIGIN` | One canonical deployment origin: production above, explicitly allowlisted HTTPS staging, or local `http://localhost:3000` |
+| `PLATFORM_ALLOWED_ORIGINS` | Optional comma-separated exact bare HTTPS origins permitted as alternate deployment origins; empty by default. No wildcards, credentials, paths, trailing slashes, query strings or fragments |
 | `DATABASE_URL` | Private Postgres connection string, e.g. Railway Postgres reference variable |
 | `BETTER_AUTH_SECRET` | Random secret, at least 32 characters; protects sessions, OAuth context and stored signing keys |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Private Google web OAuth client; exact callback above and local callback as needed |
@@ -84,6 +86,27 @@ works; audit IDs are read as text. Secrets, tokens and key material are not incl
 | `PORT` | Railway-injected listener port; local default 3000 |
 | `NODE_ENV` | `production` in the container |
 | `TEST_DATABASE_URL` | Test runner only; dedicated loopback Postgres database, never production |
+
+For the requested Railway staging host, explicitly set both variables:
+
+```dotenv
+PLATFORM_ORIGIN=https://platform-production-d84c.up.railway.app
+PLATFORM_ALLOWED_ORIGINS=https://platform-production-d84c.up.railway.app
+```
+
+This opt-in also works with `NODE_ENV=production`, as used by the container.
+The service still uses only `PLATFORM_ORIGIN` for its issuer, resource audience,
+OAuth metadata, trusted origin, forms and callback; the allowlist does not add
+CORS origins, trusted login origins or client redirect URLs. For this staging
+configuration the issuer is `https://platform-production-d84c.up.railway.app/api/auth`,
+the MCP URL is `https://platform-production-d84c.up.railway.app/mcp`, and Google
+must have the exact callback
+`https://platform-production-d84c.up.railway.app/api/auth/callback/google`.
+Use separate private staging credentials/database and connect clients to this
+staging MCP URL. Tokens for a different deployment resource remain invalid.
+Remove the allowlist in canonical production to retain the strict default.
+These settings prepare staging boot; they do not establish a deployed or
+verified Railway service, Google callback or connector.
 
 Set the Railway repository root to `/`, config file to
 `apps/platform/railway.json`, Dockerfile to `apps/platform/Dockerfile`, and keep
