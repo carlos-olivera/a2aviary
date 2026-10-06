@@ -4,7 +4,8 @@ Status: broader agency design, with a scoped initial implementation described be
 
 The [interactive architecture map](https://a2aviary.io/architecture) is prepared for
 owner review and release. It distinguishes the project landing and signed-email
-foundation from planned customer products. See [local development](../local-development.md)
+foundation from the in-progress, owner-reported deployed customer-site pilot
+and future customer products. See [local development](../local-development.md)
 for the shared CDK environment, adapters and cloud-only boundaries.
 
 ## Responsibilities
@@ -25,14 +26,15 @@ Project workspace and execution tools
 
 For the owner-approved website pilot, the client agent prepares a structured spec,
 assets and a catalog-expressible preview, approved by the human before submission.
-a2aviary validates the versioned policy and will generate/deploy through fixed
-Astro templates. It does not research, OCR, edit images or interpret free text for
-pilot production. Phase 1 provides isolated contracts/local validation; the
-[Phase 2](../platform.md) implements local discovery OAuth/MCP and prepares a
-Railway service. Deployment and real client compatibility are unverified;
-PocketBase and website production remain future work. Existing
-AWS brief analysis and signed email v1 remain supported. See [plans](../plans.md)
-and [decision 007](../decisions/007-pilot-policy-and-site-contracts.md).
+a2aviary validates the versioned policy and generates fixed Astro catalog sites,
+verifies approved artifacts, and provisions isolated Railway hosting with PocketBase
+CMS. Auth/MCP, durable Postgres jobs, testers and chat-only superadmin source are
+implemented. Carlos reports the customer-site pilot deployed and still in progress;
+independent hosted end-to-end verification remains separate from this report.
+Existing AWS brief analysis and signed email v1 remain supported. See
+[site operations](../sites.md), [platform operations](../platform.md),
+[tester/admin operations](../testers-and-admin.md), and
+[release evidence](../release-verification.md#customer-site-pilot--2026-10-06-owner-reported-deployment).
 
 ## Planned components
 
@@ -59,7 +61,8 @@ The Resume Package is a portable reference for locating the project and querying
 
 ## Pending choices
 
-AWS CDK/TypeScript, Node.js 22, DynamoDB/SQS/S3, SES, and OpenAI Agents API are selected for the initial brief-analysis foundation. Broader agency APIs, client onboarding, website production, and the external A2A standard remain open.
+AWS CDK/TypeScript, Node.js 22, DynamoDB/SQS/S3, SES, and OpenAI Agents API are selected for the initial brief-analysis foundation. The website pilot adds auth/MCP, Astro and Railway/PocketBase source. Broader
+customer products and the external A2A standard remain open.
 
 ## Initial release implementation
 

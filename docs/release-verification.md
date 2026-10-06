@@ -2,6 +2,17 @@
 
 Latest evidence: 2026-10-06 Phase 3 local generator/platform/CMS verification and owner-reported Phase 2 deployment; earlier local checks and dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
+## Customer-site pilot — 2026-10-06, owner-reported deployment
+
+Carlos Olivera Terrazas confirmed in this architecture review that the customer-site
+build/hosting pilot is **in progress and deployed**, superseding its earlier
+Planned presentation. This is owner-reported deployment status; this task has not
+independently inspected an authenticated hosted build/deploy transcript, provider
+resources or a customer site. The earlier locally verified generator/CMS evidence
+and pending independent cloud verification remain distinct. Payments and future
+customer apps, MCP products and plugins are not activated by this status update.
+The implemented platform MCP connector is separate from those future products.
+
 ## Catalog site workflow — 2026-10-06, verified locally; cloud gate pending
 
 - **Prerequisite source:** main at `455df4f` includes the Phase 2 reconciliation
