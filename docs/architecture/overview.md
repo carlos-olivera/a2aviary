@@ -16,6 +16,17 @@ Work coordination
 Project workspace and execution tools
 ```
 
+## Pilot direction — 2026-10-06
+
+For the owner-approved website pilot, the client agent prepares a structured spec,
+assets and a catalog-expressible preview, approved by the human before submission.
+a2aviary validates the versioned policy and will generate/deploy through fixed
+Astro templates. It does not research, OCR, edit images or interpret free text for
+pilot production. Phase 1 provides isolated contracts/local validation; the
+selected Railway/OAuth/MCP/PocketBase integration remains future work. Existing
+AWS brief analysis and signed email v1 remain supported. See [plans](../plans.md)
+and [decision 007](../decisions/007-pilot-policy-and-site-contracts.md).
+
 ## Planned components
 
 - Versioned API to create projects, submit inputs, query state, answer questions, and record approvals.

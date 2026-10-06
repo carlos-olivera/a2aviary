@@ -16,6 +16,8 @@
 
 The 2026-10-05 framing clarifies the earlier agency vision; it does not establish live website production or a commercial catalog.
 
+The 2026-10-06 owner-approved pilot supersedes earlier credit-based website plans: client-prepared, human-approved structured specs; fixed Astro components; bounded monthly changes. Phase 1 contracts are local work, not website production. See [007](007-pilot-policy-and-site-contracts.md) and [plans](../plans.md).
+
 ## Design direction from the recap
 
 The client agent acts as the interface, materials are prepared on the client's side, state is persistent, autonomy operates within a mandate, and work continues asynchronously. Skill plus API and the Teco pilot are the documented starting point; their operational specifications are not finalized.
@@ -50,3 +52,7 @@ Create a numbered document with a title, date, status, context, decision, and co
 - [006 — Human-support forwarding](006-human-support-forwarding.md)
 
 These decisions were accepted in the initial-release implementation plan. Acceptance is distinct from deployment and verification; see [release evidence](../release-verification.md).
+
+## Accepted pilot direction
+
+- [007 — Pilot policy and site contracts](007-pilot-policy-and-site-contracts.md) — owner-approved pilot direction; initial limits await PR review, integration is future work.

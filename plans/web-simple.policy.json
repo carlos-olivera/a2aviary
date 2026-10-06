@@ -1,0 +1,609 @@
+{
+  "planId": {
+    "value": "web-simple",
+    "rationale": "One bounded pilot plan; no price or checkout."
+  },
+  "version": {
+    "value": "1.0.0",
+    "rationale": "Initial immutable policy; later revisions receive new semantic versions."
+  },
+  "effectiveDate": {
+    "value": "2026-10-06",
+    "rationale": "Initial policy date; activation/enrollment is a later responsibility."
+  },
+  "includes": {
+    "capabilities": {
+      "value": [
+        "static-astro",
+        "pocketbase-cms"
+      ],
+      "rationale": "Owner-approved pilot architecture; no custom server code."
+    },
+    "maxPages": {
+      "value": 7,
+      "rationale": "Teco has six content pages and one system 404; one authored-page slot provides headroom."
+    },
+    "system404Counts": {
+      "value": false,
+      "rationale": "Generated system 404 is outside the authored-page allowance."
+    },
+    "ssl": {
+      "value": true,
+      "rationale": "Owner requires SSL with hosting; contract inclusion is not deployment evidence."
+    },
+    "domain": {
+      "value": "client-supplied",
+      "rationale": "Client brings their own domain; no domain sale."
+    },
+    "cmsCollections": {
+      "value": [
+        "catalog",
+        "blog",
+        "announcements"
+      ],
+      "rationale": "Only the three approved optional content collections."
+    },
+    "excludes": {
+      "value": [
+        "custom-backend",
+        "end-user-auth",
+        "checkout",
+        "research",
+        "ocr",
+        "image-editing",
+        "custom-script",
+        "custom-style",
+        "raw-html",
+        "arbitrary-component",
+        "uploaded-svg"
+      ],
+      "rationale": "Work stays within deterministic templates and prepared client materials."
+    }
+  },
+  "firstVersion": {
+    "contractVersion": {
+      "value": "1.0",
+      "rationale": "Separate wire-contract version from policy semver."
+    },
+    "structure": {
+      "maxSectionsPerPage": {
+        "value": 12,
+        "rationale": "Headroom over Teco landing sections."
+      },
+      "maxBlocksPerSection": {
+        "value": 6,
+        "rationale": "Bounded composable sections."
+      },
+      "maxBlocksPerPage": {
+        "value": 30,
+        "rationale": "Bounds aggregate page complexity."
+      },
+      "maxJsonBytes": {
+        "value": 262144,
+        "rationale": "Bounds parsing and validation work before semantic traversal."
+      },
+      "idPattern": {
+        "value": "^[a-z][a-z0-9-]{0,63}$",
+        "rationale": "Stable ASCII IDs; no path fragments or prototype keys."
+      },
+      "pagePathPattern": {
+        "value": "^/(?:[a-z0-9]+(?:-[a-z0-9]+)*/){0,3}$",
+        "rationale": "Canonical trailing-slash routes with at most three safe segments."
+      },
+      "reservedPaths": {
+        "value": [
+          "/404/",
+          "/assets/",
+          "/api/"
+        ],
+        "rationale": "System error, asset and service namespaces cannot be authored pages."
+      }
+    },
+    "copy": {
+      "heading": {
+        "value": 120,
+        "rationale": "Bounded heading text."
+      },
+      "shortCopy": {
+        "value": 500,
+        "rationale": "Bounded introductions and summaries."
+      },
+      "paragraph": {
+        "value": 2000,
+        "rationale": "Supports detailed text without unbounded paragraphs."
+      },
+      "richText": {
+        "value": 8000,
+        "rationale": "Allows small articles and legal content."
+      },
+      "label": {
+        "value": 80,
+        "rationale": "Readable navigation and CTA labels."
+      },
+      "alt": {
+        "value": 240,
+        "rationale": "Concise descriptive accessible image text."
+      },
+      "seoTitle": {
+        "value": 70,
+        "rationale": "Predictable page metadata."
+      },
+      "seoDescription": {
+        "value": 200,
+        "rationale": "Predictable page description."
+      }
+    },
+    "items": {
+      "grid": {
+        "value": 12,
+        "rationale": "Small grids and ordered lists."
+      },
+      "faq": {
+        "value": 20,
+        "rationale": "Headroom for common marketing FAQs."
+      }
+    },
+    "components": {
+      "hero": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "text": {
+            "kind": "shortCopy",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "image": {
+            "kind": "image",
+            "required": false,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "action": {
+            "kind": "link",
+            "required": false,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "rich-text": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "content": {
+            "kind": "richText",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "feature-grid": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "items": {
+            "kind": "textItems",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "steps": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "items": {
+            "kind": "textItems",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "link-cards": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "items": {
+            "kind": "linkItems",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "gallery": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "images": {
+            "kind": "imageItems",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "faq": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "items": {
+            "kind": "faqItems",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "cta": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "text": {
+            "kind": "shortCopy",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "action": {
+            "kind": "link",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "contact": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "text": {
+            "kind": "shortCopy",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "links": {
+            "kind": "links",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "catalog": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "collection": {
+            "kind": "catalogCollection",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "emptyText": {
+            "kind": "shortCopy",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "blog": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "collection": {
+            "kind": "blogCollection",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "emptyText": {
+            "kind": "shortCopy",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      },
+      "announcements": {
+        "rationale": "Covers a reference-site pattern or an approved CMS section.",
+        "variants": {
+          "value": [
+            "standard"
+          ],
+          "rationale": "One deterministic initial template variant."
+        },
+        "fields": {
+          "heading": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "collection": {
+            "kind": "announcementsCollection",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          },
+          "emptyText": {
+            "kind": "shortCopy",
+            "required": true,
+            "rationale": "Typed template input; no executable markup or arbitrary CSS."
+          }
+        }
+      }
+    },
+    "designTokens": {
+      "colorSlots": {
+        "value": [
+          "background",
+          "surface",
+          "text",
+          "muted",
+          "primary",
+          "accent",
+          "border"
+        ],
+        "rationale": "Seven semantic color roles without copying client branding."
+      },
+      "colorPattern": {
+        "value": "^#[0-9A-Fa-f]{6}$",
+        "rationale": "Literal RGB values only; no CSS expressions."
+      },
+      "fonts": {
+        "value": [
+          "Inter",
+          "EB Garamond",
+          "system-sans",
+          "system-serif"
+        ],
+        "rationale": "Reference fonts plus no-download system alternatives."
+      },
+      "spacing": {
+        "value": [
+          4,
+          8,
+          12,
+          16,
+          24,
+          32,
+          48,
+          64,
+          96
+        ],
+        "rationale": "Fixed reusable spacing scale."
+      },
+      "radius": {
+        "value": [
+          0,
+          2,
+          4,
+          8,
+          16,
+          24
+        ],
+        "rationale": "Restrained template rounding."
+      }
+    },
+    "navigation": {
+      "maxPrimary": {
+        "value": 8,
+        "rationale": "Fits small-site primary navigation."
+      },
+      "maxFooter": {
+        "value": 12,
+        "rationale": "Allows legal and supporting links."
+      },
+      "externalSchemes": {
+        "value": [
+          "https:",
+          "mailto:",
+          "tel:"
+        ],
+        "rationale": "Explicit link protocols without script URLs or third-party embeds."
+      }
+    },
+    "images": {
+      "formats": {
+        "value": [
+          "webp",
+          "jpeg",
+          "png"
+        ],
+        "rationale": "Matches supplied reference raster assets; uploaded SVG excluded."
+      },
+      "maxAssets": {
+        "value": 50,
+        "rationale": "Headroom over 28 reference image/brand files."
+      },
+      "maxBytes": {
+        "value": 2097152,
+        "rationale": "Headroom over the 88,270-byte reference maximum."
+      },
+      "maxTotalBytes": {
+        "value": 26214400,
+        "rationale": "Bounds the whole supplied bundle."
+      },
+      "maxWidth": {
+        "value": 4096,
+        "rationale": "Headroom over reference width 1600."
+      },
+      "maxHeight": {
+        "value": 4096,
+        "rationale": "Headroom over reference height 1900."
+      },
+      "animated": {
+        "value": false,
+        "rationale": "Static templates only."
+      },
+      "altRequired": {
+        "value": true,
+        "rationale": "Every image needs descriptive accessible copy."
+      },
+      "hash": {
+        "value": "sha256",
+        "rationale": "Binds each declaration to actual supplied bytes."
+      }
+    },
+    "approval": {
+      "required": {
+        "value": true,
+        "rationale": "Client human approves before submission."
+      },
+      "digest": {
+        "value": "sha256-sorted-json-without-approval",
+        "rationale": "Binds declaration to exact proposed result, including optional preview reference."
+      },
+      "previewRequired": {
+        "value": false,
+        "rationale": "Preview artifact reference is optional; approval declaration is required."
+      }
+    }
+  },
+  "changes": {
+    "perMonth": {
+      "value": 4,
+      "rationale": "Selected bounded pilot allowance."
+    },
+    "calendar": {
+      "value": "UTC",
+      "rationale": "Unambiguous calendar-month boundary."
+    },
+    "rollover": {
+      "value": false,
+      "rationale": "Unused requests do not accumulate."
+    },
+    "countsWhen": {
+      "value": "successfully-applied",
+      "rationale": "Validation, rejected work and retries are not new applied requests."
+    },
+    "maxPagesTouched": {
+      "value": 2,
+      "rationale": "Selected per-request page cap."
+    },
+    "maxBlocksModified": {
+      "value": 10,
+      "rationale": "Selected per-request block cap; additions to new pages count."
+    },
+    "maxGlobalOperations": {
+      "value": 1,
+      "rationale": "Shared configuration has a separate allowance."
+    },
+    "maxOperations": {
+      "value": 20,
+      "rationale": "Bounds processing independently of final change size."
+    },
+    "operations": {
+      "value": [
+        "add-block",
+        "update-block",
+        "remove-block",
+        "add-page",
+        "update-page-seo",
+        "update-tokens",
+        "update-navigation"
+      ],
+      "rationale": "Typed bounded changes; no arbitrary patches, page deletion or renaming."
+    },
+    "doesNotCount": {
+      "value": [
+        "pocketbase-content-edit"
+      ],
+      "rationale": "Content-only CMS edits do not change the static site contract."
+    }
+  }
+}

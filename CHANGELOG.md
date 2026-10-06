@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-06 — web-simple policy and site contracts verified locally
+
+- Added an owner-reviewable versioned web-simple policy with rationale fields, immutable version snapshot, generated site/change schemas, Markdown/JSON client manifests, and fictional seven-page examples with original PNG pixels. Read-only artifact drift checks run in the service check path.
+- Added standalone schema/reference/approval validators, actual raster byte/hash/dimension/decode/static-image checks, and atomic change projection with bounded page/block/global/monthly accounting. No auth, MCP, rendering, CMS provisioning, deployment or legacy brief-analysis extension was added.
+- Proposed seven authored pages, four applied changes per UTC month, two pages/ten blocks/one shared configuration operation per request, and the full limits in [plans](docs/plans.md). Added source protection and tests for plans and rename origins; activation of the deployed evaluator requires separate authorization.
+- Node.js 22.23.3 service check/build and 110 tests, website checks/build, seven infrastructure tests, generated-artifact consistency, documentation links and whitespace checks passed locally. Dependency notices are preserved, including optional native-package inventory handling. Operator App publication and current-head owner review remain separate from merge, deployment, authenticated approval, visual fidelity and persistent concurrent accounting.
+
 ## 2026-10-05 — changelog and author profile validated locally
 
 - Added a decorative GitHub SVG beside “Follow the build,” using the existing 15px social-icon sizing and teal color. Node.js 22 checks/build and focused desktop/mobile browser verification passed, including keyboard focus and the unchanged repository destination.
