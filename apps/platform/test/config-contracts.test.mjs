@@ -17,6 +17,33 @@ test('configuration rejects insecure origins, unpinned production resources and 
   assert.equal(readConfig({...env,PLATFORM_SUPERADMIN_EMAIL:'OWNER@EXAMPLE.INVALID'}).superadminEmail,'owner@example.invalid');
 });
 
+test('alternate deployment origins require exact HTTPS opt-in and retain canonical defaults',()=>{
+  const staging='https://platform-production-d84c.up.railway.app';
+  const base={...env,NODE_ENV:'production',PLATFORM_ORIGIN:staging};
+  for(const PLATFORM_ALLOWED_ORIGINS of [undefined,'','  ','https://other.example.invalid']) assert.throws(()=>readConfig({...base,PLATFORM_ALLOWED_ORIGINS}),/explicitly listed/);
+  for(const PLATFORM_ALLOWED_ORIGINS of [staging,` https://other.example.invalid, ${staging} `]) {
+    const config=readConfig({...base,PLATFORM_ALLOWED_ORIGINS});
+    assert.equal(config.origin,staging);
+    assert.equal(config.resource,staging+'/mcp');
+    assert.equal(config.issuer,staging+'/api/auth');
+    assert.equal(config.dcr,false);
+    // An allowlist selects one deployment origin; other listed hosts are not interchangeable.
+    assert.throws(()=>readConfig({...base,PLATFORM_ALLOWED_ORIGINS,PLATFORM_ORIGIN:staging+'.evil.example.invalid'}));
+    assert.equal(readConfig({...base,PLATFORM_ALLOWED_ORIGINS,PLATFORM_ORIGIN:'https://mcp.a2aviary.io'}).resource,'https://mcp.a2aviary.io/mcp');
+  }
+  assert.equal(readConfig({...env,PLATFORM_ALLOWED_ORIGINS:''}).origin,env.PLATFORM_ORIGIN);
+  assert.equal(readConfig({...env,NODE_ENV:'production',PLATFORM_ORIGIN:'https://mcp.a2aviary.io'}).origin,'https://mcp.a2aviary.io');
+});
+
+test('origin allowlist fails closed on malformed, insecure, wildcard or non-origin entries',()=>{
+  for(const entry of ['http://other.example.invalid','http://localhost:3000','https://*.up.railway.app','*','null','https://user:pass@other.example.invalid','https://other.example.invalid/','https://other.example.invalid/path','https://other.example.invalid?x=1','https://other.example.invalid#fragment','https://OTHER.example.invalid','https://other.example.invalid:443','','not-a-url']) {
+    // Reject bad entries even when PLATFORM_ORIGIN is the canonical host.
+    const PLATFORM_ALLOWED_ORIGINS=`https://staging.example.invalid,${entry}`;
+    assert.throws(()=>readConfig({...env,PLATFORM_ORIGIN:'https://mcp.a2aviary.io',PLATFORM_ALLOWED_ORIGINS}),/PLATFORM_ALLOWED_ORIGINS/);
+  }
+  for(const PLATFORM_ORIGIN of ['http://external.example.invalid','https://other.example.invalid/','https://other.example.invalid/path','https://user:pass@other.example.invalid']) assert.throws(()=>readConfig({...env,PLATFORM_ORIGIN,PLATFORM_ALLOWED_ORIGINS:PLATFORM_ORIGIN}));
+});
+
 test('MCP CIMD profile rejects missing identity fields and unsafe metadata destinations',()=>{
   const url='https://connector.example.invalid/oauth/client.json';
   const metadata={client_id:url,client_name:'Fictional connector',redirect_uris:['https://connector.example.invalid/callback'],token_endpoint_auth_method:'none'};

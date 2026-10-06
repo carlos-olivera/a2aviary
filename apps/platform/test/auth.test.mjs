@@ -4,7 +4,9 @@ import {decodeJwt, generateKeyPair, SignJWT, exportJWK, calculateJwkThumbprint} 
 import {createHash,randomUUID} from 'node:crypto';
 import {getMigrations} from 'better-auth/db/migration';
 import {createAuth} from '../src/auth.ts';
-import {fixture} from './helpers.mjs';
+import {createApp} from '../src/app.ts';
+import {readConfig} from '../src/config.ts';
+import {fixture,env} from './helpers.mjs';
 
 test('Postgres OAuth integration and strict authenticated MCP transport', async t => {
   const f = await fixture(); t.after(f.close);
@@ -33,6 +35,30 @@ test('Postgres OAuth integration and strict authenticated MCP transport', async 
     assert.equal(r.status,201); assert.equal((await r.json()).token_endpoint_auth_method,'none');
     assert.equal((await f.request('/api/auth/oauth2/create-client',{method:'POST',headers:{cookie:user.cookie,'content-type':'application/json'},body:'{}'})).status,404);
     assert.equal((await f.request('/api/auth/token',{headers:{cookie:user.cookie}})).status,404);
+  });
+  await t.test('staging opt-in binds discovery and login trust to only the selected origin', async () => {
+    const origin='https://platform-production-d84c.up.railway.app';
+    const config=readConfig({...env,NODE_ENV:'production',PLATFORM_ORIGIN:origin,PLATFORM_ALLOWED_ORIGINS:origin+',https://other.example.invalid'});
+    const app=await createApp(config,f.pool);
+    assert.deepEqual(app.auth.options.trustedOrigins,[origin]);
+    const request=(path,init={})=>app.fetch(new Request(origin+path,init));
+    const authorization=await request('/.well-known/oauth-authorization-server/api/auth');
+    assert.equal(authorization.status,200);
+    const metadata=await authorization.json();
+    assert.equal(metadata.issuer,origin+'/api/auth');
+    assert.equal(metadata.authorization_endpoint,origin+'/api/auth/oauth2/authorize');
+    assert.equal(metadata.jwks_uri,origin+'/api/auth/jwks');
+    assert.equal(metadata.registration_endpoint,undefined);
+    const resource=await request('/.well-known/oauth-protected-resource/mcp');
+    assert.equal(resource.status,200);
+    const protectedMetadata=await resource.json();
+    assert.equal(protectedMetadata.resource,origin+'/mcp');
+    assert.deepEqual(protectedMetadata.authorization_servers,[origin+'/api/auth']);
+    for(const untrusted of ['https://mcp.a2aviary.io','https://other.example.invalid']) {
+      assert.equal((await request('/sign-in',{method:'POST',headers:{origin:untrusted,'content-type':'application/x-www-form-urlencoded'},body:''})).status,403);
+    }
+    // The existing deployment also rejects a correctly signed token for the staging resource.
+    assert.equal((await f.rpc(await f.token(user,{aud:origin+'/mcp'}))).status,401);
   });
   await t.test('committed migrations match pinned auth schema and are idempotent', async () => {
     const plan = await getMigrations(f.app.auth.options);

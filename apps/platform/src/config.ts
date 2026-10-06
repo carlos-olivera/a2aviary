@@ -13,7 +13,17 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const url = new URL(origin);
   const loopback = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
   if (url.origin !== origin || url.username || url.password || (url.protocol !== 'https:' && !(url.protocol === 'http:' && loopback))) throw new Error('PLATFORM_ORIGIN must be a bare HTTPS origin (HTTP loopback allowed for development)');
-  if (!loopback && origin !== 'https://mcp.a2aviary.io') throw new Error('Production origin must be https://mcp.a2aviary.io');
+  // Exact alternate deployment origins only; this does not broaden OAuth redirects or CORS.
+  const configuredOrigins = env.PLATFORM_ALLOWED_ORIGINS?.trim();
+  const allowedOrigins = (configuredOrigins ? configuredOrigins.split(',') : []).map(value => {
+    const candidate = value.trim();
+    let parsed: URL;
+    try { parsed = new URL(candidate); }
+    catch { throw new Error('PLATFORM_ALLOWED_ORIGINS must contain comma-separated bare HTTPS origins'); }
+    if (parsed.protocol !== 'https:' || parsed.origin !== candidate || parsed.username || parsed.password || candidate.includes('*')) throw new Error('PLATFORM_ALLOWED_ORIGINS must contain exact bare HTTPS origins without wildcards');
+    return candidate;
+  });
+  if (!loopback && origin !== 'https://mcp.a2aviary.io' && !allowedOrigins.includes(origin)) throw new Error('PLATFORM_ORIGIN must be https://mcp.a2aviary.io or explicitly listed in PLATFORM_ALLOWED_ORIGINS');
   const secret = required('BETTER_AUTH_SECRET');
   if (secret.length < 32) throw new Error('BETTER_AUTH_SECRET must contain at least 32 characters');
   const superadminEmail = required('PLATFORM_SUPERADMIN_EMAIL').toLowerCase();
