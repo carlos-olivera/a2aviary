@@ -1,0 +1,44 @@
+name: Local integration (advisory)
+on:
+  pull_request:
+    paths:
+      - 'infra/**'
+      - 'services/**'
+      - 'local/**'
+      - 'docker-compose.local.yml'
+      - '.env.local.example'
+      - '.github/workflows/local-integration.yml'
+permissions:
+  contents: read
+jobs:
+  local-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm ci
+        working-directory: infra
+      - run: npm ci
+        working-directory: services
+      - run: npm ci
+        working-directory: website
+      - run: npm --prefix infra run local:up
+      - run: npm --prefix infra run local:deploy
+      - name: Signed-email integration assertions
+        shell: bash
+        run: |
+          set -o pipefail
+          npm --prefix infra run local:test | tee local-test-summary.txt
+      - name: Remove disposable environment
+        if: always()
+        run: npm --prefix infra run local:down
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: local-test-sanitized-summary
+          path: local-test-summary.txt
+          retention-days: 7

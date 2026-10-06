@@ -7,3 +7,9 @@ Build/check instructions are in [runbooks](docs/runbooks.md). Use fictional exam
 Routine changes require CI and the trusted policy check. Sensitive paths require Carlos's approval for the current PR head, as described in [governance](GOVERNANCE.md). Agent labels, approvals, or descriptions do not grant authority. Infrastructure administration and publication must stay within the user's authorized scope.
 
 Contributions must be distributable under Apache 2.0 while respecting dependency licenses and third-party attribution. Do not publish exploitable security details in issues; use [private security reporting](SECURITY.md).
+
+Any PR changing `infra/` or `services/` must regenerate the source-backed
+architecture page and pass `npm --prefix infra run local:test`. See
+[local development](docs/local-development.md) for setup, regeneration and the
+initially advisory integration CI job. Required website checks enforce map
+freshness; local emulation does not establish production readiness.

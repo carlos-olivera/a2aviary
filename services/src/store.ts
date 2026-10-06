@@ -1,11 +1,12 @@
+import { awsOptions } from './environment.js';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, TransactWriteCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
 import { randomUUID } from 'node:crypto';
-export const db = DynamoDBDocumentClient.from(new DynamoDBClient({}), { marshallOptions: { removeUndefinedValues: true } });
-export const s3 = new S3Client({}); export const sqs = new SQSClient({});
+export const db = DynamoDBDocumentClient.from(new DynamoDBClient(awsOptions()), { marshallOptions: { removeUndefinedValues: true } });
+export const s3 = new S3Client(awsOptions()); export const sqs = new SQSClient(awsOptions());
 export const table = () => process.env.STATE_TABLE!;
 export const now = () => Math.floor(Date.now()/1000);
 export const get = async (pk: string) => (await db.send(new GetCommand({ TableName: table(), Key: {pk}, ConsistentRead: true }))).Item;
@@ -18,7 +19,7 @@ export async function due(work: string) { return (await db.send(new QueryCommand
 export async function raw(key: string, bucket = process.env.RAW_BUCKET!) { const r = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key })); if ((r.ContentLength ?? 0) > 1048576) throw Object.assign(new Error('raw_too_large'), {code:'raw_too_large'}); return Buffer.from(await r.Body!.transformToByteArray()); }
 export async function saveContent(key: string, body: unknown, pending=false) { await s3.send(new PutObjectCommand({Bucket:process.env.DATA_BUCKET!,Key:key,Body:JSON.stringify(body),ContentType:'application/json',...(pending?{Tagging:'Disposition=pending'}:{})})); }
 const cache = new Map<string,{at:number,value:any}>();
-export async function secret(id: string) { const old=cache.get(id); if(old && now()-old.at<60) return old.value; const r = await new SecretsManagerClient({}).send(new GetSecretValueCommand({SecretId:id})); const value = JSON.parse(r.SecretString!); cache.set(id,{at:now(),value}); return value; }
+export async function secret(id: string) { const old=cache.get(id); if(old && now()-old.at<60) return old.value; const r = await new SecretsManagerClient(awsOptions()).send(new GetSecretValueCommand({SecretId:id})); const value = JSON.parse(r.SecretString!); cache.set(id,{at:now(),value}); return value; }
 export async function audit(operation: string, ids: Record<string,unknown>, result: string, reason?: string) { const item={pk:'AUDIT#'+randomUUID(),at:now(),actor:process.env.AWS_LAMBDA_FUNCTION_NAME ?? 'bootstrap',operation,...ids,result,reason,ttl:now()+90*86400}; await put(item); console.log({operation,...ids,result,reason}); }
 export const flags = async () => (await get('CONTROL#flags')) ?? {admission:false,processing:false,sending:false};
 export async function enqueue(queue: string, pk: string, delay=0) { await sqs.send(new SendMessageCommand({QueueUrl:queue,MessageBody:JSON.stringify({pk}),DelaySeconds:Math.max(0,Math.min(900,delay))})); }

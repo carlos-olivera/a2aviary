@@ -10,8 +10,8 @@ import { Email } from './email.js';
 import { Runtime } from './runtime.js';
 import type { Config } from './app.js';
 export class Controls extends cdk.Stack {
- constructor(scope:Construct,id:string,config:Config,email:Email,runtime:Runtime){super(scope,id,{env:{account:config.account,region:config.region},terminationProtection:true});
-  const notifications=new sns.Topic(this,'OwnerAlerts');notifications.addSubscription(new subscriptions.EmailSubscription(config.ownerEmail));
+ constructor(scope:Construct,id:string,config:Config,email:Email,runtime:Runtime){super(scope,id,{env:{account:config.account,region:config.region},terminationProtection:!config.local});
+  const notifications=new sns.Topic(this,'OwnerAlerts');if (!config.local) notifications.addSubscription(new subscriptions.EmailSubscription(config.ownerEmail));
   const metrics:Record<string,cw.IMetric>={};runtime.functions.forEach((fn,i)=>{metrics['f'+i]=fn.metricErrors({period:cdk.Duration.minutes(5)});});
   for(const [i,fn] of runtime.functions.entries())new logs.MetricFilter(this,'LoggedFailure'+i,{logGroup:fn.logGroup,filterPattern:logs.FilterPattern.exists('$.message.error'),metricNamespace:'a2aviary',metricName:'LoggedWorkerFailures',metricValue:'1'});
   const logged=new cw.Alarm(this,'LoggedFailures',{metric:new cw.Metric({namespace:'a2aviary',metricName:'LoggedWorkerFailures',statistic:'Sum',period:cdk.Duration.minutes(5)}),threshold:1,evaluationPeriods:1,treatMissingData:cw.TreatMissingData.NOT_BREACHING});logged.addAlarmAction(new actions.SnsAction(notifications));
@@ -25,7 +25,7 @@ export class Controls extends cdk.Stack {
   const watchdog=runtime.functions.find(fn=>fn.node.id==='Watchdog')!;
   new logs.MetricFilter(this,'ModelBudgetMetric',{logGroup:watchdog.logGroup,filterPattern:logs.FilterPattern.stringValue('$.message.operation','=','budget.observe'),metricNamespace:'a2aviary',metricName:'CommittedModelDollars',metricValue:'$.message.committedDollars'});
   const modelBudget=new cw.Alarm(this,'ModelBudgetWarning',{metric:new cw.Metric({namespace:'a2aviary',metricName:'CommittedModelDollars',statistic:'Maximum',period:cdk.Duration.minutes(5)}),threshold:8,evaluationPeriods:1,treatMissingData:cw.TreatMissingData.NOT_BREACHING});modelBudget.addAlarmAction(new actions.SnsAction(notifications));
-  new budgets.CfnBudget(this,'AwsBudget',{budget:{budgetName:'a2aviary-prod-aws',budgetType:'COST',timeUnit:'MONTHLY',budgetLimit:{amount:15,unit:'USD'},costFilters:{TagKeyValue:['Project$a2aviary']}},notificationsWithSubscribers:[50,80,100].map(threshold=>({notification:{comparisonOperator:'GREATER_THAN',notificationType:'ACTUAL',threshold,thresholdType:'PERCENTAGE'},subscribers:[{address:config.ownerEmail,subscriptionType:'EMAIL'}]}))});
+  if (!config.local) new budgets.CfnBudget(this,'AwsBudget',{budget:{budgetName:'a2aviary-prod-aws',budgetType:'COST',timeUnit:'MONTHLY',budgetLimit:{amount:15,unit:'USD'},costFilters:{TagKeyValue:['Project$a2aviary']}},notificationsWithSubscribers:[50,80,100].map(threshold=>({notification:{comparisonOperator:'GREATER_THAN',notificationType:'ACTUAL',threshold,thresholdType:'PERCENTAGE'},subscribers:[{address:config.ownerEmail,subscriptionType:'EMAIL'}]}))});
   new cdk.CfnOutput(this,'AlertsTopic',{value:notifications.topicArn});
  }
 }

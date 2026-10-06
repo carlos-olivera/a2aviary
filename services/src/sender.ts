@@ -1,3 +1,4 @@
+import { awsOptions } from './environment.js';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { get, update, flags, secret, now, audit } from './store.js';
 import { sign, mimeMessage, hash } from './protocol.js';
@@ -14,7 +15,7 @@ export async function processOutbound(pk:string) {
   try {await update(pk,'SET #s = :s, startedAt = :at, #w = :w, due = :due',{':s':'sending',':at':now(),':pending':'pending',':w':'sending',':due':now()+120},'#s = :pending',{'#s':'status','#w':'work'});}catch(e:any){if(e.name==='ConditionalCheckFailedException')return;throw e;}
   let outcome='accepted_by_ses', sesMessageId:string|undefined;
   try {
-    const result=await new SESv2Client({maxAttempts:1}).send(new SendEmailCommand({FromEmailAddress:'agent@a2aviary.io',Destination:{ToAddresses:[item.to]},Content:{Raw:{Data:mimeMessage('agent@a2aviary.io',item.to,jws,item.messageId,item.correlationId)}},ConfigurationSetName:process.env.SES_CONFIG_SET,EmailTags:[{Name:'outbox',Value:item.messageId}]}));
+    const result=await new SESv2Client({...awsOptions(true),maxAttempts:1}).send(new SendEmailCommand({FromEmailAddress:'agent@a2aviary.io',Destination:{ToAddresses:[item.to]},Content:{Raw:{Data:mimeMessage('agent@a2aviary.io',item.to,jws,item.messageId,item.correlationId)}},ConfigurationSetName:process.env.SES_CONFIG_SET,EmailTags:[{Name:'outbox',Value:item.messageId}]}));
     await update(pk,'SET #s = :s, sesMessageId = :id, acceptedAt = :at REMOVE #w',{':s':'accepted_by_ses',':id':result.MessageId??'unknown',':at':now()},undefined,{'#s':'status','#w':'work'});
     sesMessageId=result.MessageId;
   } catch(e:any) {

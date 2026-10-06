@@ -1,0 +1,26 @@
+{
+  "goals": [
+    "Explain a fictional community garden project."
+  ],
+  "audience": "Fictional garden volunteers.",
+  "pages": [
+    {
+      "name": "Home",
+      "purpose": "Describe the fictional project.",
+      "sections": [
+        "Introduction",
+        "Volunteer information"
+      ]
+    }
+  ],
+  "missingInputs": [
+    "Approved fictional photographs."
+  ],
+  "assumptions": [
+    "This is a local verification fixture; no website is delivered."
+  ],
+  "acceptanceCriteria": [
+    "The brief identifies its audience and missing inputs."
+  ],
+  "references": []
+}

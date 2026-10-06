@@ -1,3 +1,4 @@
+import { awsOptions } from './environment.js';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -100,9 +101,9 @@ export async function processSupport(envelope: any, config: SupportConfig, ports
   return 'accepted_by_ses';
 }
 
-const s3 = new S3Client({});
-const ses = new SESv2Client({ maxAttempts: 1 });
-const db = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const s3 = new S3Client(awsOptions());
+const ses = new SESv2Client({ ...awsOptions(true), maxAttempts: 1 });
+const db = DynamoDBDocumentClient.from(new DynamoDBClient(awsOptions()));
 const table = () => process.env.SUPPORT_TABLE!;
 const config = (): SupportConfig => ({ bucket: process.env.SUPPORT_BUCKET!, topic: process.env.SUPPORT_TOPIC!, owner: process.env.SUPPORT_OWNER! });
 const ports: SupportPorts = {
