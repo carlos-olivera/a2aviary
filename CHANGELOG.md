@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-05 — changelog and author profile validated locally
+
+- Added a decorative GitHub SVG beside “Follow the build,” using the existing 15px social-icon sizing and teal color. Node.js 22 checks/build and focused desktop/mobile browser verification passed, including keyboard focus and the unchanged repository destination.
+- Added header navigation to the new post-hero Change Log, native glass timeline cards with three initial posts and an earlier-post disclosure, and a desktop-sticky author profile with the supplied portrait, exact biography and social links. Matched the existing palette/fonts and added reduced-motion-aware scrolling/reveals; moved stylesheet loading into HTML for styled development without JavaScript.
+- Captured five real owner-supplied `@carlos_olivera` / `#a2aviary` posts into a validated, escaped, build-time JSON snapshot with UTC dates, thread references and expanded URLs. The feed is curated, with no live X fetch or embed; dated intentions remain distinct from implemented capabilities.
+- Node.js 22.22.3 checks/build, exact output and development/preview GET/HEAD checks passed. Chrome desktop/tablet/two-mobile checks passed with JavaScript disabled/enabled, keyboard disclosure/navigation, reduced motion and locally applied production CSP. Existing Three.js, public-page, costs and SEO browser checks passed; see [local evidence](website/verification.md#changelog-and-author-profile--2026-10-05-local-verification). Verification was local. Operator App publication was requested separately after validation; owner review, merge and deployment remain separate gates.
+
 ## 2026-10-05 — support permission repair activated and receipts recovered
 
 - After the owner merged PR #12 and authorized activation/recovery, inspected and executed the runtime change set; UPDATE_COMPLETE confirms deployment. Added only the approved raw-send permission under unchanged sender/recipient/identity restrictions and shared worker-code updates, with no resources added or removed.

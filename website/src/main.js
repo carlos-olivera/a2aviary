@@ -1,4 +1,6 @@
-import './styles.css';
+import { mountChangelogMotion } from './changelog-motion.js';
+const disposeChangelog = mountChangelogMotion();
+if (import.meta.hot) import.meta.hot.dispose(disposeChangelog);
 const visual = document.querySelector('#visual');
 try {
   // HTML and styles stay useful while the separate 3D modules download.

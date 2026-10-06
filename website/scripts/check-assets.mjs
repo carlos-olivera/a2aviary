@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import './check-costs.mjs';
 import './check-public-pages.mjs';
+import './check-changelog.mjs';
 
 const brand = new URL('../../brand/', import.meta.url);
 const publicRoot = new URL('../public/', import.meta.url);

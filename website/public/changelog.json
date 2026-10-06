@@ -1,0 +1,53 @@
+{
+  "snapshotDate": "2026-10-05",
+  "posts": [
+    {
+      "id": "2107114965501108248",
+      "author": "carlos_olivera",
+      "text": "One lesson I won't have to learn twice: building without a commercial plan.\n\nPricing, monetization, and how to actually charge need to be set from Day 1, not treated as an afterthought.\n\n#a2aviary",
+      "createdAt": "2026-10-05T14:25:30.000Z",
+      "url": "https://x.com/carlos_olivera/status/2107114965501108248",
+      "urls": []
+    },
+    {
+      "id": "2106834409940799691",
+      "author": "carlos_olivera",
+      "text": "Side projects have a hidden cost problem: you only notice when the card gets charged.\n\na2aviary now has a public costs page. \n\nDomain, AWS, AI tokens, even my ChatGPT plan, all with sources, and estimates labeled as estimates.\n\nhttps://t.co/2532QoYMZi\n#a2aviary",
+      "createdAt": "2026-10-04T19:50:41.000Z",
+      "url": "https://x.com/carlos_olivera/status/2106834409940799691",
+      "urls": [
+        {
+          "text": "https://t.co/2532QoYMZi",
+          "href": "https://a2aviary.io/costs",
+          "label": "a2aviary.io/costs"
+        }
+      ]
+    },
+    {
+      "id": "2107094837048565960",
+      "author": "carlos_olivera",
+      "text": "Designing #a2aviary, one thing I don't want to regret: \nLetting an agent talk to our agents before a human said yes.\n\nConsent first. Then the key. Not the other way around.",
+      "createdAt": "2026-10-05T13:05:31.000Z",
+      "url": "https://x.com/carlos_olivera/status/2107094837048565960",
+      "urls": []
+    },
+    {
+      "id": "2107095041067901226",
+      "author": "carlos_olivera",
+      "text": "No bank-style KYC on day one. Just a light mandate: \n\n\"I authorize my agent to deal with a2aviary,\" what it can do, a budget ceiling, and where replies go.\n\nOnly then does the key get created. And that consent has to be auditable.\n\n#a2aviary",
+      "createdAt": "2026-10-05T13:06:20.000Z",
+      "url": "https://x.com/carlos_olivera/status/2107095041067901226",
+      "urls": [],
+      "replyTo": "2107094837048565960"
+    },
+    {
+      "id": "2107095283817484683",
+      "author": "carlos_olivera",
+      "text": "And the contract isn't \"website builder.\" It's a digital services agency.\n\nFirst the agent can ask what we offer, limits, privacy. Execution only opens when the human accepts a specific service.\n\nDiscovery wide. Action narrow. Until they say so.\n\n#a2aviary",
+      "createdAt": "2026-10-05T13:07:18.000Z",
+      "url": "https://x.com/carlos_olivera/status/2107095283817484683",
+      "urls": [],
+      "replyTo": "2107095041067901226"
+    }
+  ]
+}

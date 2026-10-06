@@ -24,7 +24,7 @@ async (page) => {
     });
     assert(layout.scrollWidth <= width, `Horizontal overflow at ${width}`);
     assert(layout.headingBottom < height && layout.copyBottom < height, `Initial copy clipped at ${width}`);
-    if (width > 900) assert(layout.scrollHeight === height, `Desktop does not fit at ${width}`);
+    if (width > 900) assert(layout.scrollHeight > height, `Changelog page should scroll at ${width}`);
     assert(layout.scene.componentOffsets.every((offset) => offset === 0), 'Bird failed to settle');
     assert(JSON.stringify(layout.scene.holes) === JSON.stringify({ 'bird-head': 1, 'bird-lower-wing': 2, 'bird-middle-wing': 1, 'bird-upper-wing': 1, 'bird-eye': 0 }), 'SVG holes changed');
     assert(layout.scene.extrusionDepth > 0.3, 'Bird is not extruded');
@@ -36,6 +36,10 @@ async (page) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(base);
   await ready();
+  await page.keyboard.press('Tab');
+  assert(await page.getByRole('link', {name:'A shared direction.'}).evaluate(link => document.activeElement === link && link.hash === '#changelog'), 'Changelog link is first and accessible');
+  await page.keyboard.press('Tab');
+  assert(await page.getByRole('link', {name:'Basic subscription'}).evaluate(link => document.activeElement === link), 'Pricing link is keyboard accessible');
   await page.keyboard.press('Tab');
   assert(await page.getByRole('link', {name:'Follow the build →'}).evaluate(link => document.activeElement === link && link.href === 'https://github.com/carlos-olivera/a2aviary'), 'Build link is not accessible or has the wrong destination');
   await page.keyboard.press('Tab');

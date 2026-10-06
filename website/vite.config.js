@@ -1,9 +1,10 @@
 import { defineConfig } from 'vite';
+import { changelogSection } from './scripts/changelog-plugin.mjs';
 import { costsPage } from './scripts/costs-plugin.mjs';
 import { policyPages } from './scripts/policies-plugin.mjs';
 
 export default defineConfig({
-  plugins: [costsPage(), policyPages()],
+  plugins: [costsPage(), policyPages(), changelogSection()],
   build: {
     rolldownOptions: {
       output: {
