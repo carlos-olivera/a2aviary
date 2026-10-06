@@ -15,11 +15,11 @@ import type { Config } from './app.js';
 
 export class Email extends cdk.Stack {
   raw:s3.Bucket; data:s3.Bucket; state:ddb.Table; intake:sqs.Queue; runtime:sqs.Queue; outbox:sqs.Queue;
-  openai:secrets.Secret; signing:secrets.Secret; appKey:secrets.Secret; webhook:secrets.Secret; configSet:ses.ConfigurationSet; feedback:sns.Topic;
+  openai:secrets.Secret; signing:secrets.Secret; appKey:secrets.Secret; webhook:secrets.Secret; configSet:ses.IConfigurationSet; feedback:sns.Topic;
   supportRaw:s3.Bucket; supportState:ddb.Table; supportQueue:sqs.Queue; supportTopic:sns.Topic;
   queues:sqs.Queue[]=[];
   constructor(scope:Construct,id:string,config:Config){
-    super(scope,id,{env:{account:config.account,region:config.region},terminationProtection:true});
+    super(scope,id,{env:{account:config.account,region:config.region},terminationProtection:!config.local});
     this.raw=new s3.Bucket(this,'Raw',{blockPublicAccess:s3.BlockPublicAccess.BLOCK_ALL,enforceSSL:true,encryption:s3.BucketEncryption.S3_MANAGED,removalPolicy:cdk.RemovalPolicy.RETAIN,lifecycleRules:[{expiration:cdk.Duration.days(30)},{tagFilters:{Disposition:'rejected'},expiration:cdk.Duration.days(7)}]});
     this.data=new s3.Bucket(this,'Data',{blockPublicAccess:s3.BlockPublicAccess.BLOCK_ALL,enforceSSL:true,encryption:s3.BucketEncryption.S3_MANAGED,removalPolicy:cdk.RemovalPolicy.RETAIN,lifecycleRules:[{expiration:cdk.Duration.days(30)},{tagFilters:{Disposition:'pending'},expiration:cdk.Duration.days(7)}]});
     this.state=new ddb.Table(this,'State',{partitionKey:{name:'pk',type:ddb.AttributeType.STRING},billingMode:ddb.BillingMode.PAY_PER_REQUEST,encryption:ddb.TableEncryption.AWS_MANAGED,timeToLiveAttribute:'ttl',pointInTimeRecoverySpecification:{pointInTimeRecoveryEnabled:true,recoveryPeriodInDays:1},stream:ddb.StreamViewType.NEW_AND_OLD_IMAGES,removalPolicy:cdk.RemovalPolicy.RETAIN,deletionProtection:true});
@@ -32,23 +32,30 @@ export class Email extends cdk.Stack {
     this.supportQueue=queue('Support');
     this.supportTopic=new sns.Topic(this,'SupportReceipt');this.supportTopic.addSubscription(new sub.SqsSubscription(this.supportQueue));
     const receipt=new sns.Topic(this,'Receipt');receipt.addSubscription(new sub.SqsSubscription(this.intake));
+    if (!config.local) {
     const zone=dns.HostedZone.fromHostedZoneAttributes(this,'Zone',{hostedZoneId:config.zoneId,zoneName:'a2aviary.io'});
     new ses.EmailIdentity(this,'Identity',{identity:ses.Identity.publicHostedZone(zone),mailFromDomain:'bounce.a2aviary.io',mailFromBehaviorOnMxFailure:ses.MailFromBehaviorOnMxFailure.REJECT_MESSAGE});
     new dns.MxRecord(this,'InboundMX',{zone,values:[{priority:10,hostName:'inbound-smtp.us-east-1.amazonaws.com'}],ttl:cdk.Duration.minutes(5)});
     new dns.TxtRecord(this,'DMARC',{zone,recordName:'_dmarc',values:['v=DMARC1; p=reject; adkim=s; aspf=r'],ttl:cdk.Duration.minutes(5)});
-    const rules=new ses.ReceiptRuleSet(this,'Rules',{receiptRuleSetName:'a2aviary-prod'});
+    } // Local sending identities are verified through the SES v1 adapter setup.
+    const rules=new ses.ReceiptRuleSet(this,'Rules',{receiptRuleSetName:config.local?'a2aviary-local':'a2aviary-prod'});
     receipt.addToResourcePolicy(new iam.PolicyStatement({principals:[new iam.ServicePrincipal('ses.amazonaws.com')],actions:['sns:Publish'],resources:[receipt.topicArn],conditions:{StringEquals:{'AWS:SourceAccount':config.account},ArnEquals:{'AWS:SourceArn':`arn:aws:ses:${config.region}:${config.account}:receipt-rule-set/a2aviary-prod:receipt-rule/a2aviary-agent`}}}));
     this.supportTopic.addToResourcePolicy(new iam.PolicyStatement({principals:[new iam.ServicePrincipal('ses.amazonaws.com')],actions:['sns:Publish'],resources:[this.supportTopic.topicArn],conditions:{StringEquals:{'AWS:SourceAccount':config.account},ArnEquals:{'AWS:SourceArn':`arn:aws:ses:${config.region}:${config.account}:receipt-rule-set/a2aviary-prod:receipt-rule/a2aviary-support`}}}));
     // No Stop action here: messages also addressed to an agent/test recipient retain their existing routing.
     const supportRule=rules.addRule('SupportRule',{receiptRuleName:'a2aviary-support',recipients:['hello@a2aviary.io'],enabled:true,scanEnabled:true,tlsPolicy:ses.TlsPolicy.REQUIRE,actions:[new actions.S3({bucket:this.supportRaw,objectKeyPrefix:'support/',topic:this.supportTopic})]});
     rules.addRule('AgentRule',{receiptRuleName:'a2aviary-agent',after:supportRule,recipients:['agent@a2aviary.io'],enabled:true,scanEnabled:true,tlsPolicy:ses.TlsPolicy.REQUIRE,actions:[new actions.S3({bucket:this.raw,objectKeyPrefix:'inbound/',topic:receipt}),new actions.Stop()]});
     rules.addRule('TestRule',{receiptRuleName:'a2aviary-controlled-test',recipients:['test@a2aviary.io'],enabled:true,scanEnabled:true,tlsPolicy:ses.TlsPolicy.REQUIRE,actions:[new actions.S3({bucket:this.raw,objectKeyPrefix:'controlled/'}),new actions.Stop()]});
-    new custom.AwsCustomResource(this,'ActivateRules',{installLatestAwsSdk:false,onCreate:{service:'SES',action:'setActiveReceiptRuleSet',parameters:{RuleSetName:rules.receiptRuleSetName},physicalResourceId:custom.PhysicalResourceId.of('a2aviary-prod-active-rules')},policy:custom.AwsCustomResourcePolicy.fromSdkCalls({resources:custom.AwsCustomResourcePolicy.ANY_RESOURCE})}).node.addDependency(rules);
-    const sec=(name:string)=>new secrets.Secret(this,name,{secretName:'a2aviary/prod/'+name.toLowerCase(),generateSecretString:{secretStringTemplate:'{}',generateStringKey:'bootstrapToken'},removalPolicy:cdk.RemovalPolicy.RETAIN});
+    if (!config.local) new custom.AwsCustomResource(this,'ActivateRules',{installLatestAwsSdk:false,onCreate:{service:'SES',action:'setActiveReceiptRuleSet',parameters:{RuleSetName:rules.receiptRuleSetName},physicalResourceId:custom.PhysicalResourceId.of('a2aviary-prod-active-rules')},policy:custom.AwsCustomResourcePolicy.fromSdkCalls({resources:custom.AwsCustomResourcePolicy.ANY_RESOURCE})}).node.addDependency(rules);
+    const sec=(name:string)=>new secrets.Secret(this,name,{secretName:'a2aviary/'+(config.local?'local':'prod')+'/'+name.toLowerCase(),generateSecretString:{secretStringTemplate:'{}',generateStringKey:'bootstrapToken'},removalPolicy:cdk.RemovalPolicy.RETAIN});
     this.openai=sec('OpenAI');this.signing=sec('Signing');this.appKey=sec('GithubKey');this.webhook=sec('GithubWebhook');
-    this.configSet=new ses.ConfigurationSet(this,'Sending',{configurationSetName:'a2aviary-prod'});
     this.feedback=new sns.Topic(this,'Feedback');
-    this.configSet.addEventDestination('FeedbackDestination',{destination:ses.EventDestination.snsTopic(this.feedback),events:[ses.EmailSendingEvent.DELIVERY,ses.EmailSendingEvent.BOUNCE,ses.EmailSendingEvent.COMPLAINT]});
+    if (config.local) this.configSet=ses.ConfigurationSet.fromConfigurationSetName(this,'Sending','a2aviary-local');
+    else {
+      const sending=new ses.ConfigurationSet(this,'Sending',{configurationSetName:'a2aviary-prod'});
+      sending.addEventDestination('FeedbackDestination',{destination:ses.EventDestination.snsTopic(this.feedback),events:[ses.EmailSendingEvent.DELIVERY,ses.EmailSendingEvent.BOUNCE,ses.EmailSendingEvent.COMPLAINT]});
+      this.configSet=sending;
+    }
+    if (config.local) new cdk.CfnOutput(this,'FeedbackTopic',{value:this.feedback.topicArn});
     for(const [key,value]of Object.entries({SupportRawBucket:this.supportRaw.bucketName,SupportStateTable:this.supportState.tableName,SupportQueue:this.supportQueue.queueUrl,RawBucket:this.raw.bucketName,DataBucket:this.data.bucketName,StateTable:this.state.tableName,IntakeQueue:this.intake.queueUrl,RuntimeQueue:this.runtime.queueUrl,OutboxQueue:this.outbox.queueUrl,OpenAISecret:this.openai.secretArn,SigningSecret:this.signing.secretArn,AppKeySecret:this.appKey.secretArn,WebhookSecret:this.webhook.secretArn}))new cdk.CfnOutput(this,key,{value});
   }
 }

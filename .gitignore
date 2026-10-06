@@ -4,6 +4,7 @@ private/
 .env
 .env.*
 !.env.example
+!.env.local.example
 *.pem
 *.key
 

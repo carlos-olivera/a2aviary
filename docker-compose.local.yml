@@ -1,0 +1,28 @@
+name: a2aviary-local
+services:
+  localstack:
+    image: localstack/localstack:4.12.0@sha256:0df3a97da57de03a588c05d9b8f390f15c7033fc7c4512f94619d344bc3cd317
+    ports: ["127.0.0.1:4566:4566"]
+    environment:
+      SERVICES: cloudformation,s3,dynamodb,dynamodbstreams,lambda,ses,sns,sqs,secretsmanager,events,logs,cloudwatch,iam,sts,ssm
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      LAMBDA_DOCKER_NETWORK: a2aviary-local
+      DEBUG: "0"
+      LS_LOG: warn
+      DISABLE_EVENTS: "1"
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    networks: [local]
+  standins:
+    image: node:22.23.3-bookworm-slim
+    command: ["node", "/workspace/local/standins.mjs"]
+    ports: ["127.0.0.1:8090:8090", "127.0.0.1:8080:8080"]
+    volumes: [".:/workspace:ro"]
+    environment:
+      AWS_ENDPOINT_URL: http://localstack:4566
+    depends_on: [localstack]
+    networks: [local]
+networks:
+  local:
+    name: a2aviary-local

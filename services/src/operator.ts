@@ -1,3 +1,4 @@
+import { awsOptions, githubBase } from './environment.js';
 import { createHmac, timingSafeEqual, createPrivateKey } from 'node:crypto';
 import { SignJWT, importPKCS8 } from 'jose';
 import { SecretsManagerClient, PutSecretValueCommand } from '@aws-sdk/client-secrets-manager';
@@ -7,7 +8,7 @@ import { policyDecision } from './policy.js';
 
 const REPO='carlos-olivera/a2aviary';
 async function github(path:string,token:string,method='GET',body?:any) {
-  const r=await fetch('https://api.github.com'+path,{method,headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(20000)});
+  const r=await fetch(githubBase()+path,{method,headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(20000)});
   if(!r.ok)throw Object.assign(new Error('github_request_failed'),{status:r.status});return r.status===204?{}:r.json();
 }
 export async function broker(event:any) {return mint('policy');}
@@ -21,7 +22,7 @@ async function mint(profile:'policy'|'development') {
   await audit('github.token',{profile,installationId:app.installationId},'issued');
   return {token:token.token,expiresAt:token.expires_at};
 }
-async function policyToken(){const r=await new LambdaClient({}).send(new InvokeCommand({FunctionName:process.env.BROKER_FUNCTION!,Payload:Buffer.from(JSON.stringify({profile:'policy'}))}));const p=JSON.parse(Buffer.from(r.Payload!).toString());if(r.FunctionError || !p.token)throw new Error('broker_unavailable');return p.token;}
+async function policyToken(){const r=await new LambdaClient(awsOptions()).send(new InvokeCommand({FunctionName:process.env.BROKER_FUNCTION!,Payload:Buffer.from(JSON.stringify({profile:'policy'}))}));const p=JSON.parse(Buffer.from(r.Payload!).toString());if(r.FunctionError || !p.token)throw new Error('broker_unavailable');return p.token;}
 async function paginate(path:string,token:string){const all=[];for(let page=1;page<=30;page++){const result=await github(path+`?per_page=100&page=${page}`,token);all.push(...result);if(result.length<100)return all;}throw new Error('github_pagination_limit');}
 async function evaluate(number:number,token:string){
   const pr=await github(`/repos/${REPO}/pulls/${number}`,token);
@@ -56,12 +57,12 @@ export async function callback(event:any){
   const query=event.queryStringParameters??{};
   if(!state || state.expiresAt<now() || state.nonce!==query.state || !/^[A-Za-z0-9_-]{1,200}$/.test(query.code??''))return {statusCode:403,body:'Invalid registration state'};
   await update(state.pk,'SET used = :yes',{':yes':true},'attribute_not_exists(used)');
-  const response=await fetch(`https://api.github.com/app-manifests/${query.code}/conversions`,{method:'POST',headers:{Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(20000)});
+  const response=await fetch(`${githubBase()}/app-manifests/${query.code}/conversions`,{method:'POST',headers:{Accept:'application/vnd.github+json'},signal:AbortSignal.timeout(20000)});
   if(!response.ok)return {statusCode:502,body:'Manifest conversion failed. Restart registration.'};
   const app:any=await response.json();
   const allowed:Record<string,string>={contents:'write',pull_requests:'write',checks:'write',actions:'read',metadata:'read'};
   if(app.owner?.id!==1182541 || Object.entries(app.permissions??{}).some(([key,value])=>allowed[key]!==value))return {statusCode:403,body:'Manifest owner or permission scope denied'};
-  const sm=new SecretsManagerClient({});
+  const sm=new SecretsManagerClient(awsOptions());
   await sm.send(new PutSecretValueCommand({SecretId:process.env.APP_KEY_SECRET!,SecretString:JSON.stringify({appId:app.id,privateKey:createPrivateKey(app.pem).export({type:'pkcs8',format:'pem'}),installationId:0,slug:app.slug})}));
   await sm.send(new PutSecretValueCommand({SecretId:process.env.APP_WEBHOOK_SECRET!,SecretString:JSON.stringify({webhookSecret:app.webhook_secret})}));
   return {statusCode:302,headers:{Location:`https://github.com/apps/${app.slug}/installations/new`},body:''};

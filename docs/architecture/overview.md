@@ -2,6 +2,11 @@
 
 Status: broader agency design, with a scoped initial implementation described below.
 
+The [interactive architecture map](https://a2aviary.io/architecture) is prepared for
+owner review and release. It distinguishes the project landing and signed-email
+foundation from planned customer products. See [local development](../local-development.md)
+for the shared CDK environment, adapters and cloud-only boundaries.
+
 ## Responsibilities
 
 ```text

@@ -13,21 +13,28 @@ import { Email } from './email.js';
 import { Runtime } from './runtime.js';
 import { Controls } from './controls.js';
 
-export type Config = { account: string; region: string; zoneId: string; ownerEmail: string; limits?:Record<string,number> };
+export type Config = { account: string; region: string; zoneId: string; ownerEmail: string; local?: boolean; limits?:Record<string,number> };
 export const app = new cdk.App();
-const config: Config = JSON.parse(readFileSync(resolve(process.env.A2AVIARY_CONFIG ?? '../.local/deploy.json'), 'utf8'));
+const local = app.node.tryGetContext('target') === 'local';
+if (local && process.env.A2AVIARY_CONFIG) throw new Error('Local target must not read deployment configuration');
+const config: Config = local ? { local: true, account: '0'.repeat(12), region: 'us-east-1', zoneId: 'local', ownerEmail: 'owner@example.invalid' } : JSON.parse(readFileSync(resolve(process.env.A2AVIARY_CONFIG ?? '../.local/deploy.json'), 'utf8'));
 const defaultLimits=JSON.parse(readFileSync(resolve('../contracts/limits.defaults.json'),'utf8'));
 for(const [key,value]of Object.entries(config.limits??{}))if(!(key in defaultLimits) || !Number.isInteger(value) || value<1 || value>defaultLimits[key])throw new Error('Invalid operating limit: '+key);
 if (config.region !== 'us-east-1') throw new Error('The release requires us-east-1');
 const env = { account: config.account, region: config.region };
 
 class Website extends cdk.Stack {
-  bucket: s3.Bucket; releases: s3.Bucket; distribution: cf.Distribution;
+  bucket: s3.Bucket; releases: s3.Bucket; distribution!: cf.Distribution;
   constructor(scope: Construct, id: string) {
-    super(scope, id, { env, terminationProtection: true });
-    const zone = dns.HostedZone.fromHostedZoneAttributes(this, 'Zone', { hostedZoneId: config.zoneId, zoneName: 'a2aviary.io' });
+    super(scope, id, { env, terminationProtection: !local });
     this.bucket = new s3.Bucket(this, 'Website', { blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL, enforceSSL: true, versioned: true, encryption: s3.BucketEncryption.S3_MANAGED, removalPolicy: cdk.RemovalPolicy.RETAIN });
     this.releases = new s3.Bucket(this, 'Releases', { blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL, enforceSSL: true, versioned: true, encryption: s3.BucketEncryption.S3_MANAGED, removalPolicy: cdk.RemovalPolicy.RETAIN });
+    if (local) {
+      new cdk.CfnOutput(this, 'WebsiteBucket', { value: this.bucket.bucketName });
+      new cdk.CfnOutput(this, 'ReleaseBucket', { value: this.releases.bucketName });
+      return;
+    }
+    const zone = dns.HostedZone.fromHostedZoneAttributes(this, 'Zone', { hostedZoneId: config.zoneId, zoneName: 'a2aviary.io' });
     const certificate = new acm.Certificate(this, 'Certificate', { domainName: 'a2aviary.io', validation: acm.CertificateValidation.fromDns(zone) });
     const headers = new cf.ResponseHeadersPolicy(this, 'Headers', { securityHeadersBehavior: {
       contentSecurityPolicy: { contentSecurityPolicy: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'", override: true },
@@ -53,8 +60,10 @@ class Website extends cdk.Stack {
     new cdk.CfnOutput(this, 'WebsiteUrl', { value: 'https://a2aviary.io' });
   }
 }
-const website = new Website(app, 'a2aviary-prod-website');
-const ci = new cdk.Stack(app, 'a2aviary-prod-ci', { env, terminationProtection: true });
+const stage = local ? 'local' : 'prod';
+const website = new Website(app, `a2aviary-${stage}-website`);
+if (!local) {
+const ci = new cdk.Stack(app, 'a2aviary-prod-ci', { env, terminationProtection: !local });
 const provider = iam.OpenIdConnectProvider.fromOpenIdConnectProviderArn(ci, 'GitHubOidc', `arn:aws:iam::${config.account}:oidc-provider/token.actions.githubusercontent.com`);
 const deployRole = new iam.Role(ci, 'WebsiteDeployment', { assumedBy: new iam.OpenIdConnectPrincipal(provider, { StringEquals: {
   'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
@@ -66,10 +75,11 @@ for (const bucket of [website.bucket, website.releases]) {
 }
 deployRole.addToPolicy(new iam.PolicyStatement({ actions: ['cloudfront:CreateInvalidation', 'cloudfront:GetInvalidation', 'cloudfront:GetDistribution'], resources: [`arn:aws:cloudfront::${config.account}:distribution/${website.distribution.distributionId}`] }));
 new cdk.CfnOutput(ci, 'WebsiteDeploymentRole', { value: deployRole.roleArn });
-cdk.Tags.of(app).add('Project', 'a2aviary'); cdk.Tags.of(app).add('Environment', 'prod'); cdk.Tags.of(app).add('Owner', 'Carlos Olivera Terrazas');
+}
+cdk.Tags.of(app).add('Project', 'a2aviary'); cdk.Tags.of(app).add('Environment', stage); cdk.Tags.of(app).add('Owner', 'Carlos Olivera Terrazas');
 
-const email = new Email(app, 'a2aviary-prod-email', config);
-const runtime = new Runtime(app, 'a2aviary-prod-runtime', config, email);
-new Controls(app, 'a2aviary-prod-controls', config, email, runtime);
+const email = new Email(app, `a2aviary-${stage}-email`, config);
+const runtime = new Runtime(app, `a2aviary-${stage}-runtime`, config, email);
+new Controls(app, `a2aviary-${stage}-controls`, config, email, runtime);
 
 app.synth();

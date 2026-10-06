@@ -1,3 +1,4 @@
+import { localEndpoint } from './environment.js';
 import OpenAI from 'openai';
 import { GetObjectCommand, PutObjectTaggingCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'node:crypto';
@@ -50,7 +51,7 @@ export async function processTask(pk:string) {
   let task=await get(pk); if(!task)return;
   const control=await flags();
   const credentials=await secret(process.env.OPENAI_SECRET!);
-  const client=new OpenAI({apiKey:credentials.apiKey,timeout:20000,maxRetries:0});
+  const client=new OpenAI({baseURL:localEndpoint('OPENAI_BASE_URL'),apiKey:credentials.apiKey,timeout:20000,maxRetries:0});
   if(task.work==='cleanup') {
     try { await client.beta.agents.sessions.delete(task.sessionId); }catch(e:any){if(e.status===409){console.error({operation:'provider.cleanup',error:'provider_settlement_delayed',taskId:task.taskId});await client.beta.agents.sessions.events.create(task.sessionId,{events:[{type:'agent.session.input.cancel'}]});await defer(task,id);return;}if(e.status!==404)throw e;}
     if(task.slotHeld){await transact([

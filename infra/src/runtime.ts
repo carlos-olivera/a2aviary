@@ -17,14 +17,15 @@ import type { Config } from './app.js';
 
 export class Runtime extends cdk.Stack {
   supportFunction:lambda.Function;
-  dispatcherDlq:sqs.Queue;feedbackDlq:sqs.Queue;functions:lambda.Function[]=[];api:apigw.HttpApi;broker:lambda.Function;development:lambda.Function;
+  dispatcherDlq:sqs.Queue;feedbackDlq:sqs.Queue;functions:lambda.Function[]=[];api!:apigw.HttpApi;broker:lambda.Function;development:lambda.Function;
   constructor(scope:Construct,id:string,config:Config,email:Email){
-    super(scope,id,{env:{account:config.account,region:config.region},terminationProtection:true});
+    super(scope,id,{env:{account:config.account,region:config.region},terminationProtection:!config.local});
     const code=lambda.Code.fromAsset(resolve('../services/dist'));
-    const shared={OPERATING_LIMITS:JSON.stringify(config.limits??{}),STATE_TABLE:email.state.tableName,RAW_BUCKET:email.raw.bucketName,DATA_BUCKET:email.data.bucketName,RUNTIME_QUEUE:email.runtime.queueUrl,OUTBOX_QUEUE:email.outbox.queueUrl};
+    const localEnvironment:Record<string,string> = config.local ? { A2AVIARY_TARGET: "local", AWS_ENDPOINT_URL: "http://localstack:4566", OPENAI_BASE_URL: "http://standins:8090/v1", GITHUB_BASE_URL: "http://standins:8090/github", LOCAL_SES_ENDPOINT: "http://standins:8090", AWS_EC2_METADATA_DISABLED: "true" } : {};
+    const shared={...localEnvironment,OPERATING_LIMITS:JSON.stringify(config.limits??{}),STATE_TABLE:email.state.tableName,RAW_BUCKET:email.raw.bucketName,DATA_BUCKET:email.data.bucketName,RUNTIME_QUEUE:email.runtime.queueUrl,OUTBOX_QUEUE:email.outbox.queueUrl};
     const make=(name:string,handler:string,concurrency:number,environment:Record<string,string>={})=>{const group=new logs.LogGroup(this,name+'Logs',{retention:logs.RetentionDays.THREE_MONTHS,removalPolicy:cdk.RemovalPolicy.RETAIN});const f=new lambda.Function(this,name,{runtime:lambda.Runtime.NODEJS_22_X,code,handler,timeout:cdk.Duration.seconds(60),memorySize:256,reservedConcurrentExecutions:concurrency,environment:{...shared,...environment},logGroup:group,loggingFormat:lambda.LoggingFormat.JSON});email.state.grantReadData(f);this.functions.push(f);return f;};
     const supportLogs=new logs.LogGroup(this,'SupportLogs',{retention:logs.RetentionDays.ONE_MONTH,removalPolicy:cdk.RemovalPolicy.RETAIN});
-    const support=new lambda.Function(this,'Support',{runtime:lambda.Runtime.NODEJS_22_X,code,handler:'support.handler',timeout:cdk.Duration.seconds(60),memorySize:512,reservedConcurrentExecutions:1,environment:{SUPPORT_BUCKET:email.supportRaw.bucketName,SUPPORT_TABLE:email.supportState.tableName,SUPPORT_TOPIC:email.supportTopic.topicArn,SUPPORT_OWNER:config.ownerEmail},logGroup:supportLogs,loggingFormat:lambda.LoggingFormat.JSON});
+    const support=new lambda.Function(this,'Support',{runtime:lambda.Runtime.NODEJS_22_X,code,handler:'support.handler',timeout:cdk.Duration.seconds(60),memorySize:512,reservedConcurrentExecutions:1,environment:{...localEnvironment,SUPPORT_BUCKET:email.supportRaw.bucketName,SUPPORT_TABLE:email.supportState.tableName,SUPPORT_TOPIC:email.supportTopic.topicArn,SUPPORT_OWNER:config.ownerEmail},logGroup:supportLogs,loggingFormat:lambda.LoggingFormat.JSON});
     support.addToRolePolicy(new iam.PolicyStatement({actions:['s3:GetObject'],resources:[email.supportRaw.arnForObjects('support/*')]}));
     support.addToRolePolicy(new iam.PolicyStatement({actions:['dynamodb:GetItem','dynamodb:PutItem','dynamodb:UpdateItem'],resources:[email.supportState.tableArn]}));
     support.addToRolePolicy(new iam.PolicyStatement({actions:['ses:SendEmail','ses:SendRawEmail'],resources:[`arn:aws:ses:${config.region}:${config.account}:identity/a2aviary.io`],conditions:{StringEquals:{'ses:FromAddress':'hello@a2aviary.io'},'ForAllValues:StringEquals':{'ses:Recipients':[config.ownerEmail]}}}));
@@ -48,10 +49,12 @@ export class Runtime extends cdk.Stack {
     const webhook=make('GithubWebhook','operator.webhook',2,{APP_WEBHOOK_SECRET:email.webhook.secretArn,BROKER_FUNCTION:this.broker.functionName});writes(webhook,['AUDIT']);email.webhook.grantRead(webhook);this.broker.grantInvoke(webhook);
     const callback=make('Registration','operator.callback',1,{APP_KEY_SECRET:email.appKey.secretArn,APP_WEBHOOK_SECRET:email.webhook.secretArn});writes(callback,['CONTROL']);
     callback.addToRolePolicy(new iam.PolicyStatement({actions:['secretsmanager:PutSecretValue'],resources:[email.appKey.secretArn,email.webhook.secretArn]}));
+    if (!config.local) {
     this.api=new apigw.HttpApi(this,'OperatorApi',{createDefaultStage:true});
     this.api.addRoutes({path:'/github/webhook',methods:[apigw.HttpMethod.POST],integration:new HttpLambdaIntegration('Webhook',webhook)});
     this.api.addRoutes({path:'/github/setup/callback',methods:[apigw.HttpMethod.GET],integration:new HttpLambdaIntegration('Registration',callback)});
     new cdk.CfnOutput(this,'OperatorUrl',{value:this.api.apiEndpoint});
+    }
     new cdk.CfnOutput(this,'PolicyBroker',{value:this.broker.functionName});new cdk.CfnOutput(this,'DevelopmentBrokerName',{value:this.development.functionName});
     for(const [n,f]of Object.entries({IntakeFunction:intake,ExecutorFunction:executor,SenderFunction:sender,WatchdogFunction:watchdog}))new cdk.CfnOutput(this,n,{value:f.functionName});
   }

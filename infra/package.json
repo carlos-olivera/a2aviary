@@ -7,15 +7,27 @@
     "build": "tsc",
     "synth": "cdk synth",
     "deploy": "cdk deploy",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test test/*.test.mjs",
+    "local:up": "node scripts/local.mjs up",
+    "local:deploy": "node scripts/local.mjs deploy",
+    "local:seed": "node scripts/local.mjs seed",
+    "local:test": "node scripts/local.mjs test",
+    "local:down": "node scripts/local.mjs down",
+    "local:quickstart": "node scripts/local.mjs quickstart"
   },
   "dependencies": {
     "aws-cdk-lib": "2.272.0",
     "constructs": "10.6.0"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudformation": "3.1146.0",
+    "@aws-sdk/client-cloudwatch": "3.1146.0",
+    "@aws-sdk/client-cloudwatch-logs": "3.1146.0",
+    "@aws-sdk/client-ses": "3.1146.0",
+    "@aws-sdk/client-sns": "3.1146.0",
     "@types/node": "22.19.15",
     "aws-cdk": "2.1144.0",
+    "aws-cdk-local": "3.0.4",
     "typescript": "7.0.2"
   }
 }
