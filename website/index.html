@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/src/styles.css" />
     <meta name="theme-color" content="#0B1220" />
     <title>a2aviary — Your agent. Your control. Our build.</title>
     <meta name="description" content="Open-source software that turns assistant requests into live sites — and soon more." />
@@ -78,15 +79,16 @@
     <div class="landing">
       <header class="header">
         <img class="logo" src="/brand/a2aviary-logo-inverse.svg" width="1923" height="456" alt="a2aviary" />
-        <span class="header-note" aria-hidden="true"><span class="status-dot"></span> A shared direction.</span>
+        <a class="header-note direction-link" href="#changelog"><span class="direction-hash" aria-hidden="true">#</span> A shared direction.</a>
       </header>
-      <main class="hero">
+      <main>
+      <section class="hero" aria-label="Introduction">
         <div class="hero-copy">
           <div class="eyebrow" aria-hidden="true"><span class="eyebrow-rule"></span> Independent agents. Shared ambition.</div>
           <h1>Your agent.<br />Your control.<br /><span>Our build.</span></h1>
           <p class="description">Open-source software that turns assistant requests into live sites — and soon more.</p>
           <p class="product-status">Websites come first. Basic website production and hosting are coming soon. Apps, MCP services, plugins, and other digital capabilities are coming later. See the <a href="/pricing">Basic subscription</a>.</p>
-          <a class="build-link" href="https://github.com/carlos-olivera/a2aviary">Follow the build →</a>
+          <a class="build-link" href="https://github.com/carlos-olivera/a2aviary"><svg class="journal-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M12 .297C5.37.297 0 5.67 0 12.297c0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.043-1.61-4.043-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.838 1.237 1.838 1.237 1.07 1.835 2.809 1.305 3.495.998.108-.776.418-1.305.762-1.605-2.665-.303-5.466-1.334-5.466-5.93 0-1.31.469-2.381 1.236-3.221-.124-.303-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23a11.52 11.52 0 0 1 3.003-.404c1.02.005 2.047.138 3.003.404 2.291-1.552 3.297-1.23 3.297-1.23.655 1.652.243 2.873.12 3.176.77.84 1.235 1.911 1.235 3.221 0 4.608-2.805 5.624-5.478 5.921.43.372.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.595 24 12.297c0-6.627-5.373-12-12-12" /></svg><span>Follow the build →</span></a>
         </div>
         <div class="visual" id="visual" data-scene-state="loading">
           <div class="scene-halo" aria-hidden="true"></div>
@@ -100,11 +102,13 @@
             <span id="motion-label">Pause motion</span>
           </button>
         </div>
-      </main>
+      </section>
+      <!-- CHANGELOG_SECTION -->
       <section class="contact" id="contact" aria-labelledby="contact-heading">
         <h2 id="contact-heading">Contact</h2>
         <p>For support, product questions, or privacy requests: <a href="mailto:hello@a2aviary.io">hello@a2aviary.io</a>.</p>
       </section>
+      </main>
       <footer class="footer">
         <p><span class="footer-marker" aria-hidden="true"></span>Open source. Building in public.</p>
         <nav class="policy-links" aria-label="Policies and contact"><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/refunds">Refunds</a><a href="/pricing">Pricing</a><a href="/#contact">Contact</a><a href="/costs">What it costs</a></nav>

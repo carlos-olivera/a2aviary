@@ -3,11 +3,12 @@ import { readFile } from 'node:fs/promises';
 import { publicPages } from '../src/site-navigation.js';
 import { renderPolicyPage } from '../src/policy-pages.js';
 import { renderCosts } from '../src/costs-page.js';
+import { renderChangelog } from '../src/changelog-section.js';
 import { websiteContentType } from '../../services/scripts/website-content-type.mjs';
 
 const root = new URL('../', import.meta.url);
 const documents = new Map([
-  ['/', await readFile(new URL('index.html', root), 'utf8')],
+  ['/', (await readFile(new URL('index.html', root), 'utf8')).replace('<!-- CHANGELOG_SECTION -->', renderChangelog(JSON.parse(await readFile(new URL('public/changelog.json', root), 'utf8'))))],
   ['/costs', renderCosts(JSON.parse(await readFile(new URL('public/costs.json', root), 'utf8')))],
   ...publicPages.map(path => ['/' + path, renderPolicyPage(path)]),
 ]);
@@ -21,7 +22,7 @@ for (const [path, html] of documents) {
     const target = documents.get(url.pathname);
     if (target) {
       if (url.hash) assert(target.includes(`id="${url.hash.slice(1)}"`), `${path}: anchor ${href}`);
-    } else assert((await readFile(new URL('public' + url.pathname, root))).length > 0, `${path}: asset ${href}`);
+    } else assert((await readFile(new URL((url.pathname.startsWith('/src/') ? '.' : 'public') + url.pathname, root))).length > 0, `${path}: asset ${href}`);
   }
 }
 for (const path of publicPages) {

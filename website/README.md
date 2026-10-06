@@ -236,3 +236,44 @@ Public delivery of this update remains pending owner review and a separately
 authorized release. Support forwarding code is prepared, with no deployment or
 real inbox/reply verification performed. Checkout, site production/hosting through
 Basic, payment integration, and credit quantities remain future work.
+
+## Curated changelog and author profile
+
+The homepage `#changelog` follows the hero and renders at build time through
+`scripts/changelog-plugin.mjs`. Vite development renders the same section from
+`public/changelog.json` and reloads when the snapshot changes. The stylesheet is
+linked from HTML so development and production content remain styled without
+JavaScript. Optional scroll reveals use native IntersectionObserver; reduced
+motion disables reveals, smooth scrolling, and the brief builder-dot pulse.
+
+`public/changelog.json` contains five owner-supplied X post references whose text,
+UTC timestamps, author and hashtag were retrieved from X's syndication endpoint
+on 2026-10-05. This is a curated snapshot, not an automatically refreshed feed.
+To add posts, update the snapshot date and `posts` array with `id`, `author`, exact
+`text`, UTC ISO `createdAt`, canonical `url`, `urls` entities (`text`, HTTPS `href`,
+`label`), and optional `replyTo` post ID. Run checks and rebuild the preview.
+Malformed or duplicate records fail validation; only `carlos_olivera` posts with
+`#a2aviary` are displayed. Text is escaped before hashtags and supplied URL entities
+become links. Posts are sorted newest first, with three shown initially and the
+remainder in a native keyboard-accessible disclosure. Empty snapshots have an
+explicit empty state. Historical post intentions do not establish live capabilities.
+
+The owner supplied the 227 × 310 portrait in `public/assets/carlos-olivera.png`
+for this profile. It is reused for decorative post avatars; no remote image or X
+embed is loaded. Profile name, handle, portrait and social URLs are configured in
+`src/changelog-section.js`; the biography is the owner-supplied English text.
+Inline SVG social marks identify their respective services without a new icon
+package. Existing dependency licenses and the Apache 2.0 source license remain.
+
+With the development or production preview running, execute:
+
+```sh
+npx --package @playwright/cli playwright-cli -s=a2aviary goto http://127.0.0.1:4175
+npx --package @playwright/cli playwright-cli -s=a2aviary run-code --filename=website/scripts/verify-changelog.js
+```
+
+Use the actual server port. The browser check covers five viewport sizes,
+JavaScript enabled/disabled, keyboard anchor/disclosure behavior, links, dates,
+portrait, exact biography, motion preferences, and local diagnostics. Production
+CSP is injected for preview; Vite development keeps its own HMR behavior.
+See [local verification](verification.md#changelog-and-author-profile--2026-10-05-local-verification).

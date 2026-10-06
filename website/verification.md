@@ -1,5 +1,64 @@
 # Landing verification
 
+## Changelog and author profile — 2026-10-05, local verification
+
+- **Configured locally:** header hash navigation and a semantic `#changelog`
+  section immediately after the hero. Equal desktop columns become a stacked
+  layout at 900px. Native timeline cards, desktop sticky author profile, owner
+  portrait, exact supplied biography, social links and thread context use the
+  existing palette/fonts. Hover effects and scroll reveals respect reduced
+  motion; the builder pulse stops after four seconds. HTML-linked styles keep
+  both Vite development and production readable with JavaScript disabled.
+- **Content evidence:** retrieved all five owner-supplied post IDs from X's
+  syndication endpoint and confirmed `carlos_olivera`, hashtag, exact text and UTC
+  timestamps. `public/changelog.json` records this curated snapshot; no visitor
+  requests to X, automatic refresh or embed is configured. Historical design
+  posts are explicitly distinguished from live capabilities. The supplied
+  227 × 310 portrait is copied unchanged and hosted locally.
+- **Source/artifact checks:** Node.js 22.22.3 `npm run check` and `npm run build`
+  passed. Behavioral checks cover malformed/duplicate records, author/hashtag
+  filtering, ordering, escaping, URL entities, replies, native disclosure and
+  empty state. Exact built section HTML, JSON and portrait bytes passed, along
+  with development/preview GET/HEAD status, HTML/JSON/PNG MIME and content checks.
+  Public-route emitted objects, internal links/anchors and sitemap passed.
+- **Browser evidence:** headed Chrome 154.0.8037.98, development at port 5175 and
+  production preview at port 4175. Changelog checks passed at 1440 × 900,
+  1024 × 768, 768 × 1024, 390 × 844 and 360 × 640 with JavaScript disabled/enabled.
+  Verified equal columns/stacking, no horizontal overflow, first-link visible
+  keyboard focus and hash scrolling, pointer/keyboard disclosure, canonical
+  newest-first post links, explicit UTC dates, reply links, expanded costs link,
+  portrait decoding, exact biography, safe external links, entrance reveals,
+  direct hash loads and live reduced-motion changes. Production CSP was injected
+  locally for preview; development retained Vite HMR. Browser/network diagnostics
+  were clean and resource requests stayed on the local origin.
+- **Regression evidence:** existing Three.js pause/resume, pointer limits,
+  reduced-motion/live preferences, synthetic visibility, WebGL-unavailable,
+  actual context-loss, failed-asset and coarse-pointer checks passed. Keyboard
+  assertions now include the new hash link and existing Basic subscription link;
+  desktop layout asserts a scrolling page instead of a single viewport. Public
+  pages/disabled checkout/contact, costs, and SEO/404/icon/CSP checks passed.
+  Desktop, tablet and mobile screenshots were visually inspected for spacing,
+  text readability and portrait framing; this is not a formal WCAG audit.
+- **Limits:** source and evidence stay on local branch
+  `codex/changelog-author-profile`. No branch publication, PR, merge, deployment,
+  infrastructure change, analytics or payment integration was performed during
+  local verification.
+  Screenshots and CLI reports remain ignored in `output/playwright/`; public
+  delivery and physical-device behavior were not verified by this task.
+
+## Changelog publication preflight — 2026-10-05
+
+After the owner separately requested PR publication, rechecked Operator App
+5185075 / installation 167790436 (`a2aviary-operator`): unsuspended, selected
+repository-only grant, unchanged permissions and enabled development broker.
+Repository auto-merge is disabled. Protected main requires `checks` (App 15368)
+and `a2aviary-policy` (App 5185075). Administration-only protection reads remain
+unavailable to the development token (403); permissions were not expanded.
+Remote main `b9e49d4ad02c4edba90e2656c083fd6d291ce265` has the same source tree as
+the local starting commit. Pre-existing owner instruction edits are excluded
+from this website delivery. Owner review of the current PR head, merge and
+release/public-content verification remain separate actions.
+
 ## Launch copy and human support — 2026-10-05, local verification
 
 - Preserved both exact hero lines and existing visual assets. Public pages,
