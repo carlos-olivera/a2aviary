@@ -1,0 +1,7 @@
+PASS local:seed — fictional signed request submitted through receipt adapter
+PASS queued flow — signed intake, stored input/result, completed analysis, cleanup and released concurrency
+PASS reply — captured SES raw email has valid ES256 signature and request correlation
+PASS rejection — duplicate creates no extra task; tampered signature is rejected
+PASS operator — deployed broker uses mock GitHub and records a PR request
+PASS controls — scheduled watchdog observed; alarms and retention configured (expiration/delivery not claimed)
+PASS local:test — all local integration assertions passed

@@ -132,6 +132,10 @@ See [platform operations](platform.md) and [decision 008](decisions/008-platform
   check rejects stale infrastructure/service evidence without installing Archify
   in CI. The session-only skill and its dependencies are excluded from Git;
   generated drawing notices preserve MIT alongside repository Apache 2.0.
+- **Clean checkout verified:** Node.js 22.23.3 `local:quickstart` installed locked
+  dependencies, started fresh Compose state, deployed and passed `local:test`.
+  Cleanup through `local:down` succeeded. [Exact sanitized assertion output](architecture/local-test-output.txt)
+  and [diagram screenshot](architecture/architecture-preview.png) are retained.
 - **Local verification:** Community 4.12.0 deploys shared S3, DynamoDB/Streams,
   SNS/SQS/DLQs, Secrets Manager, Node.js 22 workers, EventBridge and supported
   logs/alarms. Production worker logic completes a fictional signed request,
