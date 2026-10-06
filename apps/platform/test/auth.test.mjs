@@ -64,7 +64,7 @@ test('Postgres OAuth integration and strict authenticated MCP transport', async 
     const plan = await getMigrations(f.app.auth.options);
     assert.deepEqual(plan.toBeCreated,[]); assert.deepEqual(plan.toBeAdded,[]); assert.deepEqual(plan.toBeAddedIndexes,[]); assert.deepEqual(plan.schemaProblems,[]);
     const {migrate}=await import('../src/migrate.ts');await migrate(f.pool);
-    assert.equal((await f.pool.query('SELECT count(*)::int FROM platform_migration')).rows[0].count,3);
+    assert.equal((await f.pool.query('SELECT count(*)::int FROM platform_migration')).rows[0].count,4);
     const original=(await f.pool.query("SELECT sha256 FROM platform_migration WHERE name='002-platform.sql'")).rows[0].sha256;
     await f.pool.query("UPDATE platform_migration SET sha256='fictional-mismatch' WHERE name='002-platform.sql'");
     await assert.rejects(migrate(f.pool),/Immutable migration changed/);

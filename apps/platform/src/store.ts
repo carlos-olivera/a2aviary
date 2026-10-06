@@ -14,7 +14,9 @@ export const TOOL_ROLES: Record<string, readonly Role[]> = {
   'capabilities.get': ALL_ROLES, 'plans.list': ALL_ROLES, 'plan.get_manifest': ALL_ROLES,
   'plan.get_schemas': ALL_ROLES, 'policy.version': ALL_ROLES,
   'agent_keys.register': ALL_ROLES, 'agent_keys.list': ALL_ROLES, 'agent_keys.revoke': ALL_ROLES,
-  'admin.invite': ['superadmin'], 'admin.revoke': ['superadmin'], 'admin.audit.list': ['superadmin', 'admin']
+  'admin.invite': ['superadmin'], 'admin.revoke': ['superadmin'], 'admin.audit.list': ['superadmin', 'admin'],
+  'site.build': ['superadmin','admin','client'], 'site.status': ['superadmin','admin','client'],
+  'site.deploy': ['superadmin','admin','client'], 'change.request': ['superadmin','admin','client']
 };
 export function requireRole(principal: Principal, tool: string) {
   if (!TOOL_ROLES[tool]?.includes(principal.role)) throw new AccessError('forbidden');
@@ -88,6 +90,10 @@ export class Store {
   }
   recordToolCall(id: string, tool: string) {
     return this.action(id, tool, async (c, p) => {await this.audit(c, p, 'tool.call', tool);});
+  }
+  siteAction<T>(id: string, tool: string, fn: (c: PoolClient, p: Principal) => Promise<T>) {return this.action(id, tool, fn);}
+  recordSiteResult(id: string, tool: string, specSha256: string | null, result: string) {
+    return this.transaction(async c=>{const p=await this.resolve(c,id);await this.audit(c,p,'site.tool.result',tool,{tool,specSha256,result});});
   }
   async registerKey(id: string, key: {jwk: JWK; thumbprint: string}, confirmation: string) {
     requireConfirmation(confirmation, 'REGISTER_MY_AGENT_KEY');

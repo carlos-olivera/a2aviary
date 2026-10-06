@@ -28,4 +28,4 @@ No dates or costs have been committed. Each milestone requires reproducible evid
 
 ## Accepted initial release
 
-Publish the licensed repository and landing, then deploy the signed email and durable brief-analysis foundation under the [accepted release decisions](decisions/README.md). Release completion requires independent controlled email execution/recovery and active operational controls, as recorded in [verification evidence](release-verification.md). The Teco pilot and website generation remain subsequent work.
+Publish the licensed repository and landing, then deploy the signed email and durable brief-analysis foundation under the [accepted release decisions](decisions/README.md). Release completion requires independent controlled email execution/recovery and active operational controls, as recorded in [verification evidence](release-verification.md). Phase 3 adds opt-in [catalog site jobs](sites.md); live cloud verification and activation are separate gates. The Teco pilot remains subsequent work.

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-06 — catalog site workflow verified locally; cloud fixture pending
+
+- Added deterministic approved-spec Astro catalog generation with original asset bytes, pinned local fonts, preview/hash gates, hosted Agents verification source and private bucket storage. No research, OCR, image adaptation, AI-generated CSS, policy mutation or AWS brief-analysis extension was added.
+- Added optional owned MCP build/status/deploy/change jobs, authenticated upload/artifact routes, durable Postgres jobs, explicit confirmations, audit results and concurrent UTC monthly reservations. Four successful changes per month retain the two-page/ten-block/one-shared-operation policy caps; uncertain deployments hold reservations for manual reconciliation.
+- Added guarded isolated Railway project/service/volume provisioning, pinned PocketBase collections/editor/backups, Caddy proxy/domain status, resource caps and deployment-ID readiness. Site workflow defaults off. New variables and manual steps are in [site operations](docs/sites.md); source protection now includes `packages/`, without deployed evaluator activation.
+- Node.js 22 generator/platform/service/website/infrastructure checks passed locally: ten generator tests, 38 platform tests, 112 service tests and seven infrastructure tests. Real seven-page browser verification passed 37 checks, repeated output hashes matched, a changed approved preview failed visual verification, and PocketBase/Caddy plus non-root platform container checks passed. Dependency notices, contracts, documentation links and whitespace were checked.
+- The real hosted OpenAI/Railway/bucket end-to-end test remains pending private development credentials (one explicitly skipped test). No remote resources, DNS, production AWS configuration, platform deployment, payments, tester mode or Teco work were performed. Earlier owner edits and dated verification records are preserved.
+
 ## 2026-10-06 — platform retry evidence and saved owner instructions
 
 - Recorded Carlos's successful retry report and the independently observed HTTP 200 login response with `Referrer-Policy: strict-origin`. Preserved prior local verification records and distinguished this evidence from independently verified authenticated ChatGPT/Claude admin-tool calls.
