@@ -56,3 +56,5 @@ These decisions were accepted in the initial-release implementation plan. Accept
 ## Accepted pilot direction
 
 - [007 — Pilot policy and site contracts](007-pilot-policy-and-site-contracts.md) — owner-approved pilot direction; initial limits await PR review, integration is future work.
+
+- [008 — Discovery platform auth, MCP and roles](008-platform-auth-and-mcp.md) — accepted Phase 2 direction; local implementation, no deployed/client compatibility claim.
