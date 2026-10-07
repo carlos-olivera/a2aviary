@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-06 — five-stage architecture overview verified locally
+
+- Replaced the initial low-level map and global evidence grid with five connected macro-stages, matching accessible tabs and one selected technical panel. Switching resets evidence; Back restores the overview. Native collapsed stage disclosures preserve JavaScript-free access, and the AWS quickstart is collapsed by default.
+- Refreshed the architecture branch from remote main to include auth/MCP, Astro generation, Railway/PocketBase/Caddy and tester/admin source. Customer websites now show “In progress · deployed” as owner-reported deployment, with independent hosted verification separate. Future customer products retain Planned styling; signed email remains a labeled legacy path.
+- Added exclusive stage membership and six Archify 3.0.1 finalized drawings, committed-source provenance and fingerprints for platform/generator/policies as well as AWS/local tooling. Kept same-origin assets, MIT notices, metadata, CSP and extensionless routing.
+- Local S3 redeployment and signed-email integration assertions passed. Node.js 22 checks passed with 113 service tests, nine infrastructure tests, 12 generator tests and 51 platform tests (one credential-dependent cloud test skipped). Production templates match remote main with a shared worker artifact. Browser checks covered all five selections and 44 technical nodes, desktop/mobile, keyboard/focus/reset, native fallback, source links and zero automatic cross-domain requests.
+- Updated architecture/local/contribution guidance and retained sanitized test output and screenshots. Production is unchanged. Operator publication remains blocked on the existing workflow permission boundary; the owner must supply the CI workflow through an authorized route before App publication and current-head approval.
+
 ## 2026-10-06 — architecture and local verification prepared
 
 - Added a source-backed Archify 3.0.1 interactive architecture map with editable metadata, pinned source provenance, same-origin assets, local coverage and explicit planned capabilities. Integrated `/architecture`, navigation, sitemap and HTML MIME without changing CSP; no external resources load automatically.

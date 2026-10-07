@@ -1,0 +1,262 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Auth & Mandate Gate",
+    "output": ".local/architecture/progressive-20261006/gate.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/carlos-olivera/a2aviary.git",
+      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "gate-auth",
+      "type": "security",
+      "label": "Identity and OAuth",
+      "sublabel": "Google / OAuth / consent",
+      "sources": [
+        {
+          "path": "apps/platform/src/auth.ts",
+          "line": 10,
+          "end_line": 14
+        }
+      ],
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "gate-mcp",
+      "type": "backend",
+      "label": "Platform MCP connector",
+      "sublabel": "Resource-bound tools",
+      "sources": [
+        {
+          "path": "apps/platform/src/app.ts",
+          "line": 44,
+          "end_line": 48
+        },
+        {
+          "path": "apps/platform/src/tools.ts",
+          "line": 19,
+          "end_line": 23
+        }
+      ],
+      "pos": [
+        400,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "gate-owner",
+      "type": "security",
+      "label": "Ownership and roles",
+      "sublabel": "Live principal checks",
+      "sources": [
+        {
+          "path": "apps/platform/src/tools.ts",
+          "line": 64,
+          "end_line": 68
+        },
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 103,
+          "end_line": 107
+        }
+      ],
+      "pos": [
+        760,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "gate-confirm",
+      "type": "security",
+      "label": "Approval and confirmation",
+      "sublabel": "Exact action / spec binding",
+      "sources": [
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 350,
+          "end_line": 354
+        },
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 273,
+          "end_line": 277
+        }
+      ],
+      "pos": [
+        760,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "gate-policy",
+      "type": "database",
+      "label": "Plan and allowance",
+      "sublabel": "Pinned policy / atomic caps",
+      "sources": [
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 266,
+          "end_line": 270
+        },
+        {
+          "path": "services/src/site/validator.ts",
+          "line": 180,
+          "end_line": 184
+        }
+      ],
+      "pos": [
+        400,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "gate-build",
+      "type": "external",
+      "label": "Authorized site work",
+      "sublabel": "Next: validation and build",
+      "sources": [
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 245,
+          "end_line": 249
+        }
+      ],
+      "pos": [
+        40,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "gate-email",
+      "type": "security",
+      "label": "Legacy ES256 validation",
+      "sublabel": "Signature / scope / replay",
+      "sources": [
+        {
+          "path": "services/src/intake.ts",
+          "line": 14,
+          "end_line": 18
+        },
+        {
+          "path": "services/src/protocol.ts",
+          "line": 46,
+          "end_line": 50
+        }
+      ],
+      "pos": [
+        40,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    },
+    {
+      "id": "gate-admission",
+      "type": "security",
+      "label": "Legacy admission",
+      "sublabel": "Flags / task allowances",
+      "sources": [
+        {
+          "path": "services/src/intake.ts",
+          "line": 31,
+          "end_line": 35
+        },
+        {
+          "path": "contracts/limits.defaults.json",
+          "line": 1,
+          "end_line": 1
+        }
+      ],
+      "pos": [
+        400,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    }
+  ],
+  "connections": [
+    {
+      "from": "gate-auth",
+      "to": "gate-mcp",
+      "label": "Scoped token",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate-mcp",
+      "to": "gate-owner",
+      "label": "Authorize",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate-owner",
+      "to": "gate-confirm",
+      "label": "Bind approval",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate-confirm",
+      "to": "gate-policy",
+      "label": "Reserve",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate-policy",
+      "to": "gate-build",
+      "label": "Queue",
+      "variant": "emphasis"
+    },
+    {
+      "from": "gate-email",
+      "to": "gate-admission",
+      "label": "Admit",
+      "variant": "emphasis"
+    }
+  ]
+}

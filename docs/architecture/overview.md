@@ -1,6 +1,7 @@
 # Architecture
 
-Status: broader agency design, with a scoped initial implementation described below.
+Status: source-backed implementation map; customer-site pilot deployment is
+owner-reported, with independent hosted verification tracked separately.
 
 The [interactive architecture map](https://a2aviary.io/architecture) is prepared for
 owner review and release. It distinguishes the project landing and signed-email
@@ -36,22 +37,32 @@ Existing AWS brief analysis and signed email v1 remain supported. See
 [tester/admin operations](../testers-and-admin.md), and
 [release evidence](../release-verification.md#customer-site-pilot--2026-10-06-owner-reported-deployment).
 
-## Planned components
+## Five-stage map
 
-- Versioned API to create projects, submit inputs, query state, answer questions, and record approvals.
-- Identity and authorization by client, project, and operation.
-- Mandate defining actions, budget, validity period, and revocation.
-- Structured state and event log independent of the model session.
-- Task queue, retries, checkpoints, and idempotency for commercial effects.
-- Artifacts and versions with project-scoped access.
-- Production runtime adapter to evaluate providers while keeping execution separate from business state.
-- Event and recovery channels that tolerate an unavailable client agent.
+The [membership manifest](stages.json) assigns each technical component to one
+stage. Labeled arrows and boundary nodes show handoffs between groups.
 
-## Minimum contract to define
+1. **Client & Local Agent:** prepares the spec, original assets and human-approved
+   preview; the legacy email client receives signed replies.
+2. **Auth & Mandate Gate:** platform OAuth/MCP, ownership, role/permission policy,
+   action-specific confirmations and legacy signed-email admission.
+3. **Validation & Build Engine:** approved-input validation, durable jobs, Astro
+   catalog generation, artifact verification and the legacy brief-analysis runtime.
+4. **Live Hosting & CMS:** customer Railway/PocketBase/Caddy hosting and bounded
+   content editing, plus the project's private S3/CloudFront landing delivery.
+5. **Governance & Ops:** Operator/current-head approval/CI, tester administration,
+   audited recovery, AWS budgets, alarms, retention and isolated human support.
 
-Each exchange should identify the schema version, project, task, operation, inputs, permissions, state, next action, and deliverables. Adoption of a specific A2A standard remains pending.
+The initial page shows only the five macro-stages. A selection opens one technical
+panel and only its matching source evidence; switching resets disclosures.
+JavaScript-free native stage disclosures retain source access. The LocalStack
+quickstart is a collapsed section and covers the AWS foundation. The platform,
+generator and CMS use separate local tooling; neither simulation nor an owner
+report substitutes for independently observed hosted end-to-end behavior.
 
-Candidate states: received, awaiting inputs, running, awaiting approval, under review, completed, recoverable failure, and canceled. Their transitions and conditions still need to be specified.
+Payments/checkout, future customer apps, MCP products and plugins remain planned.
+The implemented platform MCP connector and in-progress customer-site pilot are
+separate from those future products. The external A2A standard remains open.
 
 ## Trust boundaries
 
@@ -66,4 +77,4 @@ customer products and the external A2A standard remain open.
 
 ## Initial release implementation
 
-The accepted release uses AWS CDK/TypeScript, Node.js 22, signed SES email, durable DynamoDB state, and OpenAI Agents API. The implemented capability is website brief analysis only. The broader agency components above remain design direction. See [operating foundation](../operating-foundation.md), [accepted release decisions](../decisions/README.md), and [verification status](../release-verification.md) for concrete behavior and evidence.
+The accepted release uses AWS CDK/TypeScript, Node.js 22, signed SES email, durable DynamoDB state, and OpenAI Agents API. That AWS release implements website brief analysis. The later customer-site pilot adds the implemented source described above; owner-reported deployment and independent verification are separate. See [operating foundation](../operating-foundation.md), [accepted release decisions](../decisions/README.md), and [verification status](../release-verification.md) for concrete behavior and evidence.

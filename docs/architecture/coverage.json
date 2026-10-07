@@ -1,146 +1,225 @@
 {
-  "visitor": {
-    "mode": "Local emulation",
-    "note": "The project landing is deployed. Local HTTP serves the same built objects; it does not verify cloud caching."
+  "client-agent": {
+    "note": "The client assistant prepares literal copy, images and the structured catalog spec. Preparation is client-side; the platform does not research or adapt images for site production.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
   },
-  "cdn": {
+  "client-preview": {
+    "note": "The preview and original asset bytes are bound to the approved spec. No arbitrary styles, scripts or server-side fetching are authorized.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "client-approval": {
+    "note": "The client obtains human approval before submission. The approval declaration asserts approval; it is not a new human-signature protocol.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "client-submit": {
+    "note": "Submission enters the authenticated platform. Selecting this boundary opens stage 2.",
+    "status": "Implemented",
+    "mode": "Separate local tooling",
+    "targetStage": "gate"
+  },
+  "client-signed": {
+    "note": "The signed-email CLI and local seed create MIME requests for registered identities; platform key registration alone does not enroll an AWS email grant.",
+    "status": "Implemented",
+    "mode": "Local emulation"
+  },
+  "client-reply": {
+    "note": "Durable outbox work is queued to the sender, signed with ES256 and sent via SES. Locally, the SES v2-to-v1 bridge captures unchanged MIME. No real inbox delivery.",
+    "status": "Implemented",
+    "mode": "Adapter"
+  },
+  "gate-auth": {
+    "note": "Better Auth manages login and OAuth consent. Consent grants a scoped connector mandate; it does not approve a particular site or deployment.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "gate-mcp": {
+    "note": "The implemented MCP connector authenticates resource-bound calls and exposes role-scoped tools. It is separate from future customer MCP products.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "gate-owner": {
+    "note": "Ownership and live role permissions are rechecked before state changes and provider actions. Accounts cannot use normal site tools to access another owner\u2019s site.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "gate-confirm": {
+    "note": "Build/deploy gates bind the spec and require exact confirmation strings. An OAuth grant or agent statement does not replace action approval.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "gate-policy": {
+    "note": "Versioned policies and atomic reservations enforce bounded changes. CMS content edits do not consume site-change allowance; unknown deployments retain reservations.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "gate-build": {
+    "note": "Authorized site work enters the durable build queue. Selecting this boundary opens stage 3.",
+    "status": "Implemented",
+    "mode": "Separate local tooling",
+    "targetStage": "engine"
+  },
+  "gate-email": {
+    "note": "Signed email validates the registered grant, signature, expiry, destination and replay before durable admission. This is independent of platform OAuth.",
+    "status": "Implemented",
+    "mode": "Local emulation"
+  },
+  "gate-admission": {
+    "note": "Email admission applies operating flags and per-partner/day limits; runtime reserves $1 per task against $10 monthly model allowance, with two global concurrent tasks.",
+    "status": "Implemented",
+    "mode": "Local emulation"
+  },
+  "engine-validate": {
+    "note": "Validates structured site specs, original raster bytes and approval/preview digests. No OCR, research, image editing or free-text interpretation is part of catalog generation.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "engine-jobs": {
+    "note": "Persistent jobs and transactional audit/accounting survive interruptions. A worker claims queued jobs; uncertain provider outcomes require reconciliation rather than blind replay.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "engine-astro": {
+    "note": "Deterministic rendering uses the fixed catalog and approved tokens. Prepared assets are copied byte-identically; source and output hashes bind the artifacts.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "engine-verify": {
+    "note": "A secret-free hosted Agents sandbox runs the fixed build, accessibility, link and approved-preview checks. Local checks are separate from independent hosted-cloud evidence.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "engine-artifacts": {
+    "note": "The controller stores verified output, reports and screenshots as private artifacts. Model text alone cannot authorize deployment.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
+  },
+  "engine-host": {
+    "note": "Only verified bytes and a newly checked mandate reach the provider adapter. Selecting this boundary opens stage 4.",
+    "status": "Implemented",
     "mode": "Cloud-only",
-    "note": "HTTPS, origin access control, security headers and cache policies remain production infrastructure."
+    "targetStage": "hosting"
   },
-  "site": {
-    "mode": "Local emulation",
-    "note": "Private website and release buckets exist in both CDK targets. The local server reads local S3."
+  "engine-receipt": {
+    "note": "The signed-email foundation follows SES receipt storage and SNS/SQS into intake. The local receipt-rule adapter executes the synthesized S3/SNS actions; it does not receive internet SMTP.",
+    "status": "Implemented",
+    "mode": "Adapter"
   },
-  "request": {
-    "mode": "Local emulation",
-    "note": "The local seed generates an ephemeral ES256 identity and one fictional signed MIME request."
+  "engine-state": {
+    "note": "Durable task/outbox state and DynamoDB Streams enqueue work. Tasks/outbox retain 30 days; replay/audit retain 90 days; DLQs retain 14 days. Expiration is asynchronous.",
+    "status": "Implemented",
+    "mode": "Local emulation"
   },
-  "ses": {
-    "mode": "Adapter",
-    "note": "Cloud SES receives email. Community receipt rules are materialized from CDK; the local adapter executes their S3/SNS actions. No SMTP or real delivery."
+  "engine-analysis": {
+    "note": "Production workers analyze a brief, store results, delete provider sessions and release concurrency. The local OpenAI stand-in returns a fixed fictional fixture; this is not the catalog build engine.",
+    "status": "Implemented",
+    "mode": "Mock"
   },
-  "raw": {
-    "mode": "Local emulation",
-    "note": "Accepted raw email: 30 days. Rejected raw email: 7 days. Private data never enters this page."
+  "engine-data": {
+    "note": "Authenticated inputs and results remain private. Accepted content retains 30 days and abandoned pending inputs seven days; lifecycle deletion is asynchronous.",
+    "status": "Implemented",
+    "mode": "Local emulation"
   },
-  "receipt": {
-    "mode": "Local emulation",
-    "note": "SES action publishes a receipt notification to SNS, which delivers it to intake SQS. Retries have a separate DLQ."
+  "hosting-customer": {
+    "note": "Carlos Olivera Terrazas reports the customer-site build/hosting pilot deployed and still in progress. This task has not independently inspected a hosted end-to-end transcript or customer site. Earlier local verification and independent cloud gates remain separate.",
+    "status": "In progress \u00b7 deployed",
+    "mode": "Cloud-only"
   },
-  "intake": {
-    "mode": "Local emulation",
-    "note": "Validates signature, scope, expiry, attachments, replay and admission before writing durable business state."
+  "hosting-railway": {
+    "note": "The provider adapter isolates each client project/environment, protects shared projects and checks resource identity/caps. Owner-reported deployment does not independently verify every provider control.",
+    "status": "Implemented",
+    "mode": "Cloud-only"
   },
-  "state": {
-    "mode": "Local emulation",
-    "note": "Tasks and outbox expire after 30 days. Replay, nonce, admission and audit records use 90 days. TTL deletion is asynchronous."
+  "hosting-caddy": {
+    "note": "Caddy serves verified static artifacts and only approved CMS proxy routes. Customer hosting is distinct from the AWS project landing.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
   },
-  "dispatcher": {
-    "mode": "Local emulation",
-    "note": "DynamoDB Streams dispatches due work into runtime and outbound queues; watchdog reconciles interrupted dispatch."
+  "hosting-cms": {
+    "note": "Only bound catalog/blog/announcement collections exist. Anonymous reads expose published content; editor writes are authenticated. CMS data persists across bounded site revisions.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
   },
-  "work": {
-    "mode": "Local emulation",
-    "note": "The production executor runs from SQS. Main queues retain 4 days; dead letters retain 14 days."
+  "hosting-editor": {
+    "note": "Content edits use the authenticated CMS editor and do not consume site-change allowance. Client account creation and privileged CMS settings are blocked.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
   },
-  "runtime": {
-    "mode": "Local emulation",
-    "note": "Reserves budget, retrieves authenticated inputs, handles tool outcomes, saves results and cleans up provider sessions."
+  "hosting-domain": {
+    "note": "The adapter observes deployment/domain/certificate state; DNS is not changed by the site tool. Live provider readiness remains an independent verification question.",
+    "status": "Implemented",
+    "mode": "Cloud-only"
   },
-  "outbox": {
-    "mode": "Local emulation",
-    "note": "A durable outbound record is committed with the result. Dispatcher/watchdog enqueue it for the sender."
+  "hosting-s3": {
+    "note": "The project landing and release snapshots use private S3. The existing LocalStack quickstart serves this normal website build; it does not deploy customer Railway sites.",
+    "status": "Implemented",
+    "mode": "Local emulation"
   },
-  "sender": {
-    "mode": "Local emulation",
-    "note": "Uses the service signing secret, checks the grant and destination, claims a send, and preserves uncertain outcomes without blind resend."
+  "hosting-cdn": {
+    "note": "CloudFront delivers the project landing with origin access control, cache and security headers. Public TLS/DNS and cloud caching are outside LocalStack.",
+    "status": "Implemented",
+    "mode": "Cloud-only"
   },
-  "reply": {
-    "mode": "Adapter",
-    "note": "The local bridge maps SES v2 raw sends to SES v1 and captures the unchanged MIME. The test verifies ES256 signature and correlation; no inbox delivery."
+  "ops-agent": {
+    "note": "Repository engineering is a governed contribution workflow, not autonomous work performed by the legacy brief-analysis service.",
+    "status": "Implemented",
+    "mode": "Cloud-only"
   },
-  "openai": {
-    "mode": "Mock",
-    "note": "Production uses Agents API gpt-6-luna, environment none. Local HTTP returns a fixed fictional fixture, exercises the input tool and deletes the mock session."
+  "ops-broker": {
+    "note": "The enabled development broker issues fixed repository-scoped App tokens. Locally it mints against fake GitHub; PR requests are recorded without real publication.",
+    "status": "Implemented",
+    "mode": "Mock"
   },
-  "data": {
-    "mode": "Local emulation",
-    "note": "Accepted inputs/results: 30 days. Abandoned pending inputs: 7 days. Lifecycle expiration and backups have distinct behavior."
+  "ops-pr": {
+    "note": "PR checks and the external App-bound policy evaluate sensitive paths and current-head approval. The advisory local integration workflow remains blocked from App publication by missing workflow-write permission.",
+    "status": "Implemented",
+    "mode": "Cloud-only"
   },
-  "watchdog": {
-    "mode": "Local emulation",
-    "note": "Scheduled every minute. Requeues due runtime, cleanup and outbox work, reconciles stuck sends, and observes committed model dollars."
+  "ops-approval": {
+    "note": "Only Carlos Olivera Terrazas can approve the current sensitive-path head. Automation cannot manufacture approval; repository auto-merge remains disabled.",
+    "status": "Implemented",
+    "mode": "Cloud-only"
   },
-  "feedback": {
-    "mode": "Local emulation",
-    "note": "SNS delivery/bounce/complaint events update outbox state and suppression. Local sending events are synthetic; real production fault exercises remain separate."
+  "ops-main": {
+    "note": "An approved merge permits main CI website delivery. PR jobs cannot deploy; infrastructure activation remains separately owner controlled.",
+    "status": "Implemented",
+    "mode": "Cloud-only"
   },
-  "support": {
-    "mode": "Local emulation",
-    "note": "Separate support S3/SNS/SQS, ledger and Lambda. Content/ledger: 7 days; logs: 30 days; DLQ: 14 days. Local signed-agent tests do not prove support delivery."
+  "ops-release": {
+    "note": "Website delivery uploads the normal build, checks MIME/checksums/cache and restores a release snapshot after failed verification. Preparing this page is not live publication.",
+    "status": "Implemented",
+    "mode": "Cloud-only"
   },
-  "alarms": {
-    "mode": "Local emulation",
-    "note": "Worker failures and DLQ depth alarm at 1. Model committed-dollar warning: $8. Main worker logs: 90 days; support logs: 30 days. Real alerts remain unverified."
+  "ops-watchdog": {
+    "note": "The one-minute watchdog reconciles runtime, cleanup and outbox work and observes committed model dollars. Real scheduled Lambda activity is tested locally.",
+    "status": "Implemented",
+    "mode": "Local emulation"
   },
-  "budget": {
-    "mode": "Cloud-only",
-    "note": "$15 monthly AWS notification budget, thresholds 50/80/100 percent. Application allowance: $1/task and $10/month. Alerts are not hard provider billing caps; tagged coverage remains owner work."
+  "ops-controls": {
+    "note": "Application allowance is $1/task and $10/month; the model warning is $8. Failures/DLQ depth alarm at one; AWS $15 notification thresholds are 50/80/100 percent. Storage/state/log retention is 7/30/90 days with 14-day DLQs. TTL/lifecycle expiry is asynchronous. Billing budgets and owner notifications are cloud-only and are not hard spending caps.",
+    "status": "Implemented",
+    "mode": "Local emulation"
   },
-  "limits": {
-    "mode": "Local emulation",
-    "note": "Defaults: $1 per task, $10 monthly model allowance, 2 concurrent tasks, 10 tasks/day, 300-second task deadline. Unknown usage stays reserved."
+  "ops-admin": {
+    "note": "Tester jobs remain test-only in staging. Superadmin tools audit administration and guarded reset; no private credentials or cross-client authority enter the architecture page.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
   },
-  "agentwork": {
-    "mode": "Cloud-only",
-    "note": "Agent-authored repository work is a contribution workflow. The brief-analysis service does not autonomously engineer repositories."
+  "ops-audit": {
+    "note": "Administrative results and site actions persist in audit transactions. Interrupted/unknown deployments retain reservations and require explicit reconciliation.",
+    "status": "Implemented",
+    "mode": "Separate local tooling"
   },
-  "broker": {
-    "mode": "Mock",
-    "note": "Production broker issues fixed repository-scoped App tokens when enabled. Local deployed broker talks only to mock GitHub; PR requests are recorded."
+  "ops-support": {
+    "note": "Separate support storage/ledger/queue/worker handles human messages; SES feedback updates delivery/suppression. Support content/ledger retains seven days, logs 30 days and DLQs 14 days. The signed-agent fixture does not establish support inbox delivery.",
+    "status": "Implemented",
+    "mode": "Local emulation"
   },
-  "pr": {
-    "mode": "Mock",
-    "note": "Production branch/PR publication uses the Operator App only. Local PR requests create no GitHub resources and grant no real authority."
-  },
-  "prchecks": {
-    "mode": "Cloud-only",
-    "note": "Read-only PR checks and App-bound policy evaluate changed paths, renames and current-head owner approval. Local integration CI starts advisory."
-  },
-  "approval": {
-    "mode": "Cloud-only",
-    "note": "Carlos Olivera Terrazas must approve sensitive paths at the current PR head. Automation cannot manufacture approval. Auto-merge remains disabled."
-  },
-  "merge": {
-    "mode": "Cloud-only",
-    "note": "Owner-controlled merge is distinct from branch/PR publication. This delivery stops at review."
-  },
-  "mainci": {
-    "mode": "Cloud-only",
-    "note": "Main runs package checks and the separate website deployment job with main-only OIDC. PR jobs cannot deploy."
-  },
-  "deploy": {
-    "mode": "Cloud-only",
-    "note": "Uploads the built website, invalidates CloudFront and verifies public checksums/MIME/cache, with snapshot restoration on failure. Infrastructure deployment is separately owner controlled."
-  },
-  "production": {
-    "mode": "Planned",
-    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
-  },
-  "payments": {
-    "mode": "Planned",
-    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
-  },
-  "apps": {
-    "mode": "Planned",
-    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
-  },
-  "mcp": {
-    "mode": "Planned",
-    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
-  },
-  "plugins": {
-    "mode": "Planned",
-    "note": "Future capability. No live customer website production/hosting or checkout is established by this map or local environment."
+  "ops-future": {
+    "note": "Payments/checkout and future customer apps, MCP products and plugins remain planned. This excludes the implemented platform MCP connector and the in-progress deployed website pilot.",
+    "status": "Planned",
+    "mode": "Planned"
   }
 }

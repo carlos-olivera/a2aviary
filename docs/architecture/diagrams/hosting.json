@@ -1,0 +1,242 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Live Hosting & CMS",
+    "output": ".local/architecture/progressive-20261006/hosting.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/carlos-olivera/a2aviary.git",
+      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "hosting-customer",
+      "type": "cloud",
+      "label": "Customer websites",
+      "sublabel": "In progress / deployed",
+      "sources": [
+        {
+          "path": "docs/release-verification.md",
+          "line": 5,
+          "end_line": 9
+        },
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 659,
+          "end_line": 663
+        }
+      ],
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "hosting-railway",
+      "type": "cloud",
+      "label": "Isolated Railway project",
+      "sublabel": "Protected targets / resource caps",
+      "sources": [
+        {
+          "path": "packages/generator/src/deploy.ts",
+          "line": 148,
+          "end_line": 152
+        }
+      ],
+      "pos": [
+        400,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "hosting-caddy",
+      "type": "backend",
+      "label": "Caddy site delivery",
+      "sublabel": "Verified static artifacts",
+      "sources": [
+        {
+          "path": "packages/generator/src/deploy.ts",
+          "line": 521,
+          "end_line": 525
+        },
+        {
+          "path": "packages/generator/src/deploy.ts",
+          "line": 293,
+          "end_line": 297
+        }
+      ],
+      "pos": [
+        760,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "hosting-cms",
+      "type": "database",
+      "label": "PocketBase CMS",
+      "sublabel": "Private service / published reads",
+      "sources": [
+        {
+          "path": "packages/generator/src/pocketbase.ts",
+          "line": 9,
+          "end_line": 13
+        }
+      ],
+      "pos": [
+        760,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "hosting-editor",
+      "type": "frontend",
+      "label": "Client content editor",
+      "sublabel": "Content edits without redeploy",
+      "sources": [
+        {
+          "path": "packages/generator/src/pocketbase.ts",
+          "line": 62,
+          "end_line": 64
+        }
+      ],
+      "pos": [
+        400,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "hosting-domain",
+      "type": "cloud",
+      "label": "Domain / TLS status",
+      "sublabel": "Provider readiness / owner DNS",
+      "sources": [
+        {
+          "path": "packages/generator/src/deploy.ts",
+          "line": 490,
+          "end_line": 494
+        }
+      ],
+      "pos": [
+        400,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "hosting-s3",
+      "type": "database",
+      "label": "Project landing S3",
+      "sublabel": "Private normal website build",
+      "sources": [
+        {
+          "path": "infra/src/app.ts",
+          "line": 30,
+          "end_line": 34
+        }
+      ],
+      "pos": [
+        40,
+        540
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    },
+    {
+      "id": "hosting-cdn",
+      "type": "cloud",
+      "label": "Project CloudFront",
+      "sublabel": "TLS / origin access / CSP",
+      "sources": [
+        {
+          "path": "infra/src/app.ts",
+          "line": 47,
+          "end_line": 51
+        }
+      ],
+      "pos": [
+        400,
+        540
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    }
+  ],
+  "connections": [
+    {
+      "from": "hosting-customer",
+      "to": "hosting-railway",
+      "label": "Guarded target",
+      "variant": "emphasis"
+    },
+    {
+      "from": "hosting-railway",
+      "to": "hosting-caddy",
+      "label": "Deploy",
+      "variant": "emphasis"
+    },
+    {
+      "from": "hosting-caddy",
+      "to": "hosting-cms",
+      "label": "Private proxy",
+      "variant": "emphasis"
+    },
+    {
+      "from": "hosting-cms",
+      "to": "hosting-editor",
+      "label": "Editor access",
+      "variant": "emphasis"
+    },
+    {
+      "from": "hosting-railway",
+      "to": "hosting-domain",
+      "label": "Readiness",
+      "variant": "emphasis"
+    },
+    {
+      "from": "hosting-s3",
+      "to": "hosting-cdn",
+      "label": "Private origin",
+      "variant": "emphasis"
+    }
+  ]
+}

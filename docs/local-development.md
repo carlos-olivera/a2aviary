@@ -3,7 +3,8 @@
 The local environment deploys the shared CDK constructs and runs the production
 Node.js workers against disposable LocalStack resources. OpenAI and GitHub are
 safe stand-ins. This verifies the application path, not AWS production delivery,
-IAM enforcement, billing, or the planned customer website product.
+IAM enforcement, billing, or the customer-site pilot. Carlos reports that pilot
+deployed and in progress; its independently verified cloud evidence is separate.
 
 ## Prerequisites and quickstart
 
@@ -70,7 +71,8 @@ Docker/CDK/worker diagnostics or captured MIME as public evidence.
 | Retention | S3 seven/thirty-day policies, state TTL, ninety-day audit/replay policies, log retention and fourteen-day DLQs remain configured. Expiry is asynchronous; elapsed-day deletion is not tested. |
 | Controls | CloudWatch alarms/logs and scheduled watchdog run as supported. Alarm existence/log activity do not prove AWS alarm evaluation or owner notification. |
 | Cloud-only | CloudFront, Route 53, public TLS/DNS, production OIDC, Operator public API hosting, AWS billing budgets, real SES delivery and owner notifications are skipped. |
-| Planned | Customer website production/hosting, checkout, apps, MCP services and plugins are not implemented by this environment. |
+| Separate local tooling | Auth/MCP and durable platform jobs use the platform Postgres setup; Astro verification and PocketBase/Caddy use generator/site tooling. See [platform](platform.md), [sites](sites.md), and [tester/admin](testers-and-admin.md) instructions. They are not started or tested by the AWS quickstart. |
+| Planned | Payments/checkout and future customer apps, MCP products and plugins. The implemented platform MCP connector is separate from those future products. |
 
 ## Verification and contributing
 
@@ -88,32 +90,46 @@ check rejects a stale map without downloading Archify in CI.
 
 ## Architecture regeneration
 
-Use the [editable map](architecture/map.json) and
-[local coverage metadata](architecture/coverage.json). Update responsibilities,
-source ranges and local annotations against the changed code. Commit the source
-changes first so Archify can validate references against a real revision.
-Install Archify temporarily outside the checkout using:
+Use the [five-stage membership manifest](architecture/stages.json),
+[editable overview](architecture/map.json), five candidates in
+`docs/architecture/diagrams/`, and [coverage/status metadata](architecture/coverage.json).
+Assign each technical node to exactly one stage. Labeled boundary nodes link to
+another stage; implementation/deployment status stays separate from local coverage.
+The signed-email diagrams are explicitly legacy pathways. Update source ranges,
+boundaries and notes against committed code. Commit source changes first so
+Archify validates references against a real revision.
+
+Install Archify in a temporary directory outside the checkout:
 
 ```sh
 npx skills add tt-a1i/archify --skill archify --agent codex --copy --yes
 ```
 
-Read the installed SKILL.md and its repository/authoring references. Set the
-map's repository revision to that source commit, then run its `finalize
-architecture` command with `--repo-root`, `--quality showcase`, `--json`, and
-`ARCHIFY_UPDATE_CHECK_DISABLED=1`; use the output path recorded in map metadata.
-Integrate the passing generated artifact from the repository root:
+Read its SKILL.md and repository/authoring references. Set the manifest and all six
+candidates to the same committed source revision. With
+`ARCHIFY_UPDATE_CHECK_DISABLED=1`, finalize the overview and every stage candidate
+using `finalize architecture <candidate> <output> --repo-root <checkout> --quality
+showcase --json`. Use each candidate's metadata output path. All four gates must
+pass for all six drawings; inspect any perceptual review recommendation. From the
+repository root, integrate those artifacts and their matching receipts:
 
 ```sh
-node website/scripts/integrate-architecture.mjs .local/architecture/raw-final.html
+node website/scripts/integrate-architecture.mjs
 npm --prefix website run check
 npm --prefix website run build
 ```
 
-Integration extracts generated SVG, adds accessible site controls and
-same-origin assets, and updates source fingerprints/provenance. Preserve MIT
-notices, inspect the final page under the production CSP, and remove the
-session-only skill. Commit neither the skill package nor its dependencies.
+An optional argument selects a directory containing the six raw HTML files and
+receipts. Integration extracts generated SVG, namespaces its IDs, adds accessible
+stage controls and native JavaScript-free disclosures, and records candidate,
+manifest, coverage, asset and source fingerprints. The initial page contains no
+active technical panel; switching stages replaces the diagram/evidence and resets
+its disclosures. Preserve MIT notices and same-origin assets, inspect desktop and
+mobile behavior under production CSP, run `website/scripts/verify-architecture.js`
+through Playwright CLI against the local build, and remove the temporary skill.
+Commit neither its package nor dependencies. Freshness covers infrastructure,
+services, platform, generator, policy/contract sources and local tooling without
+installing Archify in CI.
 
 ## Troubleshooting
 

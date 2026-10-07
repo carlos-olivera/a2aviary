@@ -1,6 +1,6 @@
 # Initial release verification
 
-Latest evidence: 2026-10-06 Phase 3 local generator/platform/CMS verification and owner-reported Phase 2 deployment; earlier local checks and dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+Latest evidence: 2026-10-06 five-stage architecture/local checks and owner-reported customer-site pilot deployment; earlier local checks and dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
 ## Customer-site pilot — 2026-10-06, owner-reported deployment
 
@@ -463,3 +463,46 @@ The first manifest incorrectly selected `installation`; GitHub rejected it befor
 - **Locally verified:** Node.js 22 check/build and 12 generator tests, 51 platform tests with real loopback Postgres/OAuth/MCP and explicit provider doubles, 112 existing service tests and seven infrastructure tests. Website checks/build, immutable generated artifacts, dependency notices, relative documentation links/anchors, whitespace and scoped secret-pattern review passed. A real local container ran as UID 1000 with all five migrations, tester seed, health, login/discovery and disabled-by-default site workflow.
 - **Not verified/deployed:** one hosted cloud test remains explicitly skipped without private development credentials. Source includes an opt-in real tester/CMS/reset extension, but no remote fixture projects or assets were created/deleted and no DNS, production AWS configuration or production MCP deployment was changed. Local doubles are not Railway deletion or hosted sandbox evidence.
 - **Owner follow-up:** review/merge the Operator-authored PR, run the normal staging migrator/rollout, retain the private owner identity/protected project settings, grant narrowly scoped fixture deletion and artifact list/delete rights, configure backup/object-version retention, then run the real staging tester/reset smoke and authenticated Claude/ChatGPT tool checks. See [operations](testers-and-admin.md).
+
+## Two-level architecture — 2026-10-06, verified locally and prepared
+
+- Refreshed the isolated architecture branch against remote main `1ee5c71`;
+  the owner's other checkout remains untouched. The five-stage map includes
+  current auth/MCP, Astro, Railway/PocketBase/Caddy and tester/admin source,
+  with signed email labeled as a legacy pathway. Customer-site deployment is
+  owner-reported, as recorded above; independent hosted verification is separate.
+- Archify 3.0.1 finalized the overview and five focused drawings against committed
+  source `b37f8419`. All four gates pass for each. The stage manifest assigns
+  44 technical nodes once; coverage/status and expanded source fingerprints are
+  recorded in [provenance](architecture/provenance.json). The hosting readiness
+  detour was traced visually and accepted; the engine's empty gap was compacted.
+- [Browser assertions](architecture/browser-verification.json) passed against
+  the normal build redeployed to local S3 with production CSP: exactly five
+  initial macro-stages and no technical panel/grid; every macro, tab and technical
+  node; focused evidence, reset/close behavior, keyboard/focus/live announcements,
+  local highlighting, native local accordion, desktop/mobile and JavaScript-free
+  evidence. No automatic cross-domain requests or CSP/console errors were observed.
+  Updated [overview](architecture/architecture-preview.png),
+  [mobile](architecture/architecture-mobile.png) and
+  [hosting](architecture/architecture-hosting.png) screenshots are retained.
+- Node.js 22.23.3 website checks/build and internal links, documentation targets,
+  service check/build and 113 tests, infrastructure build and nine tests,
+  generator check/build and 12 tests, platform check/build and 51 tests passed.
+  One credential-dependent hosted test remained explicitly skipped. All five
+  production templates match remote main using the same worker artifact.
+- Redeployed the shared local CDK environment and passed `local:test` again;
+  [exact sanitized output](architecture/local-test-output.txt) records queued
+  processing, storage, cleanup, concurrency, signed/correlated replies,
+  duplicate/tamper rejection, mock broker recording, watchdog, alarms and retention.
+  This rerun used the existing disposable environment; the earlier clean-checkout
+  quickstart evidence remains a separate observation. The AWS quickstart does
+  not start the newer platform/generator/CMS tooling. Public files, build assets,
+  fixtures and sanitized evidence passed scoped prohibited-identifier/credential
+  scans; reviewed screenshots contain only generic labels and public sources.
+- Production is unchanged. `/architecture` is prepared until owner review,
+  approved merge, the website release workflow and public behavior verification.
+  App publication remains blocked by the existing workflow-write boundary: Carlos
+  must supply the prepared CI workflow through an authorized route before App
+  publication. Permissions were not expanded and no personal publishing fallback
+  was used. The integration CI job remains advisory/non-blocking and unverified
+  on a real GitHub runner.

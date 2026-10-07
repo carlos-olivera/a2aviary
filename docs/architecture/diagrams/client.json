@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Client & Local Agent",
+    "output": ".local/architecture/progressive-20261006/client.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/carlos-olivera/a2aviary.git",
+      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "client-agent",
+      "type": "external",
+      "label": "Client agent",
+      "sublabel": "Goals and prepared materials",
+      "sources": [
+        {
+          "path": "docs/sites.md",
+          "line": 12,
+          "end_line": 16
+        }
+      ],
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "client-preview",
+      "type": "frontend",
+      "label": "Catalog preview",
+      "sublabel": "Pinned spec / original assets",
+      "sources": [
+        {
+          "path": "docs/sites.md",
+          "line": 44,
+          "end_line": 48
+        },
+        {
+          "path": "services/src/site/validator.ts",
+          "line": 64,
+          "end_line": 68
+        }
+      ],
+      "pos": [
+        400,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "client-approval",
+      "type": "security",
+      "label": "Human approval",
+      "sublabel": "Approval bound to spec",
+      "sources": [
+        {
+          "path": "docs/sites.md",
+          "line": 46,
+          "end_line": 50
+        }
+      ],
+      "pos": [
+        760,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "client-submit",
+      "type": "external",
+      "label": "Approved submission",
+      "sublabel": "Next: auth and mandate",
+      "sources": [
+        {
+          "path": "apps/platform/src/app.ts",
+          "line": 142,
+          "end_line": 146
+        }
+      ],
+      "pos": [
+        760,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "client-signed",
+      "type": "security",
+      "label": "Legacy signed request",
+      "sublabel": "Registered ES256 identity",
+      "sources": [
+        {
+          "path": "services/src/client.ts",
+          "line": 12,
+          "end_line": 15
+        }
+      ],
+      "pos": [
+        40,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    },
+    {
+      "id": "client-reply",
+      "type": "backend",
+      "label": "Legacy signed reply",
+      "sublabel": "Outbox / sender / SES",
+      "sources": [
+        {
+          "path": "services/src/sender.ts",
+          "line": 14,
+          "end_line": 18
+        },
+        {
+          "path": "services/src/store.ts",
+          "line": 26,
+          "end_line": 27
+        }
+      ],
+      "pos": [
+        400,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Adapter"
+    }
+  ],
+  "connections": [
+    {
+      "from": "client-agent",
+      "to": "client-preview",
+      "label": "Prepare",
+      "variant": "emphasis"
+    },
+    {
+      "from": "client-preview",
+      "to": "client-approval",
+      "label": "Approve",
+      "variant": "emphasis"
+    },
+    {
+      "from": "client-approval",
+      "to": "client-submit",
+      "label": "Submit",
+      "variant": "emphasis"
+    },
+    {
+      "from": "client-signed",
+      "to": "client-reply",
+      "label": "Signed result",
+      "variant": "emphasis"
+    }
+  ]
+}
