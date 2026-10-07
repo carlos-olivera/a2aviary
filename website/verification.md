@@ -1,26 +1,39 @@
 # Landing verification
 
-## Architecture — 2026-10-06, local verification
+## Two-level architecture — 2026-10-06, local verification
 
-Archify 3.0.1 showcase finalization passed all four gates with no diagnostics.
-[Reviewed diagram screenshot](../docs/architecture/architecture-preview.png).
-The integrated drawing retains editable JSON, source ranges, a committed
-implementation revision, sanitized provenance and MIT notices. The standard
-header/footer, dark theme, extensionless HTML output/MIME, canonical/OG tags,
-sitemap and navigation are prepared for release.
+Archify 3.0.1 showcase finalization passed all four gates for the overview and
+five focused diagrams against committed source, with no diagnostic failures.
+The Railway readiness branch had a perceptual review recommendation; its arrow
+and label were traced in the final desktop drawing and remain clear beside the
+CMS/editor branch. The build-engine layout was compacted before finalization.
+Editable stage membership, source ranges, committed provenance, expanded source
+fingerprints and MIT notices remain in the repository.
 
-Website checks/build and internal link checks pass. The built page was served
-from deployed local S3 with the production CSP, inspected at 1440 × 1000 and
-390 × 844, and tested with keyboard activation/focus, flow views, local coverage,
-all 36 main-source links and JavaScript-disabled details. No automatic request to
-another domain or CSP/console error was observed. Mobile overflow stays inside
-the diagram region; the full native node list remains usable.
+Initial rendering has exactly five macro-nodes, five accessible stage tabs,
+no expanded technical panel and no active source-evidence grid. The local setup
+is a collapsed native accordion. Every macro/tab and all 44 technical nodes were
+exercised: one panel at a time, matching source details, reset on switching,
+boundary handoffs, Back to overview, arrows/Home/End/Enter/Space, live selection
+announcements and focus return. Mobile tabs declare vertical orientation.
 
-Customer website production, payments/checkout, apps, MCP services and plugins
-remain planned. Local emulation, mocks, adapters and cloud-only controls have
-separate annotations. This verifies local behavior, not live `/architecture`,
-CloudFront caching, real mailbox delivery or production alarms. Owner approval,
-approved merge and the existing website release workflow precede public checks.
+Website checks/build and internal links passed. The normal build was redeployed
+to local S3 and tested under production CSP at 1440 × 1000 and 390 × 844. The
+technical canvas scrolls within the mobile page. Native fallback stages and
+source disclosures work with JavaScript disabled. Zero automatic cross-domain
+requests and no CSP/console errors were observed in either JavaScript mode.
+
+Customer websites show **In progress · deployed**, explicitly owner-reported;
+independent hosted end-to-end evidence remains separate. The implemented platform
+MCP connector differs from planned customer MCP products. AWS LocalStack coverage
+is separate from platform/generator/CMS tooling. No live `/architecture`, cloud
+hosting verification, real mailbox delivery or owner notification is claimed.
+Operator publication still requires the owner to supply the CI workflow through
+an authorized route; review, approved merge and website release remain gates.
+
+See [desktop overview](../docs/architecture/architecture-preview.png),
+[mobile overview](../docs/architecture/architecture-mobile.png), and
+[focused hosting](../docs/architecture/architecture-hosting.png).
 
 ## Changelog and author profile — 2026-10-05, local verification
 

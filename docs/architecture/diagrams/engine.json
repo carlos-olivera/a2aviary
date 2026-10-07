@@ -1,0 +1,323 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Validation & Build Engine",
+    "output": ".local/architecture/progressive-20261006-compact/engine.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/carlos-olivera/a2aviary.git",
+      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "engine-validate",
+      "type": "security",
+      "label": "Spec and asset validation",
+      "sublabel": "Pinned policy / byte hashes",
+      "sources": [
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 158,
+          "end_line": 162
+        },
+        {
+          "path": "packages/generator/src/render.ts",
+          "line": 49,
+          "end_line": 53
+        }
+      ],
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "engine-jobs",
+      "type": "database",
+      "label": "Durable Postgres jobs",
+      "sublabel": "Owned queue / audit state",
+      "sources": [
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 578,
+          "end_line": 582
+        },
+        {
+          "path": "apps/platform/migrations/004-sites.sql",
+          "line": 18,
+          "end_line": 22
+        }
+      ],
+      "pos": [
+        400,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "engine-astro",
+      "type": "backend",
+      "label": "Astro catalog generator",
+      "sublabel": "Fixed blocks / design tokens",
+      "sources": [
+        {
+          "path": "packages/generator/src/render.ts",
+          "line": 45,
+          "end_line": 49
+        }
+      ],
+      "pos": [
+        760,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "engine-verify",
+      "type": "backend",
+      "label": "Agents verification",
+      "sublabel": "Build / a11y / visual checks",
+      "sources": [
+        {
+          "path": "packages/generator/src/verification.ts",
+          "line": 119,
+          "end_line": 123
+        },
+        {
+          "path": "packages/generator/src/verification.ts",
+          "line": 68,
+          "end_line": 72
+        }
+      ],
+      "pos": [
+        760,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "engine-artifacts",
+      "type": "database",
+      "label": "Verified artifact store",
+      "sublabel": "Private reports / output hashes",
+      "sources": [
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 557,
+          "end_line": 561
+        },
+        {
+          "path": "packages/generator/src/storage.ts",
+          "line": 14,
+          "end_line": 18
+        }
+      ],
+      "pos": [
+        400,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "engine-host",
+      "type": "external",
+      "label": "Verified deployment gate",
+      "sublabel": "Next: hosting and CMS",
+      "sources": [
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 659,
+          "end_line": 663
+        }
+      ],
+      "pos": [
+        40,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "engine-receipt",
+      "type": "messagebus",
+      "label": "Legacy SES intake",
+      "sublabel": "S3 / SNS / SQS / Lambda",
+      "sources": [
+        {
+          "path": "infra/src/email.ts",
+          "line": 23,
+          "end_line": 27
+        },
+        {
+          "path": "services/src/intake.ts",
+          "line": 52,
+          "end_line": 56
+        }
+      ],
+      "pos": [
+        40,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Adapter"
+    },
+    {
+      "id": "engine-state",
+      "type": "database",
+      "label": "Legacy durable dispatch",
+      "sublabel": "DynamoDB / Streams / SQS",
+      "sources": [
+        {
+          "path": "services/src/intake.ts",
+          "line": 42,
+          "end_line": 46
+        },
+        {
+          "path": "services/src/dispatcher.ts",
+          "line": 3,
+          "end_line": 6
+        }
+      ],
+      "pos": [
+        400,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    },
+    {
+      "id": "engine-analysis",
+      "type": "backend",
+      "label": "Legacy brief executor",
+      "sublabel": "OpenAI analysis / cleanup",
+      "sources": [
+        {
+          "path": "services/src/runtime.ts",
+          "line": 138,
+          "end_line": 138
+        }
+      ],
+      "pos": [
+        760,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Mock"
+    },
+    {
+      "id": "engine-data",
+      "type": "database",
+      "label": "Legacy input / result S3",
+      "sublabel": "30 days / pending 7 days",
+      "sources": [
+        {
+          "path": "services/src/store.ts",
+          "line": 20,
+          "end_line": 24
+        },
+        {
+          "path": "infra/src/email.ts",
+          "line": 24,
+          "end_line": 28
+        }
+      ],
+      "pos": [
+        760,
+        540
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    }
+  ],
+  "connections": [
+    {
+      "from": "engine-validate",
+      "to": "engine-jobs",
+      "label": "Queue",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engine-jobs",
+      "to": "engine-astro",
+      "label": "Generate",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engine-astro",
+      "to": "engine-verify",
+      "label": "Verify",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engine-verify",
+      "to": "engine-artifacts",
+      "label": "Checked output",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engine-artifacts",
+      "to": "engine-host",
+      "label": "Deploy gate",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engine-receipt",
+      "to": "engine-state",
+      "label": "Commit",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engine-state",
+      "to": "engine-analysis",
+      "label": "SQS trigger",
+      "variant": "emphasis"
+    },
+    {
+      "from": "engine-analysis",
+      "to": "engine-data",
+      "label": "Save result",
+      "variant": "emphasis"
+    }
+  ]
+}

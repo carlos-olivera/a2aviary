@@ -2,969 +2,169 @@
   "schema_version": 1,
   "diagram_type": "architecture",
   "meta": {
-    "title": "a2aviary architecture",
-    "output": ".local/architecture/raw-final.html",
+    "title": "Architecture overview",
+    "output": ".local/architecture/progressive-20261006/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "736948102739fa7dcf2b7e1800a0e7f60cdd846f",
+      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
       "provider": "github",
       "link_mode": "web"
     }
   },
   "components": [
     {
-      "id": "visitor",
+      "id": "client",
       "type": "external",
-      "label": "Visitor",
-      "sublabel": "Project landing",
+      "label": "1. Client & Local Agent",
+      "sublabel": "Prepared spec / approved preview",
       "pos": [
         40,
-        70
+        60
       ],
       "size": [
-        210,
-        68
+        240,
+        84
       ],
-      "tag": "Local emulation",
       "sources": [
         {
-          "path": "infra/src/app.ts",
-          "line": 47,
-          "end_line": 49
-        }
-      ]
-    },
-    {
-      "id": "cdn",
-      "type": "cloud",
-      "label": "CloudFront",
-      "sublabel": "TLS / private origin",
-      "pos": [
-        350,
-        70
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Cloud-only",
-      "sources": [
-        {
-          "path": "infra/src/app.ts",
-          "line": 47,
-          "end_line": 49
-        }
-      ]
-    },
-    {
-      "id": "site",
-      "type": "database",
-      "label": "Website S3",
-      "sublabel": "Static build / snapshots",
-      "pos": [
-        660,
-        70
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "infra/src/app.ts",
-          "line": 30,
-          "end_line": 32
-        }
-      ]
-    },
-    {
-      "id": "request",
-      "type": "external",
-      "label": "Signed request",
-      "sublabel": "Registered ES256 identity",
-      "pos": [
-        40,
-        270
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "services/src/client.ts",
+          "path": "docs/sites.md",
           "line": 12,
+          "end_line": 16
+        }
+      ],
+      "tag": "Explore stage"
+    },
+    {
+      "id": "gate",
+      "type": "security",
+      "label": "2. Auth & Mandate Gate",
+      "sublabel": "Identity / ownership / permission",
+      "pos": [
+        400,
+        60
+      ],
+      "size": [
+        240,
+        84
+      ],
+      "sources": [
+        {
+          "path": "apps/platform/src/auth.ts",
+          "line": 10,
           "end_line": 14
         }
-      ]
+      ],
+      "tag": "Explore stage"
     },
     {
-      "id": "ses",
-      "type": "cloud",
-      "label": "SES receipt",
-      "sublabel": "Local receipt-rule adapter",
-      "pos": [
-        350,
-        270
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Adapter",
-      "sources": [
-        {
-          "path": "infra/src/email.ts",
-          "line": 46,
-          "end_line": 48
-        }
-      ]
-    },
-    {
-      "id": "raw",
-      "type": "database",
-      "label": "Raw email S3",
-      "sublabel": "30 days / rejected 7 days",
-      "pos": [
-        660,
-        270
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "infra/src/email.ts",
-          "line": 23,
-          "end_line": 25
-        }
-      ]
-    },
-    {
-      "id": "receipt",
-      "type": "messagebus",
-      "label": "SNS / intake SQS",
-      "sublabel": "Receipt notifications",
-      "pos": [
-        970,
-        270
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "infra/src/email.ts",
-          "line": 34,
-          "end_line": 36
-        }
-      ]
-    },
-    {
-      "id": "intake",
+      "id": "engine",
       "type": "backend",
-      "label": "Intake Lambda",
-      "sublabel": "Validate / admit",
+      "label": "3. Validation & Build Engine",
+      "sublabel": "Validation / generation / checks",
       "pos": [
-        970,
-        470
+        760,
+        60
       ],
       "size": [
-        210,
-        68
+        240,
+        84
       ],
-      "tag": "Local emulation",
       "sources": [
         {
-          "path": "services/src/intake.ts",
-          "line": 8,
-          "end_line": 10
-        }
-      ]
-    },
-    {
-      "id": "state",
-      "type": "database",
-      "label": "DynamoDB state",
-      "sublabel": "Tasks 30 / replay 90 days",
-      "pos": [
-        660,
-        470
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
+          "path": "apps/platform/src/sites.ts",
+          "line": 158,
+          "end_line": 162
+        },
         {
-          "path": "services/src/intake.ts",
-          "line": 23,
-          "end_line": 25
-        }
-      ]
-    },
-    {
-      "id": "dispatcher",
-      "type": "backend",
-      "label": "Stream dispatcher",
-      "sublabel": "DynamoDB Streams",
-      "pos": [
-        350,
-        470
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "services/src/dispatcher.ts",
-          "line": 3,
-          "end_line": 5
-        }
-      ]
-    },
-    {
-      "id": "work",
-      "type": "messagebus",
-      "label": "Runtime SQS",
-      "sublabel": "Retries / 14-day DLQ",
-      "pos": [
-        40,
-        470
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "infra/src/runtime.ts",
-          "line": 32,
-          "end_line": 34
-        }
-      ]
-    },
-    {
-      "id": "runtime",
-      "type": "backend",
-      "label": "Executor Lambda",
-      "sublabel": "Analyze / durable cleanup",
-      "pos": [
-        40,
-        690
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "services/src/runtime.ts",
+          "path": "packages/generator/src/render.ts",
           "line": 49,
-          "end_line": 51
+          "end_line": 53
         }
-      ]
+      ],
+      "tag": "Explore stage"
     },
     {
-      "id": "outbox",
-      "type": "messagebus",
-      "label": "Outbox / SQS",
-      "sublabel": "Durable signed-reply work",
+      "id": "hosting",
+      "type": "cloud",
+      "label": "4. Live Hosting & CMS",
+      "sublabel": "Customer sites / project landing",
       "pos": [
-        350,
-        690
+        760,
+        260
       ],
       "size": [
-        210,
-        68
+        240,
+        84
       ],
-      "tag": "Local emulation",
       "sources": [
         {
-          "path": "services/src/store.ts",
-          "line": 26,
-          "end_line": 27
-        }
-      ]
-    },
-    {
-      "id": "sender",
-      "type": "security",
-      "label": "Sender Lambda",
-      "sublabel": "ES256 / delivery ledger",
-      "pos": [
-        660,
-        690
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "services/src/sender.ts",
+          "path": "docs/release-verification.md",
           "line": 5,
-          "end_line": 7
-        }
-      ]
-    },
-    {
-      "id": "reply",
-      "type": "cloud",
-      "label": "Signed SES reply",
-      "sublabel": "Local SES v2 \u2192 v1 bridge",
-      "pos": [
-        970,
-        690
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Adapter",
-      "sources": [
-        {
-          "path": "services/src/sender.ts",
-          "line": 2,
-          "end_line": 4
-        }
-      ]
-    },
-    {
-      "id": "openai",
-      "type": "external",
-      "label": "OpenAI analysis",
-      "sublabel": "Fixed local fixture",
-      "pos": [
-        40,
-        910
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Mock",
-      "sources": [
-        {
-          "path": "services/src/runtime.ts",
-          "line": 84,
-          "end_line": 86
-        }
-      ]
-    },
-    {
-      "id": "data",
-      "type": "database",
-      "label": "Input / result S3",
-      "sublabel": "30 days / pending 7 days",
-      "pos": [
-        350,
-        910
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "infra/src/email.ts",
-          "line": 24,
-          "end_line": 26
-        }
-      ]
-    },
-    {
-      "id": "watchdog",
-      "type": "backend",
-      "label": "EventBridge watchdog",
-      "sublabel": "1-minute reconciliation",
-      "pos": [
-        660,
-        910
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "infra/src/runtime.ts",
-          "line": 44,
-          "end_line": 46
-        }
-      ]
-    },
-    {
-      "id": "feedback",
-      "type": "backend",
-      "label": "SES feedback Lambda",
-      "sublabel": "Delivery / suppression",
-      "pos": [
-        970,
-        910
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "services/src/feedback.ts",
-          "line": 4,
-          "end_line": 6
-        }
-      ]
-    },
-    {
-      "id": "support",
-      "type": "backend",
-      "label": "Isolated human support",
-      "sublabel": "7-day content / 30-day logs",
-      "pos": [
-        40,
-        1110
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "infra/src/runtime.ts",
-          "line": 28,
-          "end_line": 30
-        }
-      ]
-    },
-    {
-      "id": "alarms",
-      "type": "cloud",
-      "label": "CloudWatch controls",
-      "sublabel": "Failures / DLQ / $8 warning",
-      "pos": [
-        350,
-        1110
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "infra/src/controls.ts",
-          "line": 17,
-          "end_line": 19
-        }
-      ]
-    },
-    {
-      "id": "budget",
-      "type": "cloud",
-      "label": "AWS billing budget",
-      "sublabel": "$15 / notification only",
-      "pos": [
-        660,
-        1110
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Cloud-only",
-      "sources": [
-        {
-          "path": "infra/src/controls.ts",
-          "line": 28,
-          "end_line": 30
-        }
-      ]
-    },
-    {
-      "id": "limits",
-      "type": "security",
-      "label": "Application limits",
-      "sublabel": "$1 task / $10 month",
-      "pos": [
-        970,
-        1110
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Local emulation",
-      "sources": [
-        {
-          "path": "contracts/limits.defaults.json",
-          "line": 1,
-          "end_line": 1
-        }
-      ]
-    },
-    {
-      "id": "agentwork",
-      "type": "external",
-      "label": "Agent-authored change",
-      "sublabel": "Authorized contributions",
-      "pos": [
-        40,
-        1380
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Cloud-only",
-      "sources": [
-        {
-          "path": "CONTRIBUTING.md",
-          "line": 5,
-          "end_line": 7
-        }
-      ]
-    },
-    {
-      "id": "broker",
-      "type": "security",
-      "label": "Operator broker",
-      "sublabel": "Fixed App permission profile",
-      "pos": [
-        350,
-        1380
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Mock",
-      "sources": [
-        {
-          "path": "services/src/operator.ts",
-          "line": 15,
-          "end_line": 17
-        }
-      ]
-    },
-    {
-      "id": "pr",
-      "type": "external",
-      "label": "Pull request",
-      "sublabel": "App-authored publication",
-      "pos": [
-        660,
-        1380
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Mock",
-      "sources": [
-        {
-          "path": "docs/runbooks.md",
-          "line": 203,
-          "end_line": 205
-        }
-      ]
-    },
-    {
-      "id": "prchecks",
-      "type": "security",
-      "label": "PR checks / policy",
-      "sublabel": "Checks before approval",
-      "pos": [
-        970,
-        1380
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Cloud-only",
-      "sources": [
-        {
-          "path": "services/src/operator.ts",
-          "line": 27,
-          "end_line": 29
-        }
-      ]
-    },
-    {
-      "id": "approval",
-      "type": "security",
-      "label": "Owner approval",
-      "sublabel": "Current head / human gate",
-      "pos": [
-        970,
-        1580
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Cloud-only",
-      "sources": [
-        {
-          "path": "services/src/policy.ts",
-          "line": 6,
-          "end_line": 8
-        }
-      ]
-    },
-    {
-      "id": "merge",
-      "type": "security",
-      "label": "Approved merge",
-      "sublabel": "Owner-controlled action",
-      "pos": [
-        660,
-        1580
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Cloud-only",
-      "sources": [
-        {
-          "path": "CONTRIBUTING.md",
-          "line": 7,
           "end_line": 9
+        },
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 659,
+          "end_line": 663
         }
-      ]
+      ],
+      "tag": "In progress \u00b7 deployed"
     },
     {
-      "id": "mainci",
-      "type": "backend",
-      "label": "Main CI",
-      "sublabel": "Main-only OIDC",
+      "id": "ops",
+      "type": "security",
+      "label": "5. Governance & Ops",
+      "sublabel": "Approval / audit / recovery",
       "pos": [
-        350,
-        1580
+        400,
+        260
       ],
       "size": [
-        210,
-        68
+        240,
+        84
       ],
-      "tag": "Cloud-only",
       "sources": [
         {
-          "path": ".github/workflows/release.yml",
-          "line": 32,
-          "end_line": 34
+          "path": "AGENTS.md",
+          "line": 33,
+          "end_line": 37
         }
-      ]
-    },
-    {
-      "id": "deploy",
-      "type": "backend",
-      "label": "Website deploy",
-      "sublabel": "Verify / restore snapshot",
-      "pos": [
-        40,
-        1580
       ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Cloud-only",
-      "sources": [
-        {
-          "path": "services/scripts/deploy-website.mjs",
-          "line": 25,
-          "end_line": 27
-        }
-      ]
-    },
-    {
-      "id": "production",
-      "type": "external",
-      "label": "Customer websites",
-      "sublabel": "Planned capability",
-      "pos": [
-        40,
-        1850
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Planned",
-      "sources": [
-        {
-          "path": "docs/vision.md",
-          "line": 9,
-          "end_line": 11
-        }
-      ]
-    },
-    {
-      "id": "payments",
-      "type": "external",
-      "label": "Payments / checkout",
-      "sublabel": "Planned capability",
-      "pos": [
-        350,
-        1850
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Planned",
-      "sources": [
-        {
-          "path": "docs/vision.md",
-          "line": 9,
-          "end_line": 11
-        }
-      ]
-    },
-    {
-      "id": "apps",
-      "type": "external",
-      "label": "Apps",
-      "sublabel": "Planned capability",
-      "pos": [
-        660,
-        1850
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Planned",
-      "sources": [
-        {
-          "path": "docs/vision.md",
-          "line": 9,
-          "end_line": 11
-        }
-      ]
-    },
-    {
-      "id": "mcp",
-      "type": "external",
-      "label": "MCP services",
-      "sublabel": "Planned capability",
-      "pos": [
-        970,
-        1850
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Planned",
-      "sources": [
-        {
-          "path": "docs/vision.md",
-          "line": 9,
-          "end_line": 11
-        }
-      ]
-    },
-    {
-      "id": "plugins",
-      "type": "external",
-      "label": "Plugins",
-      "sublabel": "Planned capability",
-      "pos": [
-        40,
-        2030
-      ],
-      "size": [
-        210,
-        68
-      ],
-      "tag": "Planned",
-      "sources": [
-        {
-          "path": "docs/vision.md",
-          "line": 9,
-          "end_line": 11
-        }
-      ]
+      "tag": "Explore stage"
     }
   ],
   "connections": [
     {
-      "from": "visitor",
-      "to": "cdn",
-      "label": "HTTPS",
+      "from": "client",
+      "to": "gate",
+      "label": "Approved input",
       "variant": "emphasis"
     },
     {
-      "from": "cdn",
-      "to": "site",
-      "label": "Origin access",
-      "variant": "security"
-    },
-    {
-      "from": "request",
-      "to": "ses",
-      "label": "Signed MIME",
-      "variant": "emphasis"
-    },
-    {
-      "from": "ses",
-      "to": "raw",
-      "label": "S3 action",
-      "variant": "emphasis"
-    },
-    {
-      "from": "raw",
-      "to": "receipt",
-      "label": "Notify",
-      "variant": "emphasis"
-    },
-    {
-      "from": "receipt",
-      "to": "intake",
-      "label": "SQS trigger",
-      "variant": "emphasis"
-    },
-    {
-      "from": "intake",
-      "to": "state",
-      "label": "Commit",
-      "variant": "emphasis"
-    },
-    {
-      "from": "state",
-      "to": "dispatcher",
-      "label": "Stream",
-      "variant": "emphasis"
-    },
-    {
-      "from": "dispatcher",
-      "to": "work",
-      "label": "Enqueue",
-      "variant": "emphasis"
-    },
-    {
-      "from": "work",
-      "to": "runtime",
-      "label": "SQS trigger",
-      "variant": "emphasis"
-    },
-    {
-      "from": "runtime",
-      "to": "outbox",
-      "label": "Result",
-      "variant": "emphasis"
-    },
-    {
-      "from": "outbox",
-      "to": "sender",
-      "label": "SQS trigger",
-      "variant": "emphasis"
-    },
-    {
-      "from": "sender",
-      "to": "reply",
-      "label": "Signed MIME",
-      "variant": "emphasis"
-    },
-    {
-      "from": "runtime",
-      "to": "openai",
-      "label": "Analyze / cleanup",
-      "variant": "default"
-    },
-    {
-      "from": "runtime",
-      "to": "data",
-      "label": "Read / write",
-      "variant": "default"
-    },
-    {
-      "from": "agentwork",
-      "to": "broker",
+      "from": "gate",
+      "to": "engine",
       "label": "Authorized",
-      "variant": "security"
+      "variant": "emphasis"
     },
     {
-      "from": "broker",
-      "to": "pr",
-      "label": "App token",
-      "variant": "security"
+      "from": "engine",
+      "to": "hosting",
+      "label": "Verified only",
+      "variant": "emphasis"
     },
     {
-      "from": "pr",
-      "to": "prchecks",
-      "label": "Validate",
-      "variant": "security"
+      "from": "hosting",
+      "to": "ops",
+      "label": "Audit / status",
+      "variant": "emphasis"
     },
     {
-      "from": "prchecks",
-      "to": "approval",
-      "label": "Review",
-      "variant": "security"
-    },
-    {
-      "from": "approval",
-      "to": "merge",
-      "label": "Approve head",
-      "variant": "security"
-    },
-    {
-      "from": "merge",
-      "to": "mainci",
-      "label": "Main push",
-      "variant": "security"
-    },
-    {
-      "from": "mainci",
-      "to": "deploy",
-      "label": "Website only",
-      "variant": "security"
-    }
-  ],
-  "cards": [
-    {
-      "dot": "cyan",
-      "title": "Read the map",
-      "items": [
-        "Project landing, signed-email foundation and Operator contribution workflow.",
-        "Local emulation, Mock, Adapter, Cloud-only and Planned are separate claims."
-      ]
-    },
-    {
-      "dot": "amber",
-      "title": "Operational limits",
-      "items": [
-        "Lifecycle/TTL deletion is asynchronous; no exact deletion deadline is claimed.",
-        "Budget notifications are not hard provider billing caps; real alerts and tagged coverage remain owner work."
-      ]
-    },
-    {
-      "dot": "slate",
-      "title": "Review boundary",
-      "items": [
-        "Customer website production, checkout, apps, MCP services and plugins are planned.",
-        "Local checks and prepared source do not establish a production release."
-      ]
+      "from": "ops",
+      "to": "gate",
+      "label": "Guardrails",
+      "variant": "emphasis"
     }
   ]
 }

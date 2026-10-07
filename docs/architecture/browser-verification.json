@@ -1,0 +1,40 @@
+{
+  "result": "PASS",
+  "macroStages": 5,
+  "technicalNodes": 44,
+  "automaticOtherDomainRequests": 0,
+  "checks": [
+    "HTML MIME and production CSP",
+    "initial overview only",
+    "all tabs/macros and 44 technical nodes",
+    "exclusive evidence and reset",
+    "keyboard, announcements and focus",
+    "boundary links and local highlighting",
+    "collapsed local setup",
+    "desktop/mobile",
+    "JavaScript-free access",
+    "main source links"
+  ],
+  "sourceRevision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+  "origin": "http://localhost:8080",
+  "viewports": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "javaScriptModes": [
+    true,
+    false
+  ],
+  "deploymentStatus": "local only",
+  "screenshots": [
+    "architecture-preview.png",
+    "architecture-mobile.png",
+    "architecture-hosting.png"
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Governance & Ops",
+    "output": ".local/architecture/progressive-20261006/ops.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/carlos-olivera/a2aviary.git",
+      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "provider": "github",
+      "link_mode": "web"
+    }
+  },
+  "components": [
+    {
+      "id": "ops-agent",
+      "type": "external",
+      "label": "Agent contribution",
+      "sublabel": "Authorized repository work",
+      "sources": [
+        {
+          "path": "AGENTS.md",
+          "line": 33,
+          "end_line": 37
+        }
+      ],
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "ops-broker",
+      "type": "security",
+      "label": "Operator broker",
+      "sublabel": "Fixed App token profiles",
+      "sources": [
+        {
+          "path": "services/src/operator.ts",
+          "line": 15,
+          "end_line": 19
+        }
+      ],
+      "pos": [
+        400,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Mock"
+    },
+    {
+      "id": "ops-pr",
+      "type": "backend",
+      "label": "PR and required checks",
+      "sublabel": "Read-only CI / trusted policy",
+      "sources": [
+        {
+          "path": "services/src/operator.ts",
+          "line": 39,
+          "end_line": 43
+        },
+        {
+          "path": ".github/workflows/release.yml",
+          "line": 9,
+          "end_line": 13
+        }
+      ],
+      "pos": [
+        760,
+        60
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "ops-approval",
+      "type": "security",
+      "label": "Owner approval",
+      "sublabel": "Carlos / exact current head",
+      "sources": [
+        {
+          "path": "services/src/policy.ts",
+          "line": 2,
+          "end_line": 6
+        },
+        {
+          "path": "AGENTS.md",
+          "line": 35,
+          "end_line": 39
+        }
+      ],
+      "pos": [
+        760,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "ops-main",
+      "type": "backend",
+      "label": "Approved merge / main CI",
+      "sublabel": "Main-only delivery authority",
+      "sources": [
+        {
+          "path": ".github/workflows/release.yml",
+          "line": 31,
+          "end_line": 35
+        },
+        {
+          "path": "AGENTS.md",
+          "line": 35,
+          "end_line": 39
+        }
+      ],
+      "pos": [
+        400,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "ops-release",
+      "type": "cloud",
+      "label": "Website release",
+      "sublabel": "Verify / snapshot restoration",
+      "sources": [
+        {
+          "path": "services/scripts/deploy-website.mjs",
+          "line": 23,
+          "end_line": 32
+        },
+        {
+          "path": "services/scripts/website-content-type.mjs",
+          "line": 3,
+          "end_line": 7
+        }
+      ],
+      "pos": [
+        40,
+        220
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Cloud-only"
+    },
+    {
+      "id": "ops-watchdog",
+      "type": "backend",
+      "label": "EventBridge reconciliation",
+      "sublabel": "Retries / provider cleanup",
+      "sources": [
+        {
+          "path": "services/src/watchdog.ts",
+          "line": 4,
+          "end_line": 8
+        },
+        {
+          "path": "infra/src/runtime.ts",
+          "line": 44,
+          "end_line": 48
+        }
+      ],
+      "pos": [
+        40,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    },
+    {
+      "id": "ops-controls",
+      "type": "security",
+      "label": "Budgets / alarms / retention",
+      "sublabel": "$1 task / $10 model / $15 AWS",
+      "sources": [
+        {
+          "path": "infra/src/controls.ts",
+          "line": 27,
+          "end_line": 31
+        },
+        {
+          "path": "infra/src/email.ts",
+          "line": 23,
+          "end_line": 27
+        },
+        {
+          "path": "infra/src/runtime.ts",
+          "line": 26,
+          "end_line": 30
+        }
+      ],
+      "pos": [
+        400,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    },
+    {
+      "id": "ops-admin",
+      "type": "security",
+      "label": "Testers and chat superadmin",
+      "sublabel": "Audited / staging-only reset",
+      "sources": [
+        {
+          "path": "apps/platform/src/store.ts",
+          "line": 27,
+          "end_line": 31
+        },
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 832,
+          "end_line": 836
+        }
+      ],
+      "pos": [
+        760,
+        380
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "ops-audit",
+      "type": "database",
+      "label": "Postgres audit / recovery",
+      "sublabel": "Atomic results / unknown outcomes",
+      "sources": [
+        {
+          "path": "apps/platform/src/sites.ts",
+          "line": 969,
+          "end_line": 973
+        },
+        {
+          "path": "apps/platform/src/store.ts",
+          "line": 332,
+          "end_line": 336
+        }
+      ],
+      "pos": [
+        760,
+        540
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Separate local tooling"
+    },
+    {
+      "id": "ops-support",
+      "type": "backend",
+      "label": "Isolated human support",
+      "sublabel": "7-day content / 30-day logs",
+      "sources": [
+        {
+          "path": "services/src/support.ts",
+          "line": 129,
+          "end_line": 133
+        },
+        {
+          "path": "services/src/feedback.ts",
+          "line": 4,
+          "end_line": 8
+        }
+      ],
+      "pos": [
+        400,
+        540
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Local emulation"
+    },
+    {
+      "id": "ops-future",
+      "type": "external",
+      "label": "Future customer products",
+      "sublabel": "Payments / apps / MCP / plugins",
+      "sources": [
+        {
+          "path": "docs/vision.md",
+          "line": 9,
+          "end_line": 13
+        }
+      ],
+      "pos": [
+        40,
+        540
+      ],
+      "size": [
+        240,
+        72
+      ],
+      "tag": "Planned"
+    }
+  ],
+  "connections": [
+    {
+      "from": "ops-agent",
+      "to": "ops-broker",
+      "label": "Authorized",
+      "variant": "emphasis"
+    },
+    {
+      "from": "ops-broker",
+      "to": "ops-pr",
+      "label": "App token",
+      "variant": "emphasis"
+    },
+    {
+      "from": "ops-pr",
+      "to": "ops-approval",
+      "label": "Review",
+      "variant": "emphasis"
+    },
+    {
+      "from": "ops-approval",
+      "to": "ops-main",
+      "label": "Approve head",
+      "variant": "emphasis"
+    },
+    {
+      "from": "ops-main",
+      "to": "ops-release",
+      "label": "Main push",
+      "variant": "emphasis"
+    },
+    {
+      "from": "ops-watchdog",
+      "to": "ops-controls",
+      "label": "Observe",
+      "variant": "emphasis"
+    },
+    {
+      "from": "ops-admin",
+      "to": "ops-audit",
+      "label": "Audit result",
+      "variant": "emphasis"
+    }
+  ]
+}

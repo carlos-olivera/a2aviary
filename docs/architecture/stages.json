@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+  "stages": [
+    {
+      "id": "client",
+      "title": "Client & Local Agent",
+      "summary": "Prepares the site specification, assets and preview for human approval.",
+      "diagram": "docs/architecture/diagrams/client.json",
+      "nodes": [
+        "client-agent",
+        "client-preview",
+        "client-approval",
+        "client-submit",
+        "client-signed",
+        "client-reply"
+      ]
+    },
+    {
+      "id": "gate",
+      "title": "Auth & Mandate Gate",
+      "summary": "Checks identity, ownership, permissions and action-specific approval.",
+      "diagram": "docs/architecture/diagrams/gate.json",
+      "nodes": [
+        "gate-auth",
+        "gate-mcp",
+        "gate-owner",
+        "gate-confirm",
+        "gate-policy",
+        "gate-build",
+        "gate-email",
+        "gate-admission"
+      ]
+    },
+    {
+      "id": "engine",
+      "title": "Validation & Build Engine",
+      "summary": "Validates approved inputs, generates catalog sites and verifies build artifacts.",
+      "diagram": "docs/architecture/diagrams/engine.json",
+      "nodes": [
+        "engine-validate",
+        "engine-jobs",
+        "engine-astro",
+        "engine-verify",
+        "engine-artifacts",
+        "engine-host",
+        "engine-receipt",
+        "engine-state",
+        "engine-analysis",
+        "engine-data"
+      ]
+    },
+    {
+      "id": "hosting",
+      "title": "Live Hosting & CMS",
+      "summary": "Deploys verified sites and supports bounded content editing.",
+      "diagram": "docs/architecture/diagrams/hosting.json",
+      "nodes": [
+        "hosting-customer",
+        "hosting-railway",
+        "hosting-caddy",
+        "hosting-cms",
+        "hosting-editor",
+        "hosting-domain",
+        "hosting-s3",
+        "hosting-cdn"
+      ]
+    },
+    {
+      "id": "ops",
+      "title": "Governance & Ops",
+      "summary": "Controls contributions, administration, budgets, retention and recovery.",
+      "diagram": "docs/architecture/diagrams/ops.json",
+      "nodes": [
+        "ops-agent",
+        "ops-broker",
+        "ops-pr",
+        "ops-approval",
+        "ops-main",
+        "ops-release",
+        "ops-watchdog",
+        "ops-controls",
+        "ops-admin",
+        "ops-audit",
+        "ops-support",
+        "ops-future"
+      ]
+    }
+  ]
+}
