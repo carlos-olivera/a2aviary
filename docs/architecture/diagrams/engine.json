@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/progressive-20261006-compact/engine.html",
+    "output": ".local/architecture/managed-20261007/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "revision": "902aaf1d5bcab88c735edd4e8ece6627d00faad1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -21,14 +21,14 @@
       "sublabel": "Pinned policy / byte hashes",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 158,
-          "end_line": 162
+          "path": "packages/generator/src/static.ts",
+          "line": 77,
+          "end_line": 81
         },
         {
-          "path": "packages/generator/src/render.ts",
-          "line": 49,
-          "end_line": 53
+          "path": "apps/platform/src/sites.ts",
+          "line": 164,
+          "end_line": 168
         }
       ],
       "pos": [
@@ -48,14 +48,14 @@
       "sublabel": "Owned queue / audit state",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 578,
-          "end_line": 582
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 1202,
+          "end_line": 1206
         },
         {
-          "path": "apps/platform/migrations/004-sites.sql",
-          "line": 18,
-          "end_line": 22
+          "path": "apps/platform/migrations/006-managed-static.sql",
+          "line": 56,
+          "end_line": 62
         }
       ],
       "pos": [
@@ -97,14 +97,14 @@
       "sublabel": "Build / a11y / visual checks",
       "sources": [
         {
-          "path": "packages/generator/src/verification.ts",
-          "line": 119,
-          "end_line": 123
+          "path": "packages/generator/src/static-verification.ts",
+          "line": 53,
+          "end_line": 60
         },
         {
-          "path": "packages/generator/src/verification.ts",
-          "line": 68,
-          "end_line": 72
+          "path": "packages/generator/src/static.ts",
+          "line": 139,
+          "end_line": 143
         }
       ],
       "pos": [
@@ -124,9 +124,9 @@
       "sublabel": "Private reports / output hashes",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 557,
-          "end_line": 561
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 393,
+          "end_line": 397
         },
         {
           "path": "packages/generator/src/storage.ts",
@@ -151,9 +151,14 @@
       "sublabel": "Next: hosting and CMS",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 659,
-          "end_line": 663
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 1360,
+          "end_line": 1364
+        },
+        {
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 1346,
+          "end_line": 1350
         }
       ],
       "pos": [
@@ -280,7 +285,7 @@
     {
       "from": "engine-jobs",
       "to": "engine-astro",
-      "label": "Generate",
+      "label": "Catalog build",
       "variant": "emphasis"
     },
     {
@@ -318,6 +323,12 @@
       "to": "engine-data",
       "label": "Save result",
       "variant": "emphasis"
+    },
+    {
+      "from": "engine-jobs",
+      "to": "engine-verify",
+      "label": "Prebuilt import",
+      "variant": "default"
     }
   ]
 }

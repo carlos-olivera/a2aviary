@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-07 — imported static management prepared and verified locally
+
+- Added imported-site ownership, verified-email administrator grants, private prepared bundles and immutable releases, scoped reports/CSV, durable verification/deployment/rollback jobs, drift checks and uncertain-outcome recovery. Exact registered target controls preserve protected catalog/tester boundaries; imported sites need no CMS resources and activation defaults off.
+- Added effective-dated owner-role billing eligibility and operation snapshots, idempotent provider usage collection, actual provider billing periods and explicit unavailable costs. Site administrator assignment does not change exemption; exempt sites retain cost records. No payments, visitor analytics or outbound messages were added.
+- Verified 20 generator tests, 64 platform tests (one existing cloud test skipped), 113 service tests, nine infrastructure tests, checks/builds, six SQL migrations and the non-root Node.js 22.23.3 platform container. A private static site's 58 files matched production; 73 real local browser checks passed across seven pages and four widths, with bounded explained rasterization noise and preserved existing contrast findings. A changed-background fixture failed verification.
+- Refreshed six source-backed architecture drawings, provenance and public browser screenshots. Automated diagram gates and production-CSP desktop/mobile/keyboard/native-fallback QA passed with 44 technical nodes and no automatic other-domain requests. Added [operations](docs/managed-static-sites.md), contracts, decision 011 and [release evidence](docs/release-verification.md#imported-static-sites--2026-10-07-verified-locally-rollout-pending).
+- The first import remains preservation-only; content-changing releases need a later approved change contract. Live owner/inventory checks, provider billing access, hosted end-to-end verification, a compatible pinned serving runtime, platform rollout/activation and production handoff remain separate gates. The current site, hosting, DNS and workspace were not changed.
+
 ## 2026-10-06 — five-stage architecture overview verified locally
 
 - Replaced the initial low-level map and global evidence grid with five connected macro-stages, matching accessible tabs and one selected technical panel. Switching resets evidence; Back restores the overview. Native collapsed stage disclosures preserve JavaScript-free access, and the AWS quickstart is collapsed by default.

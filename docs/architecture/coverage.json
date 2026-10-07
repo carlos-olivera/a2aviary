@@ -41,12 +41,12 @@
     "mode": "Separate local tooling"
   },
   "gate-owner": {
-    "note": "Ownership and live role permissions are rechecked before state changes and provider actions. Accounts cannot use normal site tools to access another owner\u2019s site.",
+    "note": "Verified platform roles and live imported-site email membership restrict requests and queued provider work. Site grants never confer global roles.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "gate-confirm": {
-    "note": "Build/deploy gates bind the spec and require exact confirmation strings. An OAuth grant or agent statement does not replace action approval.",
+    "note": "Catalog approval remains unchanged. Imported deployments require exact release confirmation, passing bound reports, no drift and independently enabled deployment/handoff flags.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -72,12 +72,12 @@
     "mode": "Local emulation"
   },
   "engine-validate": {
-    "note": "Validates structured site specs, original raster bytes and approval/preview digests. No OCR, research, image editing or free-text interpretation is part of catalog generation.",
+    "note": "Catalog specifications and assets follow their fixed policy. Imported-static bundles have bounded safe paths/canonical base64 and server-calculated hashes, with no uploaded build scripts.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-jobs": {
-    "note": "Persistent jobs and transactional audit/accounting survive interruptions. A worker claims queued jobs; uncertain provider outcomes require reconciliation rather than blind replay.",
+    "note": "Postgres persists catalog and imported verification/deploy/rollback/usage jobs, admission audits and eligibility snapshots. Unknown provider outcomes block replay.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -87,12 +87,12 @@
     "mode": "Separate local tooling"
   },
   "engine-verify": {
-    "note": "A secret-free hosted Agents sandbox runs the fixed build, accessibility, link and approved-preview checks. Local checks are separate from independent hosted-cloud evidence.",
+    "note": "Secret-free hosted Agents verification uses fixed trusted checkers. Imported prebuilt files bypass Astro generation and require baseline byte/visual/interaction parity. Cloud proof remains separate.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-artifacts": {
-    "note": "The controller stores verified output, reports and screenshots as private artifacts. Model text alone cannot authorize deployment.",
+    "note": "The existing private bucket retains prepared bytes, verification reports and screenshots. Source and assets of imported clients remain private.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -128,17 +128,17 @@
     "mode": "Cloud-only"
   },
   "hosting-railway": {
-    "note": "The provider adapter isolates each client project/environment, protects shared projects and checks resource identity/caps. Owner-reported deployment does not independently verify every provider control.",
+    "note": "Catalog sites use dedicated guarded projects. Imported-static sites preserve an exact owner-registered protected target; no workspace migration or CMS provision occurs.",
     "status": "Implemented",
     "mode": "Cloud-only"
   },
   "hosting-caddy": {
-    "note": "Caddy serves verified static artifacts and only approved CMS proxy routes. Customer hosting is distinct from the AWS project landing.",
+    "note": "Caddy serves catalog and imported static bytes. Imported serving configuration and runtime digest are pinned; original routes, headers and files must remain equivalent.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "hosting-cms": {
-    "note": "Only bound catalog/blog/announcement collections exist. Anonymous reads expose published content; editor writes are authenticated. CMS data persists across bounded site revisions.",
+    "note": "PocketBase belongs only to catalog sites. Imported sites with cmsMode:none create no CMS service, volume, credentials, backup configuration or routes.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -203,12 +203,12 @@
     "mode": "Local emulation"
   },
   "ops-admin": {
-    "note": "Tester jobs remain test-only in staging. Superadmin tools audit administration and guarded reset; no private credentials or cross-client authority enter the architecture page.",
+    "note": "Superadmin manages testers and imported-site email grants through chat/MCP. Site administrators are scoped to assigned sites and do not change platform roles.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "ops-audit": {
-    "note": "Administrative results and site actions persist in audit transactions. Interrupted/unknown deployments retain reservations and require explicit reconciliation.",
+    "note": "Durable audits and exact-ID reconciliation cover imported releases and recovery. Private reports retain effective owner-role eligibility and daily Railway costs/resource windows, including exempt sites; missing costs remain unavailable.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },

@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Governance & Ops",
-    "output": ".local/architecture/progressive-20261006/ops.html",
+    "output": ".local/architecture/managed-20261007/ops.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "revision": "902aaf1d5bcab88c735edd4e8ece6627d00faad1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -232,14 +232,14 @@
       "sublabel": "Audited / staging-only reset",
       "sources": [
         {
-          "path": "apps/platform/src/store.ts",
-          "line": 27,
-          "end_line": 31
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 444,
+          "end_line": 448
         },
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 832,
-          "end_line": 836
+          "path": "apps/platform/src/store.ts",
+          "line": 88,
+          "end_line": 92
         }
       ],
       "pos": [
@@ -255,18 +255,23 @@
     {
       "id": "ops-audit",
       "type": "database",
-      "label": "Postgres audit / recovery",
+      "label": "Site records and reports",
       "sublabel": "Atomic results / unknown outcomes",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 969,
-          "end_line": 973
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 852,
+          "end_line": 856
         },
         {
-          "path": "apps/platform/src/store.ts",
-          "line": 332,
-          "end_line": 336
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 1127,
+          "end_line": 1131
+        },
+        {
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 1613,
+          "end_line": 1617
         }
       ],
       "pos": [
