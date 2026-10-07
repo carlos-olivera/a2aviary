@@ -30,3 +30,5 @@ Sources: [Route 53](https://aws.amazon.com/route53/pricing/), [Secrets Manager](
 The launch research task reported 22,556 Agents input tokens and 1,177 output tokens, with one public-research call. The conservative application ledger charge was $0.015257 including search; this is not an invoice or measured monthly spend. A separate bounded Agents smoke turn reported 6,759 input and eight output tokens.
 
 AWS denied cost-allocation tag activation in this linked account. The management/payer account must activate `Project` before the project-tag AWS budget provides verified coverage. Failure and model-budget alarms also require the owner SNS email confirmation. Their configured state is not evidence that notifications have been received.
+
+Private [managed-site reports](managed-static-sites.md) retain accrued provider costs for exempt sites as well as billable-eligible sites. Missing billing evidence remains unavailable, shared overhead stays unallocated, and no live payment integration is enabled.

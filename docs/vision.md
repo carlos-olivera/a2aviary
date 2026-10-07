@@ -37,7 +37,7 @@ public website copy is unchanged by Phase 1.
 
 ## Initial scope
 
-A bounded case with Teco: brief, preview production, review, approval, and delivery. The specific website scope, materials, and acceptance criteria still need to be agreed.
+The owner approved [Teco as a managed imported static site](managed-static-sites.md): preserve its existing private Astro source and live Railway hosting, with scoped administration, release parity, traceability and cost reports. It requires no CMS. Local implementation is distinct from verified live onboarding and the separately authorized production handoff.
 
 The owner selected an MCP connector for the pilot; Phase 2 prepares its discovery
 service, without activating website production. The client agent must have real tools to call an implemented service; instructions and contracts do not replace those capabilities.

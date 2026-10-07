@@ -159,3 +159,5 @@ not live provider evidence. `RUN_TESTER_CLOUD_E2E=true`, together with
 staging tester lifecycle, CMS edit and reset smoke test. Supply credentials
 privately; evidence remains in excluded `.local/`. Review/merge, staging rollout,
 real Claude/ChatGPT use and live provider cleanup remain separate owner gates.
+
+The separate [managed static workflow](managed-static-sites.md) supports verified-email site administrators. Membership is scoped to a site and never changes platform role. Current owner admin/superadmin roles confer billing exemption; effective history is retained, independently of tester classification.

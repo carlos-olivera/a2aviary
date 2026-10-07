@@ -218,3 +218,5 @@ verification or deployment fails; a mocked-provider test is not cloud evidence.
 Review actual created resource IDs privately before cleaning up the fixture.
 Production activation, remote backup/restore proof, client domain DNS, owner PR
 review and expanded trusted-policy activation remain separate owner actions.
+
+Imported private static sites use the separate [managed-static workflow](managed-static-sites.md), without catalog conversion or CMS resources. Catalog submissions and changes retain their contracts.
