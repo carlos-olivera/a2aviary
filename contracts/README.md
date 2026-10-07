@@ -26,3 +26,5 @@ node services/dist/client.js private/partner.json private/request.json private/r
 The private key file contains `kid`, `privateKey` (an ES256 JWK), and `from` (the transport sender). The client supplies fresh identifiers/timestamps when absent. Submit the generated MIME through your own authenticated mail provider; sending is a separate operation. For status, use a request with `action: task.status`, the returned `taskId`, and `payload: {}`. Fictional offline examples live in [examples](examples/README.md).
 
 Limits, rejection reasons, replay retention, and recovery semantics are described in [operating foundation](../docs/operating-foundation.md) and [runbooks](../docs/runbooks.md).
+
+The [imported static site contract](managed-static/README.md) belongs to the authenticated platform MCP/HTTP workflow. It does not expand this signed-email mandate.

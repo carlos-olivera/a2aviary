@@ -14,6 +14,7 @@ import {
 } from './store.ts';
 import type { Plans } from './plans.ts';
 import type { Sites } from './sites.ts';
+import { STATIC_TOOLS, type ManagedSites } from './managed-sites.ts';
 import { SiteError } from '@a2aviary/generator';
 
 export function createServer(
@@ -21,12 +22,13 @@ export function createServer(
   store: Store,
   plans: Plans,
   sites?: Sites,
-  adminCallsAudited = false
+  adminCallsAudited = false,
+  managed?: ManagedSites
 ) {
   const server = new McpServer(
     {
-      name: sites ? 'a2aviary-platform' : 'a2aviary-discovery',
-      version: sites ? '0.2.0' : '0.1.0'
+      name: sites || managed ? 'a2aviary-platform' : 'a2aviary-discovery',
+      version: managed ? '0.3.0' : sites ? '0.2.0' : '0.1.0'
     },
     {
       capabilities: { tools: { listChanged: false } },
@@ -132,7 +134,9 @@ export function createServer(
     'Read active mandate and role-scoped tools. Site work requires exact approval and confirmation.',
     empty,
     () => ({
-      mandate: sites ? 'approved-catalog-sites' : 'discovery-only',
+      mandate: sites ? 'approved-catalog-sites' : managed ? 'managed-static-sites' : 'discovery-only',
+      managedStaticSites: Boolean(managed),
+      managedStaticDeployment: managed?.dependencies.deploymentEnabled ?? false,
       role: principal.role,
       testMode: principal.testMode,
       test: principal.testMode,
@@ -145,18 +149,17 @@ export function createServer(
       tools: Object.keys(TOOL_ROLES).filter(
         (name) =>
           TOOL_ROLES[name].includes(principal.role) &&
+          (managed || !STATIC_TOOLS.includes(name)) &&
+          (sites || managed || !['site.status','sites.list','site.inspect'].includes(name)) &&
           (sites ||
             ![
               'site.build',
-              'site.status',
               'site.deploy',
               'change.request',
-              'sites.list',
-              'site.inspect',
               'tester.reset'
             ].includes(name))
       ),
-      websiteProduction: Boolean(sites) && principal.role !== 'tester',
+      websiteProduction: Boolean(sites || managed?.dependencies.deploymentEnabled) && principal.role !== 'tester',
       payments: false,
       emailTransport: 'existing JWS v1; keys require separate owner enrollment'
     })
@@ -209,7 +212,7 @@ export function createServer(
       'site.status',
       'Read only your site, hashes, job results, CMS login URL and UTC change allowance.',
       z.object({ siteId: z.uuid() }).strict(),
-      (args) => sites.status(principal.id, args.siteId)
+      async (args) => managed && await managed.isImported(args.siteId) ? managed.status(principal.id,args.siteId) : sites.status(principal.id, args.siteId)
     );
     add(
       'site.deploy',
@@ -308,7 +311,7 @@ export function createServer(
       .strict(),
     (args) => store.logs(principal.id, args)
   );
-  if (sites) {
+  if (sites || managed) {
     add(
       'sites.list',
       'Superadmin only: list sites by test/live classification, owner or status; bounded cursor pagination.',
@@ -333,21 +336,36 @@ export function createServer(
           limit: z.number().int().min(1).max(100).default(25)
         })
         .strict(),
-      (args) => sites.list(principal.id, args)
+      (args) => managed ? managed.list(principal.id,args) : sites!.list(principal.id, args)
     );
     add(
       'site.inspect',
       'Superadmin only: inspect status, deployment, hashes and successful/reserved UTC monthly usage. No credentials or client copy.',
       z.object({ siteId: z.uuid() }).strict(),
-      (args) => sites.inspect(principal.id, args.siteId)
+      async (args) => managed && await managed.isImported(args.siteId) ? managed.status(principal.id,args.siteId) : sites ? sites.inspect(principal.id,args.siteId) : {error:'catalog_workflow_disabled'}
     );
-    add(
+    if (sites) add(
       'tester.reset',
       'Superadmin only: archive a test site and delete its isolated Railway project, PocketBase volume, bucket artifacts and site change history. Requires RESET <siteId>. Busy jobs must finish first; partial cleanup can be retried.',
       z.object({ siteId: z.uuid(), confirmation: z.string().max(42) }).strict(),
       (args) => sites.reset(principal.id, args.siteId, args.confirmation),
       false
     );
+  }
+  if (managed) {
+    if(!sites)add('site.status','Read an imported site you own or administer, releases, job results and billing eligibility.',z.object({siteId:z.uuid()}).strict(),args=>managed.status(principal.id,args.siteId));
+    const id=z.object({siteId:z.uuid()}).strict();
+    const release=z.object({siteId:z.uuid(),releaseId:z.uuid()}).strict();
+    const period=z.string().regex(/^[0-9]{4}-(?:0[1-9]|1[0-2])$/);
+    const hostname=z.string().max(253).regex(/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/);
+    add('site.import','Superadmin only: register an existing protected static site, with server-observed baseline, without changing hosting. Upload baseline bytes via POST /api/site-releases first. Explicit IMPORT_SITE:<slug>:<deploymentId>.',z.object({uploadId:z.uuid(),slug:z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),expectedOwnerEmail:z.email().max(254),ownerEmail:z.email().max(254).optional(),firstClientPilot:z.boolean().default(false),sourceCommit:z.string().regex(/^[a-f0-9]{40}$/),deploymentId:z.uuid(),target:z.object({workspaceId:z.uuid(),projectId:z.uuid(),environmentId:z.uuid(),serviceId:z.uuid(),domain:hostname,previewDomain:z.string().regex(/^[a-z0-9-]+\.up\.railway\.app$/)}).strict(),serving:z.object({caddyfile:z.string().min(1).max(16384),runtimeImage:z.string().max(160)}).strict(),confirmation:z.string().max(160)}).strict(),args=>managed.importUploaded(principal.id,args),false);
+    for(const op of ['assign','remove'] as const)add('site.admin.'+op,'Superadmin only: '+op+' one or many administrator emails on this site. No platform role or message.',z.object({siteId:z.uuid(),emails:z.array(z.email().max(254)).min(1).max(100)}).strict(),args=>managed.admins(principal.id,args.siteId,op,args.emails),false);
+    add('site.admin.list','Superadmin only: list assigned/pending/disabled site administrators.',id,args=>managed.admins(principal.id,args.siteId,'list'));
+    add('site.release.verify','Queue trusted isolated verification of a prepared static release; client reports never grant deployment.',release,args=>managed.verify(principal.id,args.siteId,args.releaseId),false);
+    for(const op of ['deploy','rollback'] as const)add('site.release.'+op,'Operate only your assigned site. '+(op==='deploy'?'Requires DEPLOY_RELEASE:<siteId>:<releaseId>; first handoff requires superadmin and HANDOFF_SITE:<siteId>:<releaseId>.':'Requires ROLLBACK_SITE:<siteId>:<releaseId> and a retained previous release.'),release.extend({confirmation:z.string().max(120)}).strict(),args=>managed.deploy(principal.id,args.siteId,args.releaseId,args.confirmation,op==='rollback'),false);
+    add('site.release.reconcile','Superadmin only: reconcile an unknown provider outcome against exact deployment IDs and retained live bytes. RECONCILE_SITE:<siteId>:<releaseId>.',release.extend({confirmation:z.string().max(120)}).strict(),args=>managed.reconcile(principal.id,args.siteId,args.releaseId,args.confirmation),false);
+    add('site.report','Private UTC-month operations, eligibility history, provider-accrued costs and CSV link. Unavailable amounts remain null.',id.extend({period}).strict(),args=>managed.report(principal.id,args.siteId,args.period));
+    add('site.costs.refresh','Queue an idempotent provider cost/resource-usage snapshot without altering provider limits.',id.extend({period:period.optional()}).strict(),args=>managed.refresh(principal.id,args.siteId,args.period),false);
   }
   add(
     'agent_keys.register',

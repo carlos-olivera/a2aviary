@@ -60,6 +60,7 @@ type SiteRow = {
   policy_version: string;
   test_mode: boolean;
   lifecycle: string;
+  kind: string;
 };
 export class Sites {
   readonly store: Store;
@@ -112,6 +113,7 @@ export class Sites {
       )
     ).rows[0];
     if (!site) throw new SiteError('owned_site_required');
+    if ((site as SiteRow & {kind?:string}).kind === 'imported-static') throw new SiteError('catalog_site_required');
     if (site.lifecycle !== 'active')
       throw new SiteError('site_' + site.lifecycle);
     const tester = Boolean(
@@ -193,6 +195,7 @@ export class Sites {
             )
           ).rows[0];
         }
+        if (site.kind !== 'catalog') throw new SiteError('catalog_site_required');
         if (site.lifecycle !== 'active')
           throw new SiteError('site_' + site.lifecycle);
         if (site.test_mode !== p.testMode)
@@ -229,7 +232,7 @@ export class Sites {
           specId,
           state: 'staged',
           test: site.test_mode,
-          free: site.test_mode
+          free: site.test_mode || ['admin','superadmin'].includes((await this.store.currentPrincipal(c,site.owner_id)).role)
         };
       });
     } catch (error) {
@@ -446,7 +449,7 @@ export class Sites {
         return {
           siteId,
           test: site.test_mode,
-          free: site.test_mode,
+          free: site.test_mode || ['admin','superadmin'].includes((await this.store.currentPrincipal(c,site.owner_id)).role),
           currentSpecId: site.current_spec_id,
           policyVersion: site.policy_version,
           siteUrl: site.resources.domain
@@ -812,7 +815,7 @@ export class Sites {
         siteId,
         ownerId: site.owner_id,
         test: site.test_mode,
-        free: site.test_mode,
+        free: site.test_mode || ['admin','superadmin'].includes((await this.store.currentPrincipal(c,site.owner_id)).role),
         lifecycle: site.lifecycle,
         status:
           site.lifecycle === 'active'

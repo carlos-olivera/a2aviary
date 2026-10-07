@@ -10,7 +10,7 @@ import {createHttpServer} from '../src/http.ts';
 export const env = {PLATFORM_ORIGIN: 'http://localhost:3000', DATABASE_URL: 'postgresql://platform:local-development-only@localhost:55432/a2aviary_platform',
   BETTER_AUTH_SECRET: 'fictional-test-secret-never-use-in-production', GOOGLE_CLIENT_ID: 'fictional-client', GOOGLE_CLIENT_SECRET: 'fictional-secret',
   PLATFORM_SUPERADMIN_EMAIL: 'owner@example.invalid', PLATFORM_TESTER_EMAILS: 'tester@example.invalid'};
-export async function fixture(siteDependencies) {
+export async function fixture(siteDependencies, managedDependencies) {
   const url = new URL(process.env.TEST_DATABASE_URL ?? env.DATABASE_URL);
   if (!['localhost', '127.0.0.1', '[::1]'].includes(url.hostname) || !url.pathname.startsWith('/a2aviary_platform')) throw new Error('Integration tests require a dedicated loopback a2aviary_platform database');
   const schema = `test_${randomUUID().replaceAll('-', '')}`;
@@ -24,7 +24,7 @@ export async function fixture(siteDependencies) {
   const reservation = createServer(); await new Promise(resolve => reservation.listen(0, '127.0.0.1', resolve));
   const port = reservation.address().port; await new Promise(resolve => reservation.close(resolve));
   const config = readConfig({...env, PLATFORM_ORIGIN: `http://127.0.0.1:${port}`, PORT: String(port), DATABASE_URL: url.toString()});
-  app = await createApp(config, pool,siteDependencies);
+  app = await createApp(config, pool,siteDependencies, managedDependencies);
   const http = createHttpServer(config, app); await new Promise(resolve => http.listen(port, '127.0.0.1', resolve));
   const context = await app.auth.$context;
   const request = (path, init = {}) => app.fetch(new Request(config.origin + path, {...init, headers: new Headers({'x-platform-client-ip': '127.0.0.1', ...Object.fromEntries(new Headers(init.headers ?? {}))})}));

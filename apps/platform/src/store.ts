@@ -34,7 +34,17 @@ export const TOOL_ROLES: Record<string, readonly Role[]> = {
   'site.build': ALL_ROLES,
   'site.status': ALL_ROLES,
   'site.deploy': ALL_ROLES,
-  'change.request': ALL_ROLES
+  'change.request': ALL_ROLES,
+  'site.import': ['superadmin'],
+  'site.admin.assign': ['superadmin'],
+  'site.admin.remove': ['superadmin'],
+  'site.admin.list': ['superadmin'],
+  'site.release.verify': ['superadmin','admin','client'],
+  'site.release.deploy': ['superadmin','admin','client'],
+  'site.release.rollback': ['superadmin','admin','client'],
+  'site.report': ['superadmin','admin','client'],
+  'site.costs.refresh': ['superadmin','admin','client'],
+  'site.release.reconcile': ['superadmin'],
 };
 export function isAdminTool(tool: string) {
   return TOOL_ROLES[tool]?.length === 1 && TOOL_ROLES[tool][0] === 'superadmin';
@@ -326,6 +336,16 @@ export class Store {
     });
   }
   principal(id: string) {return this.transaction(c => this.resolve(c, id));}
+  // Read current verified identity/role without consuming invitations or taking
+  // an actor lock. Worker site leases must not deadlock membership revocation.
+  async currentPrincipal(c: PoolClient, id: string): Promise<Principal> {
+    const u=(await c.query('SELECT u.email,u."emailVerified",r.role FROM "user" u LEFT JOIN platform_role r ON r.user_id=u.id WHERE u.id=$1',[id])).rows[0];
+    if(!u?.emailVerified)throw new AccessError('verified_user_required');
+    const email=String(u.email).toLowerCase();
+    const tester=Boolean((await c.query('SELECT 1 FROM platform_tester WHERE email=$1 AND enabled',[email])).rowCount);
+    const role:Role=email===this.config.superadminEmail?'superadmin':tester?'tester':u.role==='admin'?'admin':'client';
+    return {id,role,testMode:role==='tester'};
+  }
   private action<T>(id: string, tool: string, fn: (c: PoolClient, p: Principal) => Promise<T>) {
     return this.transaction(async c => {const p = await this.resolve(c, id); requireRole(p, tool); return fn(c, p);});
   }

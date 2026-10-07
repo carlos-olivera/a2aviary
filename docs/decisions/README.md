@@ -31,7 +31,7 @@ The client agent acts as the interface, materials are prepared on the client's s
 
 ## Open questions
 
-- Teco scope, budget, materials, and acceptance criteria.
+- Teco live platform readiness and separately authorized production handoff (preservation scope is accepted in decision 011).
 - A2A standard and minimum client agent capabilities.
 - Identity provider and legal scope of the mandate, KYC, and signatures.
 - Ownership and permissions for client deliverables.
@@ -62,3 +62,5 @@ These decisions were accepted in the initial-release implementation plan. Accept
 - [009 — Catalog generation and isolated client hosting](009-catalog-generation-and-client-hosting.md) — accepted Phase 3 direction; local and cloud evidence remain distinct.
 
 - [010 — Testers and chat-only superadmin](010-testers-and-chat-superadmin.md) — accepted Phase 4 direction; free staging-only testers, audited reset and owner-only chat administration.
+
+- [011 — Imported static managed sites](011-imported-static-managed-sites.md) — accepted preservation plan, scoped verified-email administrators and effective owner-role eligibility; activation and handoff remain separate gates.
