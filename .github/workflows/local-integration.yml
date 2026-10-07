@@ -1,0 +1,61 @@
+name: Checks and website delivery
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm ci
+        working-directory: website
+      - run: npm run check && npm run build
+        working-directory: website
+      - run: npm ci && npm run check && npm run build && npm test
+        working-directory: services
+      - run: npm ci && npm run build && npm test
+        working-directory: infra
+        env:
+          A2AVIARY_CONFIG: config.example.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: website-${{ github.sha }}
+          path: website/dist
+          retention-days: 7
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: checks
+    runs-on: ubuntu-latest
+    concurrency:
+      group: a2aviary-production-website
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+        working-directory: services
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
+        with:
+          name: website-${{ github.sha }}
+          path: website/dist
+      - uses: aws-actions/configure-aws-credentials@cabfdba3510de1431bac9dba27511d97497fc100
+        with:
+          role-to-assume: ${{ vars.WEBSITE_DEPLOYMENT_ROLE }}
+          aws-region: us-east-1
+      - run: node services/scripts/deploy-website.mjs
+        env:
+          WEBSITE_BUCKET: ${{ vars.WEBSITE_BUCKET }}
+          RELEASE_BUCKET: ${{ vars.RELEASE_BUCKET }}
+          DISTRIBUTION_ID: ${{ vars.DISTRIBUTION_ID }}
+          DEPLOY_COMMIT: ${{ github.sha }}
