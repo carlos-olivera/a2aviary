@@ -1,6 +1,69 @@
 # Initial release verification
 
-Latest evidence: 2026-10-06 five-stage architecture/local checks and owner-reported customer-site pilot deployment; earlier local checks and dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+Latest evidence: 2026-10-07 imported-static implementation, private preservation checks and architecture verification; earlier local checks and dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+
+## Imported static sites — 2026-10-07, verified locally; rollout pending
+
+- **Configured source:** imported static sites have separate immutable releases,
+  private target bindings and bounded authenticated uploads. Owner-only imports
+  and email grants use verified identity; scoped access is rechecked before queued
+  provider work. Verify/deploy/rollback jobs have audit admission, target protection,
+  predecessor retention, drift detection, recovery and uncertain-outcome reconciliation.
+  Imported sites require no CMS resources. Import, deployment and first handoff
+  have separate default-off activation controls.
+- **Billing and reports:** current owner roles determine eligibility; assigning a
+  site administrator does not grant exemption. Effective-dated history and operation
+  snapshots preserve earlier eligibility. Private period reports/CSV include operations,
+  provider resource windows and billing periods, idempotent daily costs and explicit
+  unavailable values. Verification/storage evidence and shared overhead are separate;
+  no charges, guessed allocations, tracking or outbound reports were introduced.
+- **Local checks:** Node.js 22.22.3 generator check/build and 20 tests, platform
+  check/build and 64 passing tests (one existing credential-dependent cloud test
+  skipped), service check/build and 113 tests, infrastructure build and nine tests,
+  website checks/build, documentation links and whitespace passed. SQL fixtures
+  applied all six migrations. Test doubles cover revocation, concurrent jobs,
+  tampering, authorization, eligibility history, unavailable costs, failed verification,
+  drift, uncertain outcomes and recovery; they do not establish cloud operation.
+- **Actual private preservation evidence:** read-only HTTPS capture confirmed all
+  58 built files against production, actual unknown-route 404 behavior, preview
+  `noindex` and observed serving headers/routes. The local trusted checker passed
+  73 checks across seven pages at 360, 375, 768 and 1440 px, including navigation,
+  Escape/focus, FAQ states, reduced motion, links and accessibility regression.
+  Existing contrast findings were identical and preserved. Four initial screenshot
+  comparisons contained 66 raw edge pixels with a maximum two-level channel delta;
+  the documented bounded Chromium rasterization classification applied only after
+  whole-bundle byte equality. Unexplained pixel differences were zero. A fictional
+  changed-background bundle failed the real checker. Production screenshots,
+  source, bindings and full reports remain private. Public `www` availability
+  remains unverified; its configured behavior is retained.
+- **Preservation-only v1:** releases must reproduce the complete imported baseline
+  bytes. Source-only changes producing those bytes and retained-release rollback
+  are supported. Content-changing releases need a separately approved preview and
+  change contract; this delivery does not claim that capability.
+- **Actual container and architecture checks:** the final platform image built and
+  ran on Node.js 22.23.3 as UID 1000, with six migrations, readiness/login/discovery,
+  pinned Railway CLI 5.63.4 and both site workflows disabled by default. Six Archify
+  drawings were regenerated from the committed implementation; validator, delivery
+  and browser gates passed. Production-CSP architecture browser QA covered all five
+  stages and 44 technical nodes, desktop/mobile, keyboard/focus, native fallback,
+  source links and zero automatic other-domain requests. Public screenshots and
+  [browser evidence](architecture/browser-verification.json) were refreshed.
+- **Remaining gates:** independently verify the configured owner against verified
+  Google sign-in and inspect live client inventory before registering a first real
+  pilot. Verify provider billing access: the local pinned CLI was unauthenticated,
+  so billing costs were not independently retrieved. Run the real hosted Agents →
+  private bucket → exact protected target fixture. Pin and verify a compatible
+  Caddy runtime and container delivery configuration before any handoff. Platform
+  migration rollout and activation require separate authorization, as does the first
+  production handoff and disabling the old push-triggered deployment path. Existing
+  owner-reported pilot deployment status below remains distinct from these gates.
+
+No hosting mutations, CMS resources, DNS changes, workspace transfer, production
+switch, platform rollout or payment integration were performed. The private Astro
+site and existing Railway service remain intact. See
+[managed static operations](managed-static-sites.md),
+[contract](../contracts/managed-static/README.md) and
+[decision 011](decisions/011-imported-static-managed-sites.md).
 
 ## Customer-site pilot — 2026-10-06, owner-reported deployment
 

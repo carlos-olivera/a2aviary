@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Live Hosting & CMS",
-    "output": ".local/architecture/progressive-20261006/hosting.html",
+    "output": ".local/architecture/managed-20261007/hosting.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "revision": "902aaf1d5bcab88c735edd4e8ece6627d00faad1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -44,13 +44,18 @@
     {
       "id": "hosting-railway",
       "type": "cloud",
-      "label": "Isolated Railway project",
-      "sublabel": "Protected targets / resource caps",
+      "label": "Railway site target",
+      "sublabel": "Catalog isolated / import exact",
       "sources": [
         {
+          "path": "packages/generator/src/static-railway.ts",
+          "line": 200,
+          "end_line": 204
+        },
+        {
           "path": "packages/generator/src/deploy.ts",
-          "line": 148,
-          "end_line": 152
+          "line": 65,
+          "end_line": 69
         }
       ],
       "pos": [
@@ -70,14 +75,14 @@
       "sublabel": "Verified static artifacts",
       "sources": [
         {
-          "path": "packages/generator/src/deploy.ts",
-          "line": 521,
-          "end_line": 525
+          "path": "packages/generator/src/static-railway.ts",
+          "line": 397,
+          "end_line": 402
         },
         {
           "path": "packages/generator/src/deploy.ts",
-          "line": 293,
-          "end_line": 297
+          "line": 503,
+          "end_line": 507
         }
       ],
       "pos": [
@@ -93,7 +98,7 @@
     {
       "id": "hosting-cms",
       "type": "database",
-      "label": "PocketBase CMS",
+      "label": "Catalog PocketBase CMS",
       "sublabel": "Private service / published reads",
       "sources": [
         {
@@ -140,6 +145,11 @@
       "label": "Domain / TLS status",
       "sublabel": "Provider readiness / owner DNS",
       "sources": [
+        {
+          "path": "packages/generator/src/static-railway.ts",
+          "line": 294,
+          "end_line": 298
+        },
         {
           "path": "packages/generator/src/deploy.ts",
           "line": 490,
@@ -217,7 +227,7 @@
     {
       "from": "hosting-caddy",
       "to": "hosting-cms",
-      "label": "Private proxy",
+      "label": "Catalog proxy",
       "variant": "emphasis"
     },
     {

@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Client & Local Agent",
-    "output": ".local/architecture/progressive-20261006/client.html",
+    "output": ".local/architecture/managed-20261007/client.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "revision": "902aaf1d5bcab88c735edd4e8ece6627d00faad1",
       "provider": "github",
       "link_mode": "web"
     }

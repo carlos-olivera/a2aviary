@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Auth & Mandate Gate",
-    "output": ".local/architecture/progressive-20261006/gate.html",
+    "output": ".local/architecture/managed-20261007/gate.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "b37f841903ee3d8a28a8e49e92aa8809fa79e388",
+      "revision": "902aaf1d5bcab88c735edd4e8ece6627d00faad1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -44,13 +44,13 @@
       "sources": [
         {
           "path": "apps/platform/src/app.ts",
-          "line": 44,
-          "end_line": 48
+          "line": 48,
+          "end_line": 52
         },
         {
           "path": "apps/platform/src/tools.ts",
-          "line": 19,
-          "end_line": 23
+          "line": 20,
+          "end_line": 24
         }
       ],
       "pos": [
@@ -70,14 +70,14 @@
       "sublabel": "Live principal checks",
       "sources": [
         {
-          "path": "apps/platform/src/tools.ts",
-          "line": 64,
-          "end_line": 68
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 99,
+          "end_line": 103
         },
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 103,
-          "end_line": 107
+          "path": "apps/platform/src/store.ts",
+          "line": 341,
+          "end_line": 345
         }
       ],
       "pos": [
@@ -97,14 +97,14 @@
       "sublabel": "Exact action / spec binding",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 350,
-          "end_line": 354
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 290,
+          "end_line": 301
         },
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 273,
-          "end_line": 277
+          "path": "apps/platform/src/managed-sites.ts",
+          "line": 620,
+          "end_line": 635
         }
       ],
       "pos": [
