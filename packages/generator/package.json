@@ -18,7 +18,8 @@
     "build": "tsc --emitDeclarationOnly && node scripts/build.mjs",
     "test": "node --test test/*.test.mjs",
     "fixture": "node scripts/fixture.mjs",
-    "test:cms": "node scripts/test-cms.mjs"
+    "test:cms": "node scripts/test-cms.mjs",
+    "test:cms:volume": "node --test scripts/test-cms-volume.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1146.0",

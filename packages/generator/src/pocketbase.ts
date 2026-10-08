@@ -45,15 +45,16 @@ ARG TARGETARCH
 RUN apk add --no-cache curl unzip ca-certificates
 RUN case "$TARGETARCH" in amd64) checksum='${POCKETBASE_ZIP_SHA256}' ;; arm64) checksum='${POCKETBASE_ARM64_ZIP_SHA256}' ;; *) exit 1 ;; esac && curl --fail --location --silent --show-error "https://github.com/pocketbase/pocketbase/releases/download/v${POCKETBASE_VERSION}/pocketbase_${POCKETBASE_VERSION}_linux_$TARGETARCH.zip" -o /tmp/pb.zip && echo "$checksum  /tmp/pb.zip" | sha256sum -c - && unzip /tmp/pb.zip -d /pb
 FROM alpine:3.23.4
-RUN apk add --no-cache ca-certificates && adduser -D -u 1000 pocketbase
+RUN apk add --no-cache ca-certificates su-exec && adduser -D -u 1000 pocketbase
 COPY --from=download /pb /pb
 COPY pb_migrations /pb/pb_migrations
 COPY pb_hooks /pb/pb_hooks
 COPY pb_public /pb/pb_public
-RUN mkdir -p /pb/pb_data && chown -R pocketbase:pocketbase /pb
-USER pocketbase
+RUN mkdir -p /pb/pb_data
+USER root
 EXPOSE 8090
 WORKDIR /pb
+ENTRYPOINT ["sh","-ec","chown 1000:1000 /pb/pb_data && exec su-exec 1000:1000 \\"$@\\"","pocketbase-entrypoint"]
 CMD ["/pb/pocketbase","serve","--http=[::]:8090","--dir=/pb/pb_data","--encryptionEnv=PB_ENCRYPTION_KEY"]
 `;
 export function cmsEditorHtml(): string {

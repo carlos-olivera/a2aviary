@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { siteRuntime } from '@a2aviary/generator';
 import { fixture } from './helpers.mjs';
+import { cleanupFixture } from './cloud-fixture-cleanup.mjs';
 import { fixtureSubmission } from '../../../packages/generator/scripts/fixture-lib.mjs';
 test(
   'live fixture: approved spec → bucket → Astro/Agents sandbox checks → isolated Railway site/CMS; opt-in tester reset',
@@ -23,17 +24,35 @@ test(
     assert.ok(runtime);
     const f = await fixture(runtime);
     const testerMode = process.env.RUN_TESTER_CLOUD_E2E === 'true';
-    let saved,
+    let owner,
+      saved,
       verified = false,
       resetVerified = false,
       deploymentEvidence;
     t.after(async () => {
       try {
         if (saved) {
+          let evidenceReadFailed = false;
           const rows = await f.pool.query(
             'SELECT s.resources,p.state,p.spec_sha256,p.source_sha256,p.output_sha256 FROM platform_site s JOIN platform_site_spec p ON p.site_id=s.id WHERE s.id=$1 AND p.id=$2',
             [saved.siteId, saved.specId]
+          ).catch(() => { evidenceReadFailed = true; return { rows: [] }; });
+          const cleanup = await cleanupFixture({
+            enabled: testerMode, saved, owner, sites: f.app.sites, resetVerified
+          });
+          resetVerified = cleanup.resetVerified;
+          const remaining = await f.pool.query(
+            'SELECT lifecycle,resources FROM platform_site WHERE id=$1', [saved.siteId]
           );
+          const retained = await f.pool.query(
+            'SELECT id FROM platform_site_spec WHERE site_id=$1', [saved.siteId]
+          );
+          const leftovers = {
+            resources: remaining.rows[0]?.resources ?? {},
+            specPrefixes: retained.rows.map(row => 'specs/' + row.id + '/')
+          };
+          if (cleanup.attempted)
+            console.log(JSON.stringify({ event: 'site.fixture.cleanup', siteId: saved.siteId, ...cleanup, leftovers }));
           const dir = new URL('../../../.local/', import.meta.url);
           await mkdir(dir, { recursive: true });
           await writeFile(
@@ -46,6 +65,9 @@ test(
                 deploymentEvidence,
                 test: testerMode,
                 resetVerified,
+                cleanup,
+                evidenceReadFailed,
+                leftovers,
                 cloudGatePassed: verified,
                 createdAt: new Date().toISOString()
               },
@@ -54,12 +76,13 @@ test(
             ) + '\n',
             { mode: 0o600 }
           );
+          if (verified && testerMode) assert.equal(resetVerified, true, 'Tester cleanup must complete');
         }
       } finally {
         await f.close();
       }
     });
-    const owner = await f.user('owner@example.invalid');
+    owner = await f.user('owner@example.invalid');
     const user = await f.user('fixture-owner@example.invalid');
     if (testerMode)
       await f.app.store.tester(owner.id, 'testers.add', user.email);

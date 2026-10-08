@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-08 — PocketBase runtime volume ownership verified locally
+
+- Start the pinned CMS image as root, change ownership only of `/pb/pb_data` to UID/GID 1000, then exec PocketBase through `su-exec` as that user. PocketBase/Alpine pins, download checksums and serve flags are unchanged; no runtime UID variable is added.
+- Add an explicit Docker bind-mount regression test: an empty root-owned directory reproduces SQLite error 14 with the previous image, while the new image passes health with PID 1 at UID/GID 1000 and the binary still root-owned. Attempt tester reset in the cloud fixture teardown after a failed stage, preserving the original failure and recording cleanup errors and leftover resources privately.
+- Node.js 22.23.3 generator check/build and 40 tests passed; platform check (including contracts) and 61 tests passed, with one opt-in hosted fixture skipped. Both bind-mount cases passed. Hosted verification and owner review remain separate gates; no production rollout or activation is implied.
+
 ## 2026-10-08 — hosted verifier publication ordering verified locally
 
 - Create the credential-free, tool-free verifier session without initial input; wait for connected setup and required live output files before submitting the original acknowledgement. Collect only its completed turn's artifacts and retain existing report/hash checks and size limits.
