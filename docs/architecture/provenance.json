@@ -2,14 +2,14 @@
   "schemaVersion": 2,
   "generator": "Archify",
   "version": "3.0.1",
-  "sourceRevision": "b809d521889f4b3a00dc474bbddbf8d3f12aedd1",
-  "manifestSha256": "ae477da23a94f4216fd2598896a49684d58f32ae55ab15ed629d6194acdc1870",
+  "sourceRevision": "1172078f951fde717833f4f6028e5d0b24b5a458",
+  "manifestSha256": "744bbd8ad8dda4dd507343527c93535e275ab292e1c4bc6eb5cc946b51a8557b",
   "coverageSha256": "dee5270bf17094efd1186858659339b9d44cd2c260d7c6faf4a7d5392f90fdc7",
   "diagrams": {
     "overview": {
       "candidatePath": "docs/architecture/map.json",
-      "candidateSha256": "efffdccc1d52dfe2bb9ba6f3e589ccdc338b732d223ef12a093f84eaf8a59519",
-      "rawArtifactSha256": "d825cc78fca48e07ee7a285e3a680ae7fb9b0100be2479a420cee14b8e775ea3",
+      "candidateSha256": "b1d05237a541efa2967c6df966768f3c46d572880c022eaeb94af3c018d949f2",
+      "rawArtifactSha256": "43f92d8347dc9af3a45c67dfb6f40754df9b2303755f12ef7e7e179751e5504d",
       "generatedDrawingSha256": "9169d487381c830729a530fb1ad0c95ec9a3479fca5ed5e8ca6587d9ea74b860",
       "gates": {
         "validate": "pass",
@@ -20,8 +20,8 @@
     },
     "client": {
       "candidatePath": "docs/architecture/diagrams/client.json",
-      "candidateSha256": "1d260fb77d1d801d4e64a0f63525d3a357475dc45922cb1a00d9b4ed5bd75f50",
-      "rawArtifactSha256": "7c21f0e3e515658b0ae7d873abbfd0cda16ce29ad973674faccdef3213cd4ca6",
+      "candidateSha256": "bf52d85426a4aab4846dc17450cfb74bd47b404fc57e0b8c949944880f986bd1",
+      "rawArtifactSha256": "d965aac8f3803b8511e05a22a46f220a1d4996d81d5933e157f61fd0e1a64a4a",
       "generatedDrawingSha256": "45d4290ff179cc89293945cb850f73af6ff9babad8ed4b0425cef3dab7c494cf",
       "gates": {
         "validate": "pass",
@@ -32,8 +32,8 @@
     },
     "gate": {
       "candidatePath": "docs/architecture/diagrams/gate.json",
-      "candidateSha256": "184b41259022dfb1482a22147d268e044d0cedd1a90607a73a9474f6143ec40d",
-      "rawArtifactSha256": "54ecc5494e0386384551955f2f5c2739f135a0352839f7e58782aa5893d69c71",
+      "candidateSha256": "ace95d6cd73fcd584fdd48fd38db853db15dc994315235d8e3b4a9be746cf5a6",
+      "rawArtifactSha256": "19871ec9dbc9d68a0ebbff736bce06ee6b018bca94caba7b85b82519e90445ea",
       "generatedDrawingSha256": "944eafd01e7bb7ed5863d6b5c5be20375463ffe40573e6785cac3869657df791",
       "gates": {
         "validate": "pass",
@@ -44,8 +44,8 @@
     },
     "engine": {
       "candidatePath": "docs/architecture/diagrams/engine.json",
-      "candidateSha256": "8888bc4cedf06e99c0bb15c564b591022fa5241fa0890414cb351f3cfe646314",
-      "rawArtifactSha256": "4431ffd3bc4d07e3fc0658068613a473fce814cce5a5062297aa12b498e4a3fc",
+      "candidateSha256": "490429edb0d28e25ace4f5b9373b6ac73b73c1c40926158fc68cc04de9ebe5af",
+      "rawArtifactSha256": "8198966bc2aa9e745cc300850ebcbd0f25992e0609ce662da9d844b7ba952bca",
       "generatedDrawingSha256": "1cd57429a4fccdbfd713bdafd976e480e7fc93e99817701538a75b575446c190",
       "gates": {
         "validate": "pass",
@@ -56,8 +56,8 @@
     },
     "hosting": {
       "candidatePath": "docs/architecture/diagrams/hosting.json",
-      "candidateSha256": "073dc177c39f5a3d406578003c5a5c144504316a1e3d0c9c16e16f51f14f4655",
-      "rawArtifactSha256": "fe7a5fc168b11c028e74a583671219338a3f5b60e560f74fe3b007fe137bff63",
+      "candidateSha256": "082f0df88d81868ba7f02d62ba51a3533168ad97c537a40b009ec10256675fc5",
+      "rawArtifactSha256": "f761f4481e9d42ecd9454c7a278b6fb880712165c66ce43a6d229fb2b5eb8a42",
       "generatedDrawingSha256": "821e9bcd3a7b30622e0514451907502fd1d42fc90eab47883e005a0eee311b51",
       "gates": {
         "validate": "pass",
@@ -68,8 +68,8 @@
     },
     "ops": {
       "candidatePath": "docs/architecture/diagrams/ops.json",
-      "candidateSha256": "6fb10d96ab19f15ab58a4ab4e9a4a881b13e950b78f6f9cfd7f59071d6e85f97",
-      "rawArtifactSha256": "5b6a6e6e65d63f5bc22a23e20e14a12c254a98e3a6045634b7e6f8fe01c2842f",
+      "candidateSha256": "a06dcbbeff3b596cd25ddf1f4630e5564fd5072b749a340b7025ae5bf94a31a7",
+      "rawArtifactSha256": "8b2f33c236753decfd751ce6360d9f7f2cf745aaf5ab050ab90bcbbbcae6ea25",
       "generatedDrawingSha256": "94b08e2f7acc7f24ed24c1e0f134adf580ad90dbe8a2ff7a14df5b9e5cc6536a",
       "gates": {
         "validate": "pass",
@@ -79,7 +79,7 @@
       }
     }
   },
-  "integratedPageSha256": "1c8885d55664e5f3091d1a23cb91ae0a34d10a24364b15304f574f4df73872dc",
+  "integratedPageSha256": "b557a513c4eab2662ee249920e7c9fe7438695297af22c9efdd6aa0350bae572",
   "assetSha256": {
     "architecture.css": "1ebd910731acf8fd4ed0a110d4086b1722fad07c82b7e815cd8832d528f8ddb4",
     "architecture.js": "f97addd4fdf06856b907aa6b459fc10f90be698a223f14a5e912731c1cb58a2c"
@@ -133,6 +133,7 @@
     "apps/platform/test/draft-fixture.mjs": "ebce7853c4e830cdf07e10806f713734e71241b372473e946159248f5444a579",
     "apps/platform/test/helpers.mjs": "16e5879a4d0e97dc48e226f2d22da1c118760bee2e79b437350a4f93eeeb2f76",
     "apps/platform/test/roles-keys.test.mjs": "99897bfee2c853bf321e05c7bf68c6f6f8f278811f91333e4b612bed403ae6d9",
+    "apps/platform/test/runtime-gating.test.mjs": "cd18caed29872e9372d609d1b7ff1017e18d0d06fba6afec911d0cbb8d06e9d4",
     "apps/platform/test/site-cloud.test.mjs": "34a772ca6dd5cc85b05787eaa0a9392006614ec20b76c5c463ba8aa4fa19a00c",
     "apps/platform/test/site-dependencies.mjs": "d669ca1a3594c6533c4c659a4b4b119a10a474bfd1b18cb5fe1f70d1ebeee558",
     "apps/platform/test/sites.test.mjs": "1777ebfab83b3305cc37d73819df9913c7d399535549df0ba5ddac577407228d",
@@ -200,7 +201,7 @@
     "packages/generator/src/normalize.ts": "57684602f13294cd5a4aca0d267d44539b7f274ef5183a6432173f0ecd578cde",
     "packages/generator/src/pocketbase.ts": "f669a4b554bf38660100548ada342587a3c64da3f9da2f991e83c0920c43d744",
     "packages/generator/src/render.ts": "f745066a4ff3f5200fd238fd87480509ab12d9d9ddae201db39703fcd2502d8f",
-    "packages/generator/src/runtime.ts": "5a2b2f21ba3302b06a9c97419b12c96d8c480fa892da72d7ead28a11050bb535",
+    "packages/generator/src/runtime.ts": "85bccda289c4e8a4c38d33141e47a737b424d7c2c165148aedfa9c52bc2f8044",
     "packages/generator/src/storage.ts": "dbaf405746a5d3ee4e90bea69cc762c30ad301dfd1ac594c0ee114f9e32391bf",
     "packages/generator/src/verification.ts": "47db5216da8ebb616ead87c4fdfaf9a6adca3db997b4ae3f169be7f295d32a4d",
     "packages/generator/src/webp.ts": "69508889c86c2a56a13bc47a1d579f7068b6f328015049d82ffa2ba1ee09ce44",
@@ -212,6 +213,7 @@
     "packages/generator/test/fixtures/pocketbase-before-runtime-chown.Dockerfile": "e72d36c0b24fb3ad0b616dad51b862f414d99f6a781e2a4ab7f448d6560738b6",
     "packages/generator/test/generator.test.mjs": "97405108c7caf5e2dd4037ea9928cda2f8d288535bc157c40dbaa1eb211bc815",
     "packages/generator/test/normalize.test.mjs": "4a4328a5701dacb848b22c7ace9c8d01ae650294a183a94e9551e64e15d34ba9",
+    "packages/generator/test/runtime.test.mjs": "8ee1871ed8a38fa97587ccd6a61aaae2f94733c9bd2da9afc9f1ca43e34749f4",
     "packages/generator/tsconfig.json": "2bfff630d2fdbe25c9d2a6c93075e96a8ef2423f6b16af4d6898e82d439c1264",
     "plans/versions/web-simple/1.0.0.policy.json": "d900a812bcb6c99d770ebb19fbf884e1c4ceb922f5f15824ff45b50eb812dcfd",
     "plans/versions/web-simple/1.0.1.policy.json": "d92fb2bed00bda9ba42a20d6941efc1223dd5666e569fdc42c3eed40ef36b736",
