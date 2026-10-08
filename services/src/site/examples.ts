@@ -1,6 +1,6 @@
 import type { Policy } from './policy.ts';
 import { specDigest } from './policy.ts';
-import type { Asset, Block, ChangeRequest, SiteSpec } from './types.ts';
+import type { Asset, Block, SiteSpec } from './types.ts';
 
 export function makeExamples(policy: Policy, asset: Asset) {
   const f = policy.firstVersion;
@@ -30,15 +30,7 @@ export function makeExamples(policy: Policy, asset: Asset) {
     contractVersion: f.contractVersion.value, planId: policy.planId.value, policyVersion: policy.version.value,
     pages: pageNames.slice(0, count).map((id, i) => ({ id, path: i === 0 ? '/' : '/' + id + '/', seo: { title: text('Fictional guide — ' + id, 'seoTitle'), description: text('Offline demonstration using fictional content and original generated pixels.', 'seoDescription') }, sections: (i === 0 ? names.slice(0, Math.min(f.structure.maxSectionsPerPage.value, f.structure.maxBlocksPerPage.value)) : [names[i % names.length]]).map((name, j) => ({ id: 'section-' + j, blocks: [block(name, 'block-' + j)] })) })),
     tokens: { colors: Object.fromEntries(f.designTokens.colorSlots.value.map((slot, i) => [slot, ['#FAFAFA', '#EEEEEE', '#222222', '#555555', '#334455', '#557799', '#CCCCCC'][i % 7]])), fonts: { heading: f.designTokens.fonts.value[0], body: f.designTokens.fonts.value[0] }, spacing: f.designTokens.spacing.value[0], radius: f.designTokens.radius.value[0] },
-    navigation: { primary: [link], footer: [link] }, assets: [asset], cms: { collections: policy.includes.cmsCollections.value },
-    approval: { approved: true, approvedAt: '2026-10-06T12:00:00.000Z', specSha256: '' }
+    navigation: { primary: [link], footer: [link] }, assets: [asset], cms: { collections: policy.includes.cmsCollections.value }
   };
-  spec.approval.specSha256 = specDigest(spec);
-  const changed = structuredClone(spec), replacement = structuredClone(spec.pages[0].sections[0].blocks[0]);
-  const firstField = Object.entries((f.components as Record<string, { fields: Record<string, { kind: string }> }>)[replacement.component].fields).find(([, v]) => v.kind === 'heading');
-  if (!firstField) throw new Error('Example requires a heading field on the first catalog component');
-  replacement.props[firstField[0]] = text('A revised fictional welcome', 'heading');
-  changed.pages[0].sections[0].blocks[0] = replacement;
-  const change: ChangeRequest = { contractVersion: spec.contractVersion, planId: spec.planId, policyVersion: spec.policyVersion, baseSpecSha256: specDigest(spec), operations: [{ op: 'update-block', pageId: 'home', sectionId: 'section-0', blockId: 'block-0', block: replacement }], assets: [], approval: { ...spec.approval, specSha256: specDigest(changed) } };
-  return { spec, change };
+  return { spec, change: {available: false, reason: "change_requests_unavailable"} };
 }

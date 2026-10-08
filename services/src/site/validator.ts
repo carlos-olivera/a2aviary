@@ -2,7 +2,7 @@ import { Ajv, type ErrorObject } from 'ajv';
 import type { Policy } from './policy.ts';
 import { canonicalJson, defaultPolicy, sha256, specDigest } from './policy.ts';
 import { generateContracts, type Schema } from './generator.ts';
-import type { Asset, ChangeAccounting, ChangeContext, ChangeRequest, Link, SiteSpec, ValidationError, ValidationResult } from './types.ts';
+import type { Asset, ChangeAccounting, Link, SiteSpec, ValidationError, ValidationResult } from './types.ts';
 export type * from './types.ts';
 export { specDigest, defaultPolicy } from './policy.ts';
 
@@ -13,7 +13,6 @@ const caches = new Map<string, ReturnType<typeof compile>>();
 function compile(policy: Policy) {
   const generated = generateContracts(policy);
   const ajv = new Ajv({ allErrors: true, strict: false, verbose: true });
-  ajv.addFormat('approval-time', (v: string) => /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(v) && Number.isFinite(Date.parse(v)) && new Date(v).toISOString() === v);
   ajv.addFormat('site-link', (v: string) => {
     try {
       if (/[\s\u0000-\u001f\u007f\\]/u.test(v)) return false;
@@ -114,7 +113,6 @@ export function validateSiteSpec(input: unknown, policy: Policy = defaultPolicy)
   }
   const total = spec.assets.reduce((sum, a) => sum + a.bytes, 0);
   if (total > policy.firstVersion.images.maxTotalBytes.value) add('/assets', 'assets.totalBytes', policy.firstVersion.images.maxTotalBytes.value, 'Prepare a smaller asset bundle on the client side.', '/firstVersion/images/maxTotalBytes');
-  if (spec.approval.specSha256 !== specDigest(spec)) add('/approval/specSha256', 'approval.digest', specDigest(spec), 'Obtain human approval of this exact result and bind its digest.', '/firstVersion/approval/digest');
   return errors.length ? failed(errors) : { ok: true, value: structuredClone(spec) };
 }
 
@@ -177,95 +175,6 @@ export async function validateAssets(declarations: unknown, buffers: ReadonlyMap
   return errors.length ? failed(errors) : { ok: true, value: structuredClone(assets) };
 }
 
-export function validateChangeRequest(input: unknown, current: unknown, context: ChangeContext, policy: Policy = defaultPolicy): ValidationResult<{ spec: SiteSpec; accounting: ChangeAccounting }> {
-  const baseline = validateSiteSpec(current, policy);
-  if (!baseline.ok) return failed(baseline.errors.map(e => ({ ...e, path: '/current' + e.path })));
-  const bounded = jsonBound(input, policy);
-  if (bounded.length) return failed(bounded);
-  const validators = compiled(policy);
-  if (!validators.change(input)) return failed(schemaErrors(validators.change.errors!, validators.changeSchema));
-  const request = input as ChangeRequest;
-  if (request.baseSpecSha256 !== specDigest(baseline.value)) return failed([failure('/baseSpecSha256', 'change.stale', specDigest(baseline.value), 'Reload the current spec and obtain approval of a rebased change.')]);
-  if (!(context.now instanceof Date) || !Number.isFinite(context.now.getTime()) || context.month !== context.now.toISOString().slice(0, 7) || !Number.isSafeInteger(context.appliedRequests) || context.appliedRequests < 0) return failed([failure('/context', 'change.context', 'trusted current UTC-month usage', 'Supply valid server-side accounting context.')]);
-  if (context.appliedRequests >= policy.changes.perMonth.value) return failed([failure('/operations', 'change.monthly', policy.changes.perMonth.value, 'Wait for the next UTC calendar month.', '/changes/perMonth')]);
-  const candidate = structuredClone(baseline.value), errors: ValidationError[] = [];
-  const pages = new Set<string>(), targets = new Set<string>();
-  let blocks = 0, globals = 0;
-  const newPageIds = new Set(request.operations.filter(o => o.op === 'add-page').map(o => o.page.id));
-  for (const [i, op] of request.operations.entries()) {
-    const at = '/operations/' + i;
-    if (op.op === 'update-tokens' || op.op === 'update-navigation') {
-      globals++;
-      if (targets.has(op.op)) { errors.push(failure(at, 'change.repeatedTarget', op.op, 'Combine this target into one operation.')); continue; }
-      targets.add(op.op);
-      if (op.op === 'update-tokens') candidate.tokens = structuredClone(op.tokens);
-      else candidate.navigation = structuredClone(op.navigation);
-      continue;
-    }
-    const pageId = op.op === 'add-page' ? op.page.id : op.pageId;
-    pages.add(pageId);
-    if (op.op === 'add-page') {
-      blocks += op.page.sections.reduce((sum, section) => sum + section.blocks.length, 0);
-      if (candidate.pages.some(p => p.id === pageId)) errors.push(failure(at + '/page/id', 'change.target', 'new page ID', 'Choose a new page ID.'));
-      else candidate.pages.push(structuredClone(op.page));
-      continue;
-    }
-    if (newPageIds.has(pageId)) { errors.push(failure(at, 'change.repeatedTarget', pageId, 'Supply the complete new page in add-page; do not edit it again.')); continue; }
-    const page = candidate.pages.find(p => p.id === pageId);
-    if (!page) { errors.push(failure(at + '/pageId', 'change.target', 'existing page ID', 'Target an existing page.')); continue; }
-    if (op.op === 'update-page-seo') {
-      const key = pageId + ':seo';
-      if (targets.has(key)) errors.push(failure(at, 'change.repeatedTarget', key, 'Combine SEO edits into one operation.'));
-      else { targets.add(key); page.seo = structuredClone(op.seo); }
-      continue;
-    }
-    blocks++;
-    const section = page.sections.find(s => s.id === op.sectionId);
-    if (!section) { errors.push(failure(at + '/sectionId', 'change.target', 'existing section ID', 'Target an existing section.')); continue; }
-    const blockId = op.op === 'add-block' ? op.block.id : op.blockId;
-    const key = pageId + ':block:' + blockId;
-    if (targets.has(key)) { errors.push(failure(at, 'change.repeatedTarget', key, 'Combine this block into one operation.')); continue; }
-    targets.add(key);
-    if (op.op === 'add-block') {
-      if (page.sections.some(s => s.blocks.some(b => b.id === blockId)) || op.index > section.blocks.length) errors.push(failure(at, 'change.target', 'new block ID and valid insertion index', 'Choose a new ID and an insertion index within the section.'));
-      else section.blocks.splice(op.index, 0, structuredClone(op.block));
-    } else {
-      const index = section.blocks.findIndex(b => b.id === blockId);
-      if (index < 0) errors.push(failure(at + '/blockId', 'change.target', 'existing block ID', 'Target an existing block.'));
-      else if (op.op === 'update-block') {
-        if (op.block.id !== blockId) errors.push(failure(at + '/block/id', 'change.identity', blockId, 'Preserve the stable block ID.'));
-        else section.blocks[index] = structuredClone(op.block);
-      } else section.blocks.splice(index, 1);
-    }
-  }
-  for (const [value, max, rule, path] of [[pages.size, policy.changes.maxPagesTouched.value, 'change.pages', '/changes/maxPagesTouched'], [blocks, policy.changes.maxBlocksModified.value, 'change.blocks', '/changes/maxBlocksModified'], [globals, policy.changes.maxGlobalOperations.value, 'change.globals', '/changes/maxGlobalOperations']] as const) {
-    if (value > max) errors.push(failure('/operations', rule, max, 'Split this request into changes within the plan allowance.', path));
-  }
-  for (const [i, a] of request.assets.entries()) {
-    if (candidate.assets.some(old => old.id === a.id)) errors.push(failure('/assets/' + i + '/id', 'change.assetIdentity', 'new asset ID', 'Use a new ID for changed bytes, then update block references.'));
-    else candidate.assets.push(structuredClone(a));
-  }
-  if (request.preview) candidate.preview = structuredClone(request.preview);
-  else delete candidate.preview; // An old preview must never describe the new result.
-  candidate.approval = structuredClone(request.approval);
-  // Preview and approval replacement alone are not site changes.
-  const siteBody = (spec: SiteSpec) => { const { approval: _a, preview: _p, ...body } = spec; return canonicalJson(body); };
-  if (siteBody(candidate) === siteBody(baseline.value)) errors.push(failure('/operations', 'change.noop', 'at least one effective site edit', 'Remove no-op operations or submit an actual change.'));
-  // Every newly declared asset must actually be referenced in the resulting site.
-  const referenced = new Set<string>();
-  for (const p of candidate.pages) {
-    if (p.seo.socialImage) referenced.add(p.seo.socialImage);
-    for (const b of p.sections.flatMap(s => s.blocks)) {
-      const fields = (policy.firstVersion.components as Record<string, { fields: Record<string, { kind: string }> }>)[b.component]?.fields ?? {};
-      for (const [key, f] of Object.entries(fields)) {
-        if (f.kind === 'image' && typeof b.props[key] === 'string') referenced.add(b.props[key] as string);
-        if (f.kind === 'imageItems' && Array.isArray(b.props[key])) (b.props[key] as string[]).forEach(id => referenced.add(id));
-      }
-    }
-  }
-  request.assets.forEach((a, i) => { if (!referenced.has(a.id)) errors.push(failure('/assets/' + i, 'change.unusedAsset', 'referenced new asset', 'Reference this asset in a block or page SEO, or remove it.')); });
-  if (errors.length) return failed(errors);
-  const result = validateSiteSpec(candidate, policy);
-  if (!result.ok) return failed(result.errors.map(e => ({ ...e, path: '/result' + e.path })));
-  return { ok: true, value: { spec: result.value, accounting: { pagesTouched: pages.size, blocksModified: blocks, globalOperations: globals, monthlyRequestsRemaining: policy.changes.perMonth.value - context.appliedRequests - 1 } } };
+export function validateChangeRequest(..._args: unknown[]): ValidationResult<{ spec: SiteSpec; accounting: ChangeAccounting }> {
+  return failed([failure('', 'change_requests_unavailable', null, 'Changes will use draft, preview and browser approval in a later release.')]);
 }

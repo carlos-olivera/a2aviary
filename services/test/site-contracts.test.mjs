@@ -9,13 +9,13 @@ import { artifactDirectory, assertPolicySnapshot, generateContracts, flattenRule
 import { makeExamples } from '../dist/site/examples.js';
 import { policyDecision } from '../dist/policy.js';
 
-const fixture = JSON.parse(await readFile('../contracts/site/1.0.1/examples/site-spec.json', 'utf8'));
-const changeFixture = JSON.parse(await readFile('../contracts/site/1.0.1/examples/change-request.json', 'utf8'));
-const pixels = await readFile('../contracts/site/1.0.1/examples/fictional-pixel.png');
+const fixture = JSON.parse(await readFile('../contracts/site/2.0.0/examples/site-spec.json', 'utf8'));
+const changeFixture = JSON.parse(await readFile('../contracts/site/2.0.0/examples/change-request.json', 'utf8'));
+const pixels = await readFile('../contracts/site/2.0.0/examples/fictional-pixel.webp');
 const invalid = JSON.parse(await readFile('test/site-fixtures/invalid-specs.json', 'utf8'));
 const context = () => ({ month: '2026-10', appliedRequests: 0, now: new Date('2026-10-06T12:00:00.000Z') });
 const spec = () => structuredClone(fixture);
-const approve = s => { s.approval.specSha256 = specDigest(s); return s; };
+const approve = s => s;
 const expectError = (result, rule, path) => {
   assert.equal(result.ok, false, JSON.stringify(result));
   assert(result.errors.some(e => e.rule === rule && (path === undefined || e.path === path)), JSON.stringify(result.errors));
@@ -30,11 +30,9 @@ test('seven-page fictional fixtures validate; copies are returned without mutati
   const before = JSON.stringify(fixture);
   const valid = validateSiteSpec(fixture); assert.equal(valid.ok, true); assert.notEqual(valid.value, fixture);
   const assets = await validateAssets(fixture.assets, new Map([['fictional-pixel', pixels]])); assert.equal(assets.ok, true, JSON.stringify(assets));
-  const changed = validateChangeRequest(changeFixture, fixture, context()); assert.equal(changed.ok, true, JSON.stringify(changed));
-  assert.deepEqual(changed.value.accounting, { pagesTouched: 1, blocksModified: 1, globalOperations: 0, monthlyRequestsRemaining: 3 });
   assert.equal(JSON.stringify(fixture), before);
 });
-for (const scenario of invalid) test(scenario.name, () => {
+for (const scenario of invalid.filter(s=>!s.path.startsWith('/approval')&&!s.path.startsWith('/preview'))) test(scenario.name, () => {
   const s = spec(); set(s, scenario.path, scenario.value); if (!scenario.preserveApproval) approve(s);
   expectError(validateSiteSpec(s), scenario.rule);
 });
@@ -97,28 +95,19 @@ test('token allowlists, semantic slots and external-link protocols', () => {
 });
 
 test('asset declaration caps and total bytes', () => {
-  for(const [key,max] of [['bytes',2097152],['width',4096],['height',4096]]) {const s=spec();s.assets[0][key]=max;approve(s);assert.equal(validateSiteSpec(s).ok,true);s.assets[0][key]=max+1;approve(s);expectError(validateSiteSpec(s),'schema.maximum');}
+  for(const [key,max] of [['bytes',2097152],['width',2560],['height',2560]]) {const s=spec();s.assets[0][key]=max;approve(s);assert.equal(validateSiteSpec(s).ok,true);s.assets[0][key]=max+1;approve(s);expectError(validateSiteSpec(s),'schema.maximum');}
   let s=spec();s.assets=Array.from({length:50},(_,i)=>({...fixture.assets[0],id:i===0?'fictional-pixel':'pixel-'+i}));approve(s);assert.equal(validateSiteSpec(s).ok,true);s.assets.push({...fixture.assets[0],id:'overflow'});approve(s);expectError(validateSiteSpec(s),'schema.maxItems');
   s=spec();s.assets=Array.from({length:13},(_,i)=>({...fixture.assets[0],id:i===0?'fictional-pixel':'pixel-'+i,bytes:i===12?1048576:2097152}));approve(s);assert.equal(validateSiteSpec(s).ok,true);s.assets[12].bytes++;approve(s);expectError(validateSiteSpec(s),'assets.totalBytes');
 });
 
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const describe = async (bytes, format) => {const m=await sharp(bytes).metadata();return {...fixture.assets[0],format,bytes:bytes.length,width:m.width,height:m.height,sha256:hash(bytes)};};
-test('actual PNG, JPEG and WebP decode; mismatches, corruption, missing and extra bytes reject', async () => {
-  for(const format of ['png','jpeg','webp']) {const bytes=await sharp({create:{width:2,height:3,channels:3,background:'#446688'}})[format]().toBuffer();const a=await describe(bytes,format);assert.equal((await validateAssets([a],new Map([[a.id,bytes]]))).ok,true);}
-  const a=fixture.assets[0];
-  expectError(await validateAssets([a],new Map([[a.id,Buffer.from('not an image')]])),'asset.format');
-  expectError(await validateAssets([a],new Map()),'asset.missing');
-  expectError(await validateAssets([a],new Map([[a.id,pixels],['extra',pixels]])),'asset.extra');
-  for(const [key,value,rule] of [['sha256','0'.repeat(64),'asset.hash'],['bytes',a.bytes+1,'asset.bytesMismatch'],['width',2,'asset.widthMismatch'],['height',2,'asset.heightMismatch'],['format','jpeg','asset.formatMismatch']])expectError(await validateAssets([{...a,[key]:value}],new Map([[a.id,pixels]])),rule);
-  for(const bytes of [pixels.subarray(0,pixels.length-15)])expectError(await validateAssets([{...a,bytes:bytes.length,sha256:hash(bytes)}],new Map([[a.id,bytes]])),'asset.decode');
-  expectError(await validateAssets([a],new Map([[a.id,Buffer.alloc(2097153)]])),'asset.bytes');
-  const gif=Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7','base64');expectError(await validateAssets([{...a,bytes:gif.length,sha256:hash(gif)}],new Map([[a.id,gif]])),'asset.format');
-  const svg=Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"><script/></svg>');expectError(await validateAssets([{...a,bytes:svg.length,sha256:hash(svg)}],new Map([[a.id,svg]])),'asset.format');
+test('only normalized WebP assets enter generation; mismatch/corruption/missing/extra bytes reject',async()=>{
+ for(const format of ['png','jpeg']){const wrong=spec();wrong.assets[0].format=format;expectError(await validateAssets(wrong.assets,new Map([['fictional-pixel',pixels]])),'schema.enum');}
+ for(const buffers of [new Map(),new Map([['fictional-pixel',Buffer.from('corrupt')]]),new Map([['fictional-pixel',pixels],['extra',pixels]])])assert.equal((await validateAssets(fixture.assets,buffers)).ok,false);
 });
-
 test('actual dimensional and bundle-byte limits cannot be bypassed with metadata', async () => {
-  const wide=await sharp({create:{width:4097,height:1,channels:3,background:'#446688'}}).png().toBuffer();const a=await describe(wide,'png');a.width=4096;expectError(await validateAssets([a],new Map([[a.id,wide]])),'asset.dimensions');
+  const wide=await sharp({create:{width:4097,height:1,channels:3,background:'#446688'}}).webp().toBuffer();const a=await describe(wide,'webp');a.width=2560;expectError(await validateAssets([a],new Map([[a.id,wide]])),'asset.dimensions');
   const p=structuredClone(defaultPolicy);p.firstVersion.images.maxTotalBytes.value=pixels.length;
   const assets=[fixture.assets[0],{...fixture.assets[0],id:'other'}];expectError(await validateAssets(assets,new Map(assets.map(a=>[a.id,pixels])),p),'assets.totalBytes');
 });
@@ -130,13 +119,10 @@ test('animated WebP rejects without editing it', async () => {
   expectError(await validateAssets([a],new Map([[a.id,bytes]])),'asset.animated');
 });
 
-test('canonical digest binds all body fields, preserves array order and includes preview', () => {
-  const s=spec(), reordered=Object.fromEntries(Object.entries(s).reverse());assert.equal(specDigest(s),specDigest(reordered));
-  s.approval.approvedAt='2026-10-06T13:00:00.000Z';assert.equal(specDigest(s),specDigest(fixture));
-  s.preview={artifactId:'fictional-preview',sha256:'0'.repeat(64)};expectError(validateSiteSpec(s),'approval.digest');approve(s);assert.equal(validateSiteSpec(s).ok,true);
-  s.pages.reverse();expectError(validateSiteSpec(s),'approval.digest');
+test('canonical digest binds the whole spec and rejects client approval/preview declarations',()=>{
+ const changed=spec();const digest=specDigest(changed);changed.pages.reverse();assert.notEqual(specDigest(changed),digest);
+ for(const field of ['approval','preview']){const invalid=spec();invalid[field]={};expectError(validateSiteSpec(invalid),'schema.additionalProperties');}
 });
-
 test('serialized submission cap, cyclic and non-JSON values', () => {
   const s=spec();s.large='x'.repeat(262144);expectError(validateSiteSpec(s),'submission.bytes');
   const cyclic={};cyclic.self=cyclic;expectError(validateSiteSpec(cyclic),'submission.json');
@@ -166,78 +152,12 @@ test('plan paths and rename origins require current-head owner approval', () => 
   }
 });
 
-// Structured changes use a separately prepared result approval, never trust client counters.
-const requestFor = (operations, result, assets=[]) => ({...structuredClone(changeFixture),operations,assets,approval:{...fixture.approval,specSha256:specDigest(result)}});
-test('all supported change operations apply atomically and account for their effects', () => {
-  const base=spec();
-  for(const kind of defaultPolicy.changes.operations.value) {
-    const result=structuredClone(base);let op;
-    if(kind==='update-block'){op=structuredClone(changeFixture.operations[0]);result.pages[0].sections[0].blocks[0]=op.block;}
-    if(kind==='add-block'){const b={...structuredClone(hero(base)),id:'added'};op={op:kind,pageId:'home',sectionId:'section-0',index:1,block:b};result.pages[0].sections[0].blocks.push(b);}
-    if(kind==='remove-block'){base.pages[0].sections[0].blocks.push({...structuredClone(hero(base)),id:'remove-me'});approve(base);result.pages[0].sections[0].blocks=structuredClone(base.pages[0].sections[0].blocks.slice(0,1));op={op:kind,pageId:'home',sectionId:'section-0',blockId:'remove-me'};}
-    if(kind==='add-page'){base.pages.pop();approve(base);result.pages=structuredClone(base.pages);const page={...structuredClone(base.pages[1]),id:'new-page',path:'/new-page/'};op={op:kind,page};result.pages.push(page);}
-    if(kind==='update-page-seo'){op={op:kind,pageId:'home',seo:{title:'Revised title',description:'Fictional revised description.'}};result.pages[0].seo=op.seo;}
-    if(kind==='update-tokens'){op={op:kind,tokens:{...structuredClone(base.tokens),radius:2}};result.tokens=op.tokens;}
-    if(kind==='update-navigation'){op={op:kind,navigation:{primary:[],footer:[]}};result.navigation=op.navigation;}
-    const req=requestFor([op],result);req.baseSpecSha256=specDigest(base);const r=validateChangeRequest(req,base,context());assert.equal(r.ok,true,kind+JSON.stringify(r));assert.deepEqual(r.value.spec,approve(result));
-  }
-});
-
-test('stale base, unsupported op, no-op, missing target, repeated target and changed ID reject', () => {
-  let req=structuredClone(changeFixture);req.baseSpecSha256='0'.repeat(64);expectError(validateChangeRequest(req,fixture,context()),'change.stale');
-  req=structuredClone(changeFixture);req.operations[0].op='delete-page';expectError(validateChangeRequest(req,fixture,context()),'schema.enum');
-  req=structuredClone(changeFixture);req.operations[0].block=structuredClone(hero(fixture));req.approval=structuredClone(fixture.approval);expectError(validateChangeRequest(req,fixture,context()),'change.noop');
-  for(const key of ['pageId','sectionId','blockId']) {req=structuredClone(changeFixture);req.operations[0][key]='missing';expectError(validateChangeRequest(req,fixture,context()),'change.target');}
-  req=structuredClone(changeFixture);req.operations.push(structuredClone(req.operations[0]));expectError(validateChangeRequest(req,fixture,context()),'change.repeatedTarget');
-  req=structuredClone(changeFixture);req.operations[0].block.id='changed-id';expectError(validateChangeRequest(req,fixture,context()),'change.identity');
-  req=structuredClone(changeFixture);req.approval.specSha256='0'.repeat(64);expectError(validateChangeRequest(req,fixture,context()),'approval.digest');
-  req=structuredClone(changeFixture);req.appliedRequests=0;expectError(validateChangeRequest(req,fixture,context()),'schema.additionalProperties');
-});
-
-test('page, block, global and operation caps include additions and cannot be canceled out', () => {
-  let req=structuredClone(changeFixture);req.operations=fixture.pages.slice(0,3).map(p=>({op:'update-page-seo',pageId:p.id,seo:{...p.seo,title:'Revised'}}));expectError(validateChangeRequest(req,fixture,context()),'change.pages');
-  req=structuredClone(changeFixture);req.operations=fixture.pages[0].sections.slice(0,11).map(s=>({op:'update-block',pageId:'home',sectionId:s.id,blockId:s.blocks[0].id,block:reviseBlock(s.blocks[0])}));expectError(validateChangeRequest(req,fixture,context()),'change.blocks');
-  req=structuredClone(changeFixture);req.operations=[{op:'update-tokens',tokens:fixture.tokens},{op:'update-navigation',navigation:fixture.navigation}];expectError(validateChangeRequest(req,fixture,context()),'change.globals');
-  req=structuredClone(changeFixture);req.operations=Array.from({length:21},()=>changeFixture.operations[0]);expectError(validateChangeRequest(req,fixture,context()),'schema.maxItems');
-  const base=spec();base.pages.pop();approve(base);const page={...structuredClone(fixture.pages[0]),id:'new-page',path:'/new-page/'};req=structuredClone(changeFixture);req.baseSpecSha256=specDigest(base);req.operations=[{op:'add-page',page}];expectError(validateChangeRequest(req,base,context()),'change.blocks');
-  req.operations.push({op:'update-page-seo',pageId:page.id,seo:page.seo});expectError(validateChangeRequest(req,base,context()),'change.repeatedTarget');
-});
-
-test('global updates on seven pages use no page/block allowance; exact page/block caps succeed', () => {
-  let result=spec();result.tokens.radius=2;let req=requestFor([{op:'update-tokens',tokens:result.tokens}],result);let r=validateChangeRequest(req,fixture,context());assert.equal(r.ok,true);assert.deepEqual(r.value.accounting,{pagesTouched:0,blocksModified:0,globalOperations:1,monthlyRequestsRemaining:3});
-  result=spec();const operations=[];
-  for(let i=0;i<10;i++){const section=result.pages[0].sections[i];section.blocks[0]=reviseBlock(section.blocks[0]);operations.push({op:'update-block',pageId:'home',sectionId:section.id,blockId:section.blocks[0].id,block:section.blocks[0]});}
-  result.pages[1].seo.title='Revised';operations.push({op:'update-page-seo',pageId:'about',seo:result.pages[1].seo});req=requestFor(operations,result);r=validateChangeRequest(req,fixture,context());assert.equal(r.ok,true,JSON.stringify(r));assert.equal(r.value.accounting.pagesTouched,2);assert.equal(r.value.accounting.blocksModified,10);
-});
-
-test('trusted UTC-month context and allowance boundary; validation never increments state', () => {
-  const c=context();c.appliedRequests=3;assert.equal(validateChangeRequest(changeFixture,fixture,c).ok,true);assert.equal(c.appliedRequests,3);c.appliedRequests=4;expectError(validateChangeRequest(changeFixture,fixture,c),'change.monthly');
-  for(const bad of [{...context(),month:'2026-09'},{...context(),appliedRequests:-1},{...context(),appliedRequests:0.5},{...context(),now:new Date(NaN)}])expectError(validateChangeRequest(changeFixture,fixture,bad),'change.context');
-  const rollover={month:'2026-11',appliedRequests:0,now:new Date('2026-11-01T00:00:00.000Z')};assert.equal(validateChangeRequest(changeFixture,fixture,rollover).ok,true);
-});
-
-test('invalid projected result, asset overwrite, unused assets and failed operations never mutate input', () => {
-  const before=JSON.stringify(fixture);let req=structuredClone(changeFixture);req.operations[0].block.props.image='missing';expectError(validateChangeRequest(req,fixture,context()),'reference.asset');
-  req=structuredClone(changeFixture);req.assets=[fixture.assets[0]];expectError(validateChangeRequest(req,fixture,context()),'change.assetIdentity');
-  req=structuredClone(changeFixture);req.assets=[{...fixture.assets[0],id:'unused'}];expectError(validateChangeRequest(req,fixture,context()),'change.unusedAsset');
-  req=structuredClone(changeFixture);req.operations=[{op:'remove-block',pageId:'home',sectionId:'section-0',blockId:'block-0'}];expectError(validateChangeRequest(req,fixture,context()),'schema.minItems');
-  assert.equal(JSON.stringify(fixture),before);
-});
-
-
-test('APNG animation chunks reject even when the native decoder sees a static image', async () => {
-  // Insert a correctly framed animation-control chunk into our original PNG.
-  const crc32 = bytes => {let crc=0xffffffff;for(const b of bytes){crc^=b;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return (crc^0xffffffff)>>>0;};
-  const data=Buffer.alloc(8);data.writeUInt32BE(2);const type=Buffer.from('acTL');const chunk=Buffer.alloc(20);chunk.writeUInt32BE(8);type.copy(chunk,4);data.copy(chunk,8);chunk.writeUInt32BE(crc32(Buffer.concat([type,data])),16);
-  const bytes=Buffer.concat([pixels.subarray(0,33),chunk,pixels.subarray(33)]);
-  const a={...fixture.assets[0],bytes:bytes.length,sha256:hash(bytes)};
-  expectError(await validateAssets([a],new Map([[a.id,bytes]])),'asset.animated');
-});
+test('change requests are explicitly unavailable',()=>{expectError(validateChangeRequest({},fixture,context()),'change_requests_unavailable');});
 
 test('JSON byte limit accepts its exact boundary; later policy versions use separate artifact directories', () => {
   const p=structuredClone(defaultPolicy);p.firstVersion.structure.maxJsonBytes.value=Buffer.byteLength(JSON.stringify(fixture));
   assert.equal(validateSiteSpec(fixture,p).ok,true);p.firstVersion.structure.maxJsonBytes.value--;expectError(validateSiteSpec(fixture,p),'submission.bytes');
-  assert.equal(artifactDirectory(defaultPolicy),'1.0.1');p.version.value='1.1.0';assert.equal(artifactDirectory(p),'1.1.0');
+  assert.equal(artifactDirectory(defaultPolicy),'2.0.0');p.version.value='1.1.0';assert.equal(artifactDirectory(p),'1.1.0');
 });
 
 

@@ -18,7 +18,7 @@ const assets = new Map(
   ])
 );
 const source = await generateSite(input.spec, assets);
-await writeSource(directory, source, input.spec, input.preview);
+await writeSource(directory, source, input.spec);
 console.log(
   JSON.stringify({
     directory,

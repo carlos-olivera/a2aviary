@@ -15,8 +15,7 @@ export function canonicalJson(value: unknown): string {
 }
 export const sha256 = (bytes: string | Uint8Array): string => createHash('sha256').update(bytes).digest('hex');
 export function specDigest(spec: object): string {
-  const { approval: _approval, ...body } = spec as Record<string, unknown>;
-  return sha256(canonicalJson(body));
+  return sha256(canonicalJson(spec));
 }
 
 const kinds = new Set(['heading', 'shortCopy', 'image', 'link', 'richText', 'textItems', 'linkItems', 'imageItems', 'faqItems', 'links', 'catalogCollection', 'blogCollection', 'announcementsCollection']);
@@ -40,14 +39,14 @@ const shape = {
   changes: { ...rules('perMonth maxPagesTouched maxBlocksModified maxGlobalOperations maxOperations', 'number'), ...rules('calendar countsWhen', 'string'), ...rules('rollover', 'boolean'), ...rules('operations doesNotCount', 'strings') }
 };
 const fixedProfile: Record<string, unknown> = {
-  planId: 'web-simple', 'firstVersion.contractVersion': '1.0',
+  planId: 'web-simple', 'firstVersion.contractVersion': '2.0',
   'includes.capabilities': ['static-astro', 'pocketbase-cms'], 'includes.system404Counts': false,
   'includes.ssl': true, 'includes.domain': 'client-supplied',
   'includes.excludes': ['custom-backend', 'end-user-auth', 'checkout', 'research', 'ocr', 'image-editing', 'custom-script', 'custom-style', 'raw-html', 'arbitrary-component', 'uploaded-svg'],
   'includes.cmsCollections': ['catalog', 'blog', 'announcements'],
-  'firstVersion.navigation.externalSchemes': ['https:', 'mailto:', 'tel:'], 'firstVersion.images.formats': ['webp', 'jpeg', 'png'],
+  'firstVersion.navigation.externalSchemes': ['https:', 'mailto:', 'tel:'], 'firstVersion.images.formats': ['webp'],
   'firstVersion.images.animated': false, 'firstVersion.images.altRequired': true, 'firstVersion.images.hash': 'sha256',
-  'firstVersion.approval.required': true, 'firstVersion.approval.digest': 'sha256-sorted-json-without-approval', 'firstVersion.approval.previewRequired': false,
+  'firstVersion.approval.required': true, 'firstVersion.approval.digest': 'sha256-sorted-json', 'firstVersion.approval.previewRequired': true,
   'changes.calendar': 'UTC', 'changes.rollover': false, 'changes.countsWhen': 'successfully-applied',
   'changes.operations': ['add-block', 'update-block', 'remove-block', 'add-page', 'update-page-seo', 'update-tokens', 'update-navigation'],
   'changes.doesNotCount': ['pocketbase-content-edit']

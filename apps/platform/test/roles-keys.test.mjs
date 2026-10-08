@@ -13,7 +13,7 @@ const expectedTools = {client: [...discoveryAndOwnKeys,'site.report'], tester: d
 
 test('all role/tool permission combinations',()=>{
   for(const role of ALL_ROLES) for(const tool of new Set([...Object.keys(TOOL_ROLES),...expectedTools.superadmin])) {
-    if((role==='superadmin'&&['sites.list','site.inspect','tester.reset'].includes(tool))||expectedTools[role].includes(tool)||(['site.build','site.status','site.deploy','change.request'].includes(tool))||(['site.report','site.costs.refresh'].includes(tool)&&role!=='tester')||(role==='superadmin'&&['site.admin.assign','site.admin.remove','site.admin.list'].includes(tool))) assert.doesNotThrow(()=>requireRole({id:'fictional',role,testMode:role==='tester'},tool));
+    if((role==='superadmin'&&['sites.list','site.inspect','tester.reset'].includes(tool))||expectedTools[role].includes(tool)||(['site.draft.create','site.draft.apply','site.draft.get','site.draft.discard','site.upload.open','site.upload.status','site.upload.revoke','site.preview','site.status','site.deploy','change.request'].includes(tool))||(['site.report','site.costs.refresh'].includes(tool)&&role!=='tester')||(role==='superadmin'&&['site.admin.assign','site.admin.remove','site.admin.list'].includes(tool))) assert.doesNotThrow(()=>requireRole({id:'fictional',role,testMode:role==='tester'},tool));
     else assert.throws(()=>requireRole({id:'fictional',role,testMode:false},tool),/forbidden/);
   }
   for(const role of ALL_ROLES) assert.throws(()=>requireRole({id:'fictional',role,testMode:false},'policy.write'),/forbidden/);
@@ -96,9 +96,9 @@ test('Postgres roles, key ownership and atomic audit writes',async t=>{
     const invalid=await call(owner,'admin.audit.list',{limit:101,confirmation:'READ_PRIVATE_AUDIT_LOG'});assert.ok(invalid.error||invalid.result?.isError);
   });
   await t.test('read-only plan tools serve exact generated artifacts and reject unsupported versions and capabilities',async()=>{
-    const plans=await call(client,'plans.list');assert.deepEqual(JSON.parse(plans.result.content[0].text).plans,[{planId:'web-simple',policyVersion:'1.0.1',status:'contract-only'}]);
+    const plans=await call(client,'plans.list');assert.deepEqual(JSON.parse(plans.result.content[0].text).plans,[{planId:'web-simple',policyVersion:'2.0.0',status:'contract-only'}]);
     for(const [name,expected] of [['plan.get_manifest',f.app.plans.manifest],['plan.get_schemas',f.app.plans.siteSpec]]) {
-      const result=await call(client,name,{planId:'web-simple',policyVersion:'1.0.1'});const value=JSON.parse(result.result.content[0].text);assert.deepEqual(name==='plan.get_manifest'?value.manifest:value.siteSpec,expected);
+      const result=await call(client,name,{planId:'web-simple',policyVersion:'2.0.0'});const value=JSON.parse(result.result.content[0].text);assert.deepEqual(name==='plan.get_manifest'?value.manifest:value.siteSpec,expected);
       const invalid=await call(client,name,{planId:'../private',policyVersion:'latest'});assert.ok(invalid.error||invalid.result?.isError);
     }
     const version=await call(client,'policy.version');assert.equal(JSON.parse(version.result.content[0].text).policySha256,f.app.plans.manifest.policySha256);

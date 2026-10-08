@@ -2,8 +2,7 @@
 
 Phase 4 adds a free tester path and superadmin tools to the existing authenticated
 MCP connector. Source/local evidence is distinct from deployment; see
-[release verification](release-verification.md). The platform still has only
-login and consent pages. No payments, policy mutation, OAuth trust changes,
+[release verification](release-verification.md). The platform also has authenticated upload and snapshot-approval pages. No payments, policy mutation, OAuth trust changes,
 production DNS changes or external site work are included.
 
 ## Enrollment and identity
@@ -34,15 +33,13 @@ For example, ask it to call:
 This is fictional; supply the actual email privately through your connector.
 The tester signs in with that verified identity, calls `capabilities.get`, and
 receives `test:true`, a free pinned `web-simple` plan and `paymentBypass:true`.
-Site validation, approval/preview hashes, image-byte checks and the component
-catalog remain unchanged. A tester cannot submit a different plan or relax limits.
+The current server-draft catalog constraints, normalization, snapshot verification and browser approval apply equally to testers. A tester cannot submit a different plan or relax limits.
 There is no billing integration; future billing must preserve the immutable
 site classification and exclude test sites from charges.
 
 ## Test site lifecycle
 
-Upload an approved fixture through `POST /api/site-specs`, then use `site.build`,
-`site.status`, `site.deploy` and `change.request` as in [site operations](sites.md).
+Create/apply a draft, open its shared upload session, call `site.preview`, obtain scoped browser approval, then use `site.status` and confirmed `site.deploy` as in [site operations](sites.md). `change.request` is unavailable pending redesign.
 No caller-supplied `test` switch exists: the server records it at site creation,
 inherits it on specs/builds/changes/jobs and prevents later reclassification.
 Application activity logs, verification-call logs and audit rows carry the test
@@ -60,12 +57,7 @@ uses the platform staging project as a fixture target. Test deploys reject every
 custom domain, including a domain already recorded in resources. Retain
 `SITE_PROTECTED_PROJECT_IDS` and the platform project/domain protections.
 
-Successful applied changes use the policy's **four requests per UTC calendar
-month**, without rollover: at most two distinct pages, ten blocks and one
-separate shared-configuration operation per request. Pending/unknown changes
-hold a reservation; definitive failures release it. CMS content edits bypass
-site-change accounting. Usage is owner-wide across sites, not an allowance per
-site. Removing tester eligibility blocks further access to their existing test
+Historical monthly-change accounting is retained, but change requests are unavailable. CMS content edits remain available. Removing tester eligibility blocks further access to their existing test
 sites; it cannot turn those sites into customer sites. Re-enrollment restores
 access. Existing non-test sites similarly cannot be operated as tester sites.
 
@@ -90,7 +82,7 @@ site ID, exact accepted confirmation and result before provider cleanup. It
 checks project name/workspace, the single fixture environment, service IDs and
 protected projects before [deleting the Railway project](https://docs.railway.com/integrations/api/manage-projects).
 That removes its services/deployments and PocketBase volume/data. It deletes
-all accepted spec asset/preview/build/report objects, jobs and change history
+all draft normalized assets and spec build/screenshot/report prefixes and jobs, while retaining immutable approval/audit history
 for that site, then archives its site record. The tester account, allowlist,
 other sites and immutable audit history remain. The site's usage is cleared;
 other sites' successful changes still count. Start a new site with a new slug.

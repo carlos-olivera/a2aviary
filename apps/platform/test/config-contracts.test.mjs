@@ -54,9 +54,9 @@ test('MCP CIMD profile rejects missing identity fields and unsafe metadata desti
 
 test('runtime plans fail closed on mismatched policy or schema provenance',async t=>{
   const root=await mkdtemp(tmpdir()+'/a2aviary-platform-contracts-');t.after(()=>rm(root,{recursive:true,force:true}));
-  await mkdir(root+'/contracts/site',{recursive:true});await cp(new URL('../../../contracts/site/1.0.1/',import.meta.url),root+'/contracts/site/1.0.1',{recursive:true});await cp(new URL('../../../plans/',import.meta.url),root+'/plans',{recursive:true});
-  const base=pathToFileURL(root+'/');assert.equal((await loadPlans(base)).version,'1.0.1');
-  const path=root+'/contracts/site/1.0.1/manifest.json';const original=await readFile(path,'utf8');const data=JSON.parse(original);data.policySha256='0'.repeat(64);await writeFile(path,JSON.stringify(data));await assert.rejects(loadPlans(base),/Stale/);
+  await mkdir(root+'/contracts/site',{recursive:true});await cp(new URL('../../../contracts/site/2.0.0/',import.meta.url),root+'/contracts/site/2.0.0',{recursive:true});await cp(new URL('../../../plans/',import.meta.url),root+'/plans',{recursive:true});
+  const base=pathToFileURL(root+'/');assert.equal((await loadPlans(base)).version,'2.0.0');
+  const path=root+'/contracts/site/2.0.0/manifest.json';const original=await readFile(path,'utf8');const data=JSON.parse(original);data.policySha256='0'.repeat(64);await writeFile(path,JSON.stringify(data));await assert.rejects(loadPlans(base),/Stale/);
   await writeFile(path,original);
-  const schema=root+'/contracts/site/1.0.1/site-spec.schema.json';const value=JSON.parse(await readFile(schema,'utf8'));value['x-provenance'].policySha256='0'.repeat(64);await writeFile(schema,JSON.stringify(value));await assert.rejects(loadPlans(base),/Stale/);
+  const schema=root+'/contracts/site/2.0.0/site-spec.schema.json';const value=JSON.parse(await readFile(schema,'utf8'));value['x-provenance'].policySha256='0'.repeat(64);await writeFile(schema,JSON.stringify(value));await assert.rejects(loadPlans(base),/Stale/);
 });

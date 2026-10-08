@@ -1,235 +1,61 @@
-# Catalog site generation and hosting
+# Server drafts, uploads, preview and approval
 
-Phase 3 adds source for deterministic Astro generation, sandbox verification,
-owned MCP jobs, PocketBase and Railway client-site provisioning. Production is
-disabled unless `SITE_WORKFLOW_ENABLED=true`. Local tests and cloud verification
-are distinct; consult [release verification](release-verification.md). This
-delivery does not activate AWS policy enforcement, change DNS, deploy the
-platform, implement payments, or operate an existing external site. Phase 4 adds the separate [tester and superadmin path](testers-and-admin.md).
+Current source implements [decision 013](decisions/013-server-drafts-and-preview.md). It is enabled only when **both** `SITE_WORKFLOW_ENABLED=true` and `SITE_DRAFTS_ENABLED=true`; drafts default to false. See [release evidence](release-verification.md) for observed checks and unresolved rollout gates. This delivery does not activate production, reconcile its migration inventory, change DNS, add payments or merge a PR. Nothing is for sale; there is no live checkout or active Paddle merchant of record.
 
-## Contract and intake
+## Current workflow and contracts
 
-The client agent prepares copy/images and an HTML preview using the fixed
-[web-simple catalog](plans.md). It obtains human approval before uploading.
-`POST /api/site-specs` accepts an OAuth bearer/DPoP token for the platform MCP
-resource and scope `mcp:tools`. The request is a strict JSON object:
+The client's LLM supplies catalog content incrementally. a2aviary normalizes uploads and owns snapshot generation/verification. Human approval happens through the authenticated browser page after verification, followed by explicit MCP deployment confirmation. Current policy is `web-simple` **2.0.0**, site contract **2.0**. Canonical specs contain complete catalog content and server-generated normalized asset metadata, without client approval or preview fields. Hash the entire spec using sorted-key JSON, preserving array order. Immutable approval records separately bind revision/spec/output, actor and time.
 
-```json
-{
-  "slug": "fictional-guide",
-  "spec": {"...": "complete site-spec v1, including approval and preview"},
-  "assets": {"prepared-image-id": "canonical base64 of the supplied image"},
-  "preview": {"files": {"index.html": "canonical base64 of approved HTML"}}
-}
-```
+Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepted as intake contracts. `POST /api/site-specs` and `site.build` are removed. `change.request` returns `change_requests_unavailable`: its draft/approval redesign is pending; CMS edits remain available. Initial-site drafts cannot redeploy an already-live site.
 
-This abbreviated shape is explanatory, not a valid fixture. Generate the
-complete fictional seven-page submission with `npm run fixture --prefix
-packages/generator`. For an existing site, supply `siteId` instead of `slug`.
-All declared assets must be supplied; no URLs, credentials, backend endpoints,
-free-text interpretations, extra fields, or server-side fetching are accepted.
-The response contains `siteId` and `specId`. Duplicate owned slug/spec digests
-return the existing record. Abandoned upload objects can remain after a failed
-transaction; configure bucket lifecycle retention for unreferenced objects.
-
-The policy bounds each spec to 256 KiB JSON and assets to 25 MiB total. The
-authenticated intake transport has a separate 48 MiB body ceiling for base64
-and an 8 MiB approved-preview artifact ceiling; other platform requests retain
-their 512 KiB ceiling. Preview files use relative safe paths, with one
-`index.html` per authored route and prepared CSS/fonts. Scripts cannot run in
-the preview browser. Prepared images can use `/assets/<SHA-256>.<extension>`
-without duplication in the preview bundle; their byte hashes are already bound
-by the approved spec. External browser requests are blocked.
-
-The preview digest is SHA-256 of the UTF-8 `canonicalJson({files})` document:
-sorted object keys, unchanged base64 values, preserved array order, no extra
-whitespace. The spec digest remains the Phase 1 serialization excluding only
-top-level `approval`. Set the preview digest first, then the approval spec
-digest. Authentication binds the submission owner; the approval declaration is
-an assertion of human approval, not a new human-signature protocol.
-
-## Tools and jobs
-
-| Tool | Arguments | Effect |
+| Tool | Arguments | Behavior |
 | --- | --- | --- |
-| `site.build` | `specId` | Queue a catalog build and sandbox verification |
-| `site.status` | `siteId` | Owned states, hashes, reports, CMS login and Railway DNS/certificate status |
-| `site.deploy` | `siteId`, `specId`, `cmsPassword`, `confirmation`, optional initial `domain` | Queue deployment of verified bytes only |
-| `change.request` | `siteId`, `specId`, `spec` (change-request v1), `confirmation` | Validate the structured diff and reserve its allowance |
+| `site.draft.create` | `slug`, UUID `requestId` | Create incomplete owned draft/site |
+| `site.draft.apply` | `draftId`, `expectedRevision`, UUID `requestId`, `operations` | Atomic validated batch; return new revision |
+| `site.draft.get` | `draftId`, optional `detail`, `after` | Compact summary; explicit `full`, page ID, or paginated `assets` |
+| `site.draft.discard` | `draftId`, `expectedRevision` | Supersede snapshots, revoke sessions, schedule cleanup |
+| `site.upload.open` | `draftId`, UUID `requestId` | Both channels, expiry, QR and selection rule |
+| `site.upload.status` | `sessionId`, optional `after` | Normalized metadata/progress, never capability secrets |
+| `site.upload.revoke` | `sessionId` | Terminate both channels |
+| `site.preview` | `draftId`, `expectedRevision` | Assemble complete immutable spec, deduplicate/queue verification |
+| `site.status` | `siteId` | Latest snapshots, approval/verification/deployment states and artifacts |
+| `site.deploy` | `siteId`, `specId`, `cmsPassword`, `confirmation`, optional initial `domain` | Deploy approved stored bytes |
 
-These tools are visible to client/admin/superadmin/tester when enabled. Tester sites remain immutable test-only staging deployments. Ownership
-applies to all roles; administrators cannot access another human's site through
-these tools. Testers remain discovery-only in Phase 3. Policies cannot be
-modified by a tool. OAuth consent describes the enabled mandate; a connector's
-OAuth grant does not approve a spec or deployment.
+Operations: `settings` supplies tokens/navigation/CMS; `upsert-page`/`remove-page`; `upsert-section`/`remove-section`; `upsert-block`/`remove-block`; `asset-metadata` sets alt text on server assets; `remove-asset` removes metadata. IDs remain stable; insertion uses zero-based `index`; supplying it on an existing ID also reorders that entity. Upserts replace the selected entity, so retain desired fields/children in its payload. A parent must exist before inserting its child. Missing required content and forward references are allowed during drafting and reported as preview blockers. Supplied values and aggregate budgets are validated immediately. A failed batch writes nothing. At most 32 operations and 64 KiB per batch, 256 KiB complete JSON, 20 errors, 4 KiB default summaries. Errors identify operation index/path/rule/limit/actual and correction guidance. Request IDs are actor-scoped and bind the full request; conflicting reuse fails. Revisions prevent overwrite and increment only for actual content changes, including newly attached normalized assets.
 
-Deployment requires `DEPLOY_SITE:<siteId>`; an initial custom domain requires
-`DEPLOY_SITE:<siteId>:<domain>`. Changes require `APPLY_CHANGE:<siteId>`.
-`cmsPassword` is the client's initial CMS password (16–128 characters), encrypted
-with a separate AES-256-GCM key until it is delivered to Railway variables, then
-cleared from Postgres. Superadmin credentials are generated only for provisioning
-and remain in CMS Railway variables. No credentials enter the sandbox, source
-bundle, object bucket, audit record, or console logs.
+## Shared upload session
 
-Each job records actor/tool/spec digest/result. Postgres persists jobs and
-resource IDs. A single advisory-locked worker executes provider actions, with
-atomic owner-scoped admission/accounting. Queue and applied-state writes share
-their audit transaction. Interrupted builds fail and may be explicitly retried.
-Interrupted/uncertain deployments become `unknown`; the worker never blindly
-replays them. The owner must reconcile provider deployments and Postgres state
-in a maintenance transaction, recording an audit result and either successful
-application or a confirmed failure. No destructive reconciliation tool is added.
+Open returns a short `/u/<id>` human URL, same-origin PNG QR generated locally, one-hour expiry and agent HTTP instructions. The decision rule is mandatory: use HTTP only if the agent can access files and make HTTP requests; try the one-byte probe with a suggested three-second timeout first. If blocked/unavailable, show the human link/QR in one sentence and wait. Both channels populate one page/session. No image bytes, base64 or remote image URL is accepted by MCP.
 
-Four successful applied changes per UTC calendar month apply across an owner's
-web-simple sites; no rollover. Reservations prevent concurrent overuse and
-remain held for an unknown deployment. A confirmed build/deploy failure releases
-the reservation. The first deployment does not consume a change. Per request,
-the Phase 1 validator counts at most two distinct pages, ten modified blocks,
-one separate shared configuration operation, and twenty operations. Newly added
-page blocks count in full. A full-spec upload cannot bypass the diff/accounting
-gate. CMS record edits use PocketBase directly and never enter this counter.
+- `PUT /api/site-uploads/<sessionId>/probe`: exactly one byte, session bearer.
+- `PUT /api/site-uploads/<sessionId>/files/<uploadId>`: raw image bytes; caller UUID is the retry key. Same bytes return the prior asset; different bytes conflict.
+- Human mutations require verified Google browser session, owner/enabled site administrator, exact platform Origin and session-bound CSRF. Opening the short URL grants no authority; unauthenticated visitors use Google sign-in and a whitelisted return path.
+- Agent bearer grants only probe/upload and is stored only as a hash. Status never reveals it. Expiry/revocation applies to both channels; invalid capability is rejected before large/chunked body buffering. Decoder/body admission is bounded.
 
-## Verification and determinism
+Raw JPEG/PNG/static WebP: at most 20 MiB, 40 MP and 12,000 px/side. Dedicated child process fully decodes, rejects animation/spoofed bytes, orients, preserves transparency/aspect ratio, strips metadata and discards originals. It inherits PATH only, uses one decoder, disables Sharp cache, bounds I/O and kills after 10 seconds. Fixed `1.0.0` ladder: edges 2560/2048/1536/1024, quality 80/70/60, first output within 2 MiB, never upscale. Metadata/hash derive from output only. Draft assets: 50 and 25 MiB normalized total.
 
-Generator v1 covers all twelve catalog components, the `standard` variant,
-structured rich text, escaped copy/links, semantic colors, approved fonts and
-fixed tokens. Inter and EB Garamond are pinned and served locally with notices.
-There are no approved AI gaps in this catalog: `SITE_AI_GAPS_ENABLED` must remain
-false, and an attempted enable fails closed. New gaps require a reviewed
-implementation and explicit logging/lint/build gates; this delivery has no
-model-generated CSS path. The verification Agents API call is separately logged.
+Sessions: one/draft, three/owner; 100 MiB raw and 100 attempts each. Rolling daily raw limits: 200 MiB/owner, 1 GiB service. Failed decodes consume admission. Drafts: three/owner, 50 service, seven idle days/30 absolute days.
 
-The source hash binds generator version, policy SHA-256, every generated text
-file, original prepared asset bytes and bundled fonts. The output hash binds the
-sorted relative-path-to-base64 map of built files. No build timestamp is inserted.
-Actual raster format, full decode, static-image restrictions, dimensions, bytes
-and SHA-256 are checked before generation and original bytes are checked after
-the build. No image transformation or OCR occurs.
+## Preview and browser approval
 
-OpenAI Agents API `gpt-6-luna` uses a hosted sandbox with no credentials, vaults,
-MCP tools, research tools or subagents. Pinned public dependencies are installed
-under an explicit network allowlist. A fixed setup script runs Astro build,
-JavaScript syntax checks, WCAG A/AA axe checks, internal link/asset/anchor checks, Lighthouse accessibility
-(minimum 0.90), and screenshots at 390/1280 px. Preview scripts are blocked and
-browser requests stay on local verification origins. Pixel comparison requires
-matching dimensions and at most 0.1% changed pixels at pixelmatch threshold 0.1.
-Dynamic CMS sections are verified in their specified empty state.
+One globally active worker verifies syntax, Astro build, axe, links and Lighthouse. It must publish screenshots for **every page at 390 and 1280 px**, without client parity inputs. Setup completes before the tool-free `gpt-6-luna` acknowledgement publishes artifacts; errors are redacted and session deletion is reported separately. Failed reports and available screenshots remain viewable; approval is unavailable.
 
-The model has no tools and cannot amend checker artifacts. The controller
-requires all named checks, matching spec/source hashes, complete authored routes,
-unchanged prepared images and a matching output hash. A model's text response
-cannot authorize deployment. Reports and screenshots stay in separate private bucket objects (64 MiB per artifact, 128 MiB per verification download);
-failed checker reports remain available for correction, and owned OAuth downloads use `GET /api/site-artifacts/<specId>/<artifactName>`.
+New verifications: five/owner and 25/service per rolling day, including failures. Identical pending or verified content with matching generator/policy/checker provenance within the same owner/test scope reuses artifacts without another provider call or allowance. It never reuses approval. Snapshots bind draft revision, spec/source/output/checker/generator hashes and screenshot/report hashes. At most three retained artifact-bearing snapshots/draft. Unapproved artifacts expire after 24 hours; approved undeployed artifacts after seven days; live artifacts use existing site retention.
 
-## Railway and CMS
+`/sites/approve/<specId>` shows page selection, both widths, verification results and embedded exact preview. Preview files live under a signed, snapshot-scoped 15-minute path; relative HTML/CSS/font/image references work unchanged at deployed root. Both iframe and header CSP sandbox omit scripts/same-origin; only that signed prefix loads style/images/fonts. Forms/connections/workers/popups/top navigation are disabled. Preview ignores platform cookies, sets none, and emits no-store/no-referrer/nosniff/noindex even when opened directly.
 
-Provisioning creates an isolated private `cli-NNN-slug` project in the configured
-workspace. Fixture mode creates its `fixture` environment; production mode
-creates `production`. Existing platform and other protected projects must appear in the
-protected-project list and are never deployment targets. Both client services
-have one replica, a 1 vCPU/0.5 GB cap and three restart retries, in Railway
-configuration and API settings. The CMS volume is mounted at `/pb/pb_data`; the server binds `[::]:8090` for Railway private-network IPv6 access.
-Prepared source assets and verified artifacts live in the bucket; the Caddy
-image contains verified static copies on ephemeral image storage, with no asset
-volume. Credentials never enter the Caddy service.
+Approve POST requires verified browser identity, exact Origin, a single-use session/snapshot CSRF token, and current owner or enabled site-administrator membership. Global role alone grants no approval. There is no MCP/bearer approval route. Edits supersede old snapshots; reverting cannot revive an approval. Edit, approval and deploy admission serialize on the site; deployment queued/running/unknown freezes mutation.
 
-PocketBase 0.40.4 archives are SHA-256 pinned for Linux amd64/arm64. Migrations
-create only catalog/blog/announcements collections actually bound to blocks.
-Client-created accounts are disabled; an editor can manage those content records.
-Anonymous reads expose only published records. Text fields retain policy bounds.
-Later site revisions add idempotent migration files without deleting CMS data.
-Daily 03:00 UTC backups retain seven snapshots in the separately configured
-S3/R2 backup bucket. Settings are encrypted with a stable Railway-only key;
-rate limiting is enabled. A configured backup schedule is not proof of a
-successful remote backup/restore.
+## Exact deployment, cleanup and administration
 
-The client logs in at `<siteUrl>/api/cms/editor.html`, using their verified
-platform email and the initial password they supplied. The editor calls
-PocketBase directly through Caddy; no site rebuild is needed. The CMS service
-has no public domain, and Caddy does not expose the PocketBase admin dashboard,
-superuser APIs or settings APIs. Only the fixed editor and bound collection
-routes are proxied.
+`confirmation` is `DEPLOY_SITE:<siteId>` or `DEPLOY_SITE:<siteId>:<domain>`. Initial CMS password length is 16–128; it is encrypted at rest until sent to the isolated CMS and then removed. Admission and worker recheck approver membership, current revision, approved spec/output hashes, artifact integrity and test classification. The worker deploys the **stored file map**, without generation, normalization or rebuilding. Provider uncertainty remains `unknown`, requiring deliberate reconciliation. No DNS records are changed automatically.
 
-Optional custom domains attach only to the new client's web service. Existing
-domain changes are unsupported in v1. `a2aviary.io`, its subdomains and configured
-protected domains are rejected. `site.status` returns Railway's required/current
-DNS records, ownership token and certificate status. The client/owner creates
-the CNAME (or apex ALIAS/ANAME/flattening) and verification TXT records at their
-DNS provider, then polls status until Railway confirms DNS and certificate
-issuance. Do not substitute an A record or claim SSL verification from a queued
-deployment. This service never edits DNS or AWS.
+Existing verified-email scoped administrators, owner eligibility, first-client designation, immutable operation/billing history, private costs/reports, tester isolation and reset remain. Tester deployments use disposable Railway projects/generated hosts; custom customer domains are prohibited. CMS catalog/blog/announcement edits remain bounded to configured collections and do not invoke draft change requests. See [tester/admin operations](testers-and-admin.md).
 
-## Configuration and local checks
+Cleanup tracks bucket prefix write intents before external writes, so rolled-back SQL cannot strand unknown prefixes. The worker removes expired sessions/nonces, expired undeployed snapshots, discarded/expired draft assets and unreferenced prefixes in bounded batches, recording completed deletion for restart safety. Live/unknown deployment artifacts and immutable approval/audit history are protected. Tester reset deletes both `drafts/<UUID>/` and `specs/<UUID>/` prefixes and retains audit/approval history.
 
-Keep all values in private environment files or Railway variables; never paste
-secret values into a chat or PR. Existing [platform variables](platform.md)
-remain required.
+## Local checks and the one hosted fixture
 
-| Variable | Purpose |
-| --- | --- |
-| `SITE_WORKFLOW_ENABLED` | Default false; explicit activation of site tools/worker |
-| `SITE_AI_GAPS_ENABLED` | Must remain false for catalog v1 |
-| `SITE_CREDENTIAL_KEY` | Independent random 32-byte lowercase hex encryption key; retain during pending jobs |
-| `OPENAI_API_KEY` | Controller-only development/project key for Agents verification |
-| `RAILWAY_API_TOKEN` | Controller-only workspace API token; no personal GitHub credentials |
-| `SITE_RAILWAY_WORKSPACE_ID` | Explicit workspace for new projects |
-| `SITE_DEPLOY_ENVIRONMENT` | Required `fixture` or `production`; no default production target |
-| `SITE_PROTECTED_PROJECT_IDS` | Required comma-separated platform/other protected project IDs; platform `RAILWAY_PROJECT_ID` is added automatically |
-| `SITE_PROTECTED_DOMAINS` | Additional comma-separated existing/private client domains; platform origin hostname is added automatically |
-| `SITE_BUCKET_ENDPOINT`, `SITE_BUCKET_NAME`, `SITE_BUCKET_REGION` | HTTPS S3/R2-compatible source/artifact bucket |
-| `SITE_BUCKET_ACCESS_KEY_ID`, `SITE_BUCKET_SECRET_ACCESS_KEY` | Least-privilege bucket credentials, controller only |
-| `SITE_BUCKET_FORCE_PATH_STYLE` | Defaults true; set false for virtual-host addressing |
-| `PB_BACKUP_ENDPOINT`, `PB_BACKUP_BUCKET`, `PB_BACKUP_REGION` | HTTPS S3/R2 backup destination, separate from site artifacts |
-| `PB_BACKUP_ACCESS_KEY_ID`, `PB_BACKUP_SECRET_ACCESS_KEY` | Backup-only credentials copied privately to the site's CMS variables |
-| `PB_BACKUP_FORCE_PATH_STYLE` | Defaults true |
+Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. Platform tests use unique loopback Postgres schemas; migration inventory must match all seven filenames and hashes and health fails closed on alteration. Migrations 001–006 are unchanged. Production's existing **006 hash mismatch remains an unresolved rollout gate**; never rewrite inventory to bypass it.
 
-Per-CMS generated variables are `PB_ADMIN_EMAIL`, `PB_ADMIN_PASSWORD`,
-`PB_CLIENT_EMAIL`, `PB_CLIENT_PASSWORD`, `PB_ENCRYPTION_KEY`, `GOMEMLIMIT`,
-`PORT`, and the backup variables. Preserve the encryption key on every revision.
-The web service receives only `PORT` and the private `CMS_UPSTREAM`.
-
-```sh
-npm ci --prefix packages/generator
-npm run check --prefix packages/generator
-npm run build --prefix packages/generator
-npm run test --prefix packages/generator
-npm ci --prefix apps/platform
-docker compose -p a2aviary-platform-phase3 -f apps/platform/compose.yaml up -d --wait
-npm run check --prefix apps/platform
-npm run build --prefix apps/platform
-npm run test --prefix apps/platform
-npm run fixture --prefix packages/generator
-cd work/phase3-fixture
-npm ci --ignore-scripts
-npx --no-install playwright install chromium
-node verify.mjs
-```
-
-Run `node packages/generator/scripts/test-cms.mjs` from the repository root for
-the isolated Docker CMS integration check. It removes only its own test
-container/volume. Deployment readiness follows the exact upload deployment ID, never an earlier successful release, then requires valid HTTPS and byte-matching home-page content on the managed Railway domain. Client DNS/certificate readiness is reported separately. The first-party Railway Rust CLI is version/checksum pinned;
-its license is retained, and the npm wrapper with its vulnerable archive
-dependency is not used. Generator/platform builds preserve dependency notices.
-
-For the opt-in cloud end-to-end test, configure development credentials and
-`SITE_DEPLOY_ENVIRONMENT=fixture`, then run the live fixture test documented in
-[the generator package](../packages/generator/README.md). The test must fail if
-verification or deployment fails; a mocked-provider test is not cloud evidence.
-Review actual created resource IDs privately before cleaning up the fixture.
-Production activation, remote backup/restore proof, client domain DNS, owner PR
-review and expanded trusted-policy activation remain separate owner actions.
-
-
-## Site administration and costs
-
-Superadmin manages `site.admin.assign`, `site.admin.remove` and `site.admin.list` using a site ID and one or more email addresses. Grants remain pending until the matching identity verifies its email. Grants are site-scoped, never change global role or exemption, and cannot enroll tester identities or replace the owner's membership.
-
-Owners and enabled verified site administrators can submit/build approved catalog specs, apply approved changes, deploy with the normal exact confirmation, read status/artifacts, and access `site.report` plus its authenticated CSV URL. Queued work rechecks access before provider work and results. Owner credentials and owner-wide change allowances are independent of the acting administrator. Superadmin inventory and tester reset remain privileged.
-
-`site.costs.refresh` accepts `siteId` and optional UTC `period` (YYYY-MM, no future months), queues a catalog usage job, and deduplicates pending reads. Different pending periods return `cost_refresh_busy`. A recorded site/period/day returns cached. The worker also queues due current-month reads for active deployed non-test catalog sites. Usage covers recorded web/CMS resources only; unavailable billing data stays null, metrics preserve their observed windows, and shared storage/overhead are unallocated. No payment or provider limit mutation occurs.
-
-`site.report` requires `siteId` and UTC `period`; it returns operation/eligibility history, catalog job counts, applied changes, cost availability and a scoped CSV link. Assigning a site administrator never grants billing exemption. Test sites and current owner admin/superadmin roles are exempt; their historical operation snapshots remain immutable.
-
-The first successful non-test catalog site creation is atomically marked `first_client_pilot`. Tester fixtures never consume or reassign it. There are no registered clients today. Policy 1.0.1 changes rationales only; every plan limit is unchanged.
-
-Migration `006-site-administration-billing.sql` is for clean databases. Production has an incompatible earlier 006 and requires separately approved owner reconciliation before merge/rollout. Authentication, roles, OAuth and audit records must be preserved. No drop migration, production cleanup or hosting change is authorized by this delivery.
+The explicitly authorized hosted runner is `node apps/platform/scripts/run-hosted-fixture.mjs`. It reads only the approved credential variable names from production Railway configuration into memory, filters them into the test child environment, overrides fixture flags, creates a disposable local database, and rejects a second attempt through a local marker. Never use production DATABASE_URL. SDK/action retries are disabled; readiness polling is allowed. The flow stops at its first failed stage and performs teardown once. Its private evidence contains only fictional IDs, safe usage/stage/cleanup observations and variable **names**, never values. Fictional verified browser sessions do not establish real Google authentication. No production variables/services/deployments are changed.

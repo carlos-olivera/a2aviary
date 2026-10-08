@@ -25,10 +25,9 @@ Project workspace and execution tools
 
 ## Pilot direction — 2026-10-06
 
-For the owner-approved website pilot, the client agent prepares a structured spec,
-assets and a catalog-expressible preview, approved by the human before submission.
+For the current initial-site workflow, the client agent incrementally supplies a server draft and uploads images through shared agent/human channels. The server normalizes images, produces and verifies immutable previews, and requires scoped browser approval before exact-artifact deployment.
 a2aviary validates the versioned policy and generates fixed Astro catalog sites,
-verifies approved artifacts, and provisions isolated Railway hosting with PocketBase
+verifies snapshots and records browser approval, and provisions isolated Railway hosting with PocketBase
 CMS. Auth/MCP, durable Postgres jobs, testers and chat-only superadmin source are
 implemented. There are no registered client sites; the first site will use the
 catalog workflow. Independent hosted end-to-end verification remains pending.
@@ -42,12 +41,11 @@ Existing AWS brief analysis and signed email v1 remain supported. See
 The [membership manifest](stages.json) assigns each technical component to one
 stage. Labeled arrows and boundary nodes show handoffs between groups.
 
-1. **Client & Local Agent:** prepares the spec, original assets and human-approved
-   preview; the legacy email client receives signed replies.
+1. **Client & Local Agent:** supplies incremental content and raw uploads for server drafts; the legacy email client receives signed replies.
 2. **Auth & Mandate Gate:** platform OAuth/MCP, ownership, role/permission policy,
    action-specific confirmations and legacy signed-email admission.
-3. **Validation & Build Engine:** approved-input validation, durable jobs, Astro
-   catalog generation, artifact verification and the legacy brief-analysis runtime.
+3. **Validation & Build Engine:** revisioned drafts, isolated decoding, durable jobs, Astro
+   catalog generation, screenshot verification, immutable browser approval and the legacy brief-analysis runtime.
 4. **Live Hosting & CMS:** customer Railway/PocketBase/Caddy hosting and bounded
    content editing, plus the project's private S3/CloudFront landing delivery.
 5. **Governance & Ops:** Operator/current-head approval/CI, tester administration,
