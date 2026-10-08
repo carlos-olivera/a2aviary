@@ -5,6 +5,7 @@
 - Remove the redundant flag rejection that crashed startup when the workflow was enabled but drafts were absent or disabled. Preserve malformed-flag rejection, provider configuration checks and the requirement for both flags before site operations are available.
 - Add generator flag-matrix and default platform startup/health regressions. Both reproduced `Invalid SITE_WORKFLOW_ENABLED` before the fix. Local health now returns discovery-only HTTP 200 against all seven migrations without creating a site; hosted fixtures remain disabled.
 - Node.js 22.23.3 generator and platform checks/builds passed, with 46 generator tests and 58 platform tests passing; one opt-in hosted test was skipped.
+- Regenerate all six architecture drawings against the committed fix; all four gates passed for each. Website checks/build and the integrated browser suite passed five stages/44 nodes, desktop/mobile, keyboard/focus and JavaScript-free access under production CSP. Desktop/mobile and the flagged hosting readiness route were visually inspected.
 - Record the inspected Railway startup failures and the inferred six-/seven-migration readiness mismatch in [release verification](docs/release-verification.md#read-only-diagnosis-and-prepared-recovery--2026-10-08). Production last returned HTTP 503; this delivery does not merge, deploy, restart, roll back or change production variables, database or bucket.
 
 
