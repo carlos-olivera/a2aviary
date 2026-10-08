@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Governance & Ops",
-    "output": ".local/architecture/catalog-20261008/ops.html",
+    "output": ".local/architecture/pr25-ci/ops.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "e358d47ed088d9f89aaf484feb4ecb0de8d69500",
+      "revision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
       "provider": "github",
       "link_mode": "web"
     }

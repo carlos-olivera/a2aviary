@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-08 — architecture freshness restored for verifier delivery
+
+- Regenerated all six Archify drawings and integrated provenance against the committed verifier/CMS fixes, with corrected source ranges and refreshed desktop/mobile evidence. The source freshness check remains enforced; the five-stage architecture and runtime behavior are unchanged.
+- Node.js 22.23.3 passed the complete CI command sequence: website check/build, service check/build with 113 tests, and infrastructure build with nine tests. Every drawing passed all four finalization gates; the integrated browser suite passed all five stages and 44 technical nodes, keyboard/focus behavior, mobile layout, JavaScript-free access and same-origin CSP checks.
+
 ## 2026-10-08 — PocketBase runtime volume ownership verified locally
 
 - Start the pinned CMS image as root, change ownership only of `/pb/pb_data` to UID/GID 1000, then exec PocketBase through `su-exec` as that user. PocketBase/Alpine pins, download checksums and serve flags are unchanged; no runtime UID variable is added.

@@ -2,14 +2,14 @@
   "schemaVersion": 2,
   "generator": "Archify",
   "version": "3.0.1",
-  "sourceRevision": "e358d47ed088d9f89aaf484feb4ecb0de8d69500",
-  "manifestSha256": "c95063f525906642bc6207976988057f5ebaf6a5b77f2f83b26be732117c55f4",
+  "sourceRevision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+  "manifestSha256": "91e2d31395e380c3c3a641a1cf57ae258edb8d44b2d013605dabdf0356c4c51f",
   "coverageSha256": "919843ca3b5c39c3329d9e8224ba7839d30f695a9e52919bc77c2ea664d672b0",
   "diagrams": {
     "overview": {
       "candidatePath": "docs/architecture/map.json",
-      "candidateSha256": "b1e6fda7be626e5c1eacbdfb0369362c515d2a6731d0026f2ca038b8c3b95a1f",
-      "rawArtifactSha256": "0261b0f101a88e00a0db7be50a20ef81f6a5644fb2899c55c32eaa5682abaccb",
+      "candidateSha256": "8b4d4abab274507d74ced5177908882f0f09ee82dde5ea2b9575e9e313b9019f",
+      "rawArtifactSha256": "c9f9e7edd31c860eaae7bb4e5f6569191146fcc974714782439c3b05c5341d11",
       "generatedDrawingSha256": "a0246429dca8c5fe2ebfea3afc5ac51afcd95d765e7f5acc949bf9764cce9e60",
       "gates": {
         "validate": "pass",
@@ -20,8 +20,8 @@
     },
     "client": {
       "candidatePath": "docs/architecture/diagrams/client.json",
-      "candidateSha256": "0230314b8b2d266b809ddce138b03896c2b448dee36ae00719fd46f20f011ece",
-      "rawArtifactSha256": "7d026b0f2314ebfb5e22c6d9259a5bcf7db62b144cbe709f62a34000005f7aca",
+      "candidateSha256": "16edeb899c1e1e983895e64782e6270a1b3ec7f8fb9fa3ce9e660234ec507a1a",
+      "rawArtifactSha256": "cf39cfea1b679fbeca5942be7324000d6991b60459310ba2f4488af5e09b7001",
       "generatedDrawingSha256": "8137ecbe66dff755fb8a515318d4113d215bce7e79d34db7172ee3c33b212651",
       "gates": {
         "validate": "pass",
@@ -32,8 +32,8 @@
     },
     "gate": {
       "candidatePath": "docs/architecture/diagrams/gate.json",
-      "candidateSha256": "b3c8e668437472d0255bf26aa9b76b432ac3146902588a867375d734cfb73e76",
-      "rawArtifactSha256": "e0c667653acd5147ec83ab741e2a687f62abe6a68ed348ccbfba9ff668711e73",
+      "candidateSha256": "979ec8c87ab56ab8f9869a6fe9da964e1ffb9cf136a031641845e0a1ec5f33ef",
+      "rawArtifactSha256": "7732a1f967fb41c4cea2da997fed0b0efb97aab7a6b28148b6a41e40ecc44a88",
       "generatedDrawingSha256": "e2feb603999c5350091d45ae9db6d64658b8d72a9286a84fdafcfb16c546cb72",
       "gates": {
         "validate": "pass",
@@ -44,8 +44,8 @@
     },
     "engine": {
       "candidatePath": "docs/architecture/diagrams/engine.json",
-      "candidateSha256": "22ed02aefdc77ac613900f6c626b3e7249f464e9c72c11eed5001600a00ae347",
-      "rawArtifactSha256": "c53f7644bbfb4559be5a149ddd5792d49d3182442ccaf068d567204079f363da",
+      "candidateSha256": "a7faeea9d5921f0b59e8c859932a3269423f0246c1f4f74709fd260bb8f56ee0",
+      "rawArtifactSha256": "136e5a9a156b4d29b144d0127fc5ea62f24c1d3f597c163f45df222b2dd02b30",
       "generatedDrawingSha256": "4d8c5c85a7e1e7c86a088b4678cc6d788eb28ccd3648338b0c771e70f3dafae7",
       "gates": {
         "validate": "pass",
@@ -56,8 +56,8 @@
     },
     "hosting": {
       "candidatePath": "docs/architecture/diagrams/hosting.json",
-      "candidateSha256": "e76dad4372190e431f3b93835d932bfde3207ce43ab516c3f2e5accf48cfe979",
-      "rawArtifactSha256": "44b3d4dab3538050204114bed72292422db4fbb8d578cf6d089194567f32ace9",
+      "candidateSha256": "8b1f2ced51ec7fe4007a9d36e261ee0d32a57b8460e53aa261f97baf4b44cc15",
+      "rawArtifactSha256": "028e035eeff4c81f1da46ac012dcfbc25f353e4619df965afbc3347929859f46",
       "generatedDrawingSha256": "1e7a67d85656a8d956325979e8f47b87d27d29dcf0533fa4db186f14f26758b1",
       "gates": {
         "validate": "pass",
@@ -68,8 +68,8 @@
     },
     "ops": {
       "candidatePath": "docs/architecture/diagrams/ops.json",
-      "candidateSha256": "6e9c2991a687c9efa4e0fa47e6538cb33369e08913368029a47d58f24bd3d711",
-      "rawArtifactSha256": "150bba5a97225143381c75a57d0842fe12a978fb17b665d472855eaf5a9b9661",
+      "candidateSha256": "3d8ec5203738adab1f0b90ead1ff382e5d1c52de916bd9508e71fb786344a156",
+      "rawArtifactSha256": "5d551a72f4a011b67a3101c8c24c5030f672f04e9921dcdf9235afb8a4923f9c",
       "generatedDrawingSha256": "321cde03ee9d7908f8bf2fe0f8e1f44a5e2b52a6606c5a2b10bcbd0809064f1c",
       "gates": {
         "validate": "pass",
@@ -79,7 +79,7 @@
       }
     }
   },
-  "integratedPageSha256": "424360350af6db11287d09a466181afaecd4a7e5531c7c1172faa384f007021e",
+  "integratedPageSha256": "5cf4460537febfd9b6bc1f954956ebbd1b09deb490ebfc55a1aabca664db6a1d",
   "assetSha256": {
     "architecture.css": "1ebd910731acf8fd4ed0a110d4086b1722fad07c82b7e815cd8832d528f8ddb4",
     "architecture.js": "f97addd4fdf06856b907aa6b459fc10f90be698a223f14a5e912731c1cb58a2c"
@@ -121,10 +121,12 @@
     "apps/platform/test/admin-boundaries.test.mjs": "79a719ed023d3bd9e08da0fc97fd89162dd4bf85aabd6c57e699b236b8b59cff",
     "apps/platform/test/auth.test.mjs": "0e7f841098a3b2b2f27bdf8d39fcd890ac89efcf077ba38db1af661a8e52bec9",
     "apps/platform/test/catalog-administration.test.mjs": "60efa3e65b8ff0efe7c4aadb0c1e59ccb7530867cd5a0d1e0a2e7597ee569136",
+    "apps/platform/test/cloud-fixture-cleanup.mjs": "059cecd1098c773cf4901fff4b3c2c0f0f0122a5d612350a53e7ed974713e5df",
+    "apps/platform/test/cloud-fixture-cleanup.test.mjs": "d130c212e1c7eabf5380ed3622f8805ef0eaf1670dcaff78275e71576f21693d",
     "apps/platform/test/config-contracts.test.mjs": "6365ee573649e28c8d936579d7a297fe920fa2af28a4d55ac15de2eb4851588c",
     "apps/platform/test/helpers.mjs": "16e5879a4d0e97dc48e226f2d22da1c118760bee2e79b437350a4f93eeeb2f76",
     "apps/platform/test/roles-keys.test.mjs": "f84878942f1871eb16ceeed405317471b5fb63ba8ae37e25d5b10fb7b155c3c1",
-    "apps/platform/test/site-cloud.test.mjs": "54c07a82835b9c45539de581e4134a8972ad7003a17dd163c29c3b0df526a4d8",
+    "apps/platform/test/site-cloud.test.mjs": "a1fc09ef1c7e861af16b1fe95e44f8b2b4d277a1c8b448f8b780574f8230d516",
     "apps/platform/test/site-dependencies.mjs": "55a75be9242e860d5fa3e8cb676dafccf77d01b8342fb9349b957436bf12ffaa",
     "apps/platform/test/sites.test.mjs": "4c0a6bd119a0a88ee9b66dda551528a66f3f13d0ac8c609ae76dd7b9eeeb2301",
     "apps/platform/test/testers-admin.test.mjs": "2575243745cf635875a215daf74a90b376928d34a60b3885d9868522ac290819",
@@ -169,26 +171,28 @@
     "local/standins.mjs": "130b972bed14a0c5dfdb51218bedbbf45d773c805396968f530728633e897326",
     "packages/generator/README.md": "8389bb494b997990f2ea3a2ad4cf6d6b8edb66b8e542e1318f0df60333d087f0",
     "packages/generator/package-lock.json": "1d5ea77c5acf2be816e3d7a23210d5bbab4c27d4c2b4479cf0d368b066a75162",
-    "packages/generator/package.json": "0d7b4014a4c6a1f3998b5c5f792e81a01394be6147cf3c443f30d79342f3561b",
+    "packages/generator/package.json": "4deb64b6955edcb2db165e176ae9e023bb8457b52f87921fdcf199040f0baa36",
     "packages/generator/scripts/build.mjs": "4d9f2cab61bea56f84055076aab75f37d7283828cd44bc737de0e91d2e87eb1a",
     "packages/generator/scripts/fixture-lib.mjs": "319f0f8b9266128c5f877ec7069056f09974921809d2a619b1c36ab1efb3bc34",
     "packages/generator/scripts/fixture.mjs": "0191f59bbc3c9827200d5a5c50ae865808182fb061903c7a7636e2907fdc0b96",
     "packages/generator/scripts/install-railway.mjs": "491723518d0cbb5e7ed6f4a362bb15b2ff8b807faa96847c306646658a5a1cb1",
     "packages/generator/scripts/licenses.mjs": "2722064668363eba388553d4790686302bfc6339e19e30945ef3a184fe12ed13",
+    "packages/generator/scripts/test-cms-volume.mjs": "713af2a0c34f93e186f5e4503429cab1469cb51aedc637d3b1415e75a35d4106",
     "packages/generator/scripts/test-cms.mjs": "8b432a7fd3c93f3c488af635cef69f8c89655ba0d65f2d95baa38dbf3de42ffc",
     "packages/generator/src/costs.ts": "4df0ce00532c023746ea3af5709cd5998a02c66448add6188ffe11f28427a6fe",
     "packages/generator/src/deploy.ts": "e0eafeafa90e05cf5453866c3e1a6dff87c82a7182eb6e775b7fa3faadf8242a",
     "packages/generator/src/index.ts": "21de59360551d483dedee1ff5e28e4ff3cdc6bb76c52f29aea399d47354f9403",
-    "packages/generator/src/pocketbase.ts": "93ecc7f1f3c51d08bd8b36c44492b4742746f0fb8cae71d7bf96e97900082062",
+    "packages/generator/src/pocketbase.ts": "f669a4b554bf38660100548ada342587a3c64da3f9da2f991e83c0920c43d744",
     "packages/generator/src/render.ts": "b18b6e097ed4fe8d5276835a57b29c11c819aeef931ce5031fbef1ba0f166e9e",
     "packages/generator/src/runtime.ts": "384741f07287bd527fde35ca647090e1047b3e5835f51ec18e11da0452f76ada",
     "packages/generator/src/storage.ts": "05ad4c6017f9348cf544f25265c8fb3ad86bc4a48cfb1182c18ec2373dab05a3",
-    "packages/generator/src/verification.ts": "b3d2df995de732b7f8332b8af3e89fd74a189805d0ec95ed0d952b9d881df7eb",
+    "packages/generator/src/verification.ts": "693ad4b753660bd74e744bf01c3f84ba72f69a6acdcdee31ecddb4ac31403852",
     "packages/generator/template/package-lock.json": "3afa3fc41b07cb278ad4a8b6ed26b763332c847dc341cb0e88d4fa7f541173bd",
     "packages/generator/template/package.json": "ebeb3e7c69aebace55359b8f0bc7b61eed1778240a633471d83a82f4a02b4a93",
     "packages/generator/template/verify.mjs": "f1bb6e7e224d37e790d06857a08c9bc0ab565104bbc6be7aa92bbb007385ac68",
-    "packages/generator/test/adapters.test.mjs": "5ad653118611f54d05c91d24846d5034c3037d780b361e73ee5267fca9096c44",
+    "packages/generator/test/adapters.test.mjs": "861d570119c5b4475b4dc5c462afa791356deea4dacc550a5fd8a9957ef18413",
     "packages/generator/test/costs.test.mjs": "e671fda0e0f0b82e2a7189aff44c7807156c8918f0f5664755de0f17db66e0c9",
+    "packages/generator/test/fixtures/pocketbase-before-runtime-chown.Dockerfile": "e72d36c0b24fb3ad0b616dad51b862f414d99f6a781e2a4ab7f448d6560738b6",
     "packages/generator/test/generator.test.mjs": "330b3b1b16c6538e9f96d151c593760b2cf27811ad1beedb3e695793f39ae12c",
     "packages/generator/tsconfig.json": "2bfff630d2fdbe25c9d2a6c93075e96a8ef2423f6b16af4d6898e82d439c1264",
     "plans/versions/web-simple/1.0.0.policy.json": "d900a812bcb6c99d770ebb19fbf884e1c4ceb922f5f15824ff45b50eb812dcfd",
