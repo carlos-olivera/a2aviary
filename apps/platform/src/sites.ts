@@ -27,6 +27,7 @@ import {
 } from '@a2aviary/generator';
 import {
   Store,
+  AccessError,
   requireRole,
   requireConfirmation,
   type Principal
@@ -859,7 +860,10 @@ export class Sites {
           );
         }
       }
-      const code = error instanceof SiteError ? error.code : 'operation_failed';
+      const code =
+        error instanceof SiteError || error instanceof AccessError
+          ? error.code
+          : 'operation_failed';
       // An uncertain provider outcome is retained for manual reconciliation, never replayed or charged blindly.
       const unknown =
         job.kind === 'deploy' &&
@@ -875,13 +879,18 @@ export class Sites {
           [job.spec_id, unknown ? 'unknown' : 'failed', code, unknown]
         );
       });
-      await this.store.recordSiteResult(
-        job.actor_id,
-        'site.' + job.kind,
-        hash,
-        code,
-        job.test_mode
-      );
+      try {
+        await this.store.recordSiteResult(
+          job.actor_id,
+          'site.' + job.kind,
+          hash,
+          code,
+          job.test_mode
+        );
+      } catch (auditError) {
+        // A revoked identity cannot resolve, but its admitted job still gets an immutable outcome below.
+        if (!(auditError instanceof AccessError)) throw auditError;
+      }
       await this.store.transaction(async (c) => {
         const site = (
           await c.query(
