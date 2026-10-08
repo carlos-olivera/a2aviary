@@ -205,6 +205,7 @@ export class AgentsVerifier implements BuildVerifier {
               access: 'restricted',
               allowed_domains: [
                 'registry.npmjs.org',
+                'storage.googleapis.com',
                 'cdn.playwright.dev',
                 'playwright.download.prss.microsoft.com',
                 'cdn.playwright.download.prss.microsoft.com',
