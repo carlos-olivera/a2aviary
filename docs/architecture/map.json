@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Architecture overview",
-    "output": ".local/architecture/managed-20261007/overview.html",
+    "output": ".local/architecture/catalog-20261008/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
@@ -110,7 +110,7 @@
           "end_line": 663
         }
       ],
-      "tag": "In progress \u00b7 deployed"
+      "tag": "Catalog implementation"
     },
     {
       "id": "ops",

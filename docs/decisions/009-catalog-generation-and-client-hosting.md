@@ -8,7 +8,7 @@ verification and activation are recorded separately.
 Phases 1 and 2 provide the structured contract, validators, authenticated human
 subjects and role-scoped MCP transport. The owner requested approved-spec Astro
 generation, secret-free Agents API verification, per-client PocketBase and
-Railway hosting. Payments, tester enrollment, chat administration and Teco remain
+Railway hosting. Payments, tester enrollment, chat administration and external sites remain
 outside this phase.
 
 ## Decision
@@ -32,7 +32,7 @@ project/environment. Apply service resource caps, preserve CMS content during
 site changes, configure encrypted settings and off-volume scheduled backups.
 Only approved CMS content routes and the client editor are proxied; the CMS
 admin dashboard is not exposed. Custom domain configuration returns DNS/SSL
-status without changing DNS. Existing AWS/platform/Teco resources are protected.
+status without changing DNS. Existing AWS/platform resources are protected.
 
 ## Consequences
 

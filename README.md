@@ -1,10 +1,10 @@
 # a2aviary
 
-An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. Our positioning is “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” The customer-site pilot is in progress and deployed according to the owner; independent hosted verification is tracked separately.
+An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. Our positioning is “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” There are no registered client sites. The first client site will be created through the normal catalog workflow.
 
 Websites come first. The owner-approved pilot has the client agent understand intent, research, prepare images and copy, and obtain human approval of a catalog-expressible preview before submission. a2aviary validates a structured site spec and implements generation/deployment through fixed Astro components and design tokens. It does not research, OCR, edit images or interpret free-text website instructions. [Plan policies and contracts](docs/plans.md) define Phase 1; [Phase 2 discovery auth/MCP](docs/platform.md) is implemented for local verification and prepared for Railway, with independent deployment verification and real client connections still unverified. [Phase 3 catalog generation and hosting](docs/sites.md) adds opt-in source for Astro builds, sandbox verification, PocketBase and isolated Railway projects; live cloud verification and activation are recorded separately. The pilot proposes fixed monthly change requests, replacing the earlier credit model for this plan. Nothing is for sale; there is no live checkout or active Paddle merchant of record. Public website copy remains a separate delivery.
 
-**Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed email operating foundation whose first capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Website generation/hosting has Phase 3 source and owner-reported pilot deployment; independent hosted proof remains a release gate. The [Teco preservation workflow](docs/managed-static-sites.md) has opt-in imported-static source; live onboarding and handoff remain gated. Autonomous repository engineering and external A2A compliance remain future work.
+**Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed email operating foundation whose first capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Website generation/hosting has catalog source; activation and independently verified hosted operation remain release gates. Scoped site administration and private cost reports are described in [site operations](docs/sites.md). Autonomous repository engineering and external A2A compliance remain future work.
 
 Created by **Carlos Olivera Terrazas — Founder & Principal Architect**. Licensed Apache 2.0 since the first commit. Automated contributions identify their own author; publication through an owner account is recorded separately.
 
@@ -40,12 +40,11 @@ English is the canonical language for repository documentation. The repository i
 - [Discovery platform auth, MCP and roles](docs/platform.md)
 - [Catalog generation, CMS and client hosting](docs/sites.md)
 - [Testers and chat-only superadmin](docs/testers-and-admin.md)
-- [Managed imported static sites](docs/managed-static-sites.md)
 - [Vision and scope](docs/vision.md)
 - [Architecture](docs/architecture/overview.md) and [interactive map](https://a2aviary.io/architecture) (prepared; pending approved release)
 - [Local development and verification](docs/local-development.md)
 - [Accepted decisions and open questions](docs/decisions/README.md)
-- [Roadmap and Teco pilot](docs/roadmap.md)
+- [Roadmap and first catalog pilot](docs/roadmap.md)
 - [Explored visual identity](docs/brand.md)
 - [Building in public](docs/build-in-public.md)
 - [Governance](GOVERNANCE.md)

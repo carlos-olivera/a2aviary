@@ -44,7 +44,7 @@ async (page) => {
       await page.locator('.node-list details').evaluateAll(details => details.forEach(detail => { detail.open = false; }));
       await page.locator('#stage-body .diagram-region').screenshot({ path: `output/playwright/architecture-${stage}-diagram.png` });
       if (stage === 'hosting') {
-        assert((await page.locator('#detail-hosting-customer').textContent()).includes('In progress · deployed'), 'Customer hosting status');
+        assert((await page.locator('#detail-hosting-customer').textContent()).includes('Implemented'), 'Customer hosting status');
         assert(await page.locator('[data-node-id="hosting-customer"]').getAttribute('data-status') !== 'Planned', 'Customer hosting not planned');
         await page.locator('.node-list details').evaluateAll(details => details.forEach(detail => { detail.open = false; }));
         await page.screenshot({ path: 'output/playwright/architecture-hosting.png', fullPage: true });

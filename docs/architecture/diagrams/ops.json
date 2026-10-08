@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Governance & Ops",
-    "output": ".local/architecture/managed-20261007/ops.html",
+    "output": ".local/architecture/catalog-20261008/ops.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
@@ -232,14 +232,14 @@
       "sublabel": "Audited / staging-only reset",
       "sources": [
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 444,
-          "end_line": 448
+          "path": "apps/platform/src/site-administration.ts",
+          "line": 130,
+          "end_line": 134
         },
         {
           "path": "apps/platform/src/store.ts",
-          "line": 88,
-          "end_line": 92
+          "line": 83,
+          "end_line": 87
         }
       ],
       "pos": [
@@ -259,19 +259,19 @@
       "sublabel": "Atomic results / unknown outcomes",
       "sources": [
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 852,
-          "end_line": 856
+          "path": "apps/platform/src/site-administration.ts",
+          "line": 394,
+          "end_line": 398
         },
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 1127,
-          "end_line": 1131
+          "path": "apps/platform/src/site-administration.ts",
+          "line": 372,
+          "end_line": 376
         },
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 1613,
-          "end_line": 1617
+          "path": "apps/platform/src/sites.ts",
+          "line": 1138,
+          "end_line": 1142
         }
       ],
       "pos": [

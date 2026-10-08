@@ -41,12 +41,12 @@
     "mode": "Separate local tooling"
   },
   "gate-owner": {
-    "note": "Verified platform roles and live imported-site email membership restrict requests and queued provider work. Site grants never confer global roles.",
+    "note": "Verified owners, superadmin and enabled site administrators may use assigned catalog sites. Role, verified identity, membership, lifecycle and fixture classification are rechecked before queued work. Grants confer no platform role.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "gate-confirm": {
-    "note": "Catalog approval remains unchanged. Imported deployments require exact release confirmation, passing bound reports, no drift and independently enabled deployment/handoff flags.",
+    "note": "Catalog builds bind human-approved specs and previews. Changes and deployments require their exact action confirmations; tester sites cannot use custom domains.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -72,12 +72,12 @@
     "mode": "Local emulation"
   },
   "engine-validate": {
-    "note": "Catalog specifications and assets follow their fixed policy. Imported-static bundles have bounded safe paths/canonical base64 and server-calculated hashes, with no uploaded build scripts.",
+    "note": "Catalog specifications and assets follow the fixed versioned policy, canonical hashes and bounded byte validation. Uploaded build scripts are never executed.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-jobs": {
-    "note": "Postgres persists catalog and imported verification/deploy/rollback/usage jobs, admission audits and eligibility snapshots. Unknown provider outcomes block replay.",
+    "note": "Postgres persists catalog build, deploy and usage jobs, admission audits and immutable owner eligibility snapshots. Unknown deployment outcomes block replay.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -87,12 +87,12 @@
     "mode": "Separate local tooling"
   },
   "engine-verify": {
-    "note": "Secret-free hosted Agents verification uses fixed trusted checkers. Imported prebuilt files bypass Astro generation and require baseline byte/visual/interaction parity. Cloud proof remains separate.",
+    "note": "Secret-free hosted Agents verification uses fixed trusted checkers for catalog builds, approved preview parity, accessibility, links and Lighthouse. Cloud proof remains separate.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-artifacts": {
-    "note": "The existing private bucket retains prepared bytes, verification reports and screenshots. Source and assets of imported clients remain private.",
+    "note": "The existing private artifact-bucket adapter retains catalog assets, approved previews, builds, verification reports and screenshots. Bucket activation remains separately verified.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -123,22 +123,22 @@
     "mode": "Local emulation"
   },
   "hosting-customer": {
-    "note": "Carlos Olivera Terrazas reports the customer-site build/hosting pilot deployed and still in progress. This task has not independently inspected a hosted end-to-end transcript or customer site. Earlier local verification and independent cloud gates remain separate.",
-    "status": "In progress \u00b7 deployed",
+    "note": "Catalog hosting is implemented and locally tested. No registered client sites exist; the first client site will use the catalog workflow. Hosted end-to-end verification remains pending.",
+    "status": "Implemented",
     "mode": "Cloud-only"
   },
   "hosting-railway": {
-    "note": "Catalog sites use dedicated guarded projects. Imported-static sites preserve an exact owner-registered protected target; no workspace migration or CMS provision occurs.",
+    "note": "Catalog sites use dedicated guarded Railway projects, exact recorded service identifiers and protected project/domain checks. The current provider and architecture are preserved.",
     "status": "Implemented",
     "mode": "Cloud-only"
   },
   "hosting-caddy": {
-    "note": "Caddy serves catalog and imported static bytes. Imported serving configuration and runtime digest are pinned; original routes, headers and files must remain equivalent.",
+    "note": "Caddy serves generated catalog bytes and proxies the site PocketBase CMS under the existing route and security policy.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "hosting-cms": {
-    "note": "PocketBase belongs only to catalog sites. Imported sites with cmsMode:none create no CMS service, volume, credentials, backup configuration or routes.",
+    "note": "Each catalog site uses PocketBase with constrained content editing, separate owner credentials and its existing persistent volume and backups.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -203,12 +203,12 @@
     "mode": "Local emulation"
   },
   "ops-admin": {
-    "note": "Superadmin manages testers and imported-site email grants through chat/MCP. Site administrators are scoped to assigned sites and do not change platform roles.",
+    "note": "Superadmin manages testers and site email grants through chat/MCP. Verified site administrators operate only assigned catalog sites; grants change neither global roles nor owner billing eligibility.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "ops-audit": {
-    "note": "Durable audits and exact-ID reconciliation cover imported releases and recovery. Private reports retain effective owner-role eligibility and daily Railway costs/resource windows, including exempt sites; missing costs remain unavailable.",
+    "note": "Immutable operations and eligibility history survive tester reset. Queued daily UTC reports collect only recorded catalog web/CMS resources; missing amounts remain null and shared storage/overhead remain unallocated.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -218,7 +218,7 @@
     "mode": "Local emulation"
   },
   "ops-future": {
-    "note": "Payments/checkout and future customer apps, MCP products and plugins remain planned. This excludes the implemented platform MCP connector and the in-progress deployed website pilot.",
+    "note": "Payments/checkout and future customer apps, MCP products and plugins remain planned. Catalog source and the implemented platform MCP connector have separate verification evidence.",
     "status": "Planned",
     "mode": "Planned"
   }

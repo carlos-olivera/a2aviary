@@ -1,11 +1,11 @@
 # Architecture
 
-Status: source-backed implementation map; customer-site pilot deployment is
-owner-reported, with independent hosted verification tracked separately.
+Status: source-backed catalog implementation; no registered client sites. Hosted
+end-to-end verification is tracked separately.
 
 The [interactive architecture map](https://a2aviary.io/architecture) is prepared for
 owner review and release. It distinguishes the project landing and signed-email
-foundation from the in-progress, owner-reported deployed customer-site pilot
+foundation from the catalog implementation and its pending first client site
 and future customer products. See [local development](../local-development.md)
 for the shared CDK environment, adapters and cloud-only boundaries.
 
@@ -30,12 +30,12 @@ assets and a catalog-expressible preview, approved by the human before submissio
 a2aviary validates the versioned policy and generates fixed Astro catalog sites,
 verifies approved artifacts, and provisions isolated Railway hosting with PocketBase
 CMS. Auth/MCP, durable Postgres jobs, testers and chat-only superadmin source are
-implemented. Carlos reports the customer-site pilot deployed and still in progress;
-independent hosted end-to-end verification remains separate from this report.
+implemented. There are no registered client sites; the first site will use the
+catalog workflow. Independent hosted end-to-end verification remains pending.
 Existing AWS brief analysis and signed email v1 remain supported. See
 [site operations](../sites.md), [platform operations](../platform.md),
 [tester/admin operations](../testers-and-admin.md), and
-[release evidence](../release-verification.md#customer-site-pilot--2026-10-06-owner-reported-deployment).
+[release evidence](../release-verification.md).
 
 ## Five-stage map
 
@@ -61,7 +61,7 @@ generator and CMS use separate local tooling; neither simulation nor an owner
 report substitutes for independently observed hosted end-to-end behavior.
 
 Payments/checkout, future customer apps, MCP products and plugins remain planned.
-The implemented platform MCP connector and in-progress customer-site pilot are
+The implemented platform MCP connector and catalog source are
 separate from those future products. The external A2A standard remains open.
 
 ## Trust boundaries
@@ -77,4 +77,4 @@ customer products and the external A2A standard remain open.
 
 ## Initial release implementation
 
-The accepted release uses AWS CDK/TypeScript, Node.js 22, signed SES email, durable DynamoDB state, and OpenAI Agents API. That AWS release implements website brief analysis. The later customer-site pilot adds the implemented source described above; owner-reported deployment and independent verification are separate. See [operating foundation](../operating-foundation.md), [accepted release decisions](../decisions/README.md), and [verification status](../release-verification.md) for concrete behavior and evidence.
+The accepted release uses AWS CDK/TypeScript, Node.js 22, signed SES email, durable DynamoDB state, and OpenAI Agents API. That AWS release implements website brief analysis. The later customer-site pilot adds the implemented source described above; no registered client sites exist and hosted verification remains pending. See [operating foundation](../operating-foundation.md), [accepted release decisions](../decisions/README.md), and [verification status](../release-verification.md) for concrete behavior and evidence.

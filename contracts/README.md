@@ -27,4 +27,3 @@ The private key file contains `kid`, `privateKey` (an ES256 JWK), and `from` (th
 
 Limits, rejection reasons, replay retention, and recovery semantics are described in [operating foundation](../docs/operating-foundation.md) and [runbooks](../docs/runbooks.md).
 
-The [imported static site contract](managed-static/README.md) belongs to the authenticated platform MCP/HTTP workflow. It does not expand this signed-email mandate.

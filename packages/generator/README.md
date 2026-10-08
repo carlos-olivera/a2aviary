@@ -27,4 +27,3 @@ only in an ignored private evidence file; asserts an HTTPS fixture response and
 CMS login; leaves remote resources for explicit owner-reviewed cleanup. No
 platform staging service, AWS resource or DNS record is modified.
 
-The separate [managed-static workflow](../../docs/managed-static-sites.md) accepts prebuilt private Astro outputs, retains their original components and lockfile in the private source repository, and uses a fixed static checker and exact protected-target adapter. It adds no CMS resources and defaults off.

@@ -1,0 +1,1538 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://a2aviary.io/contracts/site/1.0.1/site-spec-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractVersion",
+    "planId",
+    "policyVersion",
+    "pages",
+    "tokens",
+    "navigation",
+    "assets",
+    "cms",
+    "approval"
+  ],
+  "properties": {
+    "contractVersion": {
+      "const": "1.0"
+    },
+    "planId": {
+      "const": "web-simple"
+    },
+    "policyVersion": {
+      "const": "1.0.1"
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 7,
+      "items": {
+        "$ref": "#/definitions/page"
+      },
+      "x-policyPath": "/includes/maxPages"
+    },
+    "tokens": {
+      "$ref": "#/definitions/tokens"
+    },
+    "navigation": {
+      "$ref": "#/definitions/navigation"
+    },
+    "assets": {
+      "$ref": "#/definitions/assets"
+    },
+    "cms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "collections"
+      ],
+      "properties": {
+        "collections": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "catalog",
+              "blog",
+              "announcements"
+            ]
+          },
+          "x-policyPath": "/includes/cmsCollections"
+        }
+      }
+    },
+    "approval": {
+      "$ref": "#/definitions/approval"
+    },
+    "preview": {
+      "$ref": "#/definitions/preview"
+    }
+  },
+  "definitions": {
+    "link": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "pageId"
+          ],
+          "properties": {
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "\\S",
+              "x-policyPath": "/firstVersion/copy/label"
+            },
+            "pageId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$",
+              "x-policyPath": "/firstVersion/structure/idPattern"
+            },
+            "sectionId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]{0,63}$",
+              "x-policyPath": "/firstVersion/structure/idPattern"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "url"
+          ],
+          "properties": {
+            "label": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "pattern": "\\S",
+              "x-policyPath": "/firstVersion/copy/label"
+            },
+            "url": {
+              "type": "string",
+              "maxLength": 262144,
+              "format": "site-link",
+              "x-policyPath": "/firstVersion/navigation/externalSchemes"
+            }
+          }
+        }
+      ]
+    },
+    "textItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "heading",
+        "text"
+      ],
+      "properties": {
+        "heading": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "pattern": "\\S",
+          "x-policyPath": "/firstVersion/copy/heading"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "pattern": "\\S",
+          "x-policyPath": "/firstVersion/copy/paragraph"
+        }
+      }
+    },
+    "richNode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "const": "paragraph"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2000,
+              "pattern": "\\S",
+              "x-policyPath": "/firstVersion/copy/paragraph"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "text"
+          ],
+          "properties": {
+            "type": {
+              "const": "heading"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120,
+              "pattern": "\\S",
+              "x-policyPath": "/firstVersion/copy/heading"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "items"
+          ],
+          "properties": {
+            "type": {
+              "const": "list"
+            },
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 12,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "pattern": "\\S",
+                "x-policyPath": "/firstVersion/copy/paragraph"
+              },
+              "x-policyPath": "/firstVersion/items/grid"
+            }
+          }
+        }
+      ]
+    },
+    "block": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "component",
+        "variant",
+        "props"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "x-policyPath": "/firstVersion/structure/idPattern"
+        },
+        "component": {
+          "enum": [
+            "hero",
+            "rich-text",
+            "feature-grid",
+            "steps",
+            "link-cards",
+            "gallery",
+            "faq",
+            "cta",
+            "contact",
+            "catalog",
+            "blog",
+            "announcements"
+          ],
+          "x-policyPath": "/firstVersion/components"
+        },
+        "variant": {
+          "type": "string"
+        },
+        "props": {
+          "type": "object"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "hero"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/hero/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "text"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/shortCopy"
+                  },
+                  "image": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                    "x-policyPath": "/firstVersion/structure/idPattern"
+                  },
+                  "action": {
+                    "$ref": "#/definitions/link"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/hero/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "rich-text"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/rich-text/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "content"
+                ],
+                "properties": {
+                  "content": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                      "$ref": "#/definitions/richNode"
+                    },
+                    "x-policyPath": "/firstVersion/items/grid"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/rich-text/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "feature-grid"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/feature-grid/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "items"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                      "$ref": "#/definitions/textItem"
+                    },
+                    "x-policyPath": "/firstVersion/items/grid"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/feature-grid/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "steps"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/steps/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "items"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                      "$ref": "#/definitions/textItem"
+                    },
+                    "x-policyPath": "/firstVersion/items/grid"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/steps/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "link-cards"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/link-cards/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "items"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "heading",
+                        "text",
+                        "link"
+                      ],
+                      "properties": {
+                        "heading": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120,
+                          "pattern": "\\S",
+                          "x-policyPath": "/firstVersion/copy/heading"
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000,
+                          "pattern": "\\S",
+                          "x-policyPath": "/firstVersion/copy/paragraph"
+                        },
+                        "link": {
+                          "$ref": "#/definitions/link"
+                        }
+                      }
+                    },
+                    "x-policyPath": "/firstVersion/items/grid"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/link-cards/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "gallery"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/gallery/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "images"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "images": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                      "x-policyPath": "/firstVersion/structure/idPattern"
+                    },
+                    "x-policyPath": "/firstVersion/items/grid"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/gallery/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "faq"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/faq/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "items"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "items": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 20,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "required": [
+                        "question",
+                        "answer"
+                      ],
+                      "properties": {
+                        "question": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120,
+                          "pattern": "\\S",
+                          "x-policyPath": "/firstVersion/copy/heading"
+                        },
+                        "answer": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 2000,
+                          "pattern": "\\S",
+                          "x-policyPath": "/firstVersion/copy/paragraph"
+                        }
+                      }
+                    },
+                    "x-policyPath": "/firstVersion/items/faq"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/faq/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "cta"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/cta/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "text",
+                  "action"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/shortCopy"
+                  },
+                  "action": {
+                    "$ref": "#/definitions/link"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/cta/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "contact"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/contact/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "text",
+                  "links"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/shortCopy"
+                  },
+                  "links": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                      "$ref": "#/definitions/link"
+                    },
+                    "x-policyPath": "/firstVersion/items/grid"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/contact/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "catalog"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/catalog/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "collection",
+                  "emptyText"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "collection": {
+                    "const": "catalog",
+                    "x-policyPath": "/includes/cmsCollections"
+                  },
+                  "emptyText": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/shortCopy"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/catalog/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "blog"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/blog/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "collection",
+                  "emptyText"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "collection": {
+                    "const": "blog",
+                    "x-policyPath": "/includes/cmsCollections"
+                  },
+                  "emptyText": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/shortCopy"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/blog/fields"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "component": {
+                "const": "announcements"
+              }
+            },
+            "required": [
+              "component"
+            ]
+          },
+          "then": {
+            "properties": {
+              "variant": {
+                "enum": [
+                  "standard"
+                ],
+                "x-policyPath": "/firstVersion/components/announcements/variants"
+              },
+              "props": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "heading",
+                  "collection",
+                  "emptyText"
+                ],
+                "properties": {
+                  "heading": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/heading"
+                  },
+                  "collection": {
+                    "const": "announcements",
+                    "x-policyPath": "/includes/cmsCollections"
+                  },
+                  "emptyText": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 500,
+                    "pattern": "\\S",
+                    "x-policyPath": "/firstVersion/copy/shortCopy"
+                  }
+                },
+                "x-policyPath": "/firstVersion/components/announcements/fields"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "blocks"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "x-policyPath": "/firstVersion/structure/idPattern"
+        },
+        "blocks": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/definitions/block"
+          },
+          "x-policyPath": "/firstVersion/structure/maxBlocksPerSection"
+        }
+      }
+    },
+    "seo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "description"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 70,
+          "pattern": "\\S",
+          "x-policyPath": "/firstVersion/copy/seoTitle"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "pattern": "\\S",
+          "x-policyPath": "/firstVersion/copy/seoDescription"
+        },
+        "socialImage": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "x-policyPath": "/firstVersion/structure/idPattern"
+        }
+      }
+    },
+    "page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "path",
+        "seo",
+        "sections"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "x-policyPath": "/firstVersion/structure/idPattern"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/(?:[a-z0-9]+(?:-[a-z0-9]+)*/){0,3}$",
+          "x-policyPath": "/firstVersion/structure/pagePathPattern"
+        },
+        "seo": {
+          "$ref": "#/definitions/seo"
+        },
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/definitions/section"
+          },
+          "x-policyPath": "/firstVersion/structure/maxSectionsPerPage"
+        }
+      }
+    },
+    "tokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "colors",
+        "fonts",
+        "spacing",
+        "radius"
+      ],
+      "properties": {
+        "colors": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "background",
+            "surface",
+            "text",
+            "muted",
+            "primary",
+            "accent",
+            "border"
+          ],
+          "properties": {
+            "background": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "x-policyPath": "/firstVersion/designTokens/colorPattern"
+            },
+            "surface": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "x-policyPath": "/firstVersion/designTokens/colorPattern"
+            },
+            "text": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "x-policyPath": "/firstVersion/designTokens/colorPattern"
+            },
+            "muted": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "x-policyPath": "/firstVersion/designTokens/colorPattern"
+            },
+            "primary": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "x-policyPath": "/firstVersion/designTokens/colorPattern"
+            },
+            "accent": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "x-policyPath": "/firstVersion/designTokens/colorPattern"
+            },
+            "border": {
+              "type": "string",
+              "pattern": "^#[0-9A-Fa-f]{6}$",
+              "x-policyPath": "/firstVersion/designTokens/colorPattern"
+            }
+          },
+          "x-policyPath": "/firstVersion/designTokens/colorSlots"
+        },
+        "fonts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "heading",
+            "body"
+          ],
+          "properties": {
+            "heading": {
+              "enum": [
+                "Inter",
+                "EB Garamond",
+                "system-sans",
+                "system-serif"
+              ],
+              "x-policyPath": "/firstVersion/designTokens/fonts"
+            },
+            "body": {
+              "enum": [
+                "Inter",
+                "EB Garamond",
+                "system-sans",
+                "system-serif"
+              ],
+              "x-policyPath": "/firstVersion/designTokens/fonts"
+            }
+          }
+        },
+        "spacing": {
+          "enum": [
+            4,
+            8,
+            12,
+            16,
+            24,
+            32,
+            48,
+            64,
+            96
+          ],
+          "x-policyPath": "/firstVersion/designTokens/spacing"
+        },
+        "radius": {
+          "enum": [
+            0,
+            2,
+            4,
+            8,
+            16,
+            24
+          ],
+          "x-policyPath": "/firstVersion/designTokens/radius"
+        }
+      }
+    },
+    "navigation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "primary",
+        "footer"
+      ],
+      "properties": {
+        "primary": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 8,
+          "items": {
+            "$ref": "#/definitions/link"
+          },
+          "x-policyPath": "/firstVersion/navigation/maxPrimary"
+        },
+        "footer": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 12,
+          "items": {
+            "$ref": "#/definitions/link"
+          },
+          "x-policyPath": "/firstVersion/navigation/maxFooter"
+        }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "format",
+        "bytes",
+        "width",
+        "height",
+        "alt",
+        "sha256"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "x-policyPath": "/firstVersion/structure/idPattern"
+        },
+        "format": {
+          "enum": [
+            "webp",
+            "jpeg",
+            "png"
+          ],
+          "x-policyPath": "/firstVersion/images/formats"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2097152,
+          "x-policyPath": "/firstVersion/images/maxBytes"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096,
+          "x-policyPath": "/firstVersion/images/maxWidth"
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4096,
+          "x-policyPath": "/firstVersion/images/maxHeight"
+        },
+        "alt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240,
+          "pattern": "\\S",
+          "x-policyPath": "/firstVersion/copy/alt"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "x-policyPath": "/firstVersion/images/hash"
+        }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 50,
+      "items": {
+        "$ref": "#/definitions/asset"
+      },
+      "x-policyPath": "/firstVersion/images/maxAssets"
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approved",
+        "approvedAt",
+        "specSha256"
+      ],
+      "properties": {
+        "approved": {
+          "const": true
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "approval-time"
+        },
+        "specSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "x-policyPath": "/firstVersion/images/hash"
+        }
+      },
+      "x-policyPath": "/firstVersion/approval/required"
+    },
+    "preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifactId",
+        "sha256"
+      ],
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]{0,63}$",
+          "x-policyPath": "/firstVersion/structure/idPattern"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "x-policyPath": "/firstVersion/images/hash"
+        }
+      }
+    },
+    "operation": {
+      "type": "object",
+      "required": [
+        "op"
+      ],
+      "properties": {
+        "op": {
+          "enum": [
+            "add-block",
+            "update-block",
+            "remove-block",
+            "add-page",
+            "update-page-seo",
+            "update-tokens",
+            "update-navigation"
+          ],
+          "x-policyPath": "/changes/operations"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "add-block"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "op",
+              "pageId",
+              "sectionId",
+              "index",
+              "block"
+            ],
+            "properties": {
+              "op": {
+                "const": "add-block"
+              },
+              "pageId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              },
+              "sectionId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              },
+              "index": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 6
+              },
+              "block": {
+                "$ref": "#/definitions/block"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "update-block"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "op",
+              "pageId",
+              "sectionId",
+              "blockId",
+              "block"
+            ],
+            "properties": {
+              "op": {
+                "const": "update-block"
+              },
+              "pageId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              },
+              "sectionId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              },
+              "blockId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              },
+              "block": {
+                "$ref": "#/definitions/block"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "remove-block"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "op",
+              "pageId",
+              "sectionId",
+              "blockId"
+            ],
+            "properties": {
+              "op": {
+                "const": "remove-block"
+              },
+              "pageId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              },
+              "sectionId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              },
+              "blockId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "add-page"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "op",
+              "page"
+            ],
+            "properties": {
+              "op": {
+                "const": "add-page"
+              },
+              "page": {
+                "$ref": "#/definitions/page"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "update-page-seo"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "op",
+              "pageId",
+              "seo"
+            ],
+            "properties": {
+              "op": {
+                "const": "update-page-seo"
+              },
+              "pageId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$",
+                "x-policyPath": "/firstVersion/structure/idPattern"
+              },
+              "seo": {
+                "$ref": "#/definitions/seo"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "update-tokens"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "op",
+              "tokens"
+            ],
+            "properties": {
+              "op": {
+                "const": "update-tokens"
+              },
+              "tokens": {
+                "$ref": "#/definitions/tokens"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "op": {
+                "const": "update-navigation"
+              }
+            },
+            "required": [
+              "op"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "op",
+              "navigation"
+            ],
+            "properties": {
+              "op": {
+                "const": "update-navigation"
+              },
+              "navigation": {
+                "$ref": "#/definitions/navigation"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "x-provenance": {
+    "policyVersion": "1.0.1",
+    "policySha256": "485b617e8d9836d43a194c4cf6fc611725713d45124d26cf6ee06f56df26e130"
+  }
+}

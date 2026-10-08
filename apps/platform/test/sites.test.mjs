@@ -122,9 +122,9 @@ test('site intake, role visibility, owned jobs, atomic audit and successful-chan
     }
   );
   await t.test(
-    'ownership applies to administrators too, confirmation is required, and the first successful deploy is free',
+    'unassigned actors cannot operate sites; superadmin retains scoped access, and confirmation is required, and the first successful deploy is free',
     async () => {
-      for (const actor of [other, owner]) {
+      for (const actor of [other]) {
         await assert.rejects(
           sites.status(actor.id, initial.siteId),
           /owned_site_required/
@@ -385,7 +385,7 @@ test('site intake, role visibility, owned jobs, atomic audit and successful-chan
       );
       assert.equal(failedReport.passed, false);
       await assert.rejects(
-        sites.artifact(owner.id, first.saved.specId, 'report.json'),
+        sites.artifact(other.id, first.saved.specId, 'report.json'),
         /owned_spec_required/
       );
       d.failVerification(false);

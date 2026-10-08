@@ -4,7 +4,7 @@ Phase 4 adds a free tester path and superadmin tools to the existing authenticat
 MCP connector. Source/local evidence is distinct from deployment; see
 [release verification](release-verification.md). The platform still has only
 login and consent pages. No payments, policy mutation, OAuth trust changes,
-production DNS changes or Teco work are included.
+production DNS changes or external site work are included.
 
 ## Enrollment and identity
 
@@ -160,4 +160,3 @@ staging tester lifecycle, CMS edit and reset smoke test. Supply credentials
 privately; evidence remains in excluded `.local/`. Review/merge, staging rollout,
 real Claude/ChatGPT use and live provider cleanup remain separate owner gates.
 
-The separate [managed static workflow](managed-static-sites.md) supports verified-email site administrators. Membership is scoped to a site and never changes platform role. Current owner admin/superadmin roles confer billing exemption; effective history is retained, independently of tester classification.

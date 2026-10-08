@@ -14,8 +14,8 @@ import {
   type BuildVerifier,
   type SiteDeployer
 } from '@a2aviary/generator';
-import { staticRuntime, type ManagedDependencies } from '@a2aviary/generator';
-import { ManagedSites } from './managed-sites.ts';
+import {SiteAdministration} from './site-administration.ts';
+import {migrationInventory} from './migrate.ts';
 import { Sites } from './sites.ts';
 import { z } from 'zod';
 
@@ -28,21 +28,21 @@ export interface SiteDependencies {
 export async function createApp(
   config: Config,
   pool = createPool(config.databaseUrl),
-  siteDependencies: SiteDependencies | undefined = siteRuntime(),
-  managedDependencies: ManagedDependencies | undefined = staticRuntime()
+  siteDependencies: SiteDependencies | undefined = siteRuntime()
 ) {
   const auth = createAuth(config, pool);
   const store = new Store(pool, config);
   await store.seedTesters();
   const plans = await loadPlans();
-  const managed = managedDependencies ? new ManagedSites(store, managedDependencies) : undefined;
+  const administration = new SiteAdministration(store);
   const sites = siteDependencies
     ? new Sites(
         store,
         siteDependencies.objects,
         siteDependencies.verifier,
         siteDependencies.deployer,
-        siteDependencies.key
+        siteDependencies.key,
+        administration
       )
     : undefined;
   const protectedMcp = requireMcpAuth(
@@ -122,7 +122,7 @@ export async function createApp(
         })
       );
       const handler = createMcpHandler(
-        () => createServer(principal, store, plans, sites, validProtocol, managed),
+        () => createServer(principal, store, plans, sites, validProtocol, administration),
         { legacy: 'reject', maxSubscriptions: 0 }
       );
       return handler.fetch(request, {
@@ -249,26 +249,13 @@ export async function createApp(
       requiredScopes: ['mcp:tools']
     }
   );
-  const protectedStatic = requireMcpAuth(auth,async(request,claims)=>{
-    if(!managed)return Response.json({error:'managed_static_disabled'},{status:503});
+  const protectedReport = requireMcpAuth(auth,async(request,claims)=>{
     if(typeof claims.sub!=='string')return Response.json({error:'human_subject_required'},{status:403});
     await store.admitRequest(claims.sub);
-    const path=new URL(request.url).pathname;
-    try {
-      if(path==='/api/site-releases'){
-        let input:unknown;try{input=await request.json();}catch{return Response.json({error:'invalid_static_submission'},{status:400});}
-        const schema=z.union([z.object({siteId:z.uuid(),sourceCommit:z.string().regex(/^[a-f0-9]{40}$/),files:z.record(z.string(),z.string())}).strict(),z.object({kind:z.literal('import-baseline'),files:z.record(z.string(),z.string())}).strict()]);
-        const parsed=schema.safeParse(input);
-        if(!parsed.success){await store.recordSiteResult(claims.sub,'site.release.verify',null,'invalid_static_submission');return Response.json({error:'invalid_static_submission'},{status:400});}
-        const result='kind' in parsed.data?await managed.uploadBaseline(claims.sub,parsed.data.files):await managed.submit(claims.sub,parsed.data);
-        return Response.json(result,{status:201});
-      }
-      const report=path.match(/^\/api\/site-reports\/([a-f0-9-]{36})\/([0-9]{4}-[0-9]{2})\.csv$/);
-      if(report)return new Response(await managed.csv(claims.sub,report[1],report[2]),{headers:{'content-type':'text/csv; charset=utf-8','content-disposition':'attachment; filename="site-report.csv"'}});
-      const artifact=path.match(/^\/api\/site-release-artifacts\/([a-f0-9-]{36})\/([a-f0-9-]{36})\/([^/]+)$/);
-      if(artifact)return new Response(new Uint8Array(await managed.artifact(claims.sub,artifact[1],artifact[2],artifact[3])),{headers:{'content-type':artifact[3].endsWith('.png')?'image/png':'application/json'}});
-      return new Response('Not found',{status:404});
-    }catch(error){if(error instanceof SiteError){await store.recordSiteResult(claims.sub,'site.release.verify',null,error.code);return Response.json({error:error.code},{status:['owned_site_required','owned_release_required'].includes(error.code)?403:422});}throw error;}
+    const report=new URL(request.url).pathname.match(/^\/api\/site-reports\/([a-f0-9-]{36})\/([0-9]{4}-[0-9]{2})\.csv$/);
+    if(!report)return new Response('Not found',{status:404});
+    try{return new Response(await administration.csv(claims.sub,report[1],report[2]),{headers:{'content-type':'text/csv; charset=utf-8','content-disposition':'attachment; filename="site-report.csv"'}});}
+    catch(error){if(error instanceof SiteError || error instanceof AccessError)return Response.json({error:error.code},{status:403});throw error;}
   },{resource:config.resource,issuer:config.issuer,requiredScopes:['mcp:tools']});
   async function fetch(request: Request): Promise<Response> {
     let response: Response;
@@ -277,20 +264,12 @@ export async function createApp(
       if (url.origin !== config.origin)
         response = new Response('Invalid origin', { status: 400 });
       else if (url.pathname === '/healthz' && request.method === 'GET') {
-        const readiness = await pool.query(
-          "SELECT count(*)::int AS count FROM platform_migration WHERE name IN ('001-better-auth.sql','002-platform.sql','003-mcp-rate.sql','004-sites.sql','005-testers-admin.sql','006-managed-static.sql')"
-        );
-        if (readiness.rows[0].count !== 6)
-          throw new Error('Migrations required');
-        response = Response.json({
-          status: 'ok',
-          mandate: sites ? 'approved-catalog-sites' : managed ? 'managed-static-sites' : 'discovery-only'
-        });
-      } else if (url.pathname === '/api/site-releases' || url.pathname.startsWith('/api/site-reports/') || url.pathname.startsWith('/api/site-release-artifacts/')) {
-        const method=url.pathname==='/api/site-releases'?'POST':'GET';
-        if(request.method!==method)response=new Response('Method not allowed',{status:405,headers:{Allow:method}});
+        const migrations=await migrationInventory(pool);
+        response = Response.json({status:'ok',mandate:sites?'approved-catalog-sites':'discovery-only',migrations});
+      } else if (url.pathname.startsWith('/api/site-reports/')) {
+        if(request.method!=='GET')response=new Response('Method not allowed',{status:405,headers:{Allow:'GET'}});
         else if(request.headers.has('origin')&&request.headers.get('origin')!==config.origin)response=new Response('Invalid origin',{status:403});
-        else response=await protectedStatic(request);
+        else response=await protectedReport(request);
       } else if (url.pathname === '/api/site-specs') {
         if (!sites)
           response = Response.json(
@@ -340,8 +319,7 @@ export async function createApp(
           auth,
           plans,
           store,
-          Boolean(sites),
-          Boolean(managed)
+          Boolean(sites)
         );
       else if (url.pathname === '/' && request.method === 'GET')
         response = new Response(null, {
@@ -391,5 +369,5 @@ export async function createApp(
     );
     return response;
   }
-  return { fetch, auth, store, plans, pool, sites, managed };
+  return { fetch, auth, store, plans, pool, sites, administration };
 }

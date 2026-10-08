@@ -19,7 +19,7 @@ Suggested cadence, not yet agreed: two posts per week and demos when visible pro
 
 Distinguish designed, implemented, and tested work. Publish metrics only when measurements exist. Use fictional data or authorized materials; exclude secrets, private information, and client records.
 
-The Teco pilot can be the narrative thread, subject to authorization to show its materials and results. Preparing drafts does not authorize sending or scheduling them.
+The first new catalog pilot can be the narrative thread once a client exists and authorizes showing its materials and results. Preparing drafts does not authorize sending or scheduling them.
 
 ## Useful signals
 

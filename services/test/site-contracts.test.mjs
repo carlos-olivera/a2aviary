@@ -9,9 +9,9 @@ import { artifactDirectory, assertPolicySnapshot, generateContracts, flattenRule
 import { makeExamples } from '../dist/site/examples.js';
 import { policyDecision } from '../dist/policy.js';
 
-const fixture = JSON.parse(await readFile('../contracts/site/v1/examples/site-spec.json', 'utf8'));
-const changeFixture = JSON.parse(await readFile('../contracts/site/v1/examples/change-request.json', 'utf8'));
-const pixels = await readFile('../contracts/site/v1/examples/fictional-pixel.png');
+const fixture = JSON.parse(await readFile('../contracts/site/1.0.1/examples/site-spec.json', 'utf8'));
+const changeFixture = JSON.parse(await readFile('../contracts/site/1.0.1/examples/change-request.json', 'utf8'));
+const pixels = await readFile('../contracts/site/1.0.1/examples/fictional-pixel.png');
 const invalid = JSON.parse(await readFile('test/site-fixtures/invalid-specs.json', 'utf8'));
 const context = () => ({ month: '2026-10', appliedRequests: 0, now: new Date('2026-10-06T12:00:00.000Z') });
 const spec = () => structuredClone(fixture);
@@ -237,7 +237,7 @@ test('APNG animation chunks reject even when the native decoder sees a static im
 test('JSON byte limit accepts its exact boundary; later policy versions use separate artifact directories', () => {
   const p=structuredClone(defaultPolicy);p.firstVersion.structure.maxJsonBytes.value=Buffer.byteLength(JSON.stringify(fixture));
   assert.equal(validateSiteSpec(fixture,p).ok,true);p.firstVersion.structure.maxJsonBytes.value--;expectError(validateSiteSpec(fixture,p),'submission.bytes');
-  assert.equal(artifactDirectory(defaultPolicy),'v1');p.version.value='1.1.0';assert.equal(artifactDirectory(p),'1.1.0');
+  assert.equal(artifactDirectory(defaultPolicy),'1.0.1');p.version.value='1.1.0';assert.equal(artifactDirectory(p),'1.1.0');
 });
 
 

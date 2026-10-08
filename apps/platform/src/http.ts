@@ -21,8 +21,7 @@ export function createHttpServer(
   const server = createServer(async (incoming, outgoing) => {
     try {
       const upload =
-        (Boolean(app.sites) && (incoming.url ?? '').split('?')[0] === '/api/site-specs') ||
-        (Boolean(app.managed) && (incoming.url ?? '').split('?')[0] === '/api/site-releases');
+        Boolean(app.sites) && (incoming.url ?? '').split('?')[0] === '/api/site-specs';
       const data = ['GET', 'HEAD'].includes(incoming.method ?? '')
         ? undefined
         : await body(incoming, upload ? 48 * 1024 * 1024 : 512 * 1024);

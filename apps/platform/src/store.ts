@@ -35,16 +35,11 @@ export const TOOL_ROLES: Record<string, readonly Role[]> = {
   'site.status': ALL_ROLES,
   'site.deploy': ALL_ROLES,
   'change.request': ALL_ROLES,
-  'site.import': ['superadmin'],
   'site.admin.assign': ['superadmin'],
   'site.admin.remove': ['superadmin'],
   'site.admin.list': ['superadmin'],
-  'site.release.verify': ['superadmin','admin','client'],
-  'site.release.deploy': ['superadmin','admin','client'],
-  'site.release.rollback': ['superadmin','admin','client'],
   'site.report': ['superadmin','admin','client'],
   'site.costs.refresh': ['superadmin','admin','client'],
-  'site.release.reconcile': ['superadmin'],
 };
 export function isAdminTool(tool: string) {
   return TOOL_ROLES[tool]?.length === 1 && TOOL_ROLES[tool][0] === 'superadmin';
