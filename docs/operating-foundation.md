@@ -1,6 +1,6 @@
 # Initial operating foundation
 
-The first implemented capability is `website.brief.analyze`: structured goals, audience, proposed pages, missing inputs, assumptions, acceptance criteria, and research citations. Website generation, autonomous repository engineering, the Teco pilot, and external A2A compliance remain future work. Deployment and verification status are recorded separately in [release verification](release-verification.md).
+The first implemented capability is `website.brief.analyze`: structured goals, audience, proposed pages, missing inputs, assumptions, acceptance criteria, and research citations. Catalog website generation has separate implementation and verification evidence in [site operations](sites.md). Autonomous repository engineering and external A2A compliance remain future work. Deployment and verification status are recorded separately in [release verification](release-verification.md).
 
 ## Architecture
 

@@ -31,4 +31,5 @@ The launch research task reported 22,556 Agents input tokens and 1,177 output to
 
 AWS denied cost-allocation tag activation in this linked account. The management/payer account must activate `Project` before the project-tag AWS budget provides verified coverage. Failure and model-budget alarms also require the owner SNS email confirmation. Their configured state is not evidence that notifications have been received.
 
-Private [managed-site reports](managed-static-sites.md) retain accrued provider costs for exempt sites as well as billable-eligible sites. Missing billing evidence remains unavailable, shared overhead stays unallocated, and no live payment integration is enabled.
+
+Private [catalog site reports](sites.md#site-administration-and-costs) retain provider-accrued web/CMS costs for eligible and exempt sites. Missing amounts remain null; shared bucket and platform overhead are unallocated. There are no client sites or live charges.

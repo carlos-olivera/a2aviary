@@ -20,7 +20,7 @@ The 2026-10-06 owner-approved pilot supersedes earlier credit-based website plan
 
 ## Design direction from the recap
 
-The client agent acts as the interface, materials are prepared on the client's side, state is persistent, autonomy operates within a mandate, and work continues asynchronously. Skill plus API and the Teco pilot are the documented starting point; their operational specifications are not finalized.
+The client agent acts as the interface, materials are prepared on the client's side, state is persistent, autonomy operates within a mandate, and work continues asynchronously. MCP and the first new catalog pilot are the documented starting point; no clients are registered.
 
 ## Unapproved proposals
 
@@ -31,7 +31,7 @@ The client agent acts as the interface, materials are prepared on the client's s
 
 ## Open questions
 
-- Teco live platform readiness and separately authorized production handoff (preservation scope is accepted in decision 011).
+- Hosted catalog workflow verification and production schema reconciliation.
 - A2A standard and minimum client agent capabilities.
 - Identity provider and legal scope of the mandate, KYC, and signatures.
 - Ownership and permissions for client deliverables.
@@ -63,4 +63,5 @@ These decisions were accepted in the initial-release implementation plan. Accept
 
 - [010 — Testers and chat-only superadmin](010-testers-and-chat-superadmin.md) — accepted Phase 4 direction; free staging-only testers, audited reset and owner-only chat administration.
 
-- [011 — Imported static managed sites](011-imported-static-managed-sites.md) — accepted preservation plan, scoped verified-email administrators and effective owner-role eligibility; activation and handoff remain separate gates.
+- [011 — Retired site adoption](011-retired-site-adoption.md) — superseded and archived.
+- [012 — Catalog site administration and billing](012-catalog-site-administration-and-billing.md) — scoped grants, owner eligibility, operations, costs and the first new catalog pilot.

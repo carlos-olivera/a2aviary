@@ -32,10 +32,7 @@ The existing blanket CODEOWNERS rule and owner-review process remain in place.
 
 ## Initial owner-review limits
 
-Teco is a structural reference only: static Astro, six authored content pages
-plus system 404, WhatsApp links, Inter/EB Garamond, and 28 prepared raster files
-totaling 769,231 bytes, with maximum file size 88,270 bytes and dimensions
-1600 by 1900. No source text, client assets, identity, domain, or contact was copied.
+Policy 1.0.1 makes a nonfunctional rationale correction for a catalog starting with no clients. Every limit and behavioral value is unchanged. The frozen 1.0.0 snapshot and its historical manifests remain byte-for-byte intact. Historical names in those three artifacts are the explicit whole-word scan exception; active references use [1.0.1](../contracts/site/1.0.1/manifest.md).
 
 | Rule | Initial value |
 | --- | --- |
@@ -77,10 +74,10 @@ npm test
 ```
 
 `site:generate` validates policy shape, rationale and supported behavior, then
-emits [site schema](../contracts/site/v1/site-spec.schema.json),
-[change schema](../contracts/site/v1/change-request.schema.json),
-[Markdown manifest](../contracts/site/v1/manifest.md),
-[JSON manifest](../contracts/site/v1/manifest.json), and fictional examples.
+emits [site schema](../contracts/site/1.0.1/site-spec.schema.json),
+[change schema](../contracts/site/1.0.1/change-request.schema.json),
+[Markdown manifest](../contracts/site/1.0.1/manifest.md),
+[JSON manifest](../contracts/site/1.0.1/manifest.json), and fictional examples.
 Schemas use draft-07 and carry the generating policy version/hash. The generator
 validates examples and their original pixel bytes before writing them.
 `site:check` compares expected artifacts without modifying them and runs in the

@@ -5,7 +5,7 @@ owned MCP jobs, PocketBase and Railway client-site provisioning. Production is
 disabled unless `SITE_WORKFLOW_ENABLED=true`. Local tests and cloud verification
 are distinct; consult [release verification](release-verification.md). This
 delivery does not activate AWS policy enforcement, change DNS, deploy the
-platform, implement payments, or start the Teco pilot. Phase 4 adds the separate [tester and superadmin path](testers-and-admin.md).
+platform, implement payments, or operate an existing external site. Phase 4 adds the separate [tester and superadmin path](testers-and-admin.md).
 
 ## Contract and intake
 
@@ -125,7 +125,7 @@ failed checker reports remain available for correction, and owned OAuth download
 
 Provisioning creates an isolated private `cli-NNN-slug` project in the configured
 workspace. Fixture mode creates its `fixture` environment; production mode
-creates `production`. Existing platform/Teco projects must appear in the
+creates `production`. Existing platform and other protected projects must appear in the
 protected-project list and are never deployment targets. Both client services
 have one replica, a 1 vCPU/0.5 GB cap and three restart retries, in Railway
 configuration and API settings. The CMS volume is mounted at `/pb/pb_data`; the server binds `[::]:8090` for Railway private-network IPv6 access.
@@ -219,4 +219,17 @@ Review actual created resource IDs privately before cleaning up the fixture.
 Production activation, remote backup/restore proof, client domain DNS, owner PR
 review and expanded trusted-policy activation remain separate owner actions.
 
-Imported private static sites use the separate [managed-static workflow](managed-static-sites.md), without catalog conversion or CMS resources. Catalog submissions and changes retain their contracts.
+
+## Site administration and costs
+
+Superadmin manages `site.admin.assign`, `site.admin.remove` and `site.admin.list` using a site ID and one or more email addresses. Grants remain pending until the matching identity verifies its email. Grants are site-scoped, never change global role or exemption, and cannot enroll tester identities or replace the owner's membership.
+
+Owners and enabled verified site administrators can submit/build approved catalog specs, apply approved changes, deploy with the normal exact confirmation, read status/artifacts, and access `site.report` plus its authenticated CSV URL. Queued work rechecks access before provider work and results. Owner credentials and owner-wide change allowances are independent of the acting administrator. Superadmin inventory and tester reset remain privileged.
+
+`site.costs.refresh` accepts `siteId` and optional UTC `period` (YYYY-MM, no future months), queues a catalog usage job, and deduplicates pending reads. Different pending periods return `cost_refresh_busy`. A recorded site/period/day returns cached. The worker also queues due current-month reads for active deployed non-test catalog sites. Usage covers recorded web/CMS resources only; unavailable billing data stays null, metrics preserve their observed windows, and shared storage/overhead are unallocated. No payment or provider limit mutation occurs.
+
+`site.report` requires `siteId` and UTC `period`; it returns operation/eligibility history, catalog job counts, applied changes, cost availability and a scoped CSV link. Assigning a site administrator never grants billing exemption. Test sites and current owner admin/superadmin roles are exempt; their historical operation snapshots remain immutable.
+
+The first successful non-test catalog site creation is atomically marked `first_client_pilot`. Tester fixtures never consume or reassign it. There are no registered clients today. Policy 1.0.1 changes rationales only; every plan limit is unchanged.
+
+Migration `006-site-administration-billing.sql` is for clean databases. Production has an incompatible earlier 006 and requires separately approved owner reconciliation before merge/rollout. Authentication, roles, OAuth and audit records must be preserved. No drop migration, production cleanup or hosting change is authorized by this delivery.

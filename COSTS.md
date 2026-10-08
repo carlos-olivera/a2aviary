@@ -53,3 +53,5 @@ These are not invoices.
 - Held reservations are ceilings for usage the provider has not reported yet. They are not refunds or spend, and they are released only against provider billing evidence.
 - The ChatGPT Pro plan is Carlos's personal subscription, not a project-only expense.
 - No metrics are invented. Anything not yet known is marked "to confirm".
+
+Catalog site cost records and private reports are retained; no registered client sites or live charges exist. Provider amounts are recorded only when observed. See [site reporting](docs/sites.md#site-administration-and-costs).

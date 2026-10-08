@@ -1,4 +1,4 @@
-# Roadmap and Teco pilot
+# Roadmap and first catalog pilot
 
 ## Foundation
 
@@ -9,7 +9,7 @@
 
 ## First verifiable workflow
 
-- [ ] Agree on the Teco brief and website acceptance criteria.
+- [ ] Agree on the first new catalog-site brief and website acceptance criteria.
 - [ ] Define the mandate, budget, and approval responsibilities.
 - [ ] Specify the minimum contract and client agent capabilities.
 - [ ] Compare execution options using a bounded task.
@@ -28,4 +28,4 @@ No dates or costs have been committed. Each milestone requires reproducible evid
 
 ## Accepted initial release
 
-Publish the licensed repository and landing, then deploy the signed email and durable brief-analysis foundation under the [accepted release decisions](decisions/README.md). Release completion requires independent controlled email execution/recovery and active operational controls, as recorded in [verification evidence](release-verification.md). Phase 3 adds opt-in [catalog site jobs](sites.md); live cloud verification and activation are separate gates. Phase 4 adds [staging-only testers and chat-only superadmin](testers-and-admin.md); rollout and live cleanup proof remain separate gates. The owner-approved [Teco preservation plan](managed-static-sites.md) has local imported-site implementation. Verified live owner/inventory/billing access, platform rollout and first hosting handoff remain separate gates.
+Publish the licensed repository and landing, then deploy the signed email and durable brief-analysis foundation under the [accepted release decisions](decisions/README.md). Release completion requires independent controlled email execution/recovery and active operational controls, as recorded in [verification evidence](release-verification.md). Phase 3 adds opt-in [catalog site jobs](sites.md); live cloud verification and activation are separate gates. Phase 4 adds [staging-only testers and chat-only superadmin](testers-and-admin.md); rollout and live cleanup proof remain separate gates. There are no registered clients. The first site will be created through the catalog workflow; [administration and billing](decisions/012-catalog-site-administration-and-billing.md) are retained. Production schema reconciliation, workflow activation and hosted verification remain owner gates.

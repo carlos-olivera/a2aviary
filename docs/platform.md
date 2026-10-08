@@ -246,4 +246,3 @@ Source protection now includes `apps/` and `.dockerignore`, including rename
 origins; the deployed AWS evaluator is unchanged. CI workflow wiring, persistent
 monthly accounting and approved-spec/preview/human binding remain future work.
 
-The opt-in [managed static workflow](managed-static-sites.md) adds scoped site memberships, prepared-release jobs and private cost reports. Its registration, deployment and first-handoff activation are independent of catalog activation.

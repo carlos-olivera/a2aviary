@@ -36,7 +36,7 @@ for (const [id, record] of Object.entries(provenance.diagrams)) {
 }
 assert.equal(Object.keys(provenance.diagrams).length,6);
 assert.deepEqual([...assigned].sort(),Object.keys(coverage).sort());
-assert.equal(coverage['hosting-customer'].status,'In progress · deployed');
+assert.equal(coverage['hosting-customer'].status,'Implemented');
 assert(!/<(?:style|script)\b[^>]*>\s*[^<\s]/.test(html),'No inline executable/style content');
 assert(!/\s(?:on\w+|style)=/.test(html),'No inline handlers or CSS');
 for (const match of html.matchAll(/<(?:script|link|img)\b[^>]*(?:src|href)="([^"]+)"/g)) {

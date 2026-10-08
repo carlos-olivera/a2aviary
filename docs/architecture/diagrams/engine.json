@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/managed-20261007/engine.html",
+    "output": ".local/architecture/catalog-20261008/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
@@ -21,14 +21,14 @@
       "sublabel": "Pinned policy / byte hashes",
       "sources": [
         {
-          "path": "packages/generator/src/static.ts",
-          "line": 77,
-          "end_line": 81
+          "path": "apps/platform/src/sites.ts",
+          "line": 168,
+          "end_line": 172
         },
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 164,
-          "end_line": 168
+          "path": "services/src/site/validator.ts",
+          "line": 121,
+          "end_line": 125
         }
       ],
       "pos": [
@@ -48,14 +48,14 @@
       "sublabel": "Owned queue / audit state",
       "sources": [
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 1202,
-          "end_line": 1206
+          "path": "apps/platform/src/sites.ts",
+          "line": 665,
+          "end_line": 669
         },
         {
-          "path": "apps/platform/migrations/006-managed-static.sql",
-          "line": 56,
-          "end_line": 62
+          "path": "apps/platform/migrations/006-site-administration-billing.sql",
+          "line": 50,
+          "end_line": 54
         }
       ],
       "pos": [
@@ -97,14 +97,14 @@
       "sublabel": "Build / a11y / visual checks",
       "sources": [
         {
-          "path": "packages/generator/src/static-verification.ts",
-          "line": 53,
-          "end_line": 60
+          "path": "packages/generator/src/verification.ts",
+          "line": 194,
+          "end_line": 198
         },
         {
-          "path": "packages/generator/src/static.ts",
-          "line": 139,
-          "end_line": 143
+          "path": "packages/generator/src/verification.ts",
+          "line": 68,
+          "end_line": 72
         }
       ],
       "pos": [
@@ -124,9 +124,9 @@
       "sublabel": "Private reports / output hashes",
       "sources": [
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 393,
-          "end_line": 397
+          "path": "apps/platform/src/sites.ts",
+          "line": 644,
+          "end_line": 648
         },
         {
           "path": "packages/generator/src/storage.ts",
@@ -151,14 +151,14 @@
       "sublabel": "Next: hosting and CMS",
       "sources": [
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 1360,
-          "end_line": 1364
+          "path": "apps/platform/src/sites.ts",
+          "line": 779,
+          "end_line": 783
         },
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 1346,
-          "end_line": 1350
+          "path": "packages/generator/src/deploy.ts",
+          "line": 67,
+          "end_line": 71
         }
       ],
       "pos": [
@@ -323,12 +323,6 @@
       "to": "engine-data",
       "label": "Save result",
       "variant": "emphasis"
-    },
-    {
-      "from": "engine-jobs",
-      "to": "engine-verify",
-      "label": "Prebuilt import",
-      "variant": "default"
     }
   ]
 }

@@ -31,6 +31,11 @@ import {
   requireConfirmation,
   type Principal
 } from './store.ts';
+import {
+  SiteAdministration,
+  siteAccess,
+  type CatalogSite
+} from './site-administration.ts';
 export interface Submission {
   siteId?: string;
   slug?: string;
@@ -50,31 +55,23 @@ type SpecRow = {
   client_password_ciphertext: string | null;
   requested_domain: string | null;
 };
-type SiteRow = {
-  id: string;
-  owner_id: string;
-  number: string;
-  slug: string;
-  current_spec_id: string | null;
-  resources: SiteResources;
-  policy_version: string;
-  test_mode: boolean;
-  lifecycle: string;
-  kind: string;
-};
+type SiteRow = CatalogSite;
 export class Sites {
   readonly store: Store;
   readonly objects: ObjectStore;
   readonly verifier: BuildVerifier;
   readonly deployer: SiteDeployer;
   private readonly key: Buffer;
+  readonly administration: SiteAdministration;
   constructor(
     store: Store,
     objects: ObjectStore,
     verifier: BuildVerifier,
     deployer: SiteDeployer,
-    key: string
+    key: string,
+    administration = new SiteAdministration(store)
   ) {
+    this.administration = administration;
     this.store = store;
     this.objects = objects;
     this.verifier = verifier;
@@ -106,35 +103,26 @@ export class Sites {
     actor: string,
     siteId: string
   ): Promise<SiteRow> {
-    const site = (
-      await c.query(
-        'SELECT * FROM platform_site WHERE id=$1 AND owner_id=$2 FOR UPDATE',
-        [siteId, actor]
-      )
-    ).rows[0];
-    if (!site) throw new SiteError('owned_site_required');
-    if ((site as SiteRow & {kind?:string}).kind === 'imported-static') throw new SiteError('catalog_site_required');
-    if (site.lifecycle !== 'active')
-      throw new SiteError('site_' + site.lifecycle);
-    const tester = Boolean(
-      (
-        await c.query(
-          'SELECT 1 FROM platform_tester t JOIN "user" u ON lower(u.email)=t.email WHERE u.id=$1 AND t.enabled',
-          [actor]
-        )
-      ).rowCount
-    );
-    if (site.test_mode !== tester) throw new SiteError('site_mode_mismatch');
-    if (site.policy_version !== defaultPolicy.version.value)
-      throw new SiteError('unsupported_pinned_policy');
-    return site;
+    return siteAccess(c, await this.store.currentPrincipal(c, actor), siteId);
   }
   private async row(c: PoolClient, actor: string, specId: string) {
+    const siteId = (
+      await c.query('SELECT site_id FROM platform_site_spec WHERE id=$1', [
+        specId
+      ])
+    ).rows[0]?.site_id;
+    if (!siteId) throw new SiteError('owned_spec_required');
+    try {
+      await this.owned(c, actor, siteId);
+    } catch (error) {
+      if (error instanceof SiteError && error.code === 'owned_site_required')
+        throw new SiteError('owned_spec_required');
+      throw error;
+    }
     const row = (
-      await c.query(
-        'SELECT p.* FROM platform_site_spec p JOIN platform_site s ON s.id=p.site_id WHERE p.id=$1 AND s.owner_id=$2 FOR UPDATE OF p',
-        [specId, actor]
-      )
+      await c.query('SELECT * FROM platform_site_spec WHERE id=$1 FOR UPDATE', [
+        specId
+      ])
     ).rows[0] as SpecRow | undefined;
     if (!row) throw new SiteError('owned_spec_required');
     return row;
@@ -144,7 +132,9 @@ export class Sites {
     p: Principal,
     tool: string,
     hash: string | null,
-    result: string
+    result: string,
+    jobId: string | null = null,
+    siteId?: string
   ) {
     await c.query(
       'INSERT INTO platform_audit(actor_user_id,action,target,details,test_mode) VALUES($1,$2,$3,$4,$5)',
@@ -156,6 +146,20 @@ export class Sites {
         p.testMode
       ]
     );
+    if (siteId) {
+      const site = await this.owned(c, p.id, siteId);
+      const specId = hash
+        ? (
+            await c.query(
+              'SELECT id FROM platform_site_spec WHERE site_id=$1 AND spec_sha256=$2',
+              [siteId, hash]
+            )
+          ).rows[0]?.id
+        : null;
+      await this.administration.event(c, p, site, tool, result, specId, jobId, {
+        specSha256: hash
+      });
+    }
   }
   async submit(actor: string, input: Submission) {
     let hash: string | null = null;
@@ -179,23 +183,33 @@ export class Sites {
         let site: SiteRow;
         if (input.siteId) site = await this.owned(c, actor, input.siteId);
         else {
+          await c.query(
+            "SELECT pg_advisory_xact_lock(hashtext('a2aviary-first-client'))"
+          );
+          const pilot =
+            !p.testMode &&
+            !(
+              await c.query(
+                'SELECT 1 FROM platform_site WHERE first_client_pilot'
+              )
+            ).rowCount;
           if (!input.slug || !/^[a-z][a-z0-9-]{0,63}$/.test(input.slug))
             throw new SiteError('slug_required');
           site = (
             await c.query(
-              'INSERT INTO platform_site(id,owner_id,slug,plan_id,policy_version,test_mode) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(owner_id,slug) DO UPDATE SET slug=excluded.slug RETURNING *',
+              'INSERT INTO platform_site(id,owner_id,slug,plan_id,policy_version,test_mode,first_client_pilot) VALUES($1,$2,$3,$4,$5,$6,$7) ON CONFLICT(owner_id,slug) DO UPDATE SET slug=excluded.slug RETURNING *',
               [
                 randomUUID(),
                 actor,
                 input.slug,
                 spec.value.planId,
                 spec.value.policyVersion,
-                p.testMode
+                p.testMode,
+                pilot
               ]
             )
           ).rows[0];
         }
-        if (site.kind !== 'catalog') throw new SiteError('catalog_site_required');
         if (site.lifecycle !== 'active')
           throw new SiteError('site_' + site.lifecycle);
         if (site.test_mode !== p.testMode)
@@ -207,7 +221,15 @@ export class Sites {
           )
         ).rows[0];
         if (existing) {
-          await this.audit(c, p, 'site.submit', hash, 'duplicate');
+          await this.audit(
+            c,
+            p,
+            'site.submit',
+            hash,
+            'duplicate',
+            null,
+            site.id
+          );
           return {
             siteId: site.id,
             specId: existing.id,
@@ -226,13 +248,17 @@ export class Sites {
           'INSERT INTO platform_site_spec(id,site_id,spec,spec_sha256) VALUES($1,$2,$3,$4)',
           [specId, site.id, JSON.stringify(spec.value), hash]
         );
-        await this.audit(c, p, 'site.submit', hash, 'accepted');
+        await this.audit(c, p, 'site.submit', hash, 'accepted', null, site.id);
         return {
           siteId: site.id,
           specId,
           state: 'staged',
           test: site.test_mode,
-          free: site.test_mode || ['admin','superadmin'].includes((await this.store.currentPrincipal(c,site.owner_id)).role)
+          free:
+            site.test_mode ||
+            ['admin', 'superadmin'].includes(
+              (await this.store.currentPrincipal(c, site.owner_id)).role
+            )
         };
       });
     } catch (error) {
@@ -253,16 +279,32 @@ export class Sites {
       if (['deploying', 'unknown'].includes(row.state))
         throw new SiteError('spec_busy');
       if (['verified', 'live'].includes(row.state)) {
-        await this.audit(c, p, 'site.build', row.spec_sha256, 'cached');
+        await this.audit(
+          c,
+          p,
+          'site.build',
+          row.spec_sha256,
+          'cached',
+          null,
+          site.id
+        );
         return { specId, state: row.state, test: site.test_mode };
       }
       const job = (
         await c.query(
-          "INSERT INTO platform_site_job(id,spec_id,actor_id,kind) VALUES($1,$2,$3,'build') ON CONFLICT(spec_id,kind) DO UPDATE SET state=CASE WHEN platform_site_job.state='failed' THEN 'queued' ELSE platform_site_job.state END RETURNING id,state",
+          "INSERT INTO platform_site_job(id,spec_id,actor_id,kind) VALUES($1,$2,$3,'build') ON CONFLICT(spec_id,kind) DO UPDATE SET state=CASE WHEN platform_site_job.state IN ('failed','done') THEN 'queued' ELSE platform_site_job.state END,actor_id=CASE WHEN platform_site_job.state IN ('failed','done') THEN excluded.actor_id ELSE platform_site_job.actor_id END,billing_snapshot=CASE WHEN platform_site_job.state IN ('failed','done') THEN excluded.billing_snapshot ELSE platform_site_job.billing_snapshot END RETURNING id,state",
           [randomUUID(), specId, actor]
         )
       ).rows[0];
-      await this.audit(c, p, 'site.build', row.spec_sha256, 'queued');
+      await this.audit(
+        c,
+        p,
+        'site.build',
+        row.spec_sha256,
+        'queued',
+        job.id,
+        site.id
+      );
       return { specId, jobId: job.id, state: job.state, test: site.test_mode };
     });
   }
@@ -275,10 +317,10 @@ export class Sites {
   ) {
     requireConfirmation(confirmation, 'APPLY_CHANGE:' + siteId);
     return this.store.siteAction(actor, 'change.request', async (c, p) => {
-      await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [
-        'site-allowance:' + actor
-      ]);
       const site = await this.owned(c, actor, siteId);
+      await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [
+        'site-allowance:' + site.owner_id
+      ]);
       p.testMode = site.test_mode;
       if (!site.current_spec_id) throw new SiteError('live_site_required');
       const current = await this.row(c, actor, site.current_spec_id),
@@ -295,7 +337,9 @@ export class Sites {
           p,
           'change.request',
           candidate.spec_sha256,
-          'cached'
+          'cached',
+          null,
+          site.id
         );
         return {
           specId,
@@ -305,7 +349,7 @@ export class Sites {
         };
       }
       const now = (await c.query('SELECT now() AS now')).rows[0].now as Date;
-      const usage = await this.usage(c, actor);
+      const usage = await this.usage(c, site.owner_id);
       const checked = validateChangeRequest(input, current.spec, {
         now,
         month: now.toISOString().slice(0, 7),
@@ -330,7 +374,9 @@ export class Sites {
         p,
         'change.request',
         candidate.spec_sha256,
-        'reserved'
+        'reserved',
+        null,
+        site.id
       );
       return {
         specId,
@@ -365,11 +411,11 @@ export class Sites {
     if (password.length < 16 || password.length > 128)
       throw new SiteError('cms_password_length');
     return this.store.siteAction(actor, 'site.deploy', async (c, p) => {
+      const site = await this.owned(c, actor, siteId);
       await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [
-        'site-allowance:' + actor
+        'site-allowance:' + site.owner_id
       ]);
-      const site = await this.owned(c, actor, siteId),
-        row = await this.row(c, actor, specId);
+      const row = await this.row(c, actor, specId);
       p.testMode = site.test_mode;
       if (
         site.test_mode &&
@@ -385,7 +431,15 @@ export class Sites {
       )
         throw new SiteError('domain_change_unsupported');
       if (row.state === 'live' && site.current_spec_id === specId) {
-        await this.audit(c, p, 'site.deploy', row.spec_sha256, 'cached');
+        await this.audit(
+          c,
+          p,
+          'site.deploy',
+          row.spec_sha256,
+          'cached',
+          null,
+          site.id
+        );
         return { siteId, state: 'live', test: site.test_mode };
       }
       if (row.state !== 'verified')
@@ -408,7 +462,7 @@ export class Sites {
       if (active) throw new SiteError('deployment_busy');
       const job = (
         await c.query(
-          "INSERT INTO platform_site_job(id,spec_id,actor_id,kind) VALUES($1,$2,$3,'deploy') ON CONFLICT(spec_id,kind) DO UPDATE SET state='queued',started_at=NULL,finished_at=NULL RETURNING id",
+          "INSERT INTO platform_site_job(id,spec_id,actor_id,kind) VALUES($1,$2,$3,'deploy') ON CONFLICT(spec_id,kind) DO UPDATE SET state='queued',actor_id=excluded.actor_id,billing_snapshot=excluded.billing_snapshot,started_at=NULL,finished_at=NULL RETURNING id",
           [randomUUID(), specId, actor]
         )
       ).rows[0];
@@ -416,7 +470,15 @@ export class Sites {
         'UPDATE platform_site_spec SET client_password_ciphertext=$2,requested_domain=$3 WHERE id=$1',
         [specId, this.seal(password), domain ?? null]
       );
-      await this.audit(c, p, 'site.deploy', row.spec_sha256, 'queued');
+      await this.audit(
+        c,
+        p,
+        'site.deploy',
+        row.spec_sha256,
+        'queued',
+        job.id,
+        site.id
+      );
       return {
         siteId,
         specId,
@@ -444,12 +506,19 @@ export class Sites {
           p,
           'site.status',
           specs[0]?.specSha256 ?? null,
-          'read'
+          'read',
+          null,
+          site.id
         );
         return {
           siteId,
           test: site.test_mode,
-          free: site.test_mode || ['admin','superadmin'].includes((await this.store.currentPrincipal(c,site.owner_id)).role),
+          free:
+            site.test_mode ||
+            ['admin', 'superadmin'].includes(
+              (await this.store.currentPrincipal(c, site.owner_id)).role
+            ),
+          firstClientPilot: site.first_client_pilot,
           currentSpecId: site.current_spec_id,
           policyVersion: site.policy_version,
           siteUrl: site.resources.domain
@@ -462,7 +531,8 @@ export class Sites {
           specs,
           monthlyRequestsRemaining: Math.max(
             0,
-            defaultPolicy.changes.perMonth.value - (await this.usage(c, actor))
+            defaultPolicy.changes.perMonth.value -
+              (await this.usage(c, site.owner_id))
           ),
           resources: site.resources,
           name: this.name(site)
@@ -503,7 +573,15 @@ export class Sites {
       async (c, p) => {
         const row = await this.row(c, actor, specId);
         await this.owned(c, actor, row.site_id);
-        await this.audit(c, p, 'site.artifact', row.spec_sha256, 'read');
+        await this.audit(
+          c,
+          p,
+          'site.artifact',
+          row.spec_sha256,
+          'read',
+          null,
+          row.site_id
+        );
         return row;
       }
     );
@@ -555,7 +633,13 @@ export class Sites {
           ).rows[0]?.test_mode
         )
       : undefined;
-    await this.store.recordSiteResult(actor, tool, hash, code, test || undefined);
+    await this.store.recordSiteResult(
+      actor,
+      tool,
+      hash,
+      code,
+      test || undefined
+    );
   }
   private async saveBuild(specId: string, build: VerifiedBuild) {
     const artifactNames = Object.keys(build.artifacts).filter(
@@ -593,7 +677,14 @@ export class Sites {
       return row;
     });
     if (!job) return false;
+    if (job.kind === 'usage') {
+      await this.administration.processUsage(job, this.deployer, (s) =>
+        this.name(s)
+      );
+      return true;
+    }
     let hash: string | null = null;
+    let providerStarted = false;
     try {
       const p = await this.store.principal(job.actor_id);
       requireRole(p, job.kind === 'build' ? 'site.build' : 'site.deploy');
@@ -604,6 +695,25 @@ export class Sites {
         this.owned(c, p.id, row.site_id)
       );
       p.testMode = site.test_mode;
+      job.billing_snapshot = await this.store.transaction(async (c) => {
+        const snapshot = await this.administration.billing(c, site);
+        await c.query(
+          'UPDATE platform_site_job SET billing_snapshot=$2 WHERE id=$1',
+          [job.id, JSON.stringify(snapshot)]
+        );
+        await this.administration.event(
+          c,
+          p,
+          site,
+          'site.' + job.kind,
+          'running',
+          row.id,
+          job.id,
+          {},
+          snapshot
+        );
+        return snapshot;
+      });
       hash = row.spec_sha256;
       const validated = validateSiteSpec(row.spec);
       if (!validated.ok) throw new SiteError('invalid_spec', validated.errors);
@@ -625,10 +735,16 @@ export class Sites {
           "UPDATE platform_site_spec SET state='building' WHERE id=$1",
           [row.id]
         );
+        await this.store.siteAction(p.id, 'site.build', async (c) => {
+          await this.owned(c, p.id, site.id);
+        });
         const build = await this.verifier.verify(source, row.spec, preview, {
           test: site.test_mode
         });
         assertVerified(build, source, row.spec);
+        await this.store.siteAction(p.id, 'site.build', async (c) => {
+          await this.owned(c, p.id, site.id);
+        });
         await this.saveBuild(row.id, build);
         await this.store.pool.query(
           "UPDATE platform_site_spec SET state='verified',source_sha256=$2,output_sha256=$3,error_code=NULL WHERE id=$1",
@@ -656,9 +772,10 @@ export class Sites {
         });
         const email = (
           await this.store.pool.query('SELECT email FROM "user" WHERE id=$1', [
-            p.id
+            site.owner_id
           ])
         ).rows[0].email;
+        providerStarted = true;
         const resources = await this.deployer.deploy({
           test: site.test_mode,
           name: this.name(site),
@@ -676,10 +793,10 @@ export class Sites {
           }
         });
         await this.store.siteAction(p.id, 'site.deploy', async (c, current) => {
-          await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [
-            'site-allowance:' + p.id
-          ]);
           await this.owned(c, p.id, site.id);
+          await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [
+            'site-allowance:' + site.owner_id
+          ]);
           if (row.accounting && !row.reserved)
             throw new SiteError('change_reservation_required');
           await c.query(
@@ -690,7 +807,15 @@ export class Sites {
             'UPDATE platform_site SET current_spec_id=$2,resources=$3 WHERE id=$1',
             [site.id, row.id, JSON.stringify(resources)]
           );
-          await this.audit(c, current, 'site.deploy', hash, 'applied');
+          await this.audit(
+            c,
+            current,
+            'site.deploy',
+            hash,
+            'applied',
+            job.id,
+            site.id
+          );
         });
       }
       await this.store.pool.query(
@@ -704,6 +829,19 @@ export class Sites {
         'success',
         job.test_mode
       );
+      await this.store.transaction(async (c) => {
+        await this.administration.event(
+          c,
+          p,
+          site,
+          'site.' + job.kind,
+          'success',
+          row.id,
+          job.id,
+          {},
+          job.billing_snapshot
+        );
+      });
     } catch (error) {
       if (error instanceof VerificationFailure) {
         try {
@@ -723,7 +861,10 @@ export class Sites {
       }
       const code = error instanceof SiteError ? error.code : 'operation_failed';
       // An uncertain provider outcome is retained for manual reconciliation, never replayed or charged blindly.
-      const unknown = job.kind === 'deploy' && code !== 'deployment_failed';
+      const unknown =
+        job.kind === 'deploy' &&
+        providerStarted &&
+        code !== 'deployment_failed';
       await this.store.transaction(async (c) => {
         await c.query(
           'UPDATE platform_site_job SET state=$2,finished_at=now() WHERE id=$1',
@@ -741,6 +882,26 @@ export class Sites {
         code,
         job.test_mode
       );
+      await this.store.transaction(async (c) => {
+        const site = (
+          await c.query(
+            'SELECT s.* FROM platform_site s JOIN platform_site_spec p ON p.site_id=s.id WHERE p.id=$1',
+            [job.spec_id]
+          )
+        ).rows[0];
+        if (site)
+          await this.administration.event(
+            c,
+            { id: job.actor_id, role: 'client', testMode: job.test_mode },
+            site,
+            'site.' + job.kind,
+            code,
+            job.spec_id,
+            job.id,
+            {},
+            job.billing_snapshot
+          );
+      });
     }
     return true;
   }
@@ -757,7 +918,7 @@ export class Sites {
     return this.store.siteAction(actor, 'sites.list', async (c, p) => {
       const rows = (
         await c.query(
-          `SELECT s.id AS "siteId",s.owner_id AS "ownerId",s.slug,s.test_mode AS test,s.lifecycle,s.policy_version AS "policyVersion", CASE WHEN s.lifecycle='active' THEN COALESCE(cur.state,v.state,'staged') ELSE s.lifecycle END AS status
+          `SELECT s.id AS "siteId",s.owner_id AS "ownerId",s.slug,s.test_mode AS test,s.lifecycle,s.policy_version AS "policyVersion",s.first_client_pilot AS "firstClientPilot", CASE WHEN s.lifecycle='active' THEN COALESCE(cur.state,v.state,'staged') ELSE s.lifecycle END AS status
         FROM platform_site s LEFT JOIN platform_site_spec cur ON cur.id=s.current_spec_id LEFT JOIN LATERAL (SELECT state FROM platform_site_spec WHERE site_id=s.id ORDER BY created_at DESC,id DESC LIMIT 1) v ON true
         WHERE ($1::boolean IS NULL OR s.test_mode=$1) AND ($2::text IS NULL OR s.owner_id=$2) AND ($3::text IS NULL OR CASE WHEN s.lifecycle='active' THEN COALESCE(cur.state,v.state,'staged') ELSE s.lifecycle END=$3) AND ($4::uuid IS NULL OR s.id>$4) ORDER BY s.id LIMIT $5`,
           [
@@ -814,8 +975,13 @@ export class Sites {
       return {
         siteId,
         ownerId: site.owner_id,
+        firstClientPilot: site.first_client_pilot,
         test: site.test_mode,
-        free: site.test_mode || ['admin','superadmin'].includes((await this.store.currentPrincipal(c,site.owner_id)).role),
+        free:
+          site.test_mode ||
+          ['admin', 'superadmin'].includes(
+            (await this.store.currentPrincipal(c, site.owner_id)).role
+          ),
         lifecycle: site.lifecycle,
         status:
           site.lifecycle === 'active'
@@ -977,14 +1143,15 @@ export class Sites {
         )
       ).rows;
       for (const job of jobs) {
-        await c.query(
-          "UPDATE platform_site_spec SET state=$2,error_code='worker_interrupted',reserved=CASE WHEN $3 THEN reserved ELSE false END,client_password_ciphertext=NULL WHERE id=$1",
-          [
-            job.spec_id,
-            job.kind === 'deploy' ? 'unknown' : 'failed',
-            job.kind === 'deploy'
-          ]
-        );
+        if (job.kind !== 'usage')
+          await c.query(
+            "UPDATE platform_site_spec SET state=$2,error_code='worker_interrupted',reserved=CASE WHEN $3 THEN reserved ELSE false END,client_password_ciphertext=NULL WHERE id=$1",
+            [
+              job.spec_id,
+              job.kind === 'deploy' ? 'unknown' : 'failed',
+              job.kind === 'deploy'
+            ]
+          );
         await c.query(
           "INSERT INTO platform_audit(actor_user_id,action,target,details,test_mode) VALUES($1,'site.worker.recovery',$2,$3,$4)",
           [
@@ -1017,10 +1184,15 @@ export class Sites {
       running = false;
     });
     await this.recoverInterrupted();
+    let nextCollection = 0;
     const loop = (async () => {
       try {
         while (running) {
           try {
+            if (Date.now() >= nextCollection) {
+              nextCollection = Date.now() + 60000;
+              await this.administration.collectDue();
+            }
             if (!(await this.processOne()))
               await new Promise((r) => setTimeout(r, 1000));
           } catch {

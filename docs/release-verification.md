@@ -1,80 +1,14 @@
 # Initial release verification
 
-Latest evidence: 2026-10-07 imported-static implementation, private preservation checks and architecture verification; earlier local checks and dated observations below are retained. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+Latest evidence: 2026-10-07 catalog starting-state inventory and adoption retirement; historical checks and dated observations below are retained where applicable. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
 
-## Imported static sites — 2026-10-07, verified locally; rollout pending
+## Catalog starting state — 2026-10-07, read-only production inventory
 
-- **Configured source:** imported static sites have separate immutable releases,
-  private target bindings and bounded authenticated uploads. Owner-only imports
-  and email grants use verified identity; scoped access is rechecked before queued
-  provider work. Verify/deploy/rollback jobs have audit admission, target protection,
-  predecessor retention, drift detection, recovery and uncertain-outcome reconciliation.
-  Imported sites require no CMS resources. Import, deployment and first handoff
-  have separate default-off activation controls.
-- **Billing and reports:** current owner roles determine eligibility; assigning a
-  site administrator does not grant exemption. Effective-dated history and operation
-  snapshots preserve earlier eligibility. Private period reports/CSV include operations,
-  provider resource windows and billing periods, idempotent daily costs and explicit
-  unavailable values. Verification/storage evidence and shared overhead are separate;
-  no charges, guessed allocations, tracking or outbound reports were introduced.
-- **Local checks:** Node.js 22.22.3 generator check/build and 20 tests, platform
-  check/build and 64 passing tests (one existing credential-dependent cloud test
-  skipped), service check/build and 113 tests, infrastructure build and nine tests,
-  website checks/build, documentation links and whitespace passed. SQL fixtures
-  applied all six migrations. Test doubles cover revocation, concurrent jobs,
-  tampering, authorization, eligibility history, unavailable costs, failed verification,
-  drift, uncertain outcomes and recovery; they do not establish cloud operation.
-- **Actual private preservation evidence:** read-only HTTPS capture confirmed all
-  58 built files against production, actual unknown-route 404 behavior, preview
-  `noindex` and observed serving headers/routes. The local trusted checker passed
-  73 checks across seven pages at 360, 375, 768 and 1440 px, including navigation,
-  Escape/focus, FAQ states, reduced motion, links and accessibility regression.
-  Existing contrast findings were identical and preserved. Four initial screenshot
-  comparisons contained 66 raw edge pixels with a maximum two-level channel delta;
-  the documented bounded Chromium rasterization classification applied only after
-  whole-bundle byte equality. Unexplained pixel differences were zero. A fictional
-  changed-background bundle failed the real checker. Production screenshots,
-  source, bindings and full reports remain private. Public `www` availability
-  remains unverified; its configured behavior is retained.
-- **Preservation-only v1:** releases must reproduce the complete imported baseline
-  bytes. Source-only changes producing those bytes and retained-release rollback
-  are supported. Content-changing releases need a separately approved preview and
-  change contract; this delivery does not claim that capability.
-- **Actual container and architecture checks:** the final platform image built and
-  ran on Node.js 22.23.3 as UID 1000, with six migrations, readiness/login/discovery,
-  pinned Railway CLI 5.63.4 and both site workflows disabled by default. Six Archify
-  drawings were regenerated from the committed implementation; validator, delivery
-  and browser gates passed. Production-CSP architecture browser QA covered all five
-  stages and 44 technical nodes, desktop/mobile, keyboard/focus, native fallback,
-  source links and zero automatic other-domain requests. Public screenshots and
-  [browser evidence](architecture/browser-verification.json) were refreshed.
-- **Remaining gates:** independently verify the configured owner against verified
-  Google sign-in and inspect live client inventory before registering a first real
-  pilot. Verify provider billing access: the local pinned CLI was unauthenticated,
-  so billing costs were not independently retrieved. Run the real hosted Agents →
-  private bucket → exact protected target fixture. Pin and verify a compatible
-  Caddy runtime and container delivery configuration before any handoff. Platform
-  migration rollout and activation require separate authorization, as does the first
-  production handoff and disabling the old push-triggered deployment path. Existing
-  owner-reported pilot deployment status below remains distinct from these gates.
-
-No hosting mutations, CMS resources, DNS changes, workspace transfer, production
-switch, platform rollout or payment integration were performed. The private Astro
-site and existing Railway service remain intact. See
-[managed static operations](managed-static-sites.md),
-[contract](../contracts/managed-static/README.md) and
-[decision 011](decisions/011-imported-static-managed-sites.md).
-
-## Customer-site pilot — 2026-10-06, owner-reported deployment
-
-Carlos Olivera Terrazas confirmed in this architecture review that the customer-site
-build/hosting pilot is **in progress and deployed**, superseding its earlier
-Planned presentation. This is owner-reported deployment status; this task has not
-independently inspected an authenticated hosted build/deploy transcript, provider
-resources or a customer site. The earlier locally verified generator/CMS evidence
-and pending independent cloud verification remain distinct. Payments and future
-customer apps, MCP products and plugins are not activated by this status update.
-The implemented platform MCP connector is separate from those future products.
+- Railway production runs main `0dc4245` with discovery-only health. The authenticated database view showed all six original migrations; migration 006 was applied at 21:20 America/La_Paz with SHA-256 `c84af57f912c67a00961dc806ef351da8ec939f75b060bc7518dba61c6aa812a`.
+- `platform_site`, its administrator/billing/operation/cost/spec/job tables and all three retired adoption tables were empty; the three visible audit entries covered role resolution and discovery tools. There are no registered client sites. The first client site will be created through the normal catalog workflow. Earlier owner-reported customer-site deployment wording is superseded by this inventory and the owner's starting-state instruction.
+- No site workflow, site bucket or adoption variables were configured on the production platform. Its Railway environment had no bucket. An external artifact bucket has not been independently inventoried; lack of configuration is not proof that no external objects exist.
+- Migration 006 is rewritten for clean databases only. The applied production inventory is incompatible and must fail readiness/migration until the owner separately approves reconciliation preserving authentication, roles, OAuth and audits. This delivery makes no production data, variables, infrastructure, DNS or hosting changes.
+- Scoped catalog administrators, owner eligibility, operation snapshots, daily costs and JSON/CSV reports follow [decision 012](decisions/012-catalog-site-administration-and-billing.md). Production activation and hosted end-to-end verification remain separate gates. Node.js 22 checks/builds passed for services, generator, platform and infrastructure; tests passed (113 services, 13 generator, 54 platform plus one explicitly skipped hosted fixture, nine infrastructure). The new integration tests cover scoped access/revocation, queued work, owner eligibility, immutable history, daily costs/deduplication, pilot concurrency and tester isolation. Six migrations applied to an empty disposable database, reran idempotently, and `/healthz` reported all six names; incomplete, altered and obsolete inventories failed readiness. Website/diagram/browser results follow after regeneration.
 
 ## Catalog site workflow — 2026-10-06, verified locally; cloud gate pending
 
@@ -118,7 +52,7 @@ The implemented platform MCP connector is separate from those future products.
   and any expanded trusted-policy enforcement. Review/merge does not itself enable
   `SITE_WORKFLOW_ENABLED`. The existing GitHub workflow covers legacy website/service/
   infrastructure checks; Phase 3 local and cloud checks are separate evidence.
-  No production AWS configuration, DNS, platform service, Teco site or public
+  No production AWS configuration, DNS, platform service, existing unrelated site or public
   website copy was changed. Payments, tester enrollment and chat admin tools remain
   outside this phase.
 
@@ -505,7 +439,7 @@ Other outstanding exercises are ambiguous session-creation recovery, saved tool-
 3. Have the AWS management/payer owner activate the `Project` cost-allocation tag; this linked account's activation call was denied. Verify tagged-budget coverage afterwards.
 4. Reconcile the held unknown-usage reservation against provider billing evidence without inventing a refund, and complete the remaining fault exercises. Delayed cancellation/deletion recovery is verified; admission has resumed.
 
-The intended email autonomy and operational controls must all pass before full completion. The service implements brief analysis only; website generation, autonomous repository engineering, Teco and external A2A-standard compliance are outside this release.
+The intended email autonomy and operational controls must all pass before full completion. The service implements brief analysis only; website generation, autonomous repository engineering, external A2A-standard compliance are outside this release.
 
 ## Tooling and private evidence
 

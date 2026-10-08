@@ -15,6 +15,7 @@ import {
   cmsEditorHtml,
   cmsEditorScript
 } from './pocketbase.ts';
+import {railwayUsage, type SiteUsage} from './costs.ts';
 import type { SiteSpec } from '../../../services/src/site/types.ts';
 export interface SiteResources {
   projectId?: string;
@@ -41,6 +42,7 @@ export interface DeploymentInput {
   saveResources: (value: SiteResources) => Promise<void>;
 }
 export interface SiteDeployer {
+  usage(resources: SiteResources, name: string, period: string, test?: boolean): Promise<SiteUsage>;
   deploy(input: DeploymentInput): Promise<SiteResources>;
   status(
     resources: SiteResources,
@@ -144,6 +146,11 @@ export class RailwayDeployer implements SiteDeployer {
       )
         throw new SiteError('deployment_service_mismatch');
     return true;
+  }
+  async usage(resources: SiteResources, name: string, period: string, test = false): Promise<SiteUsage> {
+    if(!/^[0-9]{4}-(?:0[1-9]|1[0-2])$/.test(period))throw new SiteError('invalid_report_period');
+    await this.guard(resources,name,test);
+    return railwayUsage(this.options.cliPath ?? fileURLToPath(new URL('./bin/railway',import.meta.url)),this.options.apiToken,this.options.workspaceId,resources,period);
   }
   async deploy(input: DeploymentInput): Promise<SiteResources> {
     const test = input.test === true;

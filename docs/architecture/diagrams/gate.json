@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Auth & Mandate Gate",
-    "output": ".local/architecture/managed-20261007/gate.html",
+    "output": ".local/architecture/catalog-20261008/gate.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
@@ -70,14 +70,14 @@
       "sublabel": "Live principal checks",
       "sources": [
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 99,
-          "end_line": 103
+          "path": "apps/platform/src/site-administration.ts",
+          "line": 24,
+          "end_line": 28
         },
         {
           "path": "apps/platform/src/store.ts",
-          "line": 341,
-          "end_line": 345
+          "line": 336,
+          "end_line": 340
         }
       ],
       "pos": [
@@ -97,14 +97,14 @@
       "sublabel": "Exact action / spec binding",
       "sources": [
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 290,
-          "end_line": 301
+          "path": "apps/platform/src/sites.ts",
+          "line": 409,
+          "end_line": 413
         },
         {
-          "path": "apps/platform/src/managed-sites.ts",
-          "line": 620,
-          "end_line": 635
+          "path": "apps/platform/src/sites.ts",
+          "line": 318,
+          "end_line": 322
         }
       ],
       "pos": [

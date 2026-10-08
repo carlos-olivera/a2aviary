@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Live Hosting & CMS",
-    "output": ".local/architecture/managed-20261007/hosting.html",
+    "output": ".local/architecture/catalog-20261008/hosting.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
@@ -18,17 +18,17 @@
       "id": "hosting-customer",
       "type": "cloud",
       "label": "Customer websites",
-      "sublabel": "In progress / deployed",
+      "sublabel": "Catalog / first site pending",
       "sources": [
         {
           "path": "docs/release-verification.md",
-          "line": 5,
-          "end_line": 9
+          "line": 8,
+          "end_line": 12
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 659,
-          "end_line": 663
+          "line": 779,
+          "end_line": 783
         }
       ],
       "pos": [
@@ -45,17 +45,17 @@
       "id": "hosting-railway",
       "type": "cloud",
       "label": "Railway site target",
-      "sublabel": "Catalog isolated / import exact",
+      "sublabel": "Isolated catalog project",
       "sources": [
         {
-          "path": "packages/generator/src/static-railway.ts",
-          "line": 200,
-          "end_line": 204
+          "path": "packages/generator/src/deploy.ts",
+          "line": 67,
+          "end_line": 71
         },
         {
           "path": "packages/generator/src/deploy.ts",
-          "line": 65,
-          "end_line": 69
+          "line": 57,
+          "end_line": 61
         }
       ],
       "pos": [
@@ -75,14 +75,14 @@
       "sublabel": "Verified static artifacts",
       "sources": [
         {
-          "path": "packages/generator/src/static-railway.ts",
-          "line": 397,
-          "end_line": 402
+          "path": "packages/generator/src/deploy.ts",
+          "line": 510,
+          "end_line": 514
         },
         {
           "path": "packages/generator/src/deploy.ts",
-          "line": 503,
-          "end_line": 507
+          "line": 528,
+          "end_line": 532
         }
       ],
       "pos": [
@@ -146,14 +146,9 @@
       "sublabel": "Provider readiness / owner DNS",
       "sources": [
         {
-          "path": "packages/generator/src/static-railway.ts",
-          "line": 294,
-          "end_line": 298
-        },
-        {
           "path": "packages/generator/src/deploy.ts",
-          "line": 490,
-          "end_line": 494
+          "line": 497,
+          "end_line": 501
         }
       ],
       "pos": [

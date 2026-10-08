@@ -78,6 +78,7 @@ export function testDependencies() {
       }
     },
     deployer: {
+      async usage(resources,name,period){return {currency:'USD',period,status:'unavailable',basis:'unavailable',amount:null,reason:'fictional_provider_no_billing',metrics:null,metricsStatus:'unavailable'};},
       async deploy(input) {
         deploys++;
         inputs.push(input);

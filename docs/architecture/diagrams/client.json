@@ -3,7 +3,7 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Client & Local Agent",
-    "output": ".local/architecture/managed-20261007/client.html",
+    "output": ".local/architecture/catalog-20261008/client.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
