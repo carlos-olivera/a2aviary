@@ -345,14 +345,42 @@ test('deployment and usage workers recheck grants, identity and test classificat
     5
   );
   await a.admins(owner.id, site.siteId, 'assign', [admin.email]);
-  await f.app.store.tester(
-    owner.id,
-    'testers.add',
-    admin.email
-  );
+  await f.app.store.tester(owner.id, 'testers.add', admin.email);
   await assert.rejects(s.status(admin.id, site.siteId), /site_mode_mismatch/);
   await assert.rejects(
     a.admins(owner.id, site.siteId, 'assign', [admin.email]),
     /reserved_identity/
+  );
+});
+
+test('queued identity revocation leaves an immutable denial outcome without provider work', async (t) => {
+  const d = testDependencies(),
+    f = await fixture(d);
+  t.after(f.close);
+  const owner = await f.user('owner@example.invalid'),
+    client = await f.user('identity-owner@example.invalid'),
+    admin = await f.user('identity-admin@example.invalid');
+  const s = f.app.sites,
+    site = await s.submit(client.id, {
+      ...(await fixtureSubmission()),
+      slug: 'identity-site'
+    });
+  await f.app.administration.admins(owner.id, site.siteId, 'assign', [
+    admin.email
+  ]);
+  await s.build(admin.id, site.specId);
+  await f.pool.query('UPDATE "user" SET "emailVerified"=false WHERE id=$1', [
+    admin.id
+  ]);
+  await s.processOne();
+  assert.equal(d.counts.verifies, 0);
+  assert.equal(
+    (
+      await f.pool.query(
+        'SELECT result FROM platform_site_operation WHERE job_id=(SELECT id FROM platform_site_job WHERE spec_id=$1) ORDER BY id DESC LIMIT 1',
+        [site.specId]
+      )
+    ).rows[0].result,
+    'verified_user_required'
   );
 });
