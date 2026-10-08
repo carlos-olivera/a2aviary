@@ -15,8 +15,8 @@
     "JavaScript-free access",
     "main source links"
   ],
-  "sourceRevision": "e358d47ed088d9f89aaf484feb4ecb0de8d69500",
-  "origin": "http://127.0.0.1:4193",
+  "sourceRevision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+  "origin": "http://127.0.0.1:58703",
   "viewports": [
     [
       1440,
@@ -37,5 +37,5 @@
     "architecture-mobile.png",
     "architecture-hosting.png"
   ],
-  "checkedDate": "2026-10-07"
+  "checkedDate": "2026-10-08"
 }
