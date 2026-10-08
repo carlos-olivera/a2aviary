@@ -26,4 +26,3 @@ Agents API verifier, bucket and Railway deployer; records resource identifiers
 only in an ignored private evidence file; asserts an HTTPS fixture response and
 CMS login; leaves remote resources for explicit owner-reviewed cleanup. No
 platform staging service, AWS resource or DNS record is modified.
-

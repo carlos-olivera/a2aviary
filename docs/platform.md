@@ -245,4 +245,3 @@ settings, and separately authorize deploy/migrations and trusted-policy activati
 Source protection now includes `apps/` and `.dockerignore`, including rename
 origins; the deployed AWS evaluator is unchanged. CI workflow wiring, persistent
 monthly accounting and approved-spec/preview/human binding remain future work.
-
