@@ -3,7 +3,7 @@ import {
   GetObjectCommand,
   ListObjectsV2Command,
   DeleteObjectsCommand,
-  PutObjectCommand
+  PutObjectCommand,
 } from '@aws-sdk/client-s3';
 import { SiteError } from './render.ts';
 export interface ObjectStore {
@@ -24,16 +24,16 @@ export class BucketStore implements ObjectStore {
         Bucket: this.bucket,
         Key: key,
         Body: bytes,
-        ContentType: 'application/octet-stream'
-      })
+        ContentType: 'application/octet-stream',
+      }),
     );
   }
   async deletePrefix(prefix: string) {
-    if (
-      !/^specs\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/$/.test(
-        prefix
-      )
-    )
+    const id = '[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}',
+      asset = new RegExp('^drafts/' + id + '/assets/asset-' + id + '$').test(
+        prefix,
+      );
+    if (!new RegExp('^(?:specs|drafts)/' + id + '/$').test(prefix) && !asset)
       throw new SiteError('unsafe_reset_prefix');
     // Restart each page from the prefix: deleting a page must not make a
     // provider continuation token skip objects. Repeat safely after a failure.
@@ -42,20 +42,20 @@ export class BucketStore implements ObjectStore {
         new ListObjectsV2Command({
           Bucket: this.bucket,
           Prefix: prefix,
-          MaxKeys: 1000
-        })
+          MaxKeys: 1000,
+        }),
       );
       const keys = (listed.Contents ?? [])
         .map((o) => o.Key)
         .filter((k): k is string => Boolean(k));
       if (!keys.length) return;
-      if (keys.some((k) => !k.startsWith(prefix)))
+      if (keys.some((k) => (asset ? k !== prefix : !k.startsWith(prefix))))
         throw new SiteError('unsafe_reset_prefix');
       const result = await this.client.send(
         new DeleteObjectsCommand({
           Bucket: this.bucket,
-          Delete: { Objects: keys.map((Key) => ({ Key })), Quiet: true }
-        })
+          Delete: { Objects: keys.map((Key) => ({ Key })), Quiet: true },
+        }),
       );
       if (result.Errors?.length) throw new SiteError('asset_reset_failed');
     }
@@ -63,7 +63,7 @@ export class BucketStore implements ObjectStore {
   }
   async get(key: string) {
     const r = await this.client.send(
-      new GetObjectCommand({ Bucket: this.bucket, Key: key })
+      new GetObjectCommand({ Bucket: this.bucket, Key: key }),
     );
     if (!r.Body) throw new SiteError('artifact_missing');
     if ((r.ContentLength ?? 0) > 64 * 1024 * 1024)

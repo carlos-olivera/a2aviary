@@ -1,5 +1,5 @@
 import { build } from 'esbuild';
-import { cp, mkdir } from 'node:fs/promises';
+import { cp, mkdir, rm } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 await build({
   entryPoints: ['src/index.ts'],
@@ -10,6 +10,8 @@ await build({
   external: ['ajv', 'sharp'],
   outfile: 'dist/index.js'
 });
+await cp('src/normalize-worker.mjs','dist/normalize-worker.mjs');
+await rm('dist/resources', { recursive: true, force: true });
 await cp('template', 'dist/resources', { recursive: true });
 await mkdir('dist/plans', { recursive: true });
 await cp(

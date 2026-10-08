@@ -1,4 +1,5 @@
 import test from 'node:test';
+import sharp from 'sharp';
 import assert from 'node:assert/strict';
 import {
   generateSite,
@@ -6,7 +7,6 @@ import {
   SiteError,
   canonicalJson,
   sha256,
-  validatePreview,
   assertVerified,
   siteRuntime,
   pocketBaseMigration,
@@ -44,7 +44,7 @@ test('seven-page catalog fixture generates reproducible sources, exact original 
   ])
     assert.ok(html.includes('data-component=\\"' + c + '\\"'));
   assert.equal(
-    first.binaryFiles['public/assets/' + input.spec.assets[0].sha256 + '.png'],
+    first.binaryFiles['public/assets/' + input.spec.assets[0].sha256 + '.webp'],
     input.assets[input.spec.assets[0].id]
   );
   assert.ok(
@@ -61,7 +61,6 @@ test('client text remains text, including Astro expressions and executable marku
   const s = structuredClone(input.spec);
   s.pages[0].sections[0].blocks[0].props.heading =
     '<script>alert(1)</script> {process.env}';
-  s.approval.specSha256 = specDigest(s);
   const result = await generateSite(s, assets);
   const html = result.files['src/pages/index.astro'];
   assert.ok(html.includes('&lt;script&gt;'));
@@ -72,8 +71,8 @@ test('invalid spec, unknown component/variant, altered approval and corrupt/prep
   for (const mutate of [
     (s) => (s.pages[0].sections[0].blocks[0].component = 'custom'),
     (s) => (s.pages[0].sections[0].blocks[0].variant = 'custom'),
-    (s) => (s.approval.approved = false),
-    (s) => (s.approval.specSha256 = '0'.repeat(64)),
+    (s) => (s.approval = {approved:true}),
+    (s) => (s.preview = {sha256:'0'.repeat(64)}),
     (s) => (s.tokens.fonts.body = 'unknown')
   ]) {
     const spec = structuredClone(input.spec);
@@ -100,24 +99,6 @@ test('invalid spec, unknown component/variant, altered approval and corrupt/prep
   extra.set('extra', Buffer.from('x'));
   await assert.rejects(generateSite(input.spec, extra), /invalid_assets/);
 });
-test('approved preview binds every file, contains all pages and rejects traversal/scripts', () => {
-  validatePreview(input.spec, input.preview);
-  const wrong = structuredClone(input.preview);
-  wrong.files['index.html'] = 'eA==';
-  assert.throws(() => validatePreview(input.spec, wrong), /preview_digest/);
-  for (const path of ['../outside.html', '/index.html', 'script.js']) {
-    const p = structuredClone(input.preview);
-    p.files[path] = 'eA==';
-    const s = structuredClone(input.spec);
-    s.preview.sha256 = sha256(canonicalJson(p));
-    assert.throws(() => validatePreview(s, p), /invalid_preview_file/);
-  }
-  const p = structuredClone(input.preview);
-  delete p.files['contact/index.html'];
-  const s = structuredClone(input.spec);
-  s.preview.sha256 = sha256(canonicalJson(p));
-  assert.throws(() => validatePreview(s, p), /preview_page_missing/);
-});
 test('report text alone, missing checks, forged hashes and altered output bytes cannot authorize a deployment', async () => {
   const source = await generateSite(input.spec, assets);
   const files = {};
@@ -133,8 +114,8 @@ test('report text alone, missing checks, forged hashes and altered output bytes 
       'a11y:' + p.path,
       'links:' + p.path,
       'lighthouse:' + p.path,
-      'visual:' + p.path + ':390',
-      'visual:' + p.path + ':1280'
+      'screenshot:' + p.path + ':390',
+      'screenshot:' + p.path + ':1280'
     ])
   ];
   const report = {
@@ -145,7 +126,8 @@ test('report text alone, missing checks, forged hashes and altered output bytes 
     outputSha256: sha256(canonicalJson(files)),
     checks: names.map((name) => ({ name, passed: true, details: {} }))
   };
-  const build = { report, files, artifacts: {}, sessionId: 'fictional' };
+  const screenshots={};for(const page of input.spec.pages)for(const width of [390,1280])screenshots[sha256(page.path).slice(0,12)+'-'+width+'-actual.png']=(await sharp({create:{width,height:1,channels:3,background:'#fff'}}).png().toBuffer()).toString('base64');
+  const build = { report, files, artifacts: screenshots, sessionId: 'fictional' };
   assertVerified(build, source, input.spec);
   for (const mutate of [
     (b) => b.report.checks.pop(),
@@ -168,7 +150,7 @@ test('production workflow defaults off; unsupported AI gap mode cannot enable un
   assert.throws(
     () =>
       siteRuntime({
-        SITE_WORKFLOW_ENABLED: 'true',
+        SITE_WORKFLOW_ENABLED: 'true',SITE_DRAFTS_ENABLED:'true',
         SITE_CREDENTIAL_KEY: 'a'.repeat(64),
         SITE_BUCKET_ENDPOINT: 'https://bucket.example.invalid',
         SITE_DEPLOY_ENVIRONMENT: 'fixture',

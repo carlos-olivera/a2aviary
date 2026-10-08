@@ -1,4 +1,5 @@
 import test from 'node:test';
+import sharp from 'sharp';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {
@@ -39,11 +40,12 @@ const report = {
       'a11y:' + p.path,
       'links:' + p.path,
       'lighthouse:' + p.path,
-      'visual:' + p.path + ':390',
-      'visual:' + p.path + ':1280'
+      'screenshot:' + p.path + ':390',
+      'screenshot:' + p.path + ':1280'
     ])
   ].map((name) => ({ name, passed: true, details: { testDouble: true } }))
 };
+const screenshots={};for(const page of input.spec.pages)for(const width of [390,1280])screenshots[sha256(page.path).slice(0,12)+'-'+width+'-actual.png']=await sharp({create:{width,height:1,channels:3,background:'#fff'}}).png().toBuffer();
 function verifierClient(scenario = {}) {
   const calls = [],
     logs = [],
@@ -54,7 +56,7 @@ function verifierClient(scenario = {}) {
     deleted = 0;
   const bytes = {
     'report.json': JSON.stringify(scenario.report ?? report),
-    'site.json': JSON.stringify({ files })
+    'site.json': JSON.stringify({ files }),...screenshots
   };
   if (scenario.invalidJson) bytes['report.json'] = '{PRIVATE OUTPUT';
   if (scenario.invalidSite) bytes['site.json'] = JSON.stringify({ files: [] });
@@ -215,7 +217,6 @@ function verify(mock) {
   return new AgentsVerifier(mock.client, (e) => mock.logs.push(e)).verify(
     source,
     input.spec,
-    input.preview,
     { test: true }
   );
 }
@@ -230,7 +231,7 @@ test('Agents ordering waits for connected and live outputs before subscribing/su
   assert.equal(mock.sent.stream, false);
   assert.equal(build.report.passed, true);
   assert.equal(mock.deleted, 1);
-  assert.deepEqual(mock.downloaded, ['report.json', 'site.json']);
+  assert.deepEqual(mock.downloaded, ['report.json', 'site.json',...Object.keys(screenshots)]);
   assert.equal(mock.calls.includes('stream.continued-after-completion'), false);
   assert.ok(mock.logs.every((e) => e.test === true));
   assert.deepEqual(mock.sent.agent.tools, []);
@@ -351,7 +352,7 @@ for (const [name, scenario, code] of [
         (error) => error.code === code && error.message === code
       );
       assert.equal(mock.deleted, scenario.createFailure ? 0 : 1);
-      assert.equal(mock.logs.at(-1).code, code);
+      assert.equal(mock.logs.find(e=>e.event==='agents.verification.completed').code, code);
       assert.ok(!JSON.stringify(mock.logs).includes('PRIVATE'));
       if (
         [
@@ -377,7 +378,7 @@ test('Agents bounded setup timeout emits sandbox_setup_timeout and deletes the s
   );
   assert.equal(mock.deleted, 1);
   assert.equal(mock.calls.includes('events.create'), false);
-  assert.equal(mock.logs.at(-1).code, 'sandbox_setup_timeout');
+  assert.equal(mock.logs.find(e=>e.event==='agents.verification.completed').code, 'sandbox_setup_timeout');
 });
 test('Agents failing checker check remains verification_failed after connected and successful publication', async () => {
   const failed = structuredClone(report);

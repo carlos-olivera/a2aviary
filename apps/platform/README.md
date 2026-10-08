@@ -49,3 +49,7 @@ Project code is Apache 2.0; [dependency notices](THIRD_PARTY.md) remain intact.
 Phase 4 tester enrollment and chat-only superadmin tools are described in
 [test operations](../../docs/testers-and-admin.md). Migration 005 is required;
 fixture site cleanup needs narrowly scoped provider delete/list permissions.
+
+## Initial-site drafts (current source)
+
+Both `SITE_WORKFLOW_ENABLED=true` and default-false `SITE_DRAFTS_ENABLED=true` are required. Policy 2.0.0 replaces client preview intake with revisioned drafts, shared raw uploads, isolated normalization, server snapshots and scoped browser approval before exact-byte deployment. `site.build` and `/api/site-specs` are removed; `change.request` returns `change_requests_unavailable`. Read [current operations](../../docs/sites.md) and [release evidence](../../docs/release-verification.md). All seven migration names/hashes must match; production 006 reconciliation is unresolved. Run `npm run test:browser` for the real local browser check and the separately authorized one-shot hosted runner only with fixture overrides and a disposable local database.

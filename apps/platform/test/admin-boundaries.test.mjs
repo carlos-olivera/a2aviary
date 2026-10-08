@@ -1,3 +1,4 @@
+import {prepare} from './draft-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fixture } from './helpers.mjs';
@@ -151,14 +152,16 @@ test('admin schema boundaries, pagination, permission denial and audit rollback'
       });
       assert.ok(second.testers.every((r) => r.email > first.nextAfter));
       const sample = await fixtureSubmission();
-      const a = await f.app.sites.submit(tester.id, {
+      const a = await prepare(f,tester, {
         ...sample,
         slug: 'fixture-a'
       });
-      const b = await f.app.sites.submit(tester.id, {
+      await f.app.sites.processOne();
+      const b = await prepare(f,tester, {
         ...sample,
         slug: 'fixture-b'
       });
+      await f.app.sites.processOne();
       const rows = await call('sites.list', {
         test: true,
         owner: tester.id,
@@ -256,7 +259,7 @@ test('admin schema boundaries, pagination, permission denial and audit rollback'
   );
   await t.test('interrupted tester jobs retain test flags and a failed final reset audit retains history for retry',async()=>{
     const spec=(await f.pool.query('SELECT p.id,p.site_id FROM platform_site_spec p JOIN platform_site s ON s.id=p.site_id WHERE s.owner_id=$1 LIMIT 1',[tester.id])).rows[0];
-    await f.app.sites.build(tester.id,spec.id);
+
     await f.pool.query("UPDATE platform_site_job SET state='running' WHERE spec_id=$1",[spec.id]);
     await f.app.sites.recoverInterrupted();
     assert.equal((await f.pool.query("SELECT test_mode FROM platform_audit WHERE action='site.worker.recovery' AND target=$1",[spec.id])).rows[0].test_mode,true);

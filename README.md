@@ -2,7 +2,7 @@
 
 An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. Our positioning is “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” There are no registered client sites. The first client site will be created through the normal catalog workflow.
 
-Websites come first. The owner-approved pilot has the client agent understand intent, research, prepare images and copy, and obtain human approval of a catalog-expressible preview before submission. a2aviary validates a structured site spec and implements generation/deployment through fixed Astro components and design tokens. It does not research, OCR, edit images or interpret free-text website instructions. [Plan policies and contracts](docs/plans.md) define Phase 1; [Phase 2 discovery auth/MCP](docs/platform.md) is implemented for local verification and prepared for Railway, with independent deployment verification and real client connections still unverified. [Phase 3 catalog generation and hosting](docs/sites.md) adds opt-in source for Astro builds, sandbox verification, PocketBase and isolated Railway projects; live cloud verification and activation are recorded separately. The pilot proposes fixed monthly change requests, replacing the earlier credit model for this plan. Nothing is for sale; there is no live checkout or active Paddle merchant of record. Public website copy remains a separate delivery.
+Websites come first. The client's agent supplies catalog content incrementally through server drafts. a2aviary normalizes uploaded images, generates and verifies immutable previews, obtains owner or scoped-administrator browser approval, and deploys the exact approved bytes. Both workflow and draft flags default off. [Current site operations](docs/sites.md) and [decision 013](docs/decisions/013-server-drafts-and-preview.md) define policy 2.0.0 and contract 2.0; historical intake artifacts remain frozen. Change requests are unavailable pending redesign; CMS edits remain supported. Nothing is for sale; there is no live checkout or active Paddle merchant of record. Observed operation, fixture cleanup and production migration reconciliation are tracked in [release evidence](docs/release-verification.md). Public website copy remains a separate delivery.
 
 **Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed email operating foundation whose first capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Website generation/hosting has catalog source; activation and independently verified hosted operation remain release gates. Scoped site administration and private cost reports are described in [site operations](docs/sites.md). Autonomous repository engineering and external A2A compliance remain future work.
 
@@ -24,12 +24,12 @@ See [architecture and limits](docs/operating-foundation.md), [email transport co
 
 ## Platform vision
 
-1. The client provides goals and materials to their own agent.
-2. Their agent prepares the structured site spec and catalog-expressible preview.
-3. The human approves the proposed result before submission.
-4. a2aviary validates the pinned policy, spec, prepared asset bytes and approval declaration.
-5. Opt-in site jobs generate, verify and deploy catalog sites and apply bounded approved changes.
-6. Work and policy versions remain recorded; later auth will bind the approving human.
+1. The human supplies goals and materials to their agent.
+2. Their LLM incrementally applies catalog content to a server draft.
+3. Images reach a shared agent/human upload session and are normalized server-side.
+4. a2aviary builds and verifies an immutable revision snapshot.
+5. The owner or scoped administrator approves its exact bytes through a verified browser session.
+6. Explicit deployment confirmation admits those stored bytes; revisions, approvals and operation history remain recorded.
 
 English is the canonical language for repository documentation. The repository is the source of truth for code, contracts, and technical decisions. Conversations in the a2aviary Space do not synchronize automatically; private references may live in excluded `.local/`.
 

@@ -309,7 +309,7 @@ export class RailwayDeployer implements SiteDeployer {
         join(
           cms,
           'pb_migrations',
-          '2-' + input.spec.approval.specSha256 + '.js'
+          '2-' + input.build.report.specSha256 + '.js'
         ),
         pocketBaseMigration(input.spec)
       );

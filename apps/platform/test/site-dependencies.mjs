@@ -4,6 +4,8 @@ import {
   SiteError,
   VerificationFailure
 } from '@a2aviary/generator';
+import {createRequire} from 'node:module';
+const sharp=createRequire(new URL('../../../packages/generator/package.json',import.meta.url))('sharp');
 export function testDependencies() {
   const data = new Map();
   let failAssets = false,
@@ -32,7 +34,7 @@ export function testDependencies() {
       }
     },
     verifier: {
-      async verify(source, spec, preview, context) {
+      async verify(source, spec, context) {
         verifies++;
         contexts.push(context);
         const files = {};
@@ -49,8 +51,8 @@ export function testDependencies() {
             'a11y:' + p.path,
             'links:' + p.path,
             'lighthouse:' + p.path,
-            'visual:' + p.path + ':390',
-            'visual:' + p.path + ':1280'
+            'screenshot:' + p.path + ':390',
+            'screenshot:' + p.path + ':1280'
           ])
         ].map((name) => ({
           name,
@@ -70,6 +72,7 @@ export function testDependencies() {
           artifacts: {},
           sessionId: 'fictional-session'
         };
+        for(const page of spec.pages)for(const width of [390,1280])build.artifacts[sha256(page.path).slice(0,12)+'-'+width+'-actual.png']=(await sharp({create:{width,height:1,channels:3,background:'#ffffff'}}).png().toBuffer()).toString('base64');
         build.artifacts['report.json'] = Buffer.from(
           JSON.stringify(build.report)
         ).toString('base64');

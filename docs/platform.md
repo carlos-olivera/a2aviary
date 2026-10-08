@@ -6,7 +6,7 @@ Chrome reproduced a native login form failure (`Origin: null`, HTTP 403); the
 repair was merged in PR #17. Following the corrected deployment, the live login
 response returned HTTP 200 with `Referrer-Policy: strict-origin`, and Carlos
 reported a successful retry. Authenticated ChatGPT/Claude admin tool calls have
-not been independently recorded; see [deployment evidence](release-verification.md#platform-origin-repair--2026-10-06-owner-reported-retry). Phase 3 adds optional approved-spec build/deploy jobs and PocketBase provisioning behind `SITE_WORKFLOW_ENABLED`, disabled by default. See [site operations](sites.md) for the new variables, ownership/confirmation gates, sandbox verification, DNS status, and separate fixture deployment. No payments or new signed human-approval protocol is enabled. The AWS signed-email v1 workers remain unchanged. Phase 4 adds [testers and chat-only superadmin](testers-and-admin.md), with separate staging-only sites and audited reset; deployment evidence remains separate.
+not been independently recorded; see [deployment evidence](release-verification.md#platform-origin-repair--2026-10-06-owner-reported-retry). The current initial-site workflow uses server drafts, normalized uploads, screenshot verification and browser approval behind both `SITE_WORKFLOW_ENABLED` and default-false `SITE_DRAFTS_ENABLED`. See [site operations](sites.md) for the new variables, ownership/confirmation gates, sandbox verification, DNS status, and separate fixture deployment. No payments are enabled; verified browser membership and a single-use CSRF token authorize immutable snapshot approval. The AWS signed-email v1 workers remain unchanged. Phase 4 adds [testers and chat-only superadmin](testers-and-admin.md), with separate staging-only sites and audited reset; deployment evidence remains separate.
 
 ## Package and identity choices
 
@@ -19,8 +19,7 @@ special-use addresses, pins resolved DNS and refuses redirects. No unrestricted
 metadata-fetch wrapper is substituted. See [Better Auth MCP](https://better-auth.com/docs/plugins/mcp)
 and [CIMD](https://better-auth.com/docs/plugins/cimd).
 
-Verified Google sign-in is the implementation default. It keeps the only pages
-at login and consent and prevents an unverified email claim from bootstrapping
+Verified Google sign-in is the implementation default. It protects login/consent and the current upload/approval pages and prevents an unverified email claim from bootstrapping
 an owner or invited admin. Password signup and account linking are disabled.
 The owner must privately set PLATFORM_SUPERADMIN_EMAIL to the exact approved
 owner identity; no default, public example or application code embeds it.
@@ -146,7 +145,7 @@ changes; no down/reset/drop tool is provided.
 See [the full Phase 4 tool list](testers-and-admin.md#tool-list) for enrollment, tester reset, site inventory/inspection and filtered redacted logs. Only superadmin can use those administrative tools.
 
 Default role is client. Verified allowlisted testers receive tester role, with
-`test:true` on site/build/change metadata, MCP and verification logs, and audit records (the earlier `testMode` alias is retained). Free tester enrollment uses the same pinned plan limits; test sites use isolated staging hosts only.
+`test:true` on draft/snapshot/deployment metadata, MCP and verification logs, and audit records (the earlier `testMode` alias is retained). Free tester enrollment uses the same pinned plan limits; test sites use isolated staging hosts only.
 No payment integration exists. Tester enrollment grants the test-only free plan, while hosting still requires workflow activation and validated approved submissions.
 The verified configured owner bootstraps automatically with an audit record.
 Admin invitations last seven days and are consumed on verified sign-in/use;
@@ -244,4 +243,4 @@ merge in the appropriate order, configure private identity/database/domain
 settings, and separately authorize deploy/migrations and trusted-policy activation.
 Source protection now includes `apps/` and `.dockerignore`, including rename
 origins; the deployed AWS evaluator is unchanged. CI workflow wiring, persistent
-monthly accounting and approved-spec/preview/human binding remain future work.
+Monthly-change redesign remains future work. Server drafts and scoped browser snapshot approval are implemented in the current source; production rollout remains gated.

@@ -14,3 +14,6 @@ export {
 export { canonicalJson, sha256 } from '../../../services/src/site/policy.ts';
 export type * from '../../../services/src/site/types.ts';
 export * from './costs.ts';
+
+export * from './normalize.ts';
+export {generateContracts} from '../../../services/src/site/generator.ts';

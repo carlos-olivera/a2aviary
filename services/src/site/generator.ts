@@ -56,12 +56,11 @@ export function generateContracts(policy: Policy) {
   defs.navigation = obj({ primary: arr(ref('link'), f.navigation.maxPrimary.value, '/firstVersion/navigation/maxPrimary'), footer: arr(ref('link'), f.navigation.maxFooter.value, '/firstVersion/navigation/maxFooter') });
   defs.asset = obj({ id, format: tag({ enum: f.images.formats.value }, '/firstVersion/images/formats'), bytes: tag({ type: 'integer', minimum: 1, maximum: f.images.maxBytes.value }, '/firstVersion/images/maxBytes'), width: tag({ type: 'integer', minimum: 1, maximum: f.images.maxWidth.value }, '/firstVersion/images/maxWidth'), height: tag({ type: 'integer', minimum: 1, maximum: f.images.maxHeight.value }, '/firstVersion/images/maxHeight'), alt: copy('alt'), sha256: hash });
   defs.assets = arr(ref('asset'), f.images.maxAssets.value, '/firstVersion/images/maxAssets');
-  defs.approval = tag(obj({ approved: { const: true }, approvedAt: { type: 'string', format: 'approval-time' }, specSha256: hash }), '/firstVersion/approval/required');
-  defs.preview = obj({ artifactId: id, sha256: hash });
+
   const identity = { contractVersion: { const: f.contractVersion.value }, planId: { const: policy.planId.value }, policyVersion: { const: policy.version.value } };
   const provenance = { policyVersion: policy.version.value, policySha256: sha256(canonicalJson(policy)) };
   const schema = (name: string, body: Schema): Schema => ({ $schema: 'http://json-schema.org/draft-07/schema#', $id: `https://a2aviary.io/contracts/site/${policy.version.value}/${name}`, ...body, definitions: defs, 'x-provenance': provenance });
-  const siteSchema = schema('site-spec-v1', obj({ ...identity, pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }), approval: ref('approval'), preview: ref('preview') }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms', 'approval']));
+  const siteSchema = schema('site-spec-v1', obj({ ...identity, pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms']));
   const operationShapes: Record<string, Schema> = {
     'add-block': { pageId: id, sectionId: id, index: { type: 'integer', minimum: 0, maximum: s.maxBlocksPerSection.value }, block: ref('block') },
     'update-block': { pageId: id, sectionId: id, blockId: id, block: ref('block') },
@@ -73,7 +72,7 @@ export function generateContracts(policy: Policy) {
     type: 'object', required: ['op'], properties: { op: tag({ enum: policy.changes.operations.value }, '/changes/operations') },
     allOf: policy.changes.operations.value.map(op => ({ if: { properties: { op: { const: op } }, required: ['op'] }, then: obj({ op: { const: op }, ...operationShapes[op] }) }))
   };
-  const changeSchema = schema('change-request-v1', obj({ ...identity, baseSpecSha256: hash, operations: arr(ref('operation'), policy.changes.maxOperations.value, '/changes/maxOperations', 1), assets: ref('assets'), approval: ref('approval'), preview: ref('preview') }, [...Object.keys(identity), 'baseSpecSha256', 'operations', 'assets', 'approval']));
+  const changeSchema = schema('change-request-unavailable', {not: {}, description: 'change_requests_unavailable; draft-based changes are not implemented.'});
   return { siteSchema, changeSchema, provenance };
 }
 

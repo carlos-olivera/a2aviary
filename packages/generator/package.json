@@ -30,9 +30,7 @@
     "astro": "7.3.6",
     "lighthouse": "13.5.0",
     "openai": "7.27.0",
-    "pixelmatch": "7.1.0",
     "playwright": "1.63.0",
-    "pngjs": "7.0.0",
     "sharp": "0.35.5"
   },
   "devDependencies": {

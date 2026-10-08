@@ -5,9 +5,6 @@ import { canonicalJson, sha256 } from '../../../services/src/site/policy.ts';
 import type { SiteSpec } from '../../../services/src/site/types.ts';
 import { SiteError, type SourceBundle } from './render.ts';
 
-export interface PreviewBundle {
-  files: Record<string, string>;
-}
 export interface VerificationReport {
   version: 1;
   sourceSha256: string;
@@ -21,6 +18,7 @@ export interface VerifiedBuild {
   files: Record<string, string>;
   artifacts: Record<string, string>;
   sessionId: string;
+  artifactHashes?: Record<string, string>;
 }
 // Failed checker artifacts remain available for owner correction, never deployment.
 export class VerificationFailure extends SiteError {
@@ -34,8 +32,7 @@ export interface BuildVerifier {
   verify(
     source: SourceBundle,
     spec: SiteSpec,
-    preview: PreviewBundle,
-    context?: { test: boolean }
+    context?: { test: boolean },
   ): Promise<VerifiedBuild>;
 }
 export function safePath(path: string): boolean {
@@ -45,31 +42,10 @@ export function safePath(path: string): boolean {
     !path.split('/').some((p) => !p || p === '.' || p === '..')
   );
 }
-export function validatePreview(spec: SiteSpec, preview: PreviewBundle) {
-  if (!spec.preview || sha256(canonicalJson(preview)) !== spec.preview.sha256)
-    throw new SiteError('preview_digest_mismatch');
-  let bytes = 0;
-  for (const [path, value] of Object.entries(preview.files)) {
-    if (!safePath(path) || !/\.(html|css|png|jpg|jpeg|webp|woff2)$/.test(path))
-      throw new SiteError('invalid_preview_file');
-    const b = Buffer.from(value, 'base64');
-    if (b.toString('base64') !== value)
-      throw new SiteError('invalid_preview_encoding');
-    bytes += b.length;
-  }
-  if (bytes > 8 * 1024 * 1024) throw new SiteError('preview_too_large');
-  for (const page of spec.pages)
-    if (
-      !preview.files[
-        page.path === '/' ? 'index.html' : page.path.slice(1) + 'index.html'
-      ]
-    )
-      throw new SiteError('preview_page_missing');
-}
 export function assertVerified(
   build: VerifiedBuild,
   source: SourceBundle,
-  spec: SiteSpec
+  spec: SiteSpec,
 ) {
   const r = build.report;
   const required = [
@@ -79,9 +55,9 @@ export function assertVerified(
       'a11y:' + p.path,
       'links:' + p.path,
       'lighthouse:' + p.path,
-      'visual:' + p.path + ':390',
-      'visual:' + p.path + ':1280'
-    ])
+      'screenshot:' + p.path + ':390',
+      'screenshot:' + p.path + ':1280',
+    ]),
   ];
   if (
     r.version !== 1 ||
@@ -106,6 +82,25 @@ export function assertVerified(
       ]
     )
       throw new SiteError('missing_build_page');
+  for (const page of spec.pages)
+    for (const width of [390, 1280]) {
+      const name = sha256(page.path).slice(0, 12) + '-' + width + '-actual.png',
+        encoded = build.artifacts[name];
+      if (!encoded && !build.artifactHashes?.[name])
+        throw new SiteError('missing_screenshot');
+      if (encoded) {
+        const bytes = Buffer.from(encoded, 'base64');
+        if (
+          bytes.length < 24 ||
+          !bytes
+            .subarray(0, 8)
+            .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) ||
+          bytes.readUInt32BE(16) !== width ||
+          bytes.readUInt32BE(20) < 1
+        )
+          throw new SiteError('invalid_screenshot');
+      }
+    }
   // Assets must be byte-identical after the Astro build.
   for (const a of spec.assets) {
     const file =
@@ -126,10 +121,15 @@ export class AgentsVerifier implements BuildVerifier {
     sourceSha256: string;
     result?: string;
     code?: string;
+    usage?: {
+      inputTokens: number;
+      outputTokens: number;
+      totalTokens: number;
+    } | null;
   }) => void;
   constructor(
     client: OpenAI,
-    onCall: AgentsVerifier['onCall'] = (e) => console.info(JSON.stringify(e))
+    onCall: AgentsVerifier['onCall'] = (e) => console.info(JSON.stringify(e)),
   ) {
     this.client = client;
     this.onCall = onCall;
@@ -137,37 +137,20 @@ export class AgentsVerifier implements BuildVerifier {
   async verify(
     source: SourceBundle,
     spec: SiteSpec,
-    preview: PreviewBundle,
-    context: { test: boolean } = { test: false }
+    context: { test: boolean } = { test: false },
   ): Promise<VerifiedBuild> {
     const emit = (event: Parameters<AgentsVerifier['onCall']>[0]) =>
       this.onCall({ ...event, test: context.test });
-    validatePreview(spec, preview);
-    // The approval also binds prepared asset hashes; previews may reference these
-    // supplied bytes without duplicating them in the approved HTML/CSS artifact.
-    const previewFiles = {
-      ...Object.fromEntries(
-        Object.entries(source.binaryFiles)
-          .filter(([path]) => path.startsWith('public/assets/'))
-          .map(([path, data]) => [path.slice(7), data])
-      ),
-      ...preview.files
-    };
     const files = [
       ...Object.entries(source.files).map(([path, value]) => ({
         type: 'inline' as const,
         path: '/workspace/' + path,
-        data: Buffer.from(value).toString('base64')
+        data: Buffer.from(value).toString('base64'),
       })),
       ...Object.entries(source.binaryFiles).map(([path, data]) => ({
         type: 'inline' as const,
         path: '/workspace/' + path,
-        data
-      })),
-      ...Object.entries(previewFiles).map(([path, data]) => ({
-        type: 'inline' as const,
-        path: '/workspace/approved-preview/' + path,
-        data
+        data,
       })),
       {
         type: 'inline' as const,
@@ -176,15 +159,15 @@ export class AgentsVerifier implements BuildVerifier {
           canonicalJson({
             paths: spec.pages.map((p) => p.path),
             specSha256: source.specSha256,
-            sourceSha256: source.sourceSha256
-          })
-        ).toString('base64')
-      }
+            sourceSha256: source.sourceSha256,
+          }),
+        ).toString('base64'),
+      },
     ];
     emit({
       event: 'agents.verification.started',
       specSha256: source.specSha256,
-      sourceSha256: source.sourceSha256
+      sourceSha256: source.sourceSha256,
     });
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 20 * 60 * 1000);
@@ -206,7 +189,7 @@ export class AgentsVerifier implements BuildVerifier {
             multi_agent: { enabled: false },
             tools: [],
             instructions:
-              'The fixed setup checker performs verification. Do not edit inputs or outputs. No research, image editing, OCR, deployment, network tools or credentials. Acknowledge completion only.'
+              'The fixed setup checker performs verification. Do not edit inputs or outputs. No research, image editing, OCR, deployment, network tools or credentials. Acknowledge completion only.',
           },
           environment: {
             type: 'openai_hosted',
@@ -222,35 +205,35 @@ export class AgentsVerifier implements BuildVerifier {
                 'deb.debian.org',
                 'security.debian.org',
                 'archive.ubuntu.com',
-                'security.ubuntu.com'
-              ]
+                'security.ubuntu.com',
+              ],
             },
             env: { ASTRO_TELEMETRY_DISABLED: '1' },
             files,
             setup_commands: [
               {
                 command: 'npm ci --ignore-scripts --no-audit --no-fund',
-                cwd: '/workspace'
+                cwd: '/workspace',
               },
               {
                 command:
                   'npx --no-install playwright install --with-deps chromium',
-                cwd: '/workspace'
+                cwd: '/workspace',
               },
               {
                 command: 'node verify.mjs; test -f outputs/report.json',
-                cwd: '/workspace'
-              }
-            ]
+                cwd: '/workspace',
+              },
+            ],
           },
-          stream: false
+          stream: false,
         },
         {
           timeout: 20 * 60 * 1000,
           idempotencyKey: 'site-verify-' + randomUUID(),
           signal: controller.signal,
-          maxRetries: 0
-        }
+          maxRetries: 0,
+        },
       );
       sessionId = session.id;
       failureCode = 'sandbox_setup_failed';
@@ -262,14 +245,14 @@ export class AgentsVerifier implements BuildVerifier {
       const requestOptions = {
         signal: controller.signal,
         timeout: 30000,
-        maxRetries: 0
+        maxRetries: 0,
       };
       for (;;) {
         if (controller.signal.aborted)
           throw new SiteError('sandbox_setup_timeout');
         const environment = await this.client.beta.agents.environments.retrieve(
           session.environment.id,
-          requestOptions
+          requestOptions,
         );
         if (environment.status === 'connected') break;
         if (environment.status === 'failed' || environment.status === 'expired')
@@ -280,7 +263,7 @@ export class AgentsVerifier implements BuildVerifier {
       for await (const file of this.client.beta.agents.environments.files.list(
         session.environment.id,
         { path: '/workspace/outputs', limit: 100 },
-        requestOptions
+        requestOptions,
       ))
         livePaths.add(file.path);
       if (!livePaths.has('/workspace/outputs/report.json'))
@@ -292,7 +275,7 @@ export class AgentsVerifier implements BuildVerifier {
       // Subscribe first so early turn events cannot be missed.
       stream = await this.client.beta.agents.sessions.events.stream(sessionId, {
         ...requestOptions,
-        timeout: 20 * 60 * 1000
+        timeout: 20 * 60 * 1000,
       });
       await this.client.beta.agents.sessions.events.create(
         sessionId,
@@ -306,18 +289,18 @@ export class AgentsVerifier implements BuildVerifier {
                   content: [
                     {
                       type: 'input_text',
-                      text: 'Publish the fixed checker outputs as artifacts. Acknowledge completion.'
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+                      text: 'Publish the fixed checker outputs as artifacts. Acknowledge completion.',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
         },
         {
           ...requestOptions,
-          idempotencyKey: 'site-verify-turn-' + randomUUID()
-        }
+          idempotencyKey: 'site-verify-turn-' + randomUUID(),
+        },
       );
       failureCode = 'sandbox_turn_incomplete';
       let turnId: string | undefined;
@@ -333,6 +316,19 @@ export class AgentsVerifier implements BuildVerifier {
           event.turn.subagent_id === null &&
           event.turn.id === turnId
         ) {
+          const u = event.usage ?? event.turn.usage;
+          emit({
+            event: 'agents.usage.observed',
+            specSha256: source.specSha256,
+            sourceSha256: source.sourceSha256,
+            usage: u
+              ? {
+                  inputTokens: u.input_tokens,
+                  outputTokens: u.output_tokens,
+                  totalTokens: u.total_tokens,
+                }
+              : null,
+          });
           completed = true;
           break;
         }
@@ -355,7 +351,7 @@ export class AgentsVerifier implements BuildVerifier {
       let totalBytes = 0;
       for await (const a of this.client.beta.agents.sessions.artifacts.list(
         sessionId,
-        requestOptions
+        requestOptions,
       )) {
         if (a.turn_id !== turnId || !a.path.startsWith('/workspace/outputs/'))
           continue;
@@ -367,7 +363,7 @@ export class AgentsVerifier implements BuildVerifier {
           await this.client.beta.agents.sessions.artifacts.content(
             a.id,
             { session_id: sessionId },
-            requestOptions
+            requestOptions,
           );
         const bytes = Buffer.from(await response.arrayBuffer());
         totalBytes += bytes.length;
@@ -382,10 +378,10 @@ export class AgentsVerifier implements BuildVerifier {
       if (!artifacts['site.json']) throw new SiteError('sandbox_site_missing');
       failureCode = 'sandbox_report_invalid';
       const report: unknown = JSON.parse(
-        Buffer.from(artifacts['report.json'], 'base64').toString()
+        Buffer.from(artifacts['report.json'], 'base64').toString(),
       );
       const output: unknown = JSON.parse(
-        Buffer.from(artifacts['site.json'], 'base64').toString()
+        Buffer.from(artifacts['site.json'], 'base64').toString(),
       );
       const record = (value: unknown): value is Record<string, unknown> =>
         value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -403,7 +399,7 @@ export class AgentsVerifier implements BuildVerifier {
           (c) =>
             record(c) &&
             typeof c.name === 'string' &&
-            typeof c.passed === 'boolean'
+            typeof c.passed === 'boolean',
         ) ||
         !record(output) ||
         !record(output.files) ||
@@ -414,7 +410,7 @@ export class AgentsVerifier implements BuildVerifier {
         report: report as unknown as VerificationReport,
         files: output.files as Record<string, string>,
         artifacts,
-        sessionId
+        sessionId,
       };
       try {
         assertVerified(build, source, spec);
@@ -425,7 +421,7 @@ export class AgentsVerifier implements BuildVerifier {
         event: 'agents.verification.completed',
         specSha256: source.specSha256,
         sourceSha256: source.sourceSha256,
-        result: 'pass'
+        result: 'pass',
       });
       return build;
     } catch (error) {
@@ -440,44 +436,35 @@ export class AgentsVerifier implements BuildVerifier {
         specSha256: source.specSha256,
         sourceSha256: source.sourceSha256,
         result: 'fail',
-        code
+        code,
       });
       // Never expose provider responses or output bytes through errors/logs.
       throw error instanceof SiteError ? error : new SiteError(code);
     } finally {
       clearTimeout(timer);
       stream?.controller.abort();
-      if (sessionId)
-        for (let attempt = 0; attempt < 3; attempt++) {
-          try {
-            const deleted = await this.client.beta.agents.sessions.delete(
-              sessionId,
-              {
-                timeout: 30000,
-                maxRetries: 0
-              }
-            );
-            if (!deleted.deleted) throw new Error('cleanup incomplete');
-            break;
-          } catch (error) {
-            // A provisioning conflict may settle; other cleanup failures are separate.
-            if (
-              error instanceof OpenAI.APIError &&
-              error.status === 409 &&
-              attempt < 2
-            ) {
-              await delay(10000);
-              continue;
-            }
-            emit({
-              event: 'agents.cleanup.pending',
-              code: 'sandbox_cleanup_pending',
-              specSha256: source.specSha256,
-              sourceSha256: source.sourceSha256
-            });
-            break;
-          }
+      if (sessionId) {
+        try {
+          const deleted = await this.client.beta.agents.sessions.delete(
+            sessionId,
+            { timeout: 30000, maxRetries: 0 },
+          );
+          if (!deleted.deleted) throw new Error('cleanup incomplete');
+          emit({
+            event: 'agents.cleanup.deleted',
+            specSha256: source.specSha256,
+            sourceSha256: source.sourceSha256,
+            result: 'pass',
+          });
+        } catch {
+          emit({
+            event: 'agents.cleanup.pending',
+            code: 'sandbox_cleanup_pending',
+            specSha256: source.specSha256,
+            sourceSha256: source.sourceSha256,
+          });
         }
+      }
     }
   }
 }

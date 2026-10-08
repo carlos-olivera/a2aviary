@@ -49,3 +49,7 @@ The platform retains the current state. Callbacks and polling are proposed task-
 ## Context sources
 
 The foundation comes from the recap of the conversation originally titled “Agente para páginas web” (Website agent), the user's decisions in this session, and the current a2aviary Space introduction, which extends the vision to applications and digital services. The recap combines recovered history with proposals; it does not establish a deployed implementation or finalized operational agreements. Provider options and pricing must be verified when making technical decisions.
+
+## Current initial-site boundary — 2026-10-08
+
+Decision [013](decisions/013-server-drafts-and-preview.md) moves draft persistence, image normalization, preview generation and browser approval to the server. The client's LLM supplies catalog content incrementally. Approval binds an immutable revision and exact artifact; deployment does not rebuild. Both flags default off, change requests await redesign, and production migration reconciliation remains unresolved. See [current workflow](sites.md) and [observed release evidence](release-verification.md).
