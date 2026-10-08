@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Architecture overview",
-    "output": ".local/architecture/pr25-ci/overview.html",
+    "output": ".local/architecture/server-drafts-final/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+      "revision": "b809d521889f4b3a00dc474bbddbf8d3f12aedd1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -18,7 +18,7 @@
       "id": "client",
       "type": "external",
       "label": "1. Client & Local Agent",
-      "sublabel": "Prepared spec / approved preview",
+      "sublabel": "Draft content / shared uploads",
       "pos": [
         40,
         60
@@ -30,8 +30,8 @@
       "sources": [
         {
           "path": "docs/sites.md",
-          "line": 12,
-          "end_line": 16
+          "line": 7,
+          "end_line": 14
         }
       ],
       "tag": "Explore stage"
@@ -62,7 +62,7 @@
       "id": "engine",
       "type": "backend",
       "label": "3. Validation & Build Engine",
-      "sublabel": "Validation / generation / checks",
+      "sublabel": "Snapshots / checks / approval",
       "pos": [
         760,
         60
@@ -73,14 +73,14 @@
       ],
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 158,
-          "end_line": 162
+          "path": "apps/platform/src/drafts.ts",
+          "line": 651,
+          "end_line": 658
         },
         {
-          "path": "packages/generator/src/render.ts",
-          "line": 49,
-          "end_line": 53
+          "path": "apps/platform/src/sites.ts",
+          "line": 471,
+          "end_line": 478
         }
       ],
       "tag": "Explore stage"
@@ -89,7 +89,7 @@
       "id": "hosting",
       "type": "cloud",
       "label": "4. Live Hosting & CMS",
-      "sublabel": "Customer sites / project landing",
+      "sublabel": "Approved bytes / bounded editing",
       "pos": [
         760,
         260
@@ -102,12 +102,12 @@
         {
           "path": "docs/release-verification.md",
           "line": 5,
-          "end_line": 9
+          "end_line": 12
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 659,
-          "end_line": 663
+          "line": 176,
+          "end_line": 183
         }
       ],
       "tag": "Catalog implementation"
@@ -139,7 +139,7 @@
     {
       "from": "client",
       "to": "gate",
-      "label": "Approved input",
+      "label": "Draft requests",
       "variant": "emphasis"
     },
     {
@@ -151,7 +151,7 @@
     {
       "from": "engine",
       "to": "hosting",
-      "label": "Verified only",
+      "label": "Approved bytes",
       "variant": "emphasis"
     },
     {

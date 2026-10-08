@@ -1,21 +1,21 @@
 {
   "client-agent": {
-    "note": "The client assistant prepares literal copy, images and the structured catalog spec. Preparation is client-side; the platform does not research or adapt images for site production.",
+    "note": "The client LLM supplies literal catalog content incrementally through revisioned operations with stable IDs; the server owns normalization, generation and verification.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "client-preview": {
-    "note": "The preview and original asset bytes are bound to the approved spec. No arbitrary styles, scripts or server-side fetching are authorized.",
+    "note": "Human and agent HTTP uploads share an expiring session. The agent probes first; unavailable networking falls back to the authenticated human link/QR. Only the secret-free child decodes images.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "client-approval": {
-    "note": "The client obtains human approval before submission. The approval declaration asserts approval; it is not a new human-signature protocol.",
+    "note": "A verified browser session belonging to the current owner or enabled site administrator approves a verified snapshot. Exact Origin and a single-use session/snapshot CSRF token are required; no MCP approval declaration exists.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "client-submit": {
-    "note": "Submission enters the authenticated platform. Selecting this boundary opens stage 2.",
+    "note": "MCP deployment requires exact confirmation and a current immutable browser approval. The stored verified file map is deployed without generation or normalization.",
     "status": "Implemented",
     "mode": "Separate local tooling",
     "targetStage": "gate"
@@ -41,17 +41,17 @@
     "mode": "Separate local tooling"
   },
   "gate-owner": {
-    "note": "Verified owners, superadmin and enabled site administrators may use assigned catalog sites. Role, verified identity, membership, lifecycle and fixture classification are rechecked before queued work. Grants confer no platform role.",
+    "note": "Current verified owner or enabled site membership authorizes drafts and approval. Global roles alone do not grant browser approval. Worker admission rechecks membership, revision, integrity and tester classification.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "gate-confirm": {
-    "note": "Catalog builds bind human-approved specs and previews. Changes and deployments require their exact action confirmations; tester sites cannot use custom domains.",
+    "note": "Browser approval binds revision, spec and output hashes; deployment additionally requires exact action confirmation. Edits supersede snapshots and cannot revive approval; deployment freezes edits.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "gate-policy": {
-    "note": "Versioned policies and atomic reservations enforce bounded changes. CMS content edits do not consume site-change allowance; unknown deployments retain reservations.",
+    "note": "Policy 2.0.0 and contract 2.0 enforce supplied values, aggregate budgets and atomic rolling quotas. Initial-site drafts cannot redeploy live sites; change.request is unavailable pending redesign.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -72,32 +72,32 @@
     "mode": "Local emulation"
   },
   "engine-validate": {
-    "note": "Catalog specifications and assets follow the fixed versioned policy, canonical hashes and bounded byte validation. Uploaded build scripts are never executed.",
+    "note": "Draft batches validate atomically while missing content and forward references remain preview blockers. A bounded secret-free child produces metadata-stripped WebP; server metadata derives only from output bytes.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-jobs": {
-    "note": "Postgres persists catalog build, deploy and usage jobs, admission audits and immutable owner eligibility snapshots. Unknown deployment outcomes block replay.",
+    "note": "Postgres retains drafts, receipts, upload sessions, snapshot provenance and jobs. Owner/test-scoped content/provenance reuse avoids duplicate provider attempts, never approval. One verification runs globally.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-astro": {
-    "note": "Deterministic rendering uses the fixed catalog and approved tokens. Prepared assets are copied byte-identically; source and output hashes bind the artifacts.",
+    "note": "Deterministic fixed catalog rendering uses relative page, CSS, font and image references so identical bytes work at signed snapshot paths and deployed roots.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-verify": {
-    "note": "Secret-free hosted Agents verification uses fixed trusted checkers for catalog builds, approved preview parity, accessibility, links and Lighthouse. Cloud proof remains separate.",
+    "note": "The secret-free Agents setup checker runs syntax, Astro, axe, links and Lighthouse, with required screenshots for every authored page at 390/1280 px. Visual parity inputs are removed. The hosted attempt failed before verification.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-artifacts": {
-    "note": "The existing private artifact-bucket adapter retains catalog assets, approved previews, builds, verification reports and screenshots. Bucket activation remains separately verified.",
+    "note": "Private storage holds normalized assets and immutable build maps, hashes, reports and available failure screenshots. Signed previews expire after 15 minutes and apply both header and iframe sandboxing. Hosted bucket access/cleanup remains unresolved.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "engine-host": {
-    "note": "Only verified bytes and a newly checked mandate reach the provider adapter. Selecting this boundary opens stage 4.",
+    "note": "Admission and worker recheck current revision, approval, approver authorization, artifact hashes and tester classification. Only stored approved bytes reach the deployment adapter.",
     "status": "Implemented",
     "mode": "Cloud-only",
     "targetStage": "hosting"
@@ -123,7 +123,7 @@
     "mode": "Local emulation"
   },
   "hosting-customer": {
-    "note": "Catalog hosting is implemented and locally tested. No registered client sites exist; the first client site will use the catalog workflow. Hosted end-to-end verification remains pending.",
+    "note": "Catalog hosting is implemented and locally tested. The sole hosted tester attempt stopped at the first upload failure before provisioning. No fixture project or client deployment was created; cloud proof remains blocked.",
     "status": "Implemented",
     "mode": "Cloud-only"
   },
@@ -173,7 +173,7 @@
     "mode": "Mock"
   },
   "ops-pr": {
-    "note": "PR checks and the external App-bound policy evaluate sensitive paths and current-head approval. The advisory local integration workflow remains blocked from App publication by missing workflow-write permission.",
+    "note": "App-authored PRs and required checks retain current-head owner review. The development broker access is verified without expanding permissions; auto-merge stays disabled.",
     "status": "Implemented",
     "mode": "Cloud-only"
   },
@@ -203,12 +203,12 @@
     "mode": "Local emulation"
   },
   "ops-admin": {
-    "note": "Superadmin manages testers and site email grants through chat/MCP. Verified site administrators operate only assigned catalog sites; grants change neither global roles nor owner billing eligibility.",
+    "note": "Superadmin manages testers and site email grants through MCP. Site administrators remain scoped; approval requires current membership. Tester reset includes draft/spec prefixes and preserves account/audit/approval history.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
   "ops-audit": {
-    "note": "Immutable operations and eligibility history survive tester reset. Queued daily UTC reports collect only recorded catalog web/CMS resources; missing amounts remain null and shared storage/overhead remain unallocated.",
+    "note": "Immutable operations, eligibility and approval history survive reset. Bounded restart-safe cleanup uses durable write intents, protects live artifacts and removes expired unreferenced prefixes. Missing provider amounts remain null.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },

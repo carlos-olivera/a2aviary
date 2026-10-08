@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/pr25-ci/engine.html",
+    "output": ".local/architecture/server-drafts-final/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+      "revision": "b809d521889f4b3a00dc474bbddbf8d3f12aedd1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -17,18 +17,18 @@
     {
       "id": "engine-validate",
       "type": "security",
-      "label": "Spec and asset validation",
-      "sublabel": "Pinned policy / byte hashes",
+      "label": "Draft and asset validation",
+      "sublabel": "Atomic batches / decoder child",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 169,
-          "end_line": 173
+          "path": "apps/platform/src/draft-content.ts",
+          "line": 206,
+          "end_line": 213
         },
         {
-          "path": "services/src/site/validator.ts",
-          "line": 121,
-          "end_line": 125
+          "path": "packages/generator/src/normalize.ts",
+          "line": 6,
+          "end_line": 29
         }
       ],
       "pos": [
@@ -44,18 +44,18 @@
     {
       "id": "engine-jobs",
       "type": "database",
-      "label": "Durable Postgres jobs",
-      "sublabel": "Owned queue / audit state",
+      "label": "Durable snapshot jobs",
+      "sublabel": "Revisions / quota / reuse",
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 666,
-          "end_line": 670
+          "line": 471,
+          "end_line": 494
         },
         {
-          "path": "apps/platform/migrations/006-site-administration-billing.sql",
-          "line": 50,
-          "end_line": 54
+          "path": "apps/platform/migrations/007-server-drafts-preview.sql",
+          "line": 2,
+          "end_line": 13
         }
       ],
       "pos": [
@@ -72,12 +72,12 @@
       "id": "engine-astro",
       "type": "backend",
       "label": "Astro catalog generator",
-      "sublabel": "Fixed blocks / design tokens",
+      "sublabel": "Relative paths / fixed blocks",
       "sources": [
         {
           "path": "packages/generator/src/render.ts",
-          "line": 45,
-          "end_line": 49
+          "line": 47,
+          "end_line": 74
         }
       ],
       "pos": [
@@ -94,17 +94,17 @@
       "id": "engine-verify",
       "type": "backend",
       "label": "Agents verification",
-      "sublabel": "Build / a11y / visual checks",
+      "sublabel": "Build / axe / links / screenshots",
       "sources": [
         {
           "path": "packages/generator/src/verification.ts",
-          "line": 200,
-          "end_line": 209
+          "line": 187,
+          "end_line": 214
         },
         {
           "path": "packages/generator/src/verification.ts",
-          "line": 69,
-          "end_line": 93
+          "line": 58,
+          "end_line": 65
         }
       ],
       "pos": [
@@ -120,18 +120,18 @@
     {
       "id": "engine-artifacts",
       "type": "database",
-      "label": "Verified artifact store",
-      "sublabel": "Private reports / output hashes",
+      "label": "Immutable artifact store",
+      "sublabel": "Hashes / reports / screenshots",
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 645,
-          "end_line": 649
+          "line": 426,
+          "end_line": 449
         },
         {
           "path": "packages/generator/src/storage.ts",
           "line": 14,
-          "end_line": 18
+          "end_line": 21
         }
       ],
       "pos": [
@@ -147,18 +147,13 @@
     {
       "id": "engine-host",
       "type": "external",
-      "label": "Verified deployment gate",
-      "sublabel": "Next: hosting and CMS",
+      "label": "Approved deployment gate",
+      "sublabel": "Next: exact bytes and CMS",
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 780,
-          "end_line": 784
-        },
-        {
-          "path": "packages/generator/src/deploy.ts",
-          "line": 67,
-          "end_line": 71
+          "line": 603,
+          "end_line": 634
         }
       ],
       "pos": [
@@ -303,7 +298,7 @@
     {
       "from": "engine-artifacts",
       "to": "engine-host",
-      "label": "Deploy gate",
+      "label": "Browser approval",
       "variant": "emphasis"
     },
     {

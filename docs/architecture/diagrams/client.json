@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Client & Local Agent",
-    "output": ".local/architecture/pr25-ci/client.html",
+    "output": ".local/architecture/server-drafts-final/client.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+      "revision": "b809d521889f4b3a00dc474bbddbf8d3f12aedd1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -18,12 +18,17 @@
       "id": "client-agent",
       "type": "external",
       "label": "Client agent",
-      "sublabel": "Goals and prepared materials",
+      "sublabel": "Incremental content / stable IDs",
       "sources": [
         {
-          "path": "docs/sites.md",
-          "line": 12,
-          "end_line": 16
+          "path": "apps/platform/src/tools.ts",
+          "line": 311,
+          "end_line": 318
+        },
+        {
+          "path": "apps/platform/src/draft-content.ts",
+          "line": 206,
+          "end_line": 213
         }
       ],
       "pos": [
@@ -39,18 +44,18 @@
     {
       "id": "client-preview",
       "type": "frontend",
-      "label": "Catalog preview",
-      "sublabel": "Pinned spec / original assets",
+      "label": "Server draft and uploads",
+      "sublabel": "Shared channels / WebP output",
       "sources": [
         {
-          "path": "docs/sites.md",
-          "line": 44,
-          "end_line": 48
+          "path": "apps/platform/src/drafts.ts",
+          "line": 529,
+          "end_line": 536
         },
         {
-          "path": "services/src/site/validator.ts",
-          "line": 64,
-          "end_line": 68
+          "path": "packages/generator/src/normalize.ts",
+          "line": 6,
+          "end_line": 13
         }
       ],
       "pos": [
@@ -66,13 +71,18 @@
     {
       "id": "client-approval",
       "type": "security",
-      "label": "Human approval",
-      "sublabel": "Approval bound to spec",
+      "label": "Browser approval",
+      "sublabel": "Verified snapshot / scoped actor",
       "sources": [
         {
-          "path": "docs/sites.md",
-          "line": 46,
-          "end_line": 50
+          "path": "apps/platform/src/drafts.ts",
+          "line": 831,
+          "end_line": 854
+        },
+        {
+          "path": "apps/platform/src/site-pages.ts",
+          "line": 223,
+          "end_line": 234
         }
       ],
       "pos": [
@@ -88,13 +98,13 @@
     {
       "id": "client-submit",
       "type": "external",
-      "label": "Approved submission",
-      "sublabel": "Next: auth and mandate",
+      "label": "Confirmed deployment",
+      "sublabel": "Approved bytes / exact artifact",
       "sources": [
         {
-          "path": "apps/platform/src/app.ts",
-          "line": 142,
-          "end_line": 146
+          "path": "apps/platform/src/sites.ts",
+          "line": 176,
+          "end_line": 207
         }
       ],
       "pos": [
@@ -161,19 +171,19 @@
     {
       "from": "client-agent",
       "to": "client-preview",
-      "label": "Prepare",
+      "label": "Draft / upload",
       "variant": "emphasis"
     },
     {
       "from": "client-preview",
       "to": "client-approval",
-      "label": "Approve",
+      "label": "Verify / review",
       "variant": "emphasis"
     },
     {
       "from": "client-approval",
       "to": "client-submit",
-      "label": "Submit",
+      "label": "Approve bytes",
       "variant": "emphasis"
     },
     {
