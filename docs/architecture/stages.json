@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "sourceRevision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+  "sourceRevision": "b809d521889f4b3a00dc474bbddbf8d3f12aedd1",
   "stages": [
     {
       "id": "client",
       "title": "Client & Local Agent",
-      "summary": "Prepares the site specification, assets and preview for human approval.",
+      "summary": "Supplies incremental content and images; reviews server previews through a scoped browser session.",
       "diagram": "docs/architecture/diagrams/client.json",
       "nodes": [
         "client-agent",
@@ -35,7 +35,7 @@
     {
       "id": "engine",
       "title": "Validation & Build Engine",
-      "summary": "Validates approved inputs, generates catalog sites and verifies build artifacts.",
+      "summary": "Normalizes uploads, generates immutable snapshots and verifies exact artifacts before approval.",
       "diagram": "docs/architecture/diagrams/engine.json",
       "nodes": [
         "engine-validate",
@@ -53,7 +53,7 @@
     {
       "id": "hosting",
       "title": "Live Hosting & CMS",
-      "summary": "Deploys verified sites and supports bounded content editing.",
+      "summary": "Deploys approved verified bytes and supports bounded CMS content editing.",
       "diagram": "docs/architecture/diagrams/hosting.json",
       "nodes": [
         "hosting-customer",

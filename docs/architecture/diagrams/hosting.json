@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Live Hosting & CMS",
-    "output": ".local/architecture/pr25-ci/hosting.html",
+    "output": ".local/architecture/server-drafts-final/hosting.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+      "revision": "b809d521889f4b3a00dc474bbddbf8d3f12aedd1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -18,17 +18,17 @@
       "id": "hosting-customer",
       "type": "cloud",
       "label": "Customer websites",
-      "sublabel": "Catalog / first site pending",
+      "sublabel": "Catalog / cloud gate blocked",
       "sources": [
         {
           "path": "docs/release-verification.md",
-          "line": 8,
-          "end_line": 12
+          "line": 5,
+          "end_line": 16
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 780,
-          "end_line": 784
+          "line": 790,
+          "end_line": 797
         }
       ],
       "pos": [
@@ -45,17 +45,12 @@
       "id": "hosting-railway",
       "type": "cloud",
       "label": "Railway site target",
-      "sublabel": "Isolated catalog project",
+      "sublabel": "Isolated guarded catalog project",
       "sources": [
         {
           "path": "packages/generator/src/deploy.ts",
           "line": 67,
-          "end_line": 71
-        },
-        {
-          "path": "packages/generator/src/deploy.ts",
-          "line": 57,
-          "end_line": 61
+          "end_line": 78
         }
       ],
       "pos": [
@@ -72,17 +67,12 @@
       "id": "hosting-caddy",
       "type": "backend",
       "label": "Caddy site delivery",
-      "sublabel": "Verified static artifacts",
+      "sublabel": "Verified stored file map",
       "sources": [
         {
           "path": "packages/generator/src/deploy.ts",
           "line": 510,
-          "end_line": 514
-        },
-        {
-          "path": "packages/generator/src/deploy.ts",
-          "line": 528,
-          "end_line": 532
+          "end_line": 521
         }
       ],
       "pos": [
@@ -153,7 +143,7 @@
         {
           "path": "packages/generator/src/deploy.ts",
           "line": 497,
-          "end_line": 501
+          "end_line": 512
         }
       ],
       "pos": [

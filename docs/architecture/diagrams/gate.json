@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Auth & Mandate Gate",
-    "output": ".local/architecture/pr25-ci/gate.html",
+    "output": ".local/architecture/server-drafts-final/gate.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+      "revision": "b809d521889f4b3a00dc474bbddbf8d3f12aedd1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -40,17 +40,17 @@
       "id": "gate-mcp",
       "type": "backend",
       "label": "Platform MCP connector",
-      "sublabel": "Resource-bound tools",
+      "sublabel": "Resource-bound draft tools",
       "sources": [
         {
           "path": "apps/platform/src/app.ts",
-          "line": 48,
-          "end_line": 52
+          "line": 50,
+          "end_line": 57
         },
         {
           "path": "apps/platform/src/tools.ts",
           "line": 20,
-          "end_line": 24
+          "end_line": 27
         }
       ],
       "pos": [
@@ -67,17 +67,17 @@
       "id": "gate-owner",
       "type": "security",
       "label": "Ownership and roles",
-      "sublabel": "Live principal checks",
+      "sublabel": "Current scoped membership",
       "sources": [
         {
-          "path": "apps/platform/src/site-administration.ts",
-          "line": 24,
-          "end_line": 28
+          "path": "apps/platform/src/drafts.ts",
+          "line": 45,
+          "end_line": 66
         },
         {
           "path": "apps/platform/src/store.ts",
-          "line": 336,
-          "end_line": 340
+          "line": 343,
+          "end_line": 350
         }
       ],
       "pos": [
@@ -94,17 +94,17 @@
       "id": "gate-confirm",
       "type": "security",
       "label": "Approval and confirmation",
-      "sublabel": "Exact action / spec binding",
+      "sublabel": "Browser CSRF / exact bytes",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 410,
-          "end_line": 414
+          "path": "apps/platform/src/drafts.ts",
+          "line": 831,
+          "end_line": 854
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 319,
-          "end_line": 323
+          "line": 176,
+          "end_line": 207
         }
       ],
       "pos": [
@@ -120,18 +120,18 @@
     {
       "id": "gate-policy",
       "type": "database",
-      "label": "Plan and allowance",
-      "sublabel": "Pinned policy / atomic caps",
+      "label": "Policy and admission caps",
+      "sublabel": "Pinned policy / rolling quotas",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 266,
-          "end_line": 270
+          "path": "apps/platform/src/drafts.ts",
+          "line": 715,
+          "end_line": 730
         },
         {
           "path": "services/src/site/validator.ts",
-          "line": 180,
-          "end_line": 184
+          "line": 63,
+          "end_line": 70
         }
       ],
       "pos": [
@@ -147,13 +147,13 @@
     {
       "id": "gate-build",
       "type": "external",
-      "label": "Authorized site work",
-      "sublabel": "Next: validation and build",
+      "label": "Authorized snapshot work",
+      "sublabel": "Next: generation and checks",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 245,
-          "end_line": 249
+          "path": "apps/platform/src/drafts.ts",
+          "line": 651,
+          "end_line": 674
         }
       ],
       "pos": [

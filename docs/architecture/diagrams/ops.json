@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Governance & Ops",
-    "output": ".local/architecture/pr25-ci/ops.html",
+    "output": ".local/architecture/server-drafts-final/ops.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "e274497893afe84eb5897f1c7843338fd7b8bd4f",
+      "revision": "b809d521889f4b3a00dc474bbddbf8d3f12aedd1",
       "provider": "github",
       "link_mode": "web"
     }
@@ -228,18 +228,18 @@
     {
       "id": "ops-admin",
       "type": "security",
-      "label": "Testers and chat superadmin",
-      "sublabel": "Audited / staging-only reset",
+      "label": "Testers and site admins",
+      "sublabel": "Scoped approval / audited reset",
       "sources": [
         {
-          "path": "apps/platform/src/site-administration.ts",
-          "line": 130,
-          "end_line": 134
+          "path": "apps/platform/src/drafts.ts",
+          "line": 45,
+          "end_line": 66
         },
         {
-          "path": "apps/platform/src/store.ts",
-          "line": 83,
-          "end_line": 87
+          "path": "apps/platform/src/sites.ts",
+          "line": 850,
+          "end_line": 873
         }
       ],
       "pos": [
@@ -255,23 +255,23 @@
     {
       "id": "ops-audit",
       "type": "database",
-      "label": "Site records and reports",
-      "sublabel": "Atomic results / unknown outcomes",
+      "label": "Site records and cleanup",
+      "sublabel": "Immutable approvals / bounded GC",
       "sources": [
         {
-          "path": "apps/platform/src/site-administration.ts",
-          "line": 394,
-          "end_line": 398
+          "path": "apps/platform/migrations/007-server-drafts-preview.sql",
+          "line": 44,
+          "end_line": 57
+        },
+        {
+          "path": "apps/platform/src/drafts.ts",
+          "line": 916,
+          "end_line": 937
         },
         {
           "path": "apps/platform/src/site-administration.ts",
           "line": 372,
-          "end_line": 376
-        },
-        {
-          "path": "apps/platform/src/sites.ts",
-          "line": 1147,
-          "end_line": 1151
+          "end_line": 379
         }
       ],
       "pos": [
