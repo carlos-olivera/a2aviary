@@ -1,6 +1,6 @@
 # 013 — Server drafts, uploads, previews and browser approval
 
-Date: 2026-10-08. Status: owner-authorized implementation; PR review and production rollout remain separate gates. Supersedes the initial intake/approval workflow in decisions 007 and 009. Historical policy/contract artifacts remain frozen.
+Date: 2026-10-08. Status: owner-authorized implementation; merged to main at 15:49 -0400 in `b9bd1f8` and `6ff79db`. Successful production rollout remains unverified after the public health HTTP 503 at 16:46:22 -0400. Supersedes the initial intake/approval workflow in decisions 007 and 009. Historical policy/contract artifacts remain frozen.
 
 ## Decision
 
@@ -28,6 +28,6 @@ Site row locks serialize edit, approval and deploy admission. Edits supersede sn
 
 Rejected: client approval assertions and preview bundles (no trustworthy browser authorization); parity against client previews (wrong ownership of production); inline MCP image/base64 transport (context/body exposure); remote image fetching (SSRF/unclear provenance); bearer approval (human authorization bypass); in-process decoding (secret/process exposure); unconstrained encoders/provider retries (cost and resource uncertainty); a parallel legacy workflow (ambiguous contracts). Thumbnail MCP tooling and draft-based change requests are deferred. `change.request` returns `change_requests_unavailable`; live sites cannot redeploy through initial drafts.
 
-Migrations 001–006 are byte-for-byte preserved. Production's earlier 006 was reconciled by the owner to the current file on 2026-10-07 (owner-reported; see [release evidence](../release-verification.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); migration 007 applies on the first deployment of this source. No production activation, variables, DNS, payments, merge or deployment is authorized. One isolated hosted tester fixture is the explicit exception; its fictional approval session does not verify real Google authentication. Observed results, cleanup and unavailable billing values belong in release evidence, not inferred from a successful build or PR.
+Migrations 001–006 are byte-for-byte preserved. Production's earlier 006 was reconciled by the owner to the current file on 2026-10-07 (owner-reported; see [release evidence](../release-verification.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); migration 007 is now on main, but its production application is unverified after the observed HTTP 503. No production activation, variables, DNS, payments, merge or deployment is authorized. One isolated hosted tester fixture is the explicit exception; its fictional approval session does not verify real Google authentication. Observed results, cleanup and unavailable billing values belong in release evidence, not inferred from a successful build or PR.
 
 References: [workflow](../sites.md), [release evidence](../release-verification.md), [Sharp metadata defaults](https://sharp.pixelplumbing.com/api-output/), [CSP sandbox](https://www.w3.org/TR/CSP3/#directive-sandbox).

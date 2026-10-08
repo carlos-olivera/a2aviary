@@ -1,6 +1,6 @@
 # Release verification and status
 
-Last updated: 2026-10-08. Production runs main `89b92fe`; the server-draft workflow (decision 013) is source on `codex/server-drafts-preview` and is not deployed. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. **Owner-reported** and **agent-reported** mark observations relayed by Carlos or by an operating agent that this record has not independently reproduced. The current status table is the authority for present state; dated sections below it are historical evidence and keep the wording that was accurate on their date.
+Last updated: 2026-10-08 16:46:22 -0400. Decision 013 reached `main` at 2026-10-08 15:49 -0400 in `b9bd1f8` and `6ff79db` (verified from Git history). Public health returned HTTP 503 at that time; the current production revision, schema and workflow activation are unverified. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. **Owner-reported** and **agent-reported** mark observations relayed by Carlos or by an operating agent that this record has not independently reproduced. The current status table is the authority for present state; dated sections below it are historical evidence and keep the wording that was accurate on their date.
 
 ## Current status — 2026-10-08
 
@@ -13,11 +13,11 @@ Last updated: 2026-10-08. Production runs main `89b92fe`; the server-draft workf
 | `Project` tag AWS budget coverage | Blocked: management/payer activation required | [Owner actions](#owner-actions-and-completion) |
 | Operator App | Registered, repository-only, development broker enabled; repository auto-merge disabled; current-head approval behavior not recorded | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
 | Railway platform (Google login, OAuth, MCP, roles) | Deployed (owner-reported 2026-10-06); login HTTP 200 observed; authenticated ChatGPT/Claude tool calls not independently recorded | [Origin repair](#platform-origin-repair--2026-10-06-owner-reported-retry) |
-| Production schema | Earlier `006` applied 2026-10-07 21:20 America/La_Paz; the owner reconciled it to the current `006-site-administration-billing.sql` the same night; `/healthz` on main `89b92fe` reports six migrations, which requires matching hashes (owner- and agent-reported) | [Hosted catalog activation](#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported) |
-| Production site workflow (main `89b92fe`: `POST /api/site-specs`, `site.build`) | Enabled on 2026-10-08: `/healthz` reports `mandate: approved-catalog-sites` (agent-reported); its hosted fixture passed on the fourth attempt | Same section |
+| Production schema | Earlier `006` applied 2026-10-07 21:20 America/La_Paz and reconciled that night (owner-reported); six matching migrations were subsequently agent-reported. Current inventory, including whether `007` is applied, is unverified after the observed HTTP 503 | [Hosted catalog activation](#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported) |
+| Production site workflow | Earlier catalog activation and fourth hosted fixture success are agent-reported. Current `mandate` and flag state are unverified after HTTP 503; current main requires both flags and removes legacy intake/build | [Health observation](#public-health-observation--2026-10-08) and [site operations](sites.md) |
 | `SITE_DEPLOY_ENVIRONMENT` production value | Unconfirmed; must be `production` before any non-test site | [Production test procedure](sites.md#production-test-procedure) |
-| Server drafts, uploads and browser approval (decision 013) | Source on `codex/server-drafts-preview`, not merged or deployed. Local checks passed; its one hosted fixture failed at the first upload (HTTP 503) and a read-only bucket listing returned `AccessDenied` | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
-| Effect of merging decision 013 while auto-deploy is on | The next deployment applies migration `007`, removes `POST /api/site-specs` and `site.build`, and hides all site tools until `SITE_DRAFTS_ENABLED=true` is also set | [Site operations](sites.md) |
+| Server drafts, uploads and browser approval (decision 013) | Merged to `main` at 15:49 -0400 in `b9bd1f8` and `6ff79db`; production rollout/activation unverified after HTTP 503. Earlier local checks passed; its one hosted fixture failed at the first upload (HTTP 503) and a read-only bucket listing returned `AccessDenied` | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
+| Decision 013 deployment requirements | Main now includes migration `007` and removes `POST /api/site-specs` and `site.build`. A healthy deployment requires all seven migrations; site tools require both flags. Auto-deploy is owner-reported, not proof of a successful rollout | [Site operations](sites.md) |
 | Artifact bucket permissions and cleanup | Listing a fixture prefix returned `AccessDenied` (HTTP 403); residual prefixes from failed fixture runs are unconfirmed | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
 | Registered client sites | None in the 2026-10-07 inventory; `first_client_pilot` not known to be assigned | [Catalog starting state](#catalog-starting-state--2026-10-07-read-only-production-inventory) |
 | Real Google authentication on upload and approval pages | Not verified; fixtures use fictional sessions | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
@@ -28,18 +28,25 @@ Last updated: 2026-10-08. Production runs main `89b92fe`; the server-draft workf
 
 ## Open gates before the first client site
 
-1. Confirm `SITE_DEPLOY_ENVIRONMENT=production` before any non-test site or draft is created.
-2. Take and restore a backup of production Postgres before the next schema change (migration `007`).
-3. Decide whether Railway keeps auto-deploying `main` before merging decision 013.
-4. Fix the artifact bucket credential so it can list and delete prefixes, confirm leftover fixture prefixes are removed, and rerun the hosted fixture for decision 013.
-5. Set `SITE_DRAFTS_ENABLED=true` only after that fixture passes; verify real Google sign-in on the upload and approval pages.
-6. Run the first production test with a tester identity; see the [production test procedure](sites.md#production-test-procedure).
-7. Execute one remote PocketBase backup and restore, and decide the Railway token scope for cost reports.
-8. Earlier foundation gates remain: observe a real owner alert, activate the `Project` cost tag, record a current-head approval, and reconcile the four held $1 reservations.
+1. Restore healthy production readiness through separately authorized owner work and observe HTTP 200 with all seven migration names/hashes and the current `mandate`; the single health GET at 16:46:22 -0400 returned HTTP 503.
+2. Confirm `SITE_DEPLOY_ENVIRONMENT=production` before any non-test site or draft is created.
+3. Record production Postgres backup/restore proof and whether migration `007` applied after decision 013 reached main; take and restore a backup before any further schema change.
+4. Decide whether Railway should keep auto-deploying `main`; decision 013 is already merged, but its serving deployment is unverified.
+5. Fix the artifact bucket credential so it can list and delete prefixes, confirm leftover fixture prefixes are removed, and rerun the hosted fixture for decision 013 under separate authorization.
+6. Confirm both workflow flags and the observed `mandate`. Enable drafts only after the hosted fixture passes if they are still disabled; verify real Google sign-in on upload and approval pages.
+7. Run the first production test with a tester identity; see the [production test procedure](sites.md#production-test-procedure).
+8. Execute one remote PocketBase backup and restore, and decide the Railway token scope for cost reports.
+9. Earlier foundation gates remain: observe a real owner alert, activate the `Project` cost tag, record a current-head approval, and reconcile the four held $1 reservations.
+
+## Public health observation — 2026-10-08
+
+Decision 013 reached `main` at 2026-10-08 15:49 -0400 in `b9bd1f8` and `6ff79db` (verified from Git history). The single read-only GET of `https://platform-production-d84c.up.railway.app/healthz` at 2026-10-08 16:46:22 -0400 returned HTTP 503. The current `mandate`, migration names/count/hashes and serving revision could not be verified; no production retry or repair was attempted.
+
+The earlier successful health response below remains agent-reported historical evidence. A main commit and owner-reported auto-deploy setting do not establish a successful deployment or flag state.
 
 ## Hosted catalog activation — 2026-10-07 to 2026-10-08, owner- and agent-reported
 
-This section covers the workflow on main `89b92fe`, which production runs today.
+Historical owner- and agent-reported record of the earlier workflow on main `89b92fe`; the later merge and failed public health observation are recorded above.
 
 - **Schema reconciliation:** after the earlier `006` was applied at 21:20 America/La_Paz on 2026-10-07, the owner applied a single-transaction reconciliation that preserved authentication, roles, OAuth and audit records and produced the `006-site-administration-billing.sql` inventory, then redeployed. The script was tested beforehand on a disposable Postgres 16 database; it is not part of the repository.
 - **Configuration:** the owner loaded the site variables. Agent-reported checks found the variables present, OpenAI and Railway workspace access working, the credential key format valid, storage reachable and health OK. `SITE_PROTECTED_PROJECT_IDS` was corrected to project UUIDs.
@@ -63,7 +70,7 @@ This section covers the workflow on main `89b92fe`, which production runs today.
 - **Cleanup limit:** tester reset left the fictional local site in `resetting` with an empty provider-resource map. A read-only list of its exact artifact prefix returned `AccessDenied` HTTP 403. No removed bucket prefix can be confirmed. Object presence under `drafts/2664e547-2175-4a83-9381-73bcc473be2d/` remains unverified and cleanup unresolved. No approval or deployed artifact was created. Provider resources and audit retention were not inferred from a failed bucket inventory.
 - **Usage/cost:** observed fixture usage was one probe and one attempted raw upload, with no verification session or fixture project provisioned. OpenAI billed currency and Railway billing amounts are **unavailable**, represented as null, rather than claimed zero. Shared bucket request/storage charges are also unavailable.
 - **Credential handling:** read-only configuration came from `a2aviary-platform` → `production` → `platform`; only selected values were injected into the child test environment, never written or printed. Names read: `OPENAI_API_KEY`, `RAILWAY_API_TOKEN`, `SITE_RAILWAY_WORKSPACE_ID`, `SITE_PROTECTED_PROJECT_IDS`, `SITE_CREDENTIAL_KEY`, `SITE_BUCKET_ACCESS_KEY_ID`, `SITE_BUCKET_ENDPOINT`, `SITE_BUCKET_FORCE_PATH_STYLE`, `SITE_BUCKET_NAME`, `SITE_BUCKET_REGION`, `SITE_BUCKET_SECRET_ACCESS_KEY`, `PB_BACKUP_ACCESS_KEY_ID`, `PB_BACKUP_BUCKET`, `PB_BACKUP_ENDPOINT`, `PB_BACKUP_FORCE_PATH_STYLE`, `PB_BACKUP_REGION`, `PB_BACKUP_SECRET_ACCESS_KEY`. Optional `SITE_PROTECTED_DOMAINS` was absent. Production `DATABASE_URL` was neither selected nor used. No existing Railway variable, service or deployment changed.
-- **Unresolved gates:** artifact-bucket permission/inventory and residual-prefix cleanup; hosted verifier/approval/deployment/CMS proof; real Google authentication; remote backup/restore and billing amounts; Carlos's review; separately authorized production activation. The production migration 006 mismatch recorded on 2026-10-07 was reconciled by the owner that night (owner-reported; see the [current status](#current-status--2026-10-08)); merging this source applies migration 007 on the next deployment. This delivery does not reconcile production, enable flags, change DNS, add payments, merge or deploy production.
+- **Unresolved gates:** artifact-bucket permission/inventory and residual-prefix cleanup; hosted verifier/approval/deployment/CMS proof; real Google authentication; remote backup/restore and billing amounts; Carlos's review; separately authorized production activation. The production migration 006 mismatch recorded on 2026-10-07 was reconciled by the owner that night (owner-reported; see the [current status](#current-status--2026-10-08)); decision 013 subsequently reached main at 15:49 -0400, but the 16:46:22 -0400 HTTP 503 leaves migration 007 and activation unverified. This delivery does not reconcile production, enable flags, change DNS, add payments, merge or deploy production.
 
 See [decision 013](decisions/013-server-drafts-and-preview.md) and [current site operations](sites.md). Historical observations below retain their original dates and contracts.
 

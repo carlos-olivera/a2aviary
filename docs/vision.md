@@ -20,8 +20,8 @@ Pilot production does not research, OCR, edit images or interpret free text.
 Legacy `website.brief.analyze` remains supported without extension.
 
 [Phase 1 contracts](plans.md) define schemas, manifests, local validators and
-fictional examples. [Phase 2 auth/MCP](platform.md) is deployed on Railway;
-authenticated client connections are not yet independently recorded. [Phase 3](sites.md) adds catalog generation, verification, PocketBase and Railway client-site provisioning; the workflow was enabled in production on 2026-10-08 (agent-reported, see [current status](release-verification.md#current-status--2026-10-08)). [Phase 4](testers-and-admin.md) adds free staging-only testers and audited chat-only superadmin operations; activation and provider cleanup verification remain separate. Fixed monthly change requests replace credits for this pilot;
+fictional examples. [Phase 2 auth/MCP](platform.md) is deployed on Railway (owner-reported);
+authenticated client connections are not yet independently recorded. [Phase 3](sites.md) adds catalog generation, verification, PocketBase and Railway client-site provisioning; earlier workflow activation on 2026-10-08 is agent-reported, while current activation is unverified after the public HTTP 503 (see [current status](release-verification.md#current-status--2026-10-08)). [Phase 4](testers-and-admin.md) adds free staging-only testers and audited chat-only superadmin operations; activation and provider cleanup verification remain separate. Fixed monthly change requests replace credits for this pilot;
 CMS content edits will not consume that allowance. Limits are set in web-simple
 policy 1.0.1. Nothing is for sale; no live checkout or active Paddle merchant
 of record exists. Earlier Basic pricing/credit presentation is historical and
@@ -38,8 +38,8 @@ the public pricing page still shows it; correcting that copy is a separate deliv
 
 There are no registered client sites. The first client site will be created new through the normal catalog workflow, with scoped administrators, recorded owner billing eligibility and private costs. Site adoption is retired; see [decision 012](decisions/012-catalog-site-administration-and-billing.md).
 
-The owner selected an MCP connector for the pilot; Phase 2 prepares its discovery
-service, without activating website production. The client agent must have real tools to call an implemented service; instructions and contracts do not replace those capabilities.
+The owner selected an MCP connector for the pilot; Phase 2 deployment is owner-reported,
+while current site activation is unverified after the health failure. The client agent must have real tools to call an implemented service; instructions and contracts do not replace those capabilities.
 
 ## Continuity
 
@@ -51,4 +51,4 @@ The foundation comes from the owner's original website-agent brief and the owner
 
 ## Current initial-site boundary — 2026-10-08
 
-Decision [013](decisions/013-server-drafts-and-preview.md) moves draft persistence, image normalization, preview generation and browser approval to the server. The client's LLM supplies catalog content incrementally. Approval binds an immutable revision and exact artifact; deployment does not rebuild. Both flags default off in source, change requests await redesign, and the workflow is not yet deployed; see the [current status](release-verification.md#current-status--2026-10-08). See [current workflow](sites.md) and [observed release evidence](release-verification.md).
+Decision [013](decisions/013-server-drafts-and-preview.md) moves draft persistence, image normalization, preview generation and browser approval to the server. The client's LLM supplies catalog content incrementally. Approval binds an immutable revision and exact artifact; deployment does not rebuild. Both flags default off in source, change requests await redesign, and decision 013 reached main at 15:49 -0400 on 2026-10-08. Its production rollout and migration inventory remain unverified after the public health HTTP 503 at 16:46:22 -0400; see the [current status](release-verification.md#current-status--2026-10-08). See [current workflow](sites.md) and [observed release evidence](release-verification.md).

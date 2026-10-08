@@ -20,7 +20,7 @@ Provider invoices are the authority. Token counts and ledger amounts from launch
 | TLS certificate for `a2aviary.io` | AWS Certificate Manager | Monthly | 0.00 | `acm.Certificate` attached to CloudFront in [infra/src/app.ts](infra/src/app.ts); [ACM pricing](https://aws.amazon.com/certificate-manager/pricing/): public non-exportable certificates "No cost" | confirmed |
 | Route 53 hosted zone | AWS | Monthly | 0.50 | [docs/costs.md](docs/costs.md); [Route 53 pricing](https://aws.amazon.com/route53/pricing/) | estimated |
 | Secrets Manager, 4 secrets (OpenAI, signing, GitHub App key, webhook) | AWS | Monthly | 1.60 | `infra/src/email.ts`; [docs/costs.md](docs/costs.md) | estimated |
-| CloudWatch: 8 alarms (17 alarm metrics) plus 2 custom metrics | AWS | Monthly | 2.30 (1.70 + 0.60) | `infra/src/controls.ts`; [docs/costs.md](docs/costs.md) working scenario | estimated |
+| CloudWatch: 10 alarms (19 alarm metrics) plus 2 custom metrics | AWS | Monthly | 2.50 (1.90 + 0.60) | `infra/src/controls.ts`; [docs/costs.md](docs/costs.md) working scenario | estimated |
 | AWS usage: Lambda (including the 1-minute watchdog), DynamoDB, SQS/SNS, S3, logs, API Gateway, CloudFront, SES | AWS | Monthly (usage) | 0.20–3.60 | [docs/costs.md](docs/costs.md) working scenario (10 tasks, 1,000 page views per month) | estimated |
 | AWS actual bill since deployment (2026-10-03) | AWS | Usage | not yet known | AWS Billing / Cost Explorer for the payer account; the `Project` cost tag is not activated yet | to confirm |
 | OpenAI: launch research task, 22,556 input / 1,177 output tokens, 1 search | OpenAI | Usage | 0.015257 | [docs/release-verification.md](docs/release-verification.md) (tokens provider-reported; dollars are a conservative ledger estimate) | measured tokens, estimated $ |
@@ -39,12 +39,12 @@ Provider invoices are the authority. Token counts and ledger amounts from launch
 These are not invoices.
 
 - **Paid or committed so far (known prices only): about $72.03.** That is the domain ($72.00 paid) plus OpenAI ledger estimates ($0.029030). AWS actuals, the $4.00 held reservations and the ChatGPT subscription are not included.
-- **Expected monthly run-rate, project only: about $10.60–$24.00.**
-  - AWS: $4.60–$8.00 estimated before free-tier credits ([docs/costs.md](docs/costs.md) headline: $3–8).
+- **Expected monthly run-rate, project only: about $11.00–$24.00.**
+  - AWS: roughly $5.00–$8.00 estimated before free-tier credits ($4.60 fixed planning items plus usage) ([docs/costs.md](docs/costs.md) headline: $5–8).
   - Domain spread over 12 months: $6.00.
   - Model: $0 to $10.00. Launch usage was about $0.03; the allowance caps brief analysis at $10.00. Site verification sandboxes are outside this allowance.
-- **Including the shared ChatGPT Pro subscription at its full amount: about $110.60–$124.00 per month.** We show the full $100 rather than a share, because we have no usage hours to split it by honestly.
-- **Configured ceiling:** the $25/month operating target ($15 AWS alert plus $10 brief-analysis model allowance), plus the domain. The AWS budget only sends alerts; it does not stop spending. Railway, buckets and verification sandboxes are outside this target; see below.
+- **Including the shared ChatGPT Pro subscription at its full amount: about $111.00–$124.00 per month.** We show the full $100 rather than a share, because we have no usage hours to split it by honestly.
+- **Operating target:** the $25/month operating target ($15 AWS alert plus $10 brief-analysis model allowance), plus the domain. The AWS budget only sends alerts; it does not stop spending. Railway, buckets and verification sandboxes are outside this target; see below.
 
 ## Honesty notes
 
@@ -59,5 +59,5 @@ Catalog site cost records and private reports are retained; no registered client
 ## Known gaps — 2026-10-08
 
 - Railway (platform service, Postgres and one project per client site), the artifact and backup buckets, and OpenAI site-verification sandboxes are not in the sheet above. They have no estimate yet; see [docs/costs.md](docs/costs.md#not-yet-estimated--2026-10-08).
-- CloudWatch now has ten alarms over 19 alarm metrics since the 2026-10-05 support stack. That adds about $0.20/month to the CloudWatch row; the planning worksheet in [docs/costs.md](docs/costs.md) is updated.
+- CloudWatch now has ten alarms over 19 alarm metrics since the 2026-10-05 support stack. The CloudWatch row and planning worksheet in [docs/costs.md](docs/costs.md) are updated.
 - The public [costs page](https://a2aviary.io/costs) is generated from `website/public/costs.json`, which still carries the 2026-10-04 figures; updating it is a separate website change.

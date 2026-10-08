@@ -1,7 +1,9 @@
 # Platform: auth, MCP, roles and approved site jobs
 
-Status (2026-10-08): deployed on Railway from main `89b92fe` with `SITE_WORKFLOW_ENABLED=true`
-(agent-reported); this source adds server drafts behind `SITE_DRAFTS_ENABLED`. See the
+Status (2026-10-08): decision 013 reached main at 15:49 -0400 in `b9bd1f8` and
+`6ff79db`. The single public health GET at 16:46:22 -0400 returned HTTP 503; the
+serving revision, migration inventory and workflow activation are unverified.
+Earlier catalog activation on `89b92fe` is agent-reported historical evidence. See the
 [current status](release-verification.md#current-status--2026-10-08).
 Earlier record: Phase 2 source verified locally; Carlos reported Railway deployment on
 2026-10-06. Public health, OAuth discovery and login responses were observed.
@@ -52,8 +54,8 @@ The server constructs URLs from configuration, ignoring Host/proxy URL overrides
 | `/api/auth/callback/google` | Google callback; register this exact URL privately |
 | `POST /api/auth/oauth2/register` | DCR unavailable by default; explicit flag opt-in |
 | `PUT /api/site-uploads/<sessionId>/probe`, `PUT /api/site-uploads/<sessionId>/files/<uploadId>` | Agent upload channel with the session bearer capability; see [site operations](sites.md#shared-upload-session) |
-| `GET/POST /u/<id>` | Human upload page and QR; verified Google session, owner or site administrator |
-| `GET /p/<token>/…` | Signed, sandboxed 15-minute snapshot preview |
+| `GET /u/<id>`, `GET /u/<id>/qr`, `GET /u/<id>/assets/<assetId>` | Human upload page, QR and normalized assets; verified Google session, owner or site administrator. Image writes use the `PUT /api/site-uploads/…` route with Origin and CSRF |
+| `GET/HEAD /p/<token>/…` | Signed, sandboxed 15-minute snapshot preview |
 | `GET/POST /sites/approve/<specId>` | Browser approval page; verified Google session and current membership |
 | `GET /api/site-artifacts/<specId>/<artifactName>` | Owned verification reports and screenshots |
 | `GET /api/site-reports/<siteId>/<YYYY-MM>.csv` | Private monthly site report CSV |
@@ -256,10 +258,10 @@ registration, transaction rollback on audit failure, plan artifacts, strict
 transport and body limits. Google sessions are fictional fixtures; there is no
 live external sign-in or client connection claim.
 
-Phases 1 and 2 are merged and deployed; activation status is recorded in
+Phases 1 and 2 are merged; Railway deployment is owner-reported; activation status is recorded in
 [release verification](release-verification.md#current-status--2026-10-08).
 Source protection includes `apps/` and `.dockerignore`, including rename
 origins; the deployed AWS evaluator is unchanged. Server drafts and scoped browser
-snapshot approval are implemented in this source; production rollout remains
-gated. Future work: the monthly-change redesign, and CI wiring, because the release
+snapshot approval are merged to main; successful production rollout remains
+unverified after the observed HTTP 503. Future work: the monthly-change redesign, and CI wiring, because the release
 workflow does not build or test `apps/platform` or `packages/generator`.
