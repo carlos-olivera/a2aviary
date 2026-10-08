@@ -8,7 +8,7 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "902aaf1d5bcab88c735edd4e8ece6627d00faad1",
+      "revision": "e358d47ed088d9f89aaf484feb4ecb0de8d69500",
       "provider": "github",
       "link_mode": "web"
     }
@@ -270,8 +270,8 @@
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 1138,
-          "end_line": 1142
+          "line": 1147,
+          "end_line": 1151
         }
       ],
       "pos": [

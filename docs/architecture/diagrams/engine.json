@@ -8,7 +8,7 @@
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "902aaf1d5bcab88c735edd4e8ece6627d00faad1",
+      "revision": "e358d47ed088d9f89aaf484feb4ecb0de8d69500",
       "provider": "github",
       "link_mode": "web"
     }
@@ -22,8 +22,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 168,
-          "end_line": 172
+          "line": 169,
+          "end_line": 173
         },
         {
           "path": "services/src/site/validator.ts",
@@ -49,8 +49,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 665,
-          "end_line": 669
+          "line": 666,
+          "end_line": 670
         },
         {
           "path": "apps/platform/migrations/006-site-administration-billing.sql",
@@ -125,8 +125,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 644,
-          "end_line": 648
+          "line": 645,
+          "end_line": 649
         },
         {
           "path": "packages/generator/src/storage.ts",
@@ -152,8 +152,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 779,
-          "end_line": 783
+          "line": 780,
+          "end_line": 784
         },
         {
           "path": "packages/generator/src/deploy.ts",
