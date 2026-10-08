@@ -20,13 +20,12 @@ Pilot production does not research, OCR, edit images or interpret free text.
 Legacy `website.brief.analyze` remains supported without extension.
 
 [Phase 1 contracts](plans.md) define schemas, manifests, local validators and
-fictional examples. [Phase 2 discovery auth/MCP](platform.md) provides a locally
-verifiable service prepared for Railway; deployment and real client connections
-remain unverified. [Phase 3](sites.md) adds opt-in catalog generation, verification, PocketBase and Railway client-site provisioning; activation and live cloud proof remain separate release gates. [Phase 4](testers-and-admin.md) adds free staging-only testers and audited chat-only superadmin operations; activation and provider cleanup verification remain separate. Fixed monthly change requests replace credits for this pilot;
-CMS content edits will not consume that allowance. Initial numerical limits await
-owner PR review. Nothing is for sale; no live checkout or active Paddle merchant
+fictional examples. [Phase 2 auth/MCP](platform.md) is deployed on Railway;
+authenticated client connections are not yet independently recorded. [Phase 3](sites.md) adds catalog generation, verification, PocketBase and Railway client-site provisioning; the workflow was enabled in production on 2026-10-08 (agent-reported, see [current status](release-verification.md#current-status--2026-10-08)). [Phase 4](testers-and-admin.md) adds free staging-only testers and audited chat-only superadmin operations; activation and provider cleanup verification remain separate. Fixed monthly change requests replace credits for this pilot;
+CMS content edits will not consume that allowance. Limits are set in web-simple
+policy 1.0.1. Nothing is for sale; no live checkout or active Paddle merchant
 of record exists. Earlier Basic pricing/credit presentation is historical and
-public website copy is unchanged by Phase 1.
+the public pricing page still shows it; correcting that copy is a separate delivery.
 
 ## Hypotheses to test
 
@@ -48,8 +47,8 @@ The platform retains the current state. Callbacks and polling are proposed task-
 
 ## Context sources
 
-The foundation comes from the recap of the conversation originally titled “Agente para páginas web” (Website agent), the user's decisions in this session, and the current a2aviary Space introduction, which extends the vision to applications and digital services. The recap combines recovered history with proposals; it does not establish a deployed implementation or finalized operational agreements. Provider options and pricing must be verified when making technical decisions.
+The foundation comes from the owner's original website-agent brief and the owner decisions recorded from 2026-10-03 onward, later extended to applications and digital services. That history combines recovered notes with proposals; it does not establish a deployed implementation or finalized operational agreements. Provider options and pricing must be verified when making technical decisions.
 
 ## Current initial-site boundary — 2026-10-08
 
-Decision [013](decisions/013-server-drafts-and-preview.md) moves draft persistence, image normalization, preview generation and browser approval to the server. The client's LLM supplies catalog content incrementally. Approval binds an immutable revision and exact artifact; deployment does not rebuild. Both flags default off, change requests await redesign, and production migration reconciliation remains unresolved. See [current workflow](sites.md) and [observed release evidence](release-verification.md).
+Decision [013](decisions/013-server-drafts-and-preview.md) moves draft persistence, image normalization, preview generation and browser approval to the server. The client's LLM supplies catalog content incrementally. Approval binds an immutable revision and exact artifact; deployment does not rebuild. Both flags default off in source, change requests await redesign, and the workflow is not yet deployed; see the [current status](release-verification.md#current-status--2026-10-08). See [current workflow](sites.md) and [observed release evidence](release-verification.md).

@@ -12,13 +12,13 @@
 | Digital agency vision for websites, applications, and services; first pilot focused on a website | 2026-10-03 | Current a2aviary Space introduction |
 | English as the canonical language for project documentation | 2026-10-03 | User's instruction |
 | Software-platform framing for agent-to-agent digital work; “agency” as branding/metaphor; websites first, other capabilities coming later | 2026-10-05 | Owner's approved website implementation plan |
-| Basic launch presentation at $10/month · $100/year, automated site-kit flow, provider-neutral public copy, and isolated human-support forwarding preparation | 2026-10-05 | Owner’s explicit implementation request; delivery and deployment remain separate |
+| Basic launch presentation at $10/month · $100/year (pricing superseded by [007](007-pilot-policy-and-site-contracts.md); public copy still pending), automated site-kit flow, provider-neutral public copy, and isolated human-support forwarding preparation | 2026-10-05 | Owner’s explicit implementation request; delivery and deployment remain separate |
 
 The 2026-10-05 framing clarifies the earlier agency vision; it does not establish live website production or a commercial catalog.
 
 The 2026-10-06 owner-approved pilot supersedes earlier credit-based website plans: client-prepared, human-approved structured specs; fixed Astro components; bounded monthly changes. Phase 1 contracts are local work, not website production. See [007](007-pilot-policy-and-site-contracts.md) and [plans](../plans.md).
 
-## Design direction from the recap
+## Design direction
 
 The client agent acts as the interface, materials are prepared on the client's side, state is persistent, autonomy operates within a mandate, and work continues asynchronously. MCP and the first new catalog pilot are the documented starting point; no clients are registered.
 
@@ -27,13 +27,13 @@ The client agent acts as the interface, materials are prepared on the client's s
 - Geometric flock symbol, lowercase wordmark, and jade, ivory, and coral palette.
 - Two posts per week, adjustable to actual progress.
 - Commercial operation and support commitments beyond future licensed platform access.
-- Basic credit quantities, subscription conditions, and sales readiness remain open. The approved launch presentation above does not enable checkout or establish website production/hosting.
+- Pricing, subscription conditions, and sales readiness remain open. Credits were replaced by fixed change requests in [007](007-pilot-policy-and-site-contracts.md); nothing enables checkout.
 
 ## Open questions
 
-- Hosted catalog workflow verification and production schema reconciliation.
-- A2A standard and minimum client agent capabilities.
-- Identity provider and legal scope of the mandate, KYC, and signatures.
+- First non-test catalog site, remote backup/restore proof and the other [open gates](../release-verification.md#open-gates-before-the-first-client-site).
+- External A2A standard and minimum client agent capabilities; MCP is the pilot channel ([008](008-platform-auth-and-mcp.md)).
+- Legal scope of the mandate, KYC, and signatures; Google sign-in is the implemented identity provider ([008](008-platform-auth-and-mcp.md)).
 - Ownership and permissions for client deliverables.
 - Commercial pricing and maintenance beyond the initial operating limits.
 - External partner onboarding and long-term support commitments.
@@ -55,9 +55,9 @@ These decisions were accepted in the initial-release implementation plan. Accept
 
 ## Accepted pilot direction
 
-- [007 — Pilot policy and site contracts](007-pilot-policy-and-site-contracts.md) — owner-approved pilot direction; initial limits await PR review, integration is future work.
+- [007 — Pilot policy and site contracts](007-pilot-policy-and-site-contracts.md) — owner-approved pilot direction; limits merged and republished unchanged in policy 1.0.1.
 
-- [008 — Discovery platform auth, MCP and roles](008-platform-auth-and-mcp.md) — accepted Phase 2 direction; local implementation, no deployed/client compatibility claim.
+- [008 — Discovery platform auth, MCP and roles](008-platform-auth-and-mcp.md) — accepted Phase 2 direction; deployed on Railway (owner-reported), authenticated client calls not independently recorded.
 
 - [009 — Catalog generation and isolated client hosting](009-catalog-generation-and-client-hosting.md) — accepted Phase 3 direction; local and cloud evidence remain distinct.
 

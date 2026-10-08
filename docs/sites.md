@@ -1,6 +1,6 @@
 # Server drafts, uploads, preview and approval
 
-Current source implements [decision 013](decisions/013-server-drafts-and-preview.md). It is enabled only when **both** `SITE_WORKFLOW_ENABLED=true` and `SITE_DRAFTS_ENABLED=true`; drafts default to false. See [release evidence](release-verification.md) for observed checks and unresolved rollout gates. This delivery does not activate production, reconcile its migration inventory, change DNS, add payments or merge a PR. Nothing is for sale; there is no live checkout or active Paddle merchant of record.
+Current source implements [decision 013](decisions/013-server-drafts-and-preview.md). It is enabled only when **both** `SITE_WORKFLOW_ENABLED=true` and `SITE_DRAFTS_ENABLED=true`; drafts default to false. See [release evidence](release-verification.md) for observed checks and unresolved rollout gates. This delivery does not activate production, change DNS, add payments or merge a PR. As of 2026-10-08, production runs the earlier workflow from main `89b92fe`; see the [current status](release-verification.md#current-status--2026-10-08). Nothing is for sale; there is no live checkout or active Paddle merchant of record.
 
 ## Current workflow and contracts
 
@@ -56,6 +56,58 @@ Cleanup tracks bucket prefix write intents before external writes, so rolled-bac
 
 ## Local checks and the one hosted fixture
 
-Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. Platform tests use unique loopback Postgres schemas; migration inventory must match all seven filenames and hashes and health fails closed on alteration. Migrations 001–006 are unchanged. Production's existing **006 hash mismatch remains an unresolved rollout gate**; never rewrite inventory to bypass it.
+Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. Platform tests use unique loopback Postgres schemas; migration inventory must match all seven filenames and hashes and health fails closed on alteration. Migrations 001–006 are unchanged. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](release-verification.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); the first deployment of this source applies migration 007. Never rewrite inventory to bypass a mismatch.
 
 The explicitly authorized hosted runner is `node apps/platform/scripts/run-hosted-fixture.mjs`. It reads only the approved credential variable names from production Railway configuration into memory, filters them into the test child environment, overrides fixture flags, creates a disposable local database, and rejects a second attempt through a local marker. Never use production DATABASE_URL. SDK/action retries are disabled; readiness polling is allowed. The flow stops at its first failed stage and performs teardown once. Its private evidence contains only fictional IDs, safe usage/stage/cleanup observations and variable **names**, never values. Fictional verified browser sessions do not establish real Google authentication. No production variables/services/deployments are changed.
+
+## Configuration
+
+Keep values in private environment files or Railway variables; never paste them
+into a chat or PR. [Platform variables](platform.md#private-configuration-and-railway-preparation)
+remain required. When both flags are `true`, a missing or invalid required value
+stops startup, so the health check fails.
+
+| Variable | Purpose |
+| --- | --- |
+| `SITE_WORKFLOW_ENABLED`, `SITE_DRAFTS_ENABLED` | Both must be `true` to expose site tools and start the worker; both default to `false` |
+| `SITE_AI_GAPS_ENABLED` | Must remain `false` |
+| `SITE_CREDENTIAL_KEY` | Required; 32 bytes as 64 lowercase hex characters; keep it while any job is pending |
+| `OPENAI_API_KEY` | Required; controller-only key for hosted verification |
+| `RAILWAY_API_TOKEN`, `SITE_RAILWAY_WORKSPACE_ID` | Required; controller-only workspace token and the workspace for new projects |
+| `SITE_DEPLOY_ENVIRONMENT` | Required; `fixture` or `production`; tester sites always use a `fixture` environment |
+| `SITE_PROTECTED_PROJECT_IDS` | Required; comma-separated project IDs that are never deployment targets; the platform `RAILWAY_PROJECT_ID` is added automatically |
+| `SITE_PROTECTED_DOMAINS` | Optional; additional protected domains; the platform origin hostname is added automatically |
+| `SITE_BUCKET_ENDPOINT`, `SITE_BUCKET_NAME`, `SITE_BUCKET_REGION`, `SITE_BUCKET_ACCESS_KEY_ID`, `SITE_BUCKET_SECRET_ACCESS_KEY` | Required; HTTPS S3/R2-compatible artifact bucket; the credential needs read, write, prefix list and delete |
+| `SITE_BUCKET_FORCE_PATH_STYLE` | Optional; defaults to `true` |
+| `PB_BACKUP_ENDPOINT`, `PB_BACKUP_BUCKET`, `PB_BACKUP_REGION`, `PB_BACKUP_ACCESS_KEY_ID`, `PB_BACKUP_SECRET_ACCESS_KEY` | Required; HTTPS backup destination separate from artifacts; copied privately into each client CMS service |
+| `PB_BACKUP_FORCE_PATH_STYLE` | Optional; defaults to `true` |
+
+## Production test procedure
+
+This sequence prepares the first test of the server-draft workflow on the
+production platform; it does not authorize one. Record the outcome in
+[release verification](release-verification.md).
+
+1. Before the deployment that carries this source, take and restore a Postgres
+   backup (see the [Railway platform runbook](runbooks.md#railway-platform)). After
+   it, confirm `/healthz` lists all seven migrations.
+2. Confirm every variable in [Configuration](#configuration) is set, including
+   `SITE_DEPLOY_ENVIRONMENT=production`. A non-test site created while the value is
+   `fixture` is later rejected with `deployment_target_mismatch`, and `tester.reset`
+   does not remove non-test sites. Do not change the value while non-test sites exist.
+3. Set `SITE_DRAFTS_ENABLED=true` only after the hosted fixture for this workflow
+   has passed, then confirm `/healthz` reports `mandate: approved-catalog-sites`.
+4. Test with a tester identity. The configured owner cannot be a tester, so the
+   owner enrolls a second verified Google identity with `testers.add` (see
+   [testers](testers-and-admin.md)). Any non-test `site.draft.create`, including
+   the owner's, permanently takes `first_client_pilot`, even if the site is never
+   deployed.
+5. Through the connector: `site.draft.create`, `site.draft.apply`, `site.upload.open`
+   (agent HTTP or the human link/QR), `site.preview`, then poll `site.status`.
+6. Approve at `/sites/approve/<specId>` while signed in with the tester's Google
+   identity. This is the first real Google authentication of that page.
+7. Call `site.deploy` with `DEPLOY_SITE:<siteId>`, log in at
+   `<siteUrl>/api/cms/editor.html` and edit one record.
+8. Clean up with `tester.reset` and `RESET <siteId>`, then confirm the Railway
+   project, PocketBase volume and the `drafts/<UUID>/` and `specs/<UUID>/` bucket
+   prefixes are gone.

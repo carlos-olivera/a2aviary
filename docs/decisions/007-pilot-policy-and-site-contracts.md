@@ -1,8 +1,8 @@
 # 007 — Pilot policy and site contracts
 
 Date: 2026-10-06. Status: Direction accepted by Carlos Olivera Terrazas in the
-Phase 1 implementation request. Initial numerical values await current-head PR
-review. Acceptance is separate from deployment or operational verification.
+Phase 1 implementation request. Initial numerical values were merged and
+republished unchanged in policy 1.0.1. Acceptance is separate from deployment or operational verification.
 
 ## Context
 
@@ -31,7 +31,7 @@ with actual-byte verification. Require an approval declaration bound to the
 result digest, while explicitly deferring authenticated proof to later auth.
 Use four monthly applied changes, two pages and ten blocks per request, plus
 one separate shared configuration operation. CMS content-only edits do not
-consume that allowance. These proposed initial values appear in [plans](../plans.md).
+consume that allowance. These initial values appear in [plans](../plans.md).
 
 Implement standalone deterministic validation and atomic change projection.
 Do not add auth, MCP, rendering, infrastructure, payment integration or deployment.

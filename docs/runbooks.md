@@ -24,11 +24,11 @@ node services/scripts/setup.mjs test-partner
 node services/scripts/setup.mjs switches on
 ```
 
-`seed` creates a new signing key and must not be rerun casually. Publish its public key and distribute rotations to partners before switching signing credentials. The test partner expires after seven days and may reply only to the collector. Replace it with individually approved grants for ongoing use. SNS email alerts require confirmation in the owner's inbox. Verify SES identity, DKIM, MAIL FROM, MX and outbound authentication before switching DMARC from monitoring to enforcement.
+`seed` reuses `.local/service-signing.json` when it exists and otherwise creates a new signing key; it also rewrites `contracts/service-public-key.json` and turns every switch off, including `developmentEnabled`. Do not rerun it casually. Publish its public key and distribute rotations to partners before switching signing credentials. The test partner expires after seven days and may reply only to the collector. Replace it with individually approved grants for ongoing use. SNS email alerts require confirmation in the owner's inbox. DMARC is enforced (`p=reject`); re-verify SES identity, DKIM, MAIL FROM, MX and outbound authentication after any DNS change.
 
 ## Website delivery and rollback
 
-GitHub `main` checks build all packages before the separate OIDC deployment job. Set repository variables `WEBSITE_DEPLOYMENT_ROLE`, `WEBSITE_BUCKET`, `RELEASE_BUCKET`, and `DISTRIBUTION_ID` from the website/CI outputs. Configure GitHub's immutable subject template before relying on the role. Third-party Actions are pinned to commit IDs. PR checks have no identity-token permission or deployment credentials.
+GitHub `main` checks build and test the website, services and infrastructure before the separate OIDC deployment job. The workflow does not build or test `apps/platform` or `packages/generator`; run their checks locally (see [local development](local-development.md)). Set repository variables `WEBSITE_DEPLOYMENT_ROLE`, `WEBSITE_BUCKET`, `RELEASE_BUCKET`, and `DISTRIBUTION_ID` from the website/CI outputs. Configure GitHub's immutable subject template before relying on the role. Third-party Actions are pinned to commit IDs. PR checks have no identity-token permission or deployment credentials.
 
 The deployment script creates a unique release ID on every run, including reruns of the same commit, and snapshots every release file and checksums in the private release bucket, uploads fingerprinted assets first and `index.html` last, invalidates, then verifies the public revision and every file checksum, MIME type, and cache header. A failed public check restores the previous release's mutable files. Deployment jobs serialize and never delete existing assets. Keep current/rollback references indefinitely and retain other fingerprinted assets for at least 365 days; owner cleanup may remove unreferenced files older than that only after checking current and rollback manifests. No automated garbage collection is enabled initially.
 
@@ -50,7 +50,7 @@ Require CI `checks` and App-bound `a2aviary-policy` on `main`, deny force pushes
 
 ## Switches, budgets, and credentials
 
-`CONTROL#flags` separates admission, intake processing, and outbound sending. Edit each boolean independently with owner IAM. The setup `switches` convenience command changes all three and keeps development disabled. Admission off rejects new submissions while accepted tasks may finish. Processing off leaves inbound/accepted work queued and cancels an active provider session on its next runtime check; deadlines and cleanup remain active. Sending off leaves pending outbox work queued. Watch DLQ ages during pauses. AWS budgets only notify. Application budget exhaustion stops reservations; unknown usage stays reserved. Reconcile unknown costs against provider evidence before releasing reservations. Do not reset a ledger to bypass spending limits.
+`CONTROL#flags` separates admission, intake processing, and outbound sending. Edit each boolean independently with owner IAM. The setup `switches` convenience command rewrites the whole flags item: it changes all three task switches and also sets `developmentEnabled` to false, turning off the development broker. Admission off rejects new submissions while accepted tasks may finish. Processing off leaves inbound/accepted work queued and cancels an active provider session on its next runtime check; deadlines and cleanup remain active. Sending off leaves pending outbox work queued. Watch DLQ ages during pauses. AWS budgets only notify. Application budget exhaustion stops reservations; unknown usage stays reserved. Reconcile unknown costs against provider evidence before releasing reservations. Do not reset a ledger to bypass spending limits.
 
 Revoke an individual partner via `revoked: true`; active tasks recheck grants. Rotate/revoke the OpenAI credential at the provider and Secrets Manager. Disable App installation or revoke its key in GitHub and replace the secret; tokens expire independently. Disable workflow role trust if CI is compromised. Never print secret values, MIME, private results, or owner configuration into public evidence.
 
@@ -194,20 +194,81 @@ handling, not resetting timestamps to bypass expiry.
 The build emits exact `/terms`, `/privacy`, `/refunds`, and `/pricing` HTML
 objects. Pricing presents Basic at $10/month · $100/year with a disabled CTA
 and “Launching soon. Checkout opens when payments are enabled.” Credit amounts
-and subscription policies will be published before checkout opens. Automated
-site production/hosting is upcoming; verified brief analysis is distinct.
+and subscription policies will be published before checkout opens. This pricing
+copy predates decision 007 and is superseded; correcting it is a separate website
+change. Catalog site generation and hosting are enabled on the platform.
 After an authorized website release, verify public route/MIME/cache behavior,
 copy, metadata, navigation, contact, and sitemap. Payment activation remains a
 separate owner action; no payment integration is included here.
 
-Publish this branch and its PR only with the a2aviary Operator App's fixed
-repository development token. The earlier 2026-10-05 observation found the broker
-disabled; a later read during this delivery found it enabled. Recheck live App
-identity, repository-only scope, access, policy protections, and disabled
-repository auto-merge before publication. The owner's persistent instructions
-authorize enabling the existing development broker subject to those gates;
-change only that flag if needed, preserving task switches and existing App
-permissions. Finish local checks first. Do not use Carlos Olivera Terrazas's
-personal login, manufacture owner approval, merge, or deploy as part of this
-delivery. If access remains unavailable, retain the verified local branch and
-prepared PR description and report the observed publication blocker.
+## Railway platform
+
+The platform service (`apps/platform`) and its Postgres run on Railway; each
+client site runs in its own Railway project. This is a minimum operating
+procedure. The Railway console is the authority for live settings; the repository
+holds only `apps/platform/railway.json`.
+
+### Deploy
+
+- `railway.json` builds `apps/platform/Dockerfile`, runs `node dist/migrate.js`
+  before each deployment, starts `node dist/main.js` and checks `/healthz`.
+- Auto-deploy from `main` is enabled (owner-reported, 2026-10-08): every merge
+  deploys and migrates production. CI does not build or test the platform, so run
+  the `packages/generator` and then `apps/platform` checks and tests locally before
+  merging platform changes. Keeping auto-deploy is an open owner decision.
+- After a deployment, confirm that the serving deployment is the expected commit,
+  then that `/healthz` returns HTTP 200, every migration name in the deployed
+  source (six on main `89b92fe`, seven with decision 013) and the expected `mandate`.
+
+### Migrations and rollback
+
+- The migrator holds an advisory lock, records checksums and rejects edited or
+  unknown applied migrations. There are no down migrations. Never edit an applied
+  migration; add a new numbered file.
+- Rolling back to an earlier image does not revert the schema. If a migration
+  fails, fix forward with a reviewed migration or an owner-approved reconciliation
+  transaction (as on 2026-10-07) and record it in
+  [release verification](release-verification.md).
+
+### Backups
+
+- Take a Postgres backup and restore it to a separate database before schema
+  changes and before the first non-test site. A backup schedule is not evidence
+  until a restore succeeds.
+- Each client PocketBase backs up daily at 03:00 UTC to the `PB_BACKUP_*` bucket,
+  keeping seven snapshots. No remote restore has been executed.
+
+### Site workflow switch
+
+- Every site variable must be set before the site workflow is enabled; a missing
+  value stops startup. Main `89b92fe` needs `SITE_WORKFLOW_ENABLED=true`; the
+  decision 013 source also needs `SITE_DRAFTS_ENABLED=true`.
+- Setting either flag to `false` and redeploying hides the site tools and does not
+  start the job worker. Queued jobs remain in Postgres. An interrupted deployment
+  becomes `unknown` and needs owner reconciliation as described in
+  [site operations](sites.md#exact-deployment-cleanup-and-administration).
+- Do not change `SITE_DEPLOY_ENVIRONMENT` while non-test sites exist; see the
+  [production test procedure](sites.md#production-test-procedure).
+
+### Cleanup
+
+- Tester sites: `tester.reset` with `RESET <siteId>` deletes the Railway project,
+  PocketBase volume and bucket artifacts (`drafts/<UUID>/` and `specs/<UUID>/`),
+  keeping audit and approval history. The bucket credential must allow listing and
+  deleting prefixes; a listing returned `AccessDenied` on 2026-10-08.
+- Projects left by a failed fixture or created outside the platform: review the
+  resource IDs privately, confirm they are not in `SITE_PROTECTED_PROJECT_IDS`,
+  then remove them in Railway with the owner's approval, together with matching
+  bucket prefixes.
+- Non-test sites have no cleanup tool.
+
+### Credentials
+
+- Rotate `RAILWAY_API_TOKEN`, `SITE_BUCKET_*`, `OPENAI_API_KEY` and the Google
+  OAuth client at the provider, update the Railway variables and redeploy.
+- `PB_BACKUP_*` values are copied into every client CMS service; a rotation must
+  also update each of those services.
+- Keep `SITE_CREDENTIAL_KEY` while any job is pending; it encrypts initial CMS
+  passwords until they are delivered.
+- `BETTER_AUTH_SECRET` protects sessions, OAuth context and stored signing keys;
+  plan its rotation as a maintenance event.

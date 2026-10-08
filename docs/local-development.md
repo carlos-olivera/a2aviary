@@ -3,8 +3,8 @@
 The local environment deploys the shared CDK constructs and runs the production
 Node.js workers against disposable LocalStack resources. OpenAI and GitHub are
 safe stand-ins. This verifies the application path, not AWS production delivery,
-IAM enforcement, billing, or the customer-site pilot. Carlos reports that pilot
-deployed and in progress; its independently verified cloud evidence is separate.
+IAM enforcement, billing, or hosted catalog sites. Hosted status is recorded in
+[release verification](release-verification.md#current-status--2026-10-08).
 
 ## Prerequisites and quickstart
 

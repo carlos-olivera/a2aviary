@@ -1,9 +1,9 @@
 # 008 — Discovery platform auth, MCP and roles
 
 Date: 2026-10-06. Status: Platform direction accepted by Carlos Olivera Terrazas
-in the Phase 2 implementation request; implementation awaits current-head PR
-review and separate deployment authorization. Google sign-in and the manual
-registry bridge are implementation choices for review, not live configuration.
+in the Phase 2 implementation request; implemented, merged and deployed on
+Railway (owner-reported, 2026-10-06; see [release verification](../release-verification.md)).
+Google sign-in is the live identity provider; the registry bridge remains manual.
 
 ## Context
 
