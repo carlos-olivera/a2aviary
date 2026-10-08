@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-08 — hosted verifier publication ordering verified locally
+
+- Create the credential-free, tool-free verifier session without initial input; wait for connected setup and required live output files before submitting the original acknowledgement. Collect only its completed turn's artifacts and retain existing report/hash checks and size limits.
+- Distinguish session creation, setup failure/timeout, missing outputs, failed/incomplete turns, unpublished artifacts, download failure and malformed reports. Actual checker failures remain `verification_failed`; session cleanup reports a separate safe code without masking the outcome.
+- Node.js 22.23.3 generator check/build and all 40 tests passed; platform check (including contracts) and 55 tests passed, with the opt-in cloud fixture skipped locally. Mocked tests cover ordering, error codes, filtering, failing checks, deletion and private-error redaction. One hosted fixture will be run separately from this branch; no production release or activation is implied.
+
 ## 2026-10-07 — catalog-only starting state
 
 - Archived the retired adoption implementation in the annotated [archive/imported-static](https://github.com/carlos-olivera/a2aviary/tree/archive/imported-static) tag at main `0dc4245`, published through the Operator App before editing.
