@@ -1,6 +1,56 @@
-# Initial release verification
+# Release verification and status
 
-Latest evidence: 2026-10-08 server drafts, uploads and preview implementation; historical checks and dated observations below are retained where applicable. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. The release is not fully complete. Website delivery and a real research brief task work; The Operator App is now registered and installed only on this repository; current-head approval success/routine merging, owner notifications and tagged-budget coverage remain blocked.
+Last updated: 2026-10-08. Production runs main `89b92fe`; the server-draft workflow (decision 013) is source on `codex/server-drafts-preview` and is not deployed. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. **Owner-reported** and **agent-reported** mark observations relayed by Carlos or by an operating agent that this record has not independently reproduced. The current status table is the authority for present state; dated sections below it are historical evidence and keep the wording that was accurate on their date.
+
+## Current status — 2026-10-08
+
+| Component | State | Evidence |
+| --- | --- | --- |
+| Landing `a2aviary.io` (S3, CloudFront, OIDC delivery) | Deployed and verified 2026-10-04; each `main` push deploys through the release workflow | [Published delivery](#published-delivery); the live revision is reported by `/.well-known/release.json` |
+| Signed-email transport v1 and `website.brief.analyze` | Deployed and verified 2026-10-04; legacy path, supported without extension | [Observed gates](#observed-gates--2026-10-04-foundation-baseline) |
+| Human support forwarding (`hello@`) | Deployed and repaired 2026-10-05; SES acceptance verified; mailbox receipt unverified | [Permission repair](#human-support-permission-repair--2026-10-05-activated) |
+| Owner alert subscription | Confirmed 2026-10-05; receipt of a real alert unverified | [Forwarding deployment](#human-support-forwarding--2026-10-05-deployed) |
+| `Project` tag AWS budget coverage | Blocked: management/payer activation required | [Owner actions](#owner-actions-and-completion) |
+| Operator App | Registered, repository-only, development broker enabled; repository auto-merge disabled; current-head approval behavior not recorded | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
+| Railway platform (Google login, OAuth, MCP, roles) | Deployed (owner-reported 2026-10-06); login HTTP 200 observed; authenticated ChatGPT/Claude tool calls not independently recorded | [Origin repair](#platform-origin-repair--2026-10-06-owner-reported-retry) |
+| Production schema | Earlier `006` applied 2026-10-07 21:20 America/La_Paz; the owner reconciled it to the current `006-site-administration-billing.sql` the same night; `/healthz` on main `89b92fe` reports six migrations, which requires matching hashes (owner- and agent-reported) | [Hosted catalog activation](#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported) |
+| Production site workflow (main `89b92fe`: `POST /api/site-specs`, `site.build`) | Enabled on 2026-10-08: `/healthz` reports `mandate: approved-catalog-sites` (agent-reported); its hosted fixture passed on the fourth attempt | Same section |
+| `SITE_DEPLOY_ENVIRONMENT` production value | Unconfirmed; must be `production` before any non-test site | [Production test procedure](sites.md#production-test-procedure) |
+| Server drafts, uploads and browser approval (decision 013) | Source on `codex/server-drafts-preview`, not merged or deployed. Local checks passed; its one hosted fixture failed at the first upload (HTTP 503) and a read-only bucket listing returned `AccessDenied` | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
+| Effect of merging decision 013 while auto-deploy is on | The next deployment applies migration `007`, removes `POST /api/site-specs` and `site.build`, and hides all site tools until `SITE_DRAFTS_ENABLED=true` is also set | [Site operations](sites.md) |
+| Artifact bucket permissions and cleanup | Listing a fixture prefix returned `AccessDenied` (HTTP 403); residual prefixes from failed fixture runs are unconfirmed | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
+| Registered client sites | None in the 2026-10-07 inventory; `first_client_pilot` not known to be assigned | [Catalog starting state](#catalog-starting-state--2026-10-07-read-only-production-inventory) |
+| Real Google authentication on upload and approval pages | Not verified; fixtures use fictional sessions | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
+| Cost reports, remote PocketBase backup/restore, production Postgres restore | Not exercised; per-site cost reads are blocked because the workspace token cannot read the account identity the usage CLI needs (agent-reported) | [Railway platform runbook](runbooks.md#railway-platform) |
+| Railway auto-deploy from `main` | Enabled (owner-reported): each merge deploys the platform and runs migrations | [Railway platform runbook](runbooks.md#railway-platform) |
+| CI coverage | The release workflow checks website, services and infrastructure; `apps/platform` and `packages/generator` are not built or tested in CI | `.github/workflows/release.yml` |
+| Payments and checkout | Disabled; nothing is for sale | [Plans](plans.md) |
+
+## Open gates before the first client site
+
+1. Confirm `SITE_DEPLOY_ENVIRONMENT=production` before any non-test site or draft is created.
+2. Take and restore a backup of production Postgres before the next schema change (migration `007`).
+3. Decide whether Railway keeps auto-deploying `main` before merging decision 013.
+4. Fix the artifact bucket credential so it can list and delete prefixes, confirm leftover fixture prefixes are removed, and rerun the hosted fixture for decision 013.
+5. Set `SITE_DRAFTS_ENABLED=true` only after that fixture passes; verify real Google sign-in on the upload and approval pages.
+6. Run the first production test with a tester identity; see the [production test procedure](sites.md#production-test-procedure).
+7. Execute one remote PocketBase backup and restore, and decide the Railway token scope for cost reports.
+8. Earlier foundation gates remain: observe a real owner alert, activate the `Project` cost tag, record a current-head approval, and reconcile the four held $1 reservations.
+
+## Hosted catalog activation — 2026-10-07 to 2026-10-08, owner- and agent-reported
+
+This section covers the workflow on main `89b92fe`, which production runs today.
+
+- **Schema reconciliation:** after the earlier `006` was applied at 21:20 America/La_Paz on 2026-10-07, the owner applied a single-transaction reconciliation that preserved authentication, roles, OAuth and audit records and produced the `006-site-administration-billing.sql` inventory, then redeployed. The script was tested beforehand on a disposable Postgres 16 database; it is not part of the repository.
+- **Configuration:** the owner loaded the site variables. Agent-reported checks found the variables present, OpenAI and Railway workspace access working, the credential key format valid, storage reachable and health OK. `SITE_PROTECTED_PROJECT_IDS` was corrected to project UUIDs.
+- **Hosted fixture, 2026-10-08:**
+  1. Failed: the verifier sandbox could not download Chromium because the download redirects to `storage.googleapis.com`, which was not allowed. Nothing was created on Railway.
+  2. Failed: empty verifier artifacts from a race between sandbox setup and the verification turn.
+  3. Failed: verification passed, but the CMS could not open its SQLite database because the Railway volume mount is root-owned. The orphaned fixture project was removed.
+  4. Passed: verification (37 checks), web and CMS deployment, editor login and edit, and tester reset.
+- **Fixes merged to `main`:** `2d371dc` allows the Chromium download redirect, `b1b2614` waits for verifier setup and classifies failures, `e26f197` fixes PocketBase volume ownership and fixture cleanup, and `89b92fe` refreshes architecture provenance.
+- **Activation:** after the merge, the Railway deployment reported success and `/healthz` returned HTTP 200 with six migrations and `mandate: approved-catalog-sites`, meaning `SITE_WORKFLOW_ENABLED=true`.
+- **Not yet verified:** the production value of `SITE_DEPLOY_ENVIRONMENT`, a non-test site, cost reports, remote PocketBase backup/restore and a production Postgres restore.
 
 ## Server drafts and previews — 2026-10-08, local implementation; hosted fixture failed
 
@@ -13,11 +63,13 @@ Latest evidence: 2026-10-08 server drafts, uploads and preview implementation; h
 - **Cleanup limit:** tester reset left the fictional local site in `resetting` with an empty provider-resource map. A read-only list of its exact artifact prefix returned `AccessDenied` HTTP 403. No removed bucket prefix can be confirmed. Object presence under `drafts/2664e547-2175-4a83-9381-73bcc473be2d/` remains unverified and cleanup unresolved. No approval or deployed artifact was created. Provider resources and audit retention were not inferred from a failed bucket inventory.
 - **Usage/cost:** observed fixture usage was one probe and one attempted raw upload, with no verification session or fixture project provisioned. OpenAI billed currency and Railway billing amounts are **unavailable**, represented as null, rather than claimed zero. Shared bucket request/storage charges are also unavailable.
 - **Credential handling:** read-only configuration came from `a2aviary-platform` → `production` → `platform`; only selected values were injected into the child test environment, never written or printed. Names read: `OPENAI_API_KEY`, `RAILWAY_API_TOKEN`, `SITE_RAILWAY_WORKSPACE_ID`, `SITE_PROTECTED_PROJECT_IDS`, `SITE_CREDENTIAL_KEY`, `SITE_BUCKET_ACCESS_KEY_ID`, `SITE_BUCKET_ENDPOINT`, `SITE_BUCKET_FORCE_PATH_STYLE`, `SITE_BUCKET_NAME`, `SITE_BUCKET_REGION`, `SITE_BUCKET_SECRET_ACCESS_KEY`, `PB_BACKUP_ACCESS_KEY_ID`, `PB_BACKUP_BUCKET`, `PB_BACKUP_ENDPOINT`, `PB_BACKUP_FORCE_PATH_STYLE`, `PB_BACKUP_REGION`, `PB_BACKUP_SECRET_ACCESS_KEY`. Optional `SITE_PROTECTED_DOMAINS` was absent. Production `DATABASE_URL` was neither selected nor used. No existing Railway variable, service or deployment changed.
-- **Unresolved gates:** artifact-bucket permission/inventory and residual-prefix cleanup; hosted verifier/approval/deployment/CMS proof; real Google authentication; remote backup/restore and billing amounts; Carlos's review; separately authorized production activation. The documented production migration 006 mismatch still blocks rollout until separately approved reconciliation preserving authentication, roles, OAuth and audits. This delivery does not reconcile production, enable flags, change DNS, add payments, merge or deploy production.
+- **Unresolved gates:** artifact-bucket permission/inventory and residual-prefix cleanup; hosted verifier/approval/deployment/CMS proof; real Google authentication; remote backup/restore and billing amounts; Carlos's review; separately authorized production activation. The production migration 006 mismatch recorded on 2026-10-07 was reconciled by the owner that night (owner-reported; see the [current status](#current-status--2026-10-08)); merging this source applies migration 007 on the next deployment. This delivery does not reconcile production, enable flags, change DNS, add payments, merge or deploy production.
 
 See [decision 013](decisions/013-server-drafts-and-preview.md) and [current site operations](sites.md). Historical observations below retain their original dates and contracts.
 
 ## Catalog starting state — 2026-10-07, read-only production inventory
+
+Historical: the reconciliation, configuration and activation described in this section as pending are recorded in the 2026-10-08 status above.
 
 - Railway production runs main `0dc4245` with discovery-only health. The authenticated database view showed all six original migrations; migration 006 was applied at 21:20 America/La_Paz with SHA-256 `c84af57f912c67a00961dc806ef351da8ec939f75b060bc7518dba61c6aa812a`.
 - `platform_site`, its administrator/billing/operation/cost/spec/job tables and all three retired adoption tables were empty; the three visible audit entries covered role resolution and discovery tools. There are no registered client sites. The first client site will be created through the normal catalog workflow. Earlier owner-reported customer-site deployment wording is superseded by this inventory and the owner's starting-state instruction.
@@ -420,7 +472,9 @@ The first foundation commit is `1903229885f39244b937eaaff8280dfbcc4e5a72`. [Work
 
 All four original commits remain ancestors, including the Apache-licensed first commit. Bootstrap implementation commits identify Codex Bootstrap; publication uses Carlos's authenticated GitHub account. Origin and default `main` were verified. GitHub private vulnerability reporting was enabled and the API returned true. Current/history pattern scans found no matching credential/private-reference material; these are scoped scans and manual review, not a guarantee about every possible secret. Relative documentation links and `git diff --check` passed. Dependency licenses, bundled SDK vendor notices, and original brand checksums are preserved.
 
-## Observed gates
+## Observed gates — 2026-10-04 foundation baseline
+
+Historical baseline. Later changes: the owner alert subscription was confirmed and the development broker enabled on 2026-10-05; current test counts are in the dated sections above.
 
 | Area | Evidence and limits |
 | --- | --- |
@@ -450,11 +504,11 @@ Other outstanding exercises are ambiguous session-creation recovery, saved tool-
 ## Owner actions and completion
 
 1. Review the manifest/setup correction pull request as Carlos, approving its exact current head in GitHub. Verify that the external policy check reacts to the real approval before permitting routine autonomous merging. The App is registered and installation scope/token denials/routine policy success are verified. No automated use of Carlos's account may manufacture his approval.
-2. Confirm the SNS subscription at the privately configured owner inbox, then observe an actual test notification.
+2. The SNS subscription was confirmed on 2026-10-05; observe an actual test notification.
 3. Have the AWS management/payer owner activate the `Project` cost-allocation tag; this linked account's activation call was denied. Verify tagged-budget coverage afterwards.
-4. Reconcile the held unknown-usage reservation against provider billing evidence without inventing a refund, and complete the remaining fault exercises. Delayed cancellation/deletion recovery is verified; admission has resumed.
+4. Reconcile the four held $1 unknown-usage reservations ($4) against provider billing evidence without inventing a refund, and complete the remaining fault exercises. Delayed cancellation/deletion recovery is verified; admission has resumed.
 
-The intended email autonomy and operational controls must all pass before full completion. The service implements brief analysis only; website generation, autonomous repository engineering, external A2A-standard compliance are outside this release.
+The intended email autonomy and operational controls must all pass before full completion. The legacy signed-email service implements brief analysis only; autonomous repository engineering and external A2A-standard compliance are outside this release. Catalog website generation and hosting are recorded in the sections above.
 
 ## Tooling and private evidence
 
@@ -481,8 +535,8 @@ The first manifest incorrectly selected `installation`; GitHub rejected it befor
 - Refreshed the isolated architecture branch against remote main `1ee5c71`;
   the owner's other checkout remains untouched. The five-stage map includes
   current auth/MCP, Astro, Railway/PocketBase/Caddy and tester/admin source,
-  with signed email labeled as a legacy pathway. Customer-site deployment is
-  owner-reported, as recorded above; independent hosted verification is separate.
+  with signed email labeled as a legacy pathway. No client sites exist (2026-10-07
+  inventory); hosted verification is recorded in the 2026-10-08 status above.
 - Archify 3.0.1 finalized the overview and five focused drawings against committed
   source `b37f8419`. All four gates pass for each. The stage manifest assigns
   44 technical nodes once; coverage/status and expanded source fingerprints are

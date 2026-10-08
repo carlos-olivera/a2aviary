@@ -1,5 +1,7 @@
 # Initial operating foundation
 
+Status: legacy signed-email path, supported without extension. The primary product path is the MCP platform; see [platform](platform.md) and [site operations](sites.md).
+
 The first implemented capability is `website.brief.analyze`: structured goals, audience, proposed pages, missing inputs, assumptions, acceptance criteria, and research citations. Catalog website generation has separate implementation and verification evidence in [site operations](sites.md). Autonomous repository engineering and external A2A compliance remain future work. Deployment and verification status are recorded separately in [release verification](release-verification.md).
 
 ## Architecture
@@ -27,7 +29,7 @@ The test recipient stores messages under `controlled/` without SNS notification 
 
 Intake atomically records inbox identity, replay nonce, daily admission, task, and acceptance outbox. DynamoDB streams publish work; an independent one-minute watchdog recovers missed publication. Workers use expiring leases. Task submission intent and idempotency key precede the API call; ambiguous creation reconciles session metadata or blocks with its reservation held. Tool outcomes are saved by task/call ID. An interrupted paid research call blocks rather than repeating an uncertain charge.
 
-The Agents API uses `environment.type: none`, `gpt-6-luna`, and disabled delegation. Only project input retrieval and explicitly granted public-topic research are exposed. Research queries must equal approved public topics and reject secret/private markers. No shell, email, GitHub, deployment, or permission tools are available to the model. A completed provider turn and schema-valid result are both required. Saved items support recovery. Session deletion follows durable result capture and is retried independently.
+For brief analysis, the Agents API uses `environment.type: none`, `gpt-6-luna`, and disabled delegation. Only project input retrieval and explicitly granted public-topic research are exposed. Research queries must equal approved public topics and reject secret/private markers. No shell, email, GitHub, deployment, or permission tools are available to the model. A completed provider turn and schema-valid result are both required. Saved items support recovery. Session deletion follows durable result capture and is retried independently.
 
 SES acceptance and delivery are separate states. A timeout or interrupted send becomes `delivery_unknown`, with no automatic resend. This system deduplicates processing and does not promise exactly-once email delivery.
 

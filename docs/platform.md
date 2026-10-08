@@ -1,6 +1,9 @@
 # Platform: auth, MCP, roles and approved site jobs
 
-Status: Phase 2 source verified locally; Carlos reported Railway deployment on
+Status (2026-10-08): deployed on Railway from main `89b92fe` with `SITE_WORKFLOW_ENABLED=true`
+(agent-reported); this source adds server drafts behind `SITE_DRAFTS_ENABLED`. See the
+[current status](release-verification.md#current-status--2026-10-08).
+Earlier record: Phase 2 source verified locally; Carlos reported Railway deployment on
 2026-10-06. Public health, OAuth discovery and login responses were observed.
 Chrome reproduced a native login form failure (`Origin: null`, HTTP 403); the
 repair was merged in PR #17. Following the corrected deployment, the live login
@@ -36,7 +39,7 @@ The server constructs URLs from configuration, ignoring Host/proxy URL overrides
 | Endpoint | Purpose |
 | --- | --- |
 | `POST /mcp` | Strict MCP 2026-07-28; all tools behind requireMcpAuth |
-| `GET /healthz` | DB connectivity and required migration records; no private data |
+| `GET /healthz` | DB connectivity and required migration records; returns `mandate` (`discovery-only` or `approved-catalog-sites`) and the applied migration names and hashes; no private data |
 | `GET/POST /sign-in` | Server-rendered Google login; signed OAuth query continuation |
 | `GET/POST /consent` | Verified session, client/scopes/identity claims, plan summary and discovery-only mandate |
 | `GET /.well-known/oauth-authorization-server/api/auth` | RFC 8414 metadata for issuer `https://mcp.a2aviary.io/api/auth` |
@@ -48,6 +51,12 @@ The server constructs URLs from configuration, ignoring Host/proxy URL overrides
 | `/api/auth/oauth2/userinfo`, `/api/auth/oauth2/revoke`, `/api/auth/oauth2/introspect` | Provider-managed identity, token revocation and introspection |
 | `/api/auth/callback/google` | Google callback; register this exact URL privately |
 | `POST /api/auth/oauth2/register` | DCR unavailable by default; explicit flag opt-in |
+| `PUT /api/site-uploads/<sessionId>/probe`, `PUT /api/site-uploads/<sessionId>/files/<uploadId>` | Agent upload channel with the session bearer capability; see [site operations](sites.md#shared-upload-session) |
+| `GET/POST /u/<id>` | Human upload page and QR; verified Google session, owner or site administrator |
+| `GET /p/<token>/…` | Signed, sandboxed 15-minute snapshot preview |
+| `GET/POST /sites/approve/<specId>` | Browser approval page; verified Google session and current membership |
+| `GET /api/site-artifacts/<specId>/<artifactName>` | Owned verification reports and screenshots |
+| `GET /api/site-reports/<siteId>/<YYYY-MM>.csv` | Private monthly site report CSV |
 
 OAuth supports authorization code + S256 PKCE and refresh tokens, not
 client-credentials grants. Access tokens last five minutes. requireMcpAuth checks
@@ -113,12 +122,21 @@ Remove the allowlist in canonical production to retain the strict default.
 These settings prepare staging boot; they do not establish a deployed or
 verified Railway service, Google callback or connector.
 
+Current deployment (owner-reported, 2026-10-08): the deployed Railway service is
+reached at `https://platform-production-d84c.up.railway.app`, which the 2026-10-06
+records call staging; `mcp.a2aviary.io` is not recorded as attached. Before
+connecting a client, confirm the deployed `PLATFORM_ORIGIN` and use
+`<PLATFORM_ORIGIN>/mcp`; tokens issued for another resource are rejected.
+
 Set the Railway repository root to `/`, config file to
 `apps/platform/railway.json`, Dockerfile to `apps/platform/Dockerfile`, and keep
 one service replica for the pilot. Add a Postgres service with durable storage
 and privately reference its connection string. Use private networking, configure
 backups/restore and data access, and attach the canonical domain/SSL only after
-Carlos authorizes activation. Keep auto-deploy disabled until that authorization.
+Carlos authorizes activation. The 2026-10-06 preparation recommended keeping
+auto-deploy disabled until then; auto-deploy from `main` is currently enabled
+(owner-reported), so every merge deploys and migrates production. See the
+[Railway platform runbook](runbooks.md#railway-platform).
 No Railway resources are created by these files. The config uses a pre-deploy
 migration command and a DB readiness check; see [Railway config reference](https://docs.railway.com/config-as-code/reference).
 
@@ -238,9 +256,10 @@ registration, transaction rollback on audit failure, plan artifacts, strict
 transport and body limits. Google sessions are fictional fixtures; there is no
 live external sign-in or client connection claim.
 
-Before activation Carlos must review the dependent Phase 1 and Phase 2 PR heads,
-merge in the appropriate order, configure private identity/database/domain
-settings, and separately authorize deploy/migrations and trusted-policy activation.
-Source protection now includes `apps/` and `.dockerignore`, including rename
-origins; the deployed AWS evaluator is unchanged. CI workflow wiring, persistent
-Monthly-change redesign remains future work. Server drafts and scoped browser snapshot approval are implemented in the current source; production rollout remains gated.
+Phases 1 and 2 are merged and deployed; activation status is recorded in
+[release verification](release-verification.md#current-status--2026-10-08).
+Source protection includes `apps/` and `.dockerignore`, including rename
+origins; the deployed AWS evaluator is unchanged. Server drafts and scoped browser
+snapshot approval are implemented in this source; production rollout remains
+gated. Future work: the monthly-change redesign, and CI wiring, because the release
+workflow does not build or test `apps/platform` or `packages/generator`.

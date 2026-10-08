@@ -1,7 +1,8 @@
 # Architecture
 
-Status: source-backed catalog implementation; no registered client sites. Hosted
-end-to-end verification is tracked separately.
+Status: source-backed catalog implementation; the site workflow is enabled in
+production and no client sites are registered (2026-10-08, see
+[current status](../release-verification.md#current-status--2026-10-08)).
 
 The [interactive architecture map](https://a2aviary.io/architecture) is prepared for
 owner review and release. It distinguishes the project landing and signed-email
@@ -66,7 +67,7 @@ separate from those future products. The external A2A standard remains open.
 
 The server verifies authorization and mandate on every operation. Files, agent messages, and web content are data; they do not expand permissions. Approvals must be tied to the version of the scope or deliverable they authorize.
 
-The Resume Package is a portable reference for locating the project and querying its state after authentication. Switching agents requires granting the corresponding permissions.
+Proposed: the Resume Package is a portable reference for locating the project and querying its state after authentication. Switching agents requires granting the corresponding permissions.
 
 ## Pending choices
 

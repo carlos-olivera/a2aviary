@@ -2,11 +2,11 @@
 
 An open-source software platform for agent-to-agent digital work: the human defines goals and authorizes actions, their agent prepares materials, and the platform works within that mandate. Our positioning is “Your agent. Your control. Our build.” and “Open-source software that turns assistant requests into live sites — and soon more.” There are no registered client sites. The first client site will be created through the normal catalog workflow.
 
-Websites come first. The client's agent supplies catalog content incrementally through server drafts. a2aviary normalizes uploaded images, generates and verifies immutable previews, obtains owner or scoped-administrator browser approval, and deploys the exact approved bytes. Both workflow and draft flags default off. [Current site operations](docs/sites.md) and [decision 013](docs/decisions/013-server-drafts-and-preview.md) define policy 2.0.0 and contract 2.0; historical intake artifacts remain frozen. Change requests are unavailable pending redesign; CMS edits remain supported. Nothing is for sale; there is no live checkout or active Paddle merchant of record. Observed operation, fixture cleanup and production migration reconciliation are tracked in [release evidence](docs/release-verification.md). Public website copy remains a separate delivery.
+Websites come first. The client's agent supplies catalog content incrementally through server drafts. a2aviary normalizes uploaded images, generates and verifies immutable previews, obtains owner or scoped-administrator browser approval, and deploys the exact approved bytes. Both workflow and draft flags default off. [Current site operations](docs/sites.md) and [decision 013](docs/decisions/013-server-drafts-and-preview.md) define policy 2.0.0 and contract 2.0; historical intake artifacts remain frozen. Change requests are unavailable pending redesign; CMS edits remain supported. Nothing is for sale; there is no live checkout or active Paddle merchant of record. As of 2026-10-08, production runs the earlier catalog workflow from main `89b92fe` with `SITE_WORKFLOW_ENABLED=true` (agent-reported); the server-draft workflow is not deployed. Observed operation and fixture cleanup are tracked in the [current status](docs/release-verification.md#current-status--2026-10-08). The public pricing page still shows the superseded Basic/credit copy; correcting it is a separate delivery.
 
-**Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed email operating foundation whose first capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Website generation/hosting has catalog source; activation and independently verified hosted operation remain release gates. Scoped site administration and private cost reports are described in [site operations](docs/sites.md). Autonomous repository engineering and external A2A compliance remain future work.
+**Initial release:** a Three.js project landing at [a2aviary.io](https://a2aviary.io), and a signed-email operating foundation, now a legacy path supported without extension, whose capability analyzes a website brief. It returns goals, audience, page structure, missing inputs, assumptions, acceptance criteria, and research citations when authorized. [Release verification](docs/release-verification.md) records actual configured, deployed, verified, and blocked status. Catalog website generation and hosting are enabled on the platform; no non-test site has been created yet. Scoped site administration and private cost reports are described in [site operations](docs/sites.md). Autonomous repository engineering and external A2A compliance remain future work.
 
-Created by **Carlos Olivera Terrazas — Founder & Principal Architect**. Licensed Apache 2.0 since the first commit. Automated contributions identify their own author; publication through an owner account is recorded separately.
+Created by **Carlos Olivera Terrazas — Founder & Principal Architect**. Licensed Apache 2.0 since the first commit. Automated contributions identify their own author and are published through the a2aviary Operator App.
 
 ## Develop and operate
 
@@ -18,9 +18,11 @@ npm run dev
 
 The landing uses genuine Three.js extrusion, accessible motion controls, and SVG fallbacks. See [website setup](website/README.md), [browser verification](website/verification.md), and [landing decision](docs/decisions/001-landing-page.md).
 
-The operating foundation uses TypeScript AWS CDK, Node.js 22 Lambda/CI, SES/S3/SNS/SQS/DynamoDB, and OpenAI Agents API `gpt-6-luna` in environment `none`. Business state survives development-chat and worker interruptions. Only registered signed requests can create work. Default allowance is $1/task against $10/month model spend, within a $25 overall operating target; monitored thresholds are not hard provider billing caps.
+The legacy signed-email foundation uses TypeScript AWS CDK, Node.js 22 Lambda/CI, SES/S3/SNS/SQS/DynamoDB, and OpenAI Agents API `gpt-6-luna` in environment `none`. Business state survives development-chat and worker interruptions. On this path only registered signed requests can create work. Default allowance is $1/task against $10/month model spend, within a $25 operating target for AWS and brief-analysis model spend; Railway, buckets and verification sandboxes are not yet costed. Monitored thresholds are not hard provider billing caps.
 
-See [architecture and limits](docs/operating-foundation.md), [email transport contract](contracts/README.md), [setup and recovery](docs/runbooks.md), and [dated cost assumptions](docs/costs.md). Deployment configuration, credentials, raw emails, results, and owner alert contacts stay private. The initial service analyzes briefs; a missing input does not authorize additional work.
+See [email foundation and limits](docs/operating-foundation.md), [email transport contract](contracts/README.md), [setup and recovery](docs/runbooks.md), and [dated cost assumptions](docs/costs.md). Deployment configuration, credentials, raw emails, results, and owner alert contacts stay private. The initial service analyzes briefs; a missing input does not authorize additional work.
+
+The product platform runs on Railway: the `apps/platform` service (Google sign-in, OAuth, MCP, roles and the site job worker) with Postgres, plus one isolated Railway project per client site (Caddy and PocketBase). See [platform](docs/platform.md), [site operations](docs/sites.md) and the [Railway platform runbook](docs/runbooks.md#railway-platform).
 
 ## Platform vision
 
@@ -41,7 +43,7 @@ English is the canonical language for repository documentation. The repository i
 - [Catalog generation, CMS and client hosting](docs/sites.md)
 - [Testers and chat-only superadmin](docs/testers-and-admin.md)
 - [Vision and scope](docs/vision.md)
-- [Architecture](docs/architecture/overview.md) and [interactive map](https://a2aviary.io/architecture) (prepared; pending approved release)
+- [Architecture](docs/architecture/overview.md) and [interactive map](https://a2aviary.io/architecture)
 - [Local development and verification](docs/local-development.md)
 - [Accepted decisions and open questions](docs/decisions/README.md)
 - [Roadmap and first catalog pilot](docs/roadmap.md)

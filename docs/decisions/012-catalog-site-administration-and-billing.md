@@ -20,6 +20,6 @@ Atomically designate the first non-test catalog site with `first_client_pilot`; 
 
 ## Consequences
 
-Rewrite migration 006 as `006-site-administration-billing.sql` for clean databases. Production already applied the former 006 on October 7 at 21:20 America/La_Paz. Its migration inventory is incompatible: migrator and readiness must reject it until separately approved owner reconciliation. Preserve authentication, roles, OAuth, audits and infrastructure; no drop migration or production reset is performed by this delivery.
+Rewrite migration 006 as `006-site-administration-billing.sql` for clean databases. Production already applied the former 006 on October 7 at 21:20 America/La_Paz. Its migration inventory was incompatible, so migrator and readiness rejected it until the owner reconciled it the same night (owner-reported; see [release verification](../release-verification.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)). Preserve authentication, roles, OAuth, audits and infrastructure; no drop migration or production reset is performed by this delivery.
 
 Site adoption may return later as a separate local CLI that prepares artifacts. The core alone validates and deploys. This boundary does not authorize or design a replacement.

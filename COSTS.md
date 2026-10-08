@@ -42,9 +42,9 @@ These are not invoices.
 - **Expected monthly run-rate, project only: about $10.60–$24.00.**
   - AWS: $4.60–$8.00 estimated before free-tier credits ([docs/costs.md](docs/costs.md) headline: $3–8).
   - Domain spread over 12 months: $6.00.
-  - Model: $0 to $10.00. Launch usage was about $0.03; the allowance caps it at $10.00.
+  - Model: $0 to $10.00. Launch usage was about $0.03; the allowance caps brief analysis at $10.00. Site verification sandboxes are outside this allowance.
 - **Including the shared ChatGPT Pro subscription at its full amount: about $110.60–$124.00 per month.** We show the full $100 rather than a share, because we have no usage hours to split it by honestly.
-- **Configured ceiling:** the $25/month operating target ($15 AWS alert plus $10 model allowance), plus the domain. The AWS budget only sends alerts; it does not stop spending.
+- **Configured ceiling:** the $25/month operating target ($15 AWS alert plus $10 brief-analysis model allowance), plus the domain. The AWS budget only sends alerts; it does not stop spending. Railway, buckets and verification sandboxes are outside this target; see below.
 
 ## Honesty notes
 
@@ -54,4 +54,10 @@ These are not invoices.
 - The ChatGPT Pro plan is Carlos's personal subscription, not a project-only expense.
 - No metrics are invented. Anything not yet known is marked "to confirm".
 
-Catalog site cost records and private reports are retained; no registered client sites or live charges exist. Provider amounts are recorded only when observed. See [site reporting](docs/sites.md#site-administration-and-costs).
+Catalog site cost records and private reports are retained; no registered client sites or live charges exist. Provider amounts are recorded only when observed. See [site reporting](docs/sites.md#exact-deployment-cleanup-and-administration).
+
+## Known gaps — 2026-10-08
+
+- Railway (platform service, Postgres and one project per client site), the artifact and backup buckets, and OpenAI site-verification sandboxes are not in the sheet above. They have no estimate yet; see [docs/costs.md](docs/costs.md#not-yet-estimated--2026-10-08).
+- CloudWatch now has ten alarms over 19 alarm metrics since the 2026-10-05 support stack. That adds about $0.20/month to the CloudWatch row; the planning worksheet in [docs/costs.md](docs/costs.md) is updated.
+- The public [costs page](https://a2aviary.io/costs) is generated from `website/public/costs.json`, which still carries the 2026-10-04 figures; updating it is a separate website change.

@@ -2,7 +2,7 @@
 
 ## Context
 
-Read README.md, docs/vision.md, and docs/decisions/README.md before proposing architecture changes. The initial operating foundation is being implemented. Read docs/release-verification.md for actual configured, deployed, verified, and blocked status; do not present proposals, examples, or simulated services as implemented features.
+Read README.md, docs/vision.md, and docs/decisions/README.md before proposing architecture changes. The AWS foundation and the Railway platform are deployed, and the catalog site workflow is enabled in production (2026-10-08). Read docs/release-verification.md for actual configured, deployed, verified, and blocked status; do not present proposals, examples, or simulated services as implemented features.
 
 ## Language
 
@@ -13,7 +13,7 @@ English is the canonical language for repository documentation, architecture rec
 - Preserve the user's changes and keep each delivery within the requested scope.
 - Keep decisions, contracts, and technical documentation in the repository.
 - Distinguish confirmed decisions, proposals, and open questions.
-- AWS CDK/TypeScript, Node.js 22, and OpenAI Agents API with gpt-6-luna are accepted for this release. The external A2A standard remains open.
+- Accepted stack: AWS CDK/TypeScript, Node.js 22 and the OpenAI Agents API with gpt-6-luna (decisions 002–004); Railway, Postgres, Better Auth, MCP, Astro and PocketBase for the platform and client sites (decisions 008–009). The external A2A standard remains open.
 - Do not impose providers or tools simply because they are available in the environment.
 - Do not delegate to subagents unless requested by the user or required by later applicable instructions.
 

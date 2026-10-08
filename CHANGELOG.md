@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-08 — documentation synchronized with production state
+
+- Added a current status table, the open gates before the first client site, and an owner- and agent-reported record of the 2026-10-07 schema reconciliation, site configuration, four hosted fixture attempts and workflow activation on main `89b92fe` to [release verification](docs/release-verification.md#current-status--2026-10-08). The table separates what production runs from the undeployed server-draft source, including the effect of merging it while Railway auto-deploys `main`.
+- Corrected the server-draft records that still described production migration 006 as unreconciled (decision 013, site operations, plans, release evidence, vision and README); `/healthz` on main `89b92fe` reports all six migrations with matching hashes (agent-reported).
+- Restored a site [configuration table](docs/sites.md#configuration) for both workflow flags and added a [production test procedure](docs/sites.md#production-test-procedure) for drafts (tester identity, `SITE_DEPLOY_ENVIRONMENT`, `first_client_pilot` at draft creation, browser approval, prefix cleanup). Documented the upload, preview and approval endpoints and `/healthz` fields in [platform](docs/platform.md), and added a minimum [Railway platform runbook](docs/runbooks.md#railway-platform).
+- Corrected outdated or contradictory statements: deployment status in README, vision, roadmap, AGENTS, SECURITY, GOVERNANCE, CONTRIBUTING and decisions 007, 008 and 012; migration readiness; CI coverage (platform and generator are not built in CI); `seed` and `switches` effects; DMARC enforcement; the alarm count (ten alarms, 19 metrics); the watchdog cadence; the scope of the $25 target and $10 model cap; and the missing Railway, bucket and sandbox cost lines. Marked the signed-email foundation as legacy and removed delivery-specific instructions from the runbooks.
+- Documentation only: no code, infrastructure, contracts, website data or architecture sources changed. Production observations are owner- or agent-reported and were not independently reproduced. The public pricing and Terms copy, `website/public/costs.json` and `apps/platform/README.md` (an architecture-fingerprinted file that still describes the 006 mismatch) need separate changes.
+
 ## 2026-10-08 — server drafts, shared uploads and browser approval
 
 - Publish policy 2.0.0/site contract 2.0; preserve frozen historical artifacts and migrations 001–006. Append migration 007 for revisioned drafts, retry receipts, shared upload sessions, rolling quotas, snapshot provenance and immutable approvals. Both workflow flags are required; drafts default off. Remove legacy intake, client approval/preview fields, `site.build` and visual parity dependencies; disable change requests pending redesign.
@@ -23,13 +31,17 @@
 
 - Create the credential-free, tool-free verifier session without initial input; wait for connected setup and required live output files before submitting the original acknowledgement. Collect only its completed turn's artifacts and retain existing report/hash checks and size limits.
 - Distinguish session creation, setup failure/timeout, missing outputs, failed/incomplete turns, unpublished artifacts, download failure and malformed reports. Actual checker failures remain `verification_failed`; session cleanup reports a separate safe code without masking the outcome.
-- Node.js 22.23.3 generator check/build and all 40 tests passed; platform check (including contracts) and 55 tests passed, with the opt-in cloud fixture skipped locally. Mocked tests cover ordering, error codes, filtering, failing checks, deletion and private-error redaction. One hosted fixture will be run separately from this branch; no production release or activation is implied.
+- Node.js 22.23.3 generator check/build and all 40 tests passed; platform check (including contracts) and 55 tests passed, with the opt-in cloud fixture skipped locally. Mocked tests cover ordering, error codes, filtering, failing checks, deletion and private-error redaction. The hosted fixture runs of 2026-10-08 are recorded in [release verification](docs/release-verification.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported).
+
+## 2026-10-08 — hosted verifier network allowlist
+
+- Allowed `storage.googleapis.com` in the verifier sandbox network allowlist because the pinned Playwright Chromium download redirects there. Without it, the first hosted fixture attempt failed before any Railway resource was created.
 
 ## 2026-10-07 — catalog-only starting state
 
 - Archived the retired adoption implementation in the annotated [archive/imported-static](https://github.com/carlos-olivera/a2aviary/tree/archive/imported-static) tag at main `0dc4245`, published through the Operator App before editing.
 - Removed adoption tooling, releases, provider bindings, generator modules, contracts and flags. Kept Railway/catalog/PocketBase, scoped verified-email administrators, owner billing eligibility, immutable operation history, daily private costs/reports and first-client designation.
-- Prepared policy 1.0.1 with rationale-only changes and unchanged limits; preserved frozen 1.0.0 artifacts. Rewrote migration 006 for clean databases and added fail-closed migration inventory/readiness. Production already applied the earlier 006, so rollout requires separately approved reconciliation.
+- Prepared policy 1.0.1 with rationale-only changes and unchanged limits; preserved frozen 1.0.0 artifacts. Rewrote migration 006 for clean databases and added fail-closed migration inventory/readiness. Production already applied the earlier 006, so rollout required separately approved reconciliation; the owner applied it the same night.
 - Node.js 22 checks/builds passed, with 113 service, 13 generator, 55 platform and nine infrastructure tests; one hosted fixture remains explicitly skipped. Six migrations applied to an empty disposable database idempotently and passed health. Frozen artifacts and policy values were verified. All six website browser suites, 37 real catalog fixture checks and PocketBase/Caddy integration passed locally. Architecture provenance/screenshots were regenerated with the existing pipeline. No production cleanup, deployment, merge, payment integration or outbound messages were performed.
 
 ## 2026-10-06 — five-stage architecture overview verified locally

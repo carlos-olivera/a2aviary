@@ -134,14 +134,16 @@ restricted tool returns `forbidden` without site/user data.
 
 ## Activation and verification
 
-No additional required environment variables are introduced. Migration
-`005-testers-admin.sql` is required by health readiness and the normal Railway
-pre-deploy migrator. The site-artifact bucket credential now needs prefix list
+No additional required environment variables are introduced. Health readiness
+and the normal Railway pre-deploy migrator require the exact inventory of every
+migration file in the deployed source, with matching checksums. The site-artifact bucket credential now needs prefix list
 and object delete permissions in addition to read/write. The private Railway
-credential needs deletion rights in the intended fixture workspace. Do not
-expand either credential to production resources. `SITE_WORKFLOW_ENABLED`
-retains its off-by-default behavior; discovery/tester administration can work
-while build/deploy/reset tools remain unavailable.
+credential needs deletion rights in the configured workspace. The same Railway
+token and bucket serve production client projects and tester fixtures; project
+name, workspace, environment and protected-project checks keep them apart. Site
+tools require both `SITE_WORKFLOW_ENABLED` and `SITE_DRAFTS_ENABLED`, which default
+to off; discovery and tester administration work while site tools, including
+`site.status`, `sites.list`, `site.inspect` and `tester.reset`, are unavailable.
 
 Run Node.js 22 generator check/build/tests, then platform check/build/tests with
 the dedicated loopback Postgres database. The Phase 4 integration suite exercises
