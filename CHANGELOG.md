@@ -5,7 +5,7 @@
 - Archived the retired adoption implementation in the annotated [archive/imported-static](https://github.com/carlos-olivera/a2aviary/tree/archive/imported-static) tag at main `0dc4245`, published through the Operator App before editing.
 - Removed adoption tooling, releases, provider bindings, generator modules, contracts and flags. Kept Railway/catalog/PocketBase, scoped verified-email administrators, owner billing eligibility, immutable operation history, daily private costs/reports and first-client designation.
 - Prepared policy 1.0.1 with rationale-only changes and unchanged limits; preserved frozen 1.0.0 artifacts. Rewrote migration 006 for clean databases and added fail-closed migration inventory/readiness. Production already applied the earlier 006, so rollout requires separately approved reconciliation.
-- Local verification is pending completion in this delivery. No production cleanup, deployment, merge, payment integration or outbound messages were performed.
+- Node.js 22 checks/builds passed, with 113 service, 13 generator, 55 platform and nine infrastructure tests; one hosted fixture remains explicitly skipped. Six migrations applied to an empty disposable database idempotently and passed health. Frozen artifacts and policy values were verified. All six website browser suites, 37 real catalog fixture checks and PocketBase/Caddy integration passed locally. Architecture provenance/screenshots were regenerated with the existing pipeline. No production cleanup, deployment, merge, payment integration or outbound messages were performed.
 
 ## 2026-10-06 — five-stage architecture overview verified locally
 
