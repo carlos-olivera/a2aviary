@@ -1,7 +1,8 @@
 # Architecture
 
-Status: source-backed catalog implementation; the site workflow is enabled in
-production and no client sites are registered (2026-10-08, see
+Status: source-backed catalog implementation; decision 013 is merged to main,
+but current production health and workflow activation are unverified after HTTP 503.
+No client sites were recorded in the last inventory (2026-10-07, see
 [current status](../release-verification.md#current-status--2026-10-08)).
 
 The [interactive architecture map](https://a2aviary.io/architecture) is prepared for

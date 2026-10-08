@@ -1,6 +1,6 @@
 # Server drafts, uploads, preview and approval
 
-Current source implements [decision 013](decisions/013-server-drafts-and-preview.md). It is enabled only when **both** `SITE_WORKFLOW_ENABLED=true` and `SITE_DRAFTS_ENABLED=true`; drafts default to false. See [release evidence](release-verification.md) for observed checks and unresolved rollout gates. This delivery does not activate production, change DNS, add payments or merge a PR. As of 2026-10-08, production runs the earlier workflow from main `89b92fe`; see the [current status](release-verification.md#current-status--2026-10-08). Nothing is for sale; there is no live checkout or active Paddle merchant of record.
+Current source implements [decision 013](decisions/013-server-drafts-and-preview.md). It is enabled only when **both** `SITE_WORKFLOW_ENABLED=true` and `SITE_DRAFTS_ENABLED=true`; drafts default to false. See [release evidence](release-verification.md) for observed checks and unresolved rollout gates. This delivery does not activate production, change DNS, add payments or merge a PR. Decision 013 reached main on 2026-10-08 at 15:49 -0400; the public health GET at 16:46:22 -0400 returned HTTP 503, leaving rollout, migration 007 and both flag states unverified; see the [current status](release-verification.md#current-status--2026-10-08). Nothing is for sale; there is no live checkout or active Paddle merchant of record.
 
 ## Current workflow and contracts
 
@@ -56,7 +56,7 @@ Cleanup tracks bucket prefix write intents before external writes, so rolled-bac
 
 ## Local checks and the one hosted fixture
 
-Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. Platform tests use unique loopback Postgres schemas; migration inventory must match all seven filenames and hashes and health fails closed on alteration. Migrations 001–006 are unchanged. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](release-verification.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); the first deployment of this source applies migration 007. Never rewrite inventory to bypass a mismatch.
+Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. Platform tests use unique loopback Postgres schemas; migration inventory must match all seven filenames and hashes and health fails closed on alteration. Migrations 001–006 are unchanged. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](release-verification.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); migration 007 is present on main following the 15:49 -0400 merge, but its production application is unverified after the public HTTP 503. Never rewrite inventory to bypass a mismatch.
 
 The explicitly authorized hosted runner is `node apps/platform/scripts/run-hosted-fixture.mjs`. It reads only the approved credential variable names from production Railway configuration into memory, filters them into the test child environment, overrides fixture flags, creates a disposable local database, and rejects a second attempt through a local marker. Never use production DATABASE_URL. SDK/action retries are disabled; readiness polling is allowed. The flow stops at its first failed stage and performs teardown once. Its private evidence contains only fictional IDs, safe usage/stage/cleanup observations and variable **names**, never values. Fictional verified browser sessions do not establish real Google authentication. No production variables/services/deployments are changed.
 
@@ -88,20 +88,25 @@ This sequence prepares the first test of the server-draft workflow on the
 production platform; it does not authorize one. Record the outcome in
 [release verification](release-verification.md).
 
-1. Before the deployment that carries this source, take and restore a Postgres
-   backup (see the [Railway platform runbook](runbooks.md#railway-platform)). After
-   it, confirm `/healthz` lists all seven migrations.
+1. Resolve the observed HTTP 503 through separately authorized owner work and
+   confirm `/healthz` returns HTTP 200 with all seven migrations and matching hashes.
+   Record backup/restore proof for the decision 013 rollout; take and restore a
+   Postgres backup before further schema changes (see the
+   [Railway platform runbook](runbooks.md#railway-platform)).
 2. Confirm every variable in [Configuration](#configuration) is set, including
-   `SITE_DEPLOY_ENVIRONMENT=production`. A non-test site created while the value is
-   `fixture` is later rejected with `deployment_target_mismatch`, and `tester.reset`
-   does not remove non-test sites. Do not change the value while non-test sites exist.
-3. Set `SITE_DRAFTS_ENABLED=true` only after the hosted fixture for this workflow
-   has passed, then confirm `/healthz` reports `mandate: approved-catalog-sites`.
+   `SITE_DEPLOY_ENVIRONMENT=production`. With `fixture`, even a non-test deployment targets a fixture environment.
+   Switching later to `production` makes existing fixture resources fail the
+   environment guard with `deployment_target_mismatch`; `tester.reset` does not
+   remove non-test sites. Do not change the value while non-test sites exist.
+3. Confirm both workflow flags and the current `mandate` after readiness is healthy.
+   If drafts are disabled, enable `SITE_DRAFTS_ENABLED=true` only after the hosted
+   fixture passes, then verify `mandate: approved-catalog-sites`. On this source,
+   `discovery-only` means at least one of the two flags is not `true`.
 4. Test with a tester identity. The configured owner cannot be a tester, so the
    owner enrolls a second verified Google identity with `testers.add` (see
-   [testers](testers-and-admin.md)). Any non-test `site.draft.create`, including
-   the owner's, permanently takes `first_client_pilot`, even if the site is never
-   deployed.
+   [testers](testers-and-admin.md)). The first non-test `site.draft.create`, including
+   the owner's, takes `first_client_pilot` at draft creation, even if the site is
+   never deployed.
 5. Through the connector: `site.draft.create`, `site.draft.apply`, `site.upload.open`
    (agent HTTP or the human link/QR), `site.preview`, then poll `site.status`.
 6. Approve at `/sites/approve/<specId>` while signed in with the tester's Google

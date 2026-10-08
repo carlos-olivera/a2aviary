@@ -196,7 +196,8 @@ objects. Pricing presents Basic at $10/month · $100/year with a disabled CTA
 and “Launching soon. Checkout opens when payments are enabled.” Credit amounts
 and subscription policies will be published before checkout opens. This pricing
 copy predates decision 007 and is superseded; correcting it is a separate website
-change. Catalog site generation and hosting are enabled on the platform.
+change. Earlier catalog activation is agent-reported; current production
+health and activation are unverified (see [release verification](release-verification.md#public-health-observation--2026-10-08)).
 After an authorized website release, verify public route/MIME/cache behavior,
 copy, metadata, navigation, contact, and sitemap. Payment activation remains a
 separate owner action; no payment integration is included here.
@@ -218,7 +219,9 @@ holds only `apps/platform/railway.json`.
   merging platform changes. Keeping auto-deploy is an open owner decision.
 - After a deployment, confirm that the serving deployment is the expected commit,
   then that `/healthz` returns HTTP 200, every migration name in the deployed
-  source (six on main `89b92fe`, seven with decision 013) and the expected `mandate`.
+  source (seven on current main after decision 013) and the expected `mandate`.
+  Decision 013 reached main at 15:49 -0400 on 2026-10-08; the single public health
+  GET at 16:46:22 -0400 returned HTTP 503, leaving rollout and inventory unverified.
 
 ### Migrations and rollback
 
@@ -241,8 +244,9 @@ holds only `apps/platform/railway.json`.
 ### Site workflow switch
 
 - Every site variable must be set before the site workflow is enabled; a missing
-  value stops startup. Main `89b92fe` needs `SITE_WORKFLOW_ENABLED=true`; the
-  decision 013 source also needs `SITE_DRAFTS_ENABLED=true`.
+  required value stops startup when both flags are true. Current main requires
+  both `SITE_WORKFLOW_ENABLED=true` and `SITE_DRAFTS_ENABLED=true`; neither
+  production flag is verified by the failed health request.
 - Setting either flag to `false` and redeploying hides the site tools and does not
   start the job worker. Queued jobs remain in Postgres. An interrupted deployment
   becomes `unknown` and needs owner reconciliation as described in
