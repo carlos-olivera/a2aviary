@@ -11,8 +11,6 @@ export function siteRuntime(env: NodeJS.ProcessEnv = process.env) {
     env.SITE_WORKFLOW_ENABLED !== 'true' ||
     env.SITE_DRAFTS_ENABLED !== 'true'
   ) {
-    if (env.SITE_WORKFLOW_ENABLED && env.SITE_WORKFLOW_ENABLED !== 'false')
-      throw new Error('Invalid SITE_WORKFLOW_ENABLED');
     return undefined;
   }
   const required = (name: string) => {

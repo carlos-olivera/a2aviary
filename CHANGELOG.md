@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-08 — site runtime flag startup repair
+
+- Remove the redundant flag rejection that crashed startup when the workflow was enabled but drafts were absent or disabled. Preserve malformed-flag rejection, provider configuration checks and the requirement for both flags before site operations are available.
+- Add generator flag-matrix and default platform startup/health regressions. Both reproduced `Invalid SITE_WORKFLOW_ENABLED` before the fix. Local health now returns discovery-only HTTP 200 against all seven migrations without creating a site; hosted fixtures remain disabled.
+- Node.js 22.23.3 generator and platform checks/builds passed, with 46 generator tests and 58 platform tests passing; one opt-in hosted test was skipped.
+- Record the inspected Railway startup failures and the inferred six-/seven-migration readiness mismatch in [release verification](docs/release-verification.md#read-only-diagnosis-and-prepared-recovery--2026-10-08). Production last returned HTTP 503; this delivery does not merge, deploy, restart, roll back or change production variables, database or bucket.
+
+
 ## 2026-10-08 — documentation synchronized with production state
 
 - Added a current status table, the open gates before the first client site, and an owner- and agent-reported record of the 2026-10-07 schema reconciliation, site configuration, four hosted fixture attempts and workflow activation on main `89b92fe` to [release verification](docs/release-verification.md#current-status--2026-10-08). Decision 013 reached main at 2026-10-08 15:49 -0400 in `b9bd1f8` and `6ff79db`. The single public health GET at 16:46:22 -0400 returned HTTP 503; current rollout, mandate and migration inventory are unverified, and readiness is the first open gate.
