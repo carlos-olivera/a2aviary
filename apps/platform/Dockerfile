@@ -5,6 +5,7 @@ RUN npm ci
 COPY packages/generator ./
 COPY services/src/site /app/services/src/site
 COPY services/package.json /app/services/package.json
+COPY library /app/library
 COPY plans /app/plans
 COPY LICENSE /app/LICENSE
 RUN npm run check && npm run build

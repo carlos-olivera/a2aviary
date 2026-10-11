@@ -1,0 +1,9 @@
+{
+  "id": "announcements:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "announcements",
+  "variant": "standard",
+  "behaviors": []
+}

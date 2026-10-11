@@ -1,0 +1,9 @@
+{
+  "id": "blog:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "blog",
+  "variant": "standard",
+  "behaviors": []
+}

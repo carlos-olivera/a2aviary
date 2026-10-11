@@ -1,0 +1,18 @@
+{
+  "id": "steps",
+  "type": "component",
+  "version": "1.0.0",
+  "status": "stable",
+  "fields": {
+    "heading": {
+      "kind": "heading",
+      "required": true,
+      "rationale": "Typed template input; no executable markup or arbitrary CSS."
+    },
+    "items": {
+      "kind": "textItems",
+      "required": true,
+      "rationale": "Typed template input; no executable markup or arbitrary CSS."
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "feature-grid:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "feature-grid",
+  "variant": "standard",
+  "behaviors": []
+}

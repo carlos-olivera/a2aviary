@@ -1,0 +1,18 @@
+{
+  "id": "gallery",
+  "type": "component",
+  "version": "1.0.0",
+  "status": "stable",
+  "fields": {
+    "heading": {
+      "kind": "heading",
+      "required": true,
+      "rationale": "Typed template input; no executable markup or arbitrary CSS."
+    },
+    "images": {
+      "kind": "imageItems",
+      "required": true,
+      "rationale": "Typed template input; no executable markup or arbitrary CSS."
+    }
+  }
+}

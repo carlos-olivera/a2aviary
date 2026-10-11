@@ -67,3 +67,7 @@ These decisions were accepted in the initial-release implementation plan. Accept
 - [012 — Catalog site administration and billing](012-catalog-site-administration-and-billing.md) — scoped grants, owner eligibility, operations, costs and the first new catalog pilot.
 
 - [013 — Server drafts and preview](013-server-drafts-and-preview.md) — owner-authorized initial-site replacement; browser approval, normalized uploads, exact artifacts and bounded cleanup. Production rollout remains gated.
+
+## Proposed component library
+
+- [014 — Component library foundation](014-component-library.md) — policy-preserving component/variant packages, checked logic-less templates, scoped token CSS and a generated registry; owner PR review pending.

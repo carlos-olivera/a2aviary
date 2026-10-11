@@ -1,0 +1,14 @@
+{
+  "id": "block-0",
+  "component": "faq",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "items": [
+      {
+        "question": "How do we start?",
+        "answer": "Prepare the materials and approve the result."
+      }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "cta",
+  "type": "component",
+  "version": "1.0.0",
+  "status": "stable",
+  "fields": {
+    "heading": {
+      "kind": "heading",
+      "required": true,
+      "rationale": "Typed template input; no executable markup or arbitrary CSS."
+    },
+    "text": {
+      "kind": "shortCopy",
+      "required": true,
+      "rationale": "Typed template input; no executable markup or arbitrary CSS."
+    },
+    "action": {
+      "kind": "link",
+      "required": true,
+      "rationale": "Typed template input; no executable markup or arbitrary CSS."
+    }
+  }
+}

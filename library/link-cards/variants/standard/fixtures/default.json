@@ -1,0 +1,18 @@
+{
+  "id": "block-0",
+  "component": "link-cards",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "items": [
+      {
+        "heading": "Explore a neighborhood",
+        "text": "An offline example.",
+        "link": {
+          "label": "Explore",
+          "pageId": "home"
+        }
+      }
+    ]
+  }
+}

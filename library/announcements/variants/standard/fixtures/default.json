@@ -1,0 +1,10 @@
+{
+  "id": "block-11",
+  "component": "announcements",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "collection": "announcements",
+    "emptyText": "Prepared by a fictional client for this offline example."
+  }
+}

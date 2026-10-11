@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "tsc --noEmit && npm run site:check",
+    "check": "tsc --noEmit && npm run site:check && node ../packages/generator/scripts/library.mjs",
     "test": "node --test test/*.test.mjs",
     "site:generate": "node scripts/site/generate.ts",
     "site:check": "node scripts/site/generate.ts --check"

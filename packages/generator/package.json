@@ -14,12 +14,14 @@
     }
   },
   "scripts": {
-    "check": "tsc --noEmit",
-    "build": "tsc --emitDeclarationOnly && node scripts/build.mjs",
-    "test": "node --test test/*.test.mjs",
+    "check": "npm run library:check && tsc --noEmit",
+    "build": "npm run library:check && tsc --emitDeclarationOnly && node scripts/build.mjs",
+    "test": "npm run library:check && node --test test/*.test.mjs",
     "fixture": "node scripts/fixture.mjs",
     "test:cms": "node scripts/test-cms.mjs",
-    "test:cms:volume": "node --test scripts/test-cms-volume.mjs"
+    "test:cms:volume": "node --test scripts/test-cms-volume.mjs",
+    "library:generate": "node scripts/library.mjs --write",
+    "library:check": "node scripts/library.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1146.0",

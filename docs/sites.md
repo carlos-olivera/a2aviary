@@ -116,3 +116,16 @@ production platform; it does not authorize one. Record the outcome in
 8. Clean up with `tester.reset` and `RESET <siteId>`, then confirm the Railway
    project, PocketBase volume and the `drafts/<UUID>/` and `specs/<UUID>/` bucket
    prefixes are gone.
+
+## Component library foundation
+
+The generator resolves the unchanged policy 2.0.0 catalog through repository-owned
+[component/variant packages](../library/README.md). Build/CI checks validate package
+hashes, exact policy agreement, logic-less templates and scoped token CSS. Runtime
+workers interpret bundled data; they do not execute package code or accept client
+HTML/CSS/JS. The core adds `data-v` to each existing block wrapper and emits only
+used variant CSS into `catalog.css`. Generator version `2.1.0` distinguishes the
+new output for source hashes and preview reuse. Existing approved snapshots retain
+exact-byte deployment. CMS JavaScript, self-hosted fonts, CSP, policy, migrations
+and tool interfaces are unchanged. See [proposed decision 014](decisions/014-component-library.md);
+this source change does not establish production recovery or activation.

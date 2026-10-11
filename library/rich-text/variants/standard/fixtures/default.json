@@ -1,0 +1,13 @@
+{
+  "id": "block-0",
+  "component": "rich-text",
+  "variant": "standard",
+  "props": {
+    "content": [
+      {
+        "type": "paragraph",
+        "text": "Fictional community information."
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "faq:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "faq",
+  "variant": "standard",
+  "behaviors": []
+}
