@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Architecture overview",
-    "output": ".local/architecture/server-drafts-final/overview.html",
+    "output": ".local/architecture/library-core/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "1172078f951fde717833f4f6028e5d0b24b5a458",
+      "revision": "e849003b2be30c251ac33c0c18c8aaa337ecc0b7",
       "provider": "github",
       "link_mode": "web"
     }

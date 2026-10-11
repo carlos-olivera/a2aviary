@@ -82,7 +82,7 @@
     "mode": "Separate local tooling"
   },
   "engine-astro": {
-    "note": "Deterministic fixed catalog rendering uses relative page, CSS, font and image references so identical bytes work at signed snapshot paths and deployed roots.",
+    "note": "Policy-matched component/variant packages compile to checked AST/CSS data. The core interpreter escapes text, owns wrappers and typed helpers, and emits only used scoped styles. Relative references still work at signed snapshot paths and deployed roots; local parity is verified, production activation remains unverified.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },

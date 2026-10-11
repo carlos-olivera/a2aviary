@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/server-drafts-final/engine.html",
+    "output": ".local/architecture/library-core/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "1172078f951fde717833f4f6028e5d0b24b5a458",
+      "revision": "e849003b2be30c251ac33c0c18c8aaa337ecc0b7",
       "provider": "github",
       "link_mode": "web"
     }
@@ -72,12 +72,22 @@
       "id": "engine-astro",
       "type": "backend",
       "label": "Astro catalog generator",
-      "sublabel": "Relative paths / fixed blocks",
+      "sublabel": "Checked templates / scoped CSS",
       "sources": [
         {
           "path": "packages/generator/src/render.ts",
-          "line": 47,
-          "end_line": 74
+          "line": 179,
+          "end_line": 185
+        },
+        {
+          "path": "packages/generator/src/library-template.ts",
+          "line": 153,
+          "end_line": 170
+        },
+        {
+          "path": "packages/generator/scripts/library.mjs",
+          "line": 170,
+          "end_line": 181
         }
       ],
       "pos": [
