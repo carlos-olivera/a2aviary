@@ -1,0 +1,9 @@
+{
+  "id": "cta:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "cta",
+  "variant": "standard",
+  "behaviors": []
+}

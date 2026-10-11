@@ -1,0 +1,14 @@
+{
+  "id": "block-0",
+  "component": "feature-grid",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "items": [
+      {
+        "heading": "A prepared step",
+        "text": "Use supplied facts."
+      }
+    ]
+  }
+}

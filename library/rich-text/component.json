@@ -1,0 +1,13 @@
+{
+  "id": "rich-text",
+  "type": "component",
+  "version": "1.0.0",
+  "status": "stable",
+  "fields": {
+    "content": {
+      "kind": "richText",
+      "required": true,
+      "rationale": "Typed template input; no executable markup or arbitrary CSS."
+    }
+  }
+}

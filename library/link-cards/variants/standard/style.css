@@ -1,0 +1,2 @@
+[data-v="link-cards:standard"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}
+[data-v="link-cards:standard"] .grid li{padding:var(--space-16)}

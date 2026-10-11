@@ -1,0 +1,10 @@
+{
+  "id": "block-10",
+  "component": "blog",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "collection": "blog",
+    "emptyText": "Prepared by a fictional client for this offline example."
+  }
+}

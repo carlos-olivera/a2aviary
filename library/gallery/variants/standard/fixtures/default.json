@@ -1,0 +1,11 @@
+{
+  "id": "block-0",
+  "component": "gallery",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "images": [
+      "fictional-pixel"
+    ]
+  }
+}

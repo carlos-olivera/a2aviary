@@ -1,0 +1,13 @@
+{
+  "id": "block-7",
+  "component": "cta",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "text": "Prepared by a fictional client for this offline example.",
+    "action": {
+      "label": "Explore",
+      "pageId": "home"
+    }
+  }
+}

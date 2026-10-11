@@ -1,0 +1,9 @@
+{
+  "id": "steps:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "steps",
+  "variant": "standard",
+  "behaviors": []
+}

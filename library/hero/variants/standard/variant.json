@@ -1,0 +1,9 @@
+{
+  "id": "hero:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "hero",
+  "variant": "standard",
+  "behaviors": []
+}

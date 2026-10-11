@@ -1,3 +1,5 @@
+import { library } from './library-data.ts';
+import { interpretTemplate } from './library-template.ts';
 import {
   canonicalJson,
   defaultPolicy,
@@ -35,7 +37,7 @@ const escape = (v: unknown) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
-export const GENERATOR_VERSION = '2.0.0';
+export const GENERATOR_VERSION = '2.1.0';
 export interface SourceBundle {
   files: Record<string, string>;
   binaryFiles: Record<string, string>;
@@ -176,77 +178,76 @@ export function renderPage(spec: SiteSpec, pageId: string): string {
   const link = (l: Link) =>
     `<a href="${escape('pageId' in l ? (posix.relative(page.path, href(l).split('#')[0]) ? posix.relative(page.path, href(l).split('#')[0]) + '/' : './') + (href(l).includes('#') ? '#' + href(l).split('#')[1] : '') : href(l))}">${escape(l.label)}</a>`;
   const render = (b: Block) => {
-    const p = b.props as any,
-      heading = p.heading ? `<h2>${escape(p.heading)}</h2>` : '';
-    switch (b.component) {
-      case 'hero':
-        return `<header class="hero"><h1>${escape(p.heading)}</h1><p>${escape(p.text)}</p>${p.image ? image(p.image) : ''}${p.action ? link(p.action) : ''}</header>`;
-      case 'rich-text':
-        return p.content
-          .map((n: any) =>
+    const variant = library[b.component + ':' + b.variant];
+    if (!variant || variant.component !== b.component)
+      throw new SiteError('out_of_catalog');
+    return interpretTemplate(variant.ast, b.props, (name, value) => {
+      if (name === 'image') return image(value as string);
+      if (name === 'link') return link(value as Link);
+      if (name === 'links')
+        return (
+          '<ul>' +
+          (value as Link[]).map((l) => '<li>' + link(l) + '</li>').join('') +
+          '</ul>'
+        );
+      if (name === 'richText')
+        return (
+          value as Array<{ type: string; text?: string; items?: string[] }>
+        )
+          .map((n) =>
             n.type === 'paragraph'
               ? `<p>${escape(n.text)}</p>`
               : n.type === 'heading'
                 ? `<h2>${escape(n.text)}</h2>`
-                : `<ul>${n.items.map((t: string) => `<li>${escape(t)}</li>`).join('')}</ul>`,
+                : `<ul>${n.items!.map((t) => `<li>${escape(t)}</li>`).join('')}</ul>`,
           )
           .join('');
-      case 'feature-grid':
-      case 'steps':
-        return (
-          heading +
-          `<${b.component === 'steps' ? 'ol' : 'ul'} class="grid">${p.items.map((i: any) => `<li><h3>${escape(i.heading)}</h3><p>${escape(i.text)}</p></li>`).join('')}</${b.component === 'steps' ? 'ol' : 'ul'}>`
-        );
-      case 'link-cards':
-        return (
-          heading +
-          `<ul class="grid">${p.items.map((i: any) => `<li><h3>${escape(i.heading)}</h3><p>${escape(i.text)}</p>${link(i.link)}</li>`).join('')}</ul>`
-        );
-      case 'gallery':
-        return (
-          heading + `<div class="grid">${p.images.map(image).join('')}</div>`
-        );
-      case 'faq':
-        return (
-          heading +
-          p.items
-            .map(
-              (i: any) =>
-                `<details><summary>${escape(i.question)}</summary><p>${escape(i.answer)}</p></details>`,
-            )
-            .join('')
-        );
-      case 'cta':
-        return heading + `<p>${escape(p.text)}</p>` + link(p.action);
-      case 'contact':
-        return (
-          heading +
-          `<p>${escape(p.text)}</p><ul>${p.links.map((l: Link) => `<li>${link(l)}</li>`).join('')}</ul>`
-        );
-      case 'catalog':
-      case 'blog':
-      case 'announcements':
-        return (
-          heading +
-          `<div data-collection="${escape(p.collection)}" aria-live="polite"><p>${escape(p.emptyText)}</p></div>`
-        );
-      default:
-        throw new SiteError('out_of_catalog');
-    }
+      if (name === 'collection')
+        return `<div data-collection="${escape(value)}" aria-live="polite"><p>${escape(b.props.emptyText)}</p></div>`;
+      throw new SiteError('out_of_catalog');
+    });
   };
   const social = page.seo.socialImage
     ? spec.assets.find((a) => a.id === page.seo.socialImage)!
     : undefined;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.seo.title)}</title><meta name="description" content="${escape(page.seo.description)}">${social ? `<meta property="og:image" content="${root}assets/${social.sha256}.${social.format === 'jpeg' ? 'jpg' : social.format}">` : ''}<link rel="stylesheet" href="${root}catalog.css"><script src="${root}cms.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><nav aria-label="Primary">${spec.navigation.primary.map(link).join(' ')}</nav><main id="main">${page.sections.some((s) => s.blocks.some((b) => b.component === 'hero')) ? '' : '<h1>' + escape(page.seo.title) + '</h1>'}${page.sections.map((s) => `<section id="${s.id}">${s.blocks.map((b) => `<div id="${b.id}" data-component="${b.component}">${render(b)}</div>`).join('')}</section>`).join('')}</main><footer><nav aria-label="Footer">${spec.navigation.footer.map(link).join(' ')}</nav></footer></body></html>\n`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.seo.title)}</title><meta name="description" content="${escape(page.seo.description)}">${social ? `<meta property="og:image" content="${root}assets/${social.sha256}.${social.format === 'jpeg' ? 'jpg' : social.format}">` : ''}<link rel="stylesheet" href="${root}catalog.css"><script src="${root}cms.js" defer></script></head><body><a class="skip" href="#main">Skip to content</a><nav aria-label="Primary">${spec.navigation.primary.map(link).join(' ')}</nav><main id="main">${page.sections.some((s) => s.blocks.some((b) => b.component === 'hero')) ? '' : '<h1>' + escape(page.seo.title) + '</h1>'}${page.sections.map((s) => `<section id="${s.id}">${s.blocks.map((b) => `<div id="${b.id}" data-component="${b.component}" data-v="${b.component}:${b.variant}">${render(b)}</div>`).join('')}</section>`).join('')}</main><footer><nav aria-label="Footer">${spec.navigation.footer.map(link).join(' ')}</nav></footer></body></html>\n`;
 }
 function css(spec: SiteSpec): string {
-  const c = spec.tokens.colors,
-    fonts: Record<string, string> = {
-      Inter: 'Inter, sans-serif',
-      'EB Garamond': '"EB Garamond", serif',
-      'system-sans': 'system-ui, sans-serif',
-      'system-serif': 'Georgia, serif',
-    };
-  return `@font-face{font-family:Inter;src:url('fonts/inter.woff2') format('woff2');font-display:swap}@font-face{font-family:"EB Garamond";src:url('fonts/eb-garamond.woff2') format('woff2');font-display:swap}*{box-sizing:border-box}body{margin:0;background:${c.background};color:${c.text};font-family:${fonts[spec.tokens.fonts.body]};line-height:1.6}h1,h2,h3{font-family:${fonts[spec.tokens.fonts.heading]};line-height:1.2}a{color:${c.primary}}nav,main,footer{max-width:1120px;margin:auto;padding:${spec.tokens.spacing}px}section{margin:32px 0;padding:24px;background:${c.surface};border:1px solid ${c.border};border-radius:${spec.tokens.radius}px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:24px;list-style:none;padding:0}.grid li{padding:16px}img{display:block;max-width:100%;height:auto}summary{cursor:pointer}a:focus-visible,summary:focus-visible{outline:3px solid ${c.accent};outline-offset:4px}.skip{position:absolute;left:-10000px}.skip:focus{left:8px;top:8px;background:${c.background};padding:8px}footer{color:${c.muted}}\n`;
+  const fonts: Record<string, string> = {
+    Inter: 'Inter, sans-serif',
+    'EB Garamond': '"EB Garamond", serif',
+    'system-sans': 'system-ui, sans-serif',
+    'system-serif': 'Georgia, serif',
+  };
+  const tokens = Object.entries(spec.tokens.colors)
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([key, value]) => `--color-${key}:${value}`)
+    .concat([
+      `--font-body:${fonts[spec.tokens.fonts.body]}`,
+      `--font-heading:${fonts[spec.tokens.fonts.heading]}`,
+      `--space:${spec.tokens.spacing}px`,
+      `--radius:${spec.tokens.radius}px`,
+      ...[4, 8, 12, 16, 24, 32, 48, 64, 96].map((n) => `--space-${n}:${n}px`),
+    ])
+    .join(';');
+  const used = [
+    ...new Set(
+      spec.pages.flatMap((p) =>
+        p.sections.flatMap((s) =>
+          s.blocks.map((b) => b.component + ':' + b.variant),
+        ),
+      ),
+    ),
+  ].sort();
+  const base = `:root{${tokens}}@font-face{font-family:Inter;src:url('fonts/inter.woff2') format('woff2');font-display:swap}@font-face{font-family:"EB Garamond";src:url('fonts/eb-garamond.woff2') format('woff2');font-display:swap}*{box-sizing:border-box}body{margin:0;background:var(--color-background);color:var(--color-text);font-family:var(--font-body);line-height:1.6}h1,h2,h3{font-family:var(--font-heading);line-height:1.2}a{color:var(--color-primary)}nav,main,footer{max-width:1120px;margin:auto;padding:var(--space)}section{margin:var(--space-32) 0;padding:var(--space-24);background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius)}a:focus-visible,summary:focus-visible{outline:3px solid var(--color-accent);outline-offset:4px}.skip{position:absolute;left:-10000px}.skip:focus{left:8px;top:8px;background:var(--color-background);padding:8px}footer{color:var(--color-muted)}\n`;
+  return (
+    base +
+    used
+      .map((id) => {
+        if (!Object.hasOwn(library, id)) throw new SiteError('out_of_catalog');
+        return library[id].css;
+      })
+      .join('')
+  );
 }
 const cmsScript = `const cmsBase=new URL('./',document.currentScript.src);for(const target of document.querySelectorAll('[data-collection]')){const collection=target.dataset.collection;fetch(new URL('api/cms/api/collections/'+encodeURIComponent(collection)+'/records?filter=published%3Dtrue&sort=-created&perPage=${defaultPolicy.firstVersion.items.grid.value}',cmsBase),{credentials:'omit'}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{if(!data.items?.length)return;const list=document.createElement('ul');for(const item of data.items){const li=document.createElement('li'),heading=document.createElement('h3'),copy=document.createElement('p');heading.textContent=item.title;copy.textContent=item.body;li.append(heading,copy);list.append(li)}target.replaceChildren(list)}).catch(()=>{})}\n`;

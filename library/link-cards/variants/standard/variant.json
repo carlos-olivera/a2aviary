@@ -1,0 +1,9 @@
+{
+  "id": "link-cards:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "link-cards",
+  "variant": "standard",
+  "behaviors": []
+}

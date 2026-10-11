@@ -1,0 +1,15 @@
+{
+  "id": "block-8",
+  "component": "contact",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "text": "Prepared by a fictional client for this offline example.",
+    "links": [
+      {
+        "label": "Explore",
+        "pageId": "home"
+      }
+    ]
+  }
+}

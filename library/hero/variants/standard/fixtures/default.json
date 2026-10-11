@@ -1,0 +1,14 @@
+{
+  "id": "block-0",
+  "component": "hero",
+  "variant": "standard",
+  "props": {
+    "heading": "Fictional neighborhood guide",
+    "text": "Prepared by a fictional client for this offline example.",
+    "image": "fictional-pixel",
+    "action": {
+      "label": "Explore",
+      "pageId": "home"
+    }
+  }
+}

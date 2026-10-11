@@ -1,0 +1,9 @@
+{
+  "id": "rich-text:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "rich-text",
+  "variant": "standard",
+  "behaviors": []
+}

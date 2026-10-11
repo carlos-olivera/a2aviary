@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-11 — component library foundation
+
+- Move the twelve policy 2.0.0 components and their standard presentations into [versioned library packages](library/README.md). Add a generated 24-package registry with exact file hashes and policy agreement checks; reserve behavior/effect/font metadata without implementing packages.
+- Replace the component switch with a core-owned, typed logic-less template interpreter. Validate the restricted tag/attribute grammar and scoped token CSS at build/check time; bundle AST/CSS data and include only used variant styles. Generator version is `2.1.0`; wrappers add `data-v`, while content, relative links, CMS JavaScript, font licenses, CSP and stored-snapshot deployment remain unchanged.
+- Enforce library checks through generator check/build/test and the existing services CI check without changing workflows or adding dependencies. Add [proposed decision 014](docs/decisions/014-component-library.md), maintainer documentation, hostile-input regressions and a pinned baseline HTML/CMS fixture.
+- Node.js 22.23.3 generator check/build and 53 tests passed; platform check/build and 58 tests passed against loopback Postgres, with the hosted test explicitly skipped; services check/build and 104 tests and infrastructure build/nine tests passed. The real seven-page Astro verifier passed 37 checks; local PocketBase/Caddy editing and both volume cases passed. The local non-root platform image generated seven pages without a source library directory or network access.
+- Compared every page in the manifest example and existing fixture against main `02b8115` at 390/1280 px, with empty/populated/error CMS responses: all 84 decoded-pixel comparisons had zero differences. HTML matched after whitespace normalization and removing only new `data-v` attributes. Inspected the mobile/desktop home captures; the [repeatable procedure](packages/generator/README.md#equivalence-procedure) retains before/after/diff evidence locally. No intentional visual or content differences.
+- No policy/contract/migration change, hosted fixture, production configuration, deployment, merge or HTTP 503 repair. Delivery stops at an Operator-authored PR for owner review; merging main auto-deploys, and no new configuration is required.
+
 ## 2026-10-08 — site runtime flag startup repair
 
 - Remove the redundant flag rejection that crashed startup when the workflow was enabled but drafts were absent or disabled. Preserve malformed-flag rejection, provider configuration checks and the requirement for both flags before site operations are available.

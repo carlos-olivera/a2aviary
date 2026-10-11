@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "packages": [
+    {
+      "id": "announcements",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "announcements/component.json": "74d4db1f653abf0352ca7a3da83583774b442ae911f4353fefa5d5ea56129307"
+      }
+    },
+    {
+      "id": "announcements:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "announcements/variants/standard/fixtures/default.json": "e0f8d0258cff54a1b74bf48cecc256373db2927ccafbed5705dfec15a0b36e5a",
+        "announcements/variants/standard/style.css": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "announcements/variants/standard/template.html": "3cc12f51562470498091f09f4eea2416b6eb5db629f5ddea7ea4221ca3135aa5",
+        "announcements/variants/standard/variant.json": "3fa63fb83056291ac13b9643131d57d802029d80623b568f471971655bfb4261"
+      }
+    },
+    {
+      "id": "blog",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "blog/component.json": "74ccf5eea5f745fad875f2346bc530c07a0109f6c26e7e472800577a1ea0361f"
+      }
+    },
+    {
+      "id": "blog:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "blog/variants/standard/fixtures/default.json": "1b3f33607dec04d104a37c666f5fb0789e50e3675b1f42c2aae684fc7680f65c",
+        "blog/variants/standard/style.css": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "blog/variants/standard/template.html": "3cc12f51562470498091f09f4eea2416b6eb5db629f5ddea7ea4221ca3135aa5",
+        "blog/variants/standard/variant.json": "9a82922ef727d2ee55c87cdb8865d761a19a3d9c8661041412b6ef61c50f765c"
+      }
+    },
+    {
+      "id": "catalog",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "catalog/component.json": "e75d5c5e68db29b78594d473298a2db4937749ef4df3877e97c01f77a3ca7641"
+      }
+    },
+    {
+      "id": "catalog:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "catalog/variants/standard/fixtures/default.json": "8206aea97579573281825caab1ad9a991f526fef276985e52d3649e1303611eb",
+        "catalog/variants/standard/style.css": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "catalog/variants/standard/template.html": "3cc12f51562470498091f09f4eea2416b6eb5db629f5ddea7ea4221ca3135aa5",
+        "catalog/variants/standard/variant.json": "02e5e89fc2514cea698d10be71e5c5d05a34b2eadbe6937a56a45701c2260efb"
+      }
+    },
+    {
+      "id": "contact",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "contact/component.json": "59322f21b17668b5e99bd4ddadf853bcd0a01e0821e3a7dd8eb3667ef699d7ea"
+      }
+    },
+    {
+      "id": "contact:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "contact/variants/standard/fixtures/default.json": "eb0b5c11b45384fce98f3970a93bc3d102ecf070b75b6599862077d46ebd85c9",
+        "contact/variants/standard/style.css": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "contact/variants/standard/template.html": "26d5763316c55bd503b84a9bd2ba48f3e02d64366c8c3c3f78b92d6255ae98aa",
+        "contact/variants/standard/variant.json": "a56d352330815b517eb06adfaaecc2c89a1f35c627f5194f7af34e85a5f764f4"
+      }
+    },
+    {
+      "id": "cta",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "cta/component.json": "eb85e7da730d4d816adce2d1b88a302d54f65e91f106eeaa41385741edbfb36c"
+      }
+    },
+    {
+      "id": "cta:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "cta/variants/standard/fixtures/default.json": "f8f40442ea3e94bedc995edf5ac4461a8487b6af3f55825e3259827a3df83210",
+        "cta/variants/standard/style.css": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "cta/variants/standard/template.html": "b5c5752ce37807e26798ca0197198108b74bda25488742a6fe87b28b58fe2240",
+        "cta/variants/standard/variant.json": "72f65879af67496270f9397ec311edc980fcc25b13e98fb1560a460c04acab6b"
+      }
+    },
+    {
+      "id": "faq",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "faq/component.json": "313d39d244408f663bed3ee03a4f97ef1e615ad4ce04f93717688b85b02ee142"
+      }
+    },
+    {
+      "id": "faq:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "faq/variants/standard/fixtures/default.json": "c21b214a4ec12cfb7e1afd7881d112250272bf81a59e69a0d3194bb3924d2e61",
+        "faq/variants/standard/style.css": "e05b32e7151b0f7e3011180518e170e6d1f3dbc86198f4548237b96522ae808e",
+        "faq/variants/standard/template.html": "ee57b7c5a9034aa288e09cdc9163e80e2d067282fa2e0c68adf1131ed0970cff",
+        "faq/variants/standard/variant.json": "8544e1d785b38377c32e8500403b74a92174d8a643559001353f827840e60090"
+      }
+    },
+    {
+      "id": "feature-grid",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "feature-grid/component.json": "3c712cbe3ffb4d63d434eac98d22c6664af5d5480bad606750251dfe9df47835"
+      }
+    },
+    {
+      "id": "feature-grid:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "feature-grid/variants/standard/fixtures/default.json": "f67594138a3bd8f2441d96e51d0a658aada6db1d125f04d4d501f6c9dd9df5b5",
+        "feature-grid/variants/standard/style.css": "5ec042bef70a8fde2cd539123eabfac55ab0df89d32c4b2c40d776d87b7c331a",
+        "feature-grid/variants/standard/template.html": "772ec7630b981e587567467eace6a1c40928e1bc7fdd598058941429cfd88570",
+        "feature-grid/variants/standard/variant.json": "7f10cc77ef8ed63b9c04ab016c66edb6efc65e45904b41cf29c796e195a57e3b"
+      }
+    },
+    {
+      "id": "gallery",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "gallery/component.json": "f64fa27f555b2acd602f31b07db3a9b1afc1182c48d4cfad34c2222f7692b1f9"
+      }
+    },
+    {
+      "id": "gallery:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "gallery/variants/standard/fixtures/default.json": "9deb0b1a2aa79897c333e10ac3a3787f33a3817506e173fd43cbd1d572cc68a8",
+        "gallery/variants/standard/style.css": "dca84c8099df15131092f8b2bba93e9d21aada4b6c5a3ab9979e132375ad2206",
+        "gallery/variants/standard/template.html": "67d1f61a8d6b026d2263b8521ee1a75b68db8232c5739569627d14b729881d66",
+        "gallery/variants/standard/variant.json": "a78a7ae0736e42931db73e05e9398c9b1d90cabb4dbd5f2b8d01e93d78d9a9d6"
+      }
+    },
+    {
+      "id": "hero",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "hero/component.json": "213c1668dc5c296b2826dab9943cfa7688602f87f9553d66ca697540d5505209"
+      }
+    },
+    {
+      "id": "hero:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "hero/variants/standard/fixtures/default.json": "2186cd2adafdfc1bea275630d9888685dfaf116ff838983b2c3fb0d52634285f",
+        "hero/variants/standard/style.css": "90939d6098e84800ddf23a2302248a707e3c563f2fa7009deb6579044e8fa191",
+        "hero/variants/standard/template.html": "d5dae8a08d77093a1a1af23c38b4e75f3c10a0c16f94315676b5fa18d217238e",
+        "hero/variants/standard/variant.json": "a1fc2f47d827b26c0d533e699675a3eea738c86e277241d639a2159103e4eba2"
+      }
+    },
+    {
+      "id": "link-cards",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "link-cards/component.json": "2d148e8773127d65570debd6a4d4e7379d267d004c2171a6f5d8604963762910"
+      }
+    },
+    {
+      "id": "link-cards:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "link-cards/variants/standard/fixtures/default.json": "be7ef520bab8eac9afd0e2b10e3189494a0fc9ea34e3f788343f0e832e8f5de9",
+        "link-cards/variants/standard/style.css": "b5a4bd6908cd7ec2d6223fcef224941c65ba2b904666766e1eabd8cec0cb3c0e",
+        "link-cards/variants/standard/template.html": "6d15b887a00a85f31f80562cf8f1213e320f576823461eef6845a2577fd9185a",
+        "link-cards/variants/standard/variant.json": "e05f6b79831caf02a6a9b4ef734c4dcd7ea01988d6ba9e080870d07ec92988a0"
+      }
+    },
+    {
+      "id": "rich-text",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "rich-text/component.json": "1ca15741a74b40ea21128d09d05deba17a388d30b79f8c2c54c395e20f893af0"
+      }
+    },
+    {
+      "id": "rich-text:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "rich-text/variants/standard/fixtures/default.json": "aaef944bd62a04d1b48b05802f5d5963151a24503f8ed0b2a997cbb2ba775702",
+        "rich-text/variants/standard/style.css": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "rich-text/variants/standard/template.html": "3ad20411a71eae929deb7d5807d4b337f27e8094d36e065fd5137b095871766c",
+        "rich-text/variants/standard/variant.json": "f666347a317b7cd1a776cbb1d38579d2b512c8b510fb74b40c4af8205a0ce22e"
+      }
+    },
+    {
+      "id": "steps",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "steps/component.json": "4fb793b725454a7dd970d844878f4d086b63f1379af98d119eb80e3c047813e3"
+      }
+    },
+    {
+      "id": "steps:standard",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "stable",
+      "files": {
+        "steps/variants/standard/fixtures/default.json": "63df46714610dd22e570119985edc82017f31f40a2dd0c167c104bf3708cf5bf",
+        "steps/variants/standard/style.css": "40a00acd8843216ec5d7a98717e58e411e94705dd49a05c03b195521385c1939",
+        "steps/variants/standard/template.html": "ceeecdcc1de2800a82d3d14d8b78e312a4727a8856f60548125fc12f382e10cd",
+        "steps/variants/standard/variant.json": "14281df5c47f5fd13488cc2148bfcfb9482428d391297a60e9db6db8580fc4d2"
+      }
+    }
+  ]
+}

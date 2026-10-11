@@ -1,0 +1,9 @@
+{
+  "id": "contact:standard",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "stable",
+  "component": "contact",
+  "variant": "standard",
+  "behaviors": []
+}

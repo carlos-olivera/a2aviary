@@ -1,6 +1,8 @@
+import { checkLibrary } from './library.mjs';
 import { build } from 'esbuild';
 import { cp, mkdir, rm } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
+await checkLibrary();
 await build({
   entryPoints: ['src/index.ts'],
   bundle: true,
