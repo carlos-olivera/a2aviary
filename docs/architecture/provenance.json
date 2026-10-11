@@ -2,14 +2,14 @@
   "schemaVersion": 2,
   "generator": "Archify",
   "version": "3.0.1",
-  "sourceRevision": "e849003b2be30c251ac33c0c18c8aaa337ecc0b7",
-  "manifestSha256": "69099391e88b965dfe12539fe24669b3fa7775eed551241a713811038484739b",
+  "sourceRevision": "07c2d0175c9b493b722eefcb99fc156cc3d6ef10",
+  "manifestSha256": "cdebe8cdbd1ba3c143fb6eef11740d56e4f28d66ffb1484017bd00394a472c90",
   "coverageSha256": "065e8a6b49ab9ac0873cc098ef12171b0d6f4adaf46cd600098cc6260dcba9bf",
   "diagrams": {
     "overview": {
       "candidatePath": "docs/architecture/map.json",
-      "candidateSha256": "be5b24f7e28fa21340ffcb091df870f941960694da5e822e011f7ce23bcefc78",
-      "rawArtifactSha256": "0ef4497106980d21bf578deb003b6f19e04099434c635b1ed4fcd1d8a98ebd40",
+      "candidateSha256": "b0f525dfe9545d6808c57da4b14b9aa9d4e81a1a341faac4883489297450356a",
+      "rawArtifactSha256": "1c32e3f71bdf46bcadd11c0f239780426004d80c9ae4cd0abf20e6ed22276b16",
       "generatedDrawingSha256": "9169d487381c830729a530fb1ad0c95ec9a3479fca5ed5e8ca6587d9ea74b860",
       "gates": {
         "validate": "pass",
@@ -20,8 +20,8 @@
     },
     "client": {
       "candidatePath": "docs/architecture/diagrams/client.json",
-      "candidateSha256": "73fc3d9b24f9135bab3495c1c9599e6aa3d7c5d3e0a6c9f34f2d58ea5e1efd32",
-      "rawArtifactSha256": "e31c46e8f47abc892909b1b3bbbfecb0b88b466d84b4735197ceda6bd08c0df1",
+      "candidateSha256": "faf901b845abc3d2c457e153c9989f64c0d371e9db94284e8da57a50b1140a9d",
+      "rawArtifactSha256": "ffb7f9031e6de637eda1c7948752bbfc5ee3a983caa2b93054cdbeeabd2862af",
       "generatedDrawingSha256": "45d4290ff179cc89293945cb850f73af6ff9babad8ed4b0425cef3dab7c494cf",
       "gates": {
         "validate": "pass",
@@ -32,8 +32,8 @@
     },
     "gate": {
       "candidatePath": "docs/architecture/diagrams/gate.json",
-      "candidateSha256": "6076f12536bb3bce304511f1ea166d009f929ffa58a2b880d9198c0d4ec8ee27",
-      "rawArtifactSha256": "62fc2eed6c4a6fe1c7775e3e0f1eb38129640e972219db81d0938584d5821dbf",
+      "candidateSha256": "ebada8eaf7bb0501073513ee42ff1ed101da584deeb75cd305a0765e6073ba29",
+      "rawArtifactSha256": "f2be6ace978dc8a9da7acd8cfc87942a2ab0342f33c4781cb2d70d769f548e75",
       "generatedDrawingSha256": "944eafd01e7bb7ed5863d6b5c5be20375463ffe40573e6785cac3869657df791",
       "gates": {
         "validate": "pass",
@@ -44,8 +44,8 @@
     },
     "engine": {
       "candidatePath": "docs/architecture/diagrams/engine.json",
-      "candidateSha256": "ad7c5ba604f8f32129918656d4461e83d83c4336617d7dccc9786db2e68a926e",
-      "rawArtifactSha256": "c964e301d3912eca4b9ef310d1493cc16f56f926d2ba46c715899358d74d6b02",
+      "candidateSha256": "0fd5ca7feeaf8a84051acfcc7bbec491fe58de3aae91977b672534fc7ecefb39",
+      "rawArtifactSha256": "d250f1216d7a76fc522a1779f9eaaf001425f773e426a853e1b9553bba0676d0",
       "generatedDrawingSha256": "b5df0afbd7f221cd584cd704fecc1e9190063db120ab7ec0e6ed1896c4fd5bde",
       "gates": {
         "validate": "pass",
@@ -56,8 +56,8 @@
     },
     "hosting": {
       "candidatePath": "docs/architecture/diagrams/hosting.json",
-      "candidateSha256": "b16b6fd24babd430d1fdb8d837996c7e9e8ba74b0cfaf49b2e4dfa4f18a36e54",
-      "rawArtifactSha256": "1a9939901658244cb5b89428777a87ea026e04dc7d4892294c9e3392e6b3479a",
+      "candidateSha256": "7e6eb6db409eecb334320628b515dbb5b2b04a2cac6c6b0ab9502c58efe3935d",
+      "rawArtifactSha256": "62addad1d9866aff1813e8e646a98deb4e03d8026024d18a3af2d9e028a35f97",
       "generatedDrawingSha256": "821e9bcd3a7b30622e0514451907502fd1d42fc90eab47883e005a0eee311b51",
       "gates": {
         "validate": "pass",
@@ -68,8 +68,8 @@
     },
     "ops": {
       "candidatePath": "docs/architecture/diagrams/ops.json",
-      "candidateSha256": "b1d1e45539295a56f3067c41bbfa5964ebab292c8a8a0234b09e47079eb9f70c",
-      "rawArtifactSha256": "2d76d19b9ca51c273fa88f03167bc26fd885bd0b32b8b8c647468d34ba277541",
+      "candidateSha256": "710c28682bcb9b98b432aecc5dd24aeae1630f2b2018cb527bb68505c0cec06a",
+      "rawArtifactSha256": "7053225d96c9bfc1842ee7eb6a7e8949fc8569a2f2af63e0b7c08e693b330a39",
       "generatedDrawingSha256": "94b08e2f7acc7f24ed24c1e0f134adf580ad90dbe8a2ff7a14df5b9e5cc6536a",
       "gates": {
         "validate": "pass",
@@ -79,7 +79,7 @@
       }
     }
   },
-  "integratedPageSha256": "ff090d4c85e75639cfa86bc92ce2f05f2b012e028d70097fa89815f0bc2734d8",
+  "integratedPageSha256": "e72be8fcd3e4bc2b83275423e944de9b7d557040c132d4b0ecffa55001e26f40",
   "assetSha256": {
     "architecture.css": "1ebd910731acf8fd4ed0a110d4086b1722fad07c82b7e815cd8832d528f8ddb4",
     "architecture.js": "f97addd4fdf06856b907aa6b459fc10f90be698a223f14a5e912731c1cb58a2c"
@@ -234,7 +234,7 @@
     "library/link-cards/variants/standard/template.html": "6d15b887a00a85f31f80562cf8f1213e320f576823461eef6845a2577fd9185a",
     "library/link-cards/variants/standard/variant.json": "e05f6b79831caf02a6a9b4ef734c4dcd7ea01988d6ba9e080870d07ec92988a0",
     "library/registry.json": "3a57cb886db2b1af11092efe43ec4ba29592fe3f999a625c17264a06409acad0",
-    "library/registry.schema.json": "2bae0a6d7004ae73dccd61d5b73db22c54b45b001e0de951f8eede4122fb4876",
+    "library/registry.schema.json": "2a423fec8c9701c196afc0c5047506de256bd1b38b633ed8a783f6d918a7648b",
     "library/rich-text/component.json": "1ca15741a74b40ea21128d09d05deba17a388d30b79f8c2c54c395e20f893af0",
     "library/rich-text/variants/standard/fixtures/default.json": "aaef944bd62a04d1b48b05802f5d5963151a24503f8ed0b2a997cbb2ba775702",
     "library/rich-text/variants/standard/style.css": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
@@ -255,7 +255,7 @@
     "packages/generator/scripts/fixture.mjs": "524ac85d484cdeadfba0a66ef9789770ae13852f14a54f63e7fd631e8e0080ca",
     "packages/generator/scripts/install-railway.mjs": "491723518d0cbb5e7ed6f4a362bb15b2ff8b807faa96847c306646658a5a1cb1",
     "packages/generator/scripts/library-equivalence.mjs": "ced25b38325b27f7fe9f773dc3b82c7cdb777a1619826040116d95d913c56255",
-    "packages/generator/scripts/library.mjs": "3226d1b442645d91436ba99addf74410c6d6b76f96ee9a56f61189a70815fb1a",
+    "packages/generator/scripts/library.mjs": "594fd93ec63529b450948b3ed333e7a369401f9e07a25d6a0bde3a96973a0e7b",
     "packages/generator/scripts/licenses.mjs": "2722064668363eba388553d4790686302bfc6339e19e30945ef3a184fe12ed13",
     "packages/generator/scripts/test-cms-volume.mjs": "713af2a0c34f93e186f5e4503429cab1469cb51aedc637d3b1415e75a35d4106",
     "packages/generator/scripts/test-cms.mjs": "8b432a7fd3c93f3c488af635cef69f8c89655ba0d65f2d95baa38dbf3de42ffc",
@@ -281,7 +281,7 @@
     "packages/generator/test/fixtures/library-baseline.json": "a29da6af031243be0a98026a45bff7ad6287dcc08e40f8daa9483fabb7f11222",
     "packages/generator/test/fixtures/pocketbase-before-runtime-chown.Dockerfile": "e72d36c0b24fb3ad0b616dad51b862f414d99f6a781e2a4ab7f448d6560738b6",
     "packages/generator/test/generator.test.mjs": "97405108c7caf5e2dd4037ea9928cda2f8d288535bc157c40dbaa1eb211bc815",
-    "packages/generator/test/library.test.mjs": "9258d96967189a42cebf71c648228d026794963986aecd2073bde16ef3b95c3d",
+    "packages/generator/test/library.test.mjs": "00e92bb1b161f50f68af5ada4cdc105067b75234dc7b1c7e34b5e21bc8e6b859",
     "packages/generator/test/normalize.test.mjs": "4a4328a5701dacb848b22c7ace9c8d01ae650294a183a94e9551e64e15d34ba9",
     "packages/generator/test/runtime.test.mjs": "8ee1871ed8a38fa97587ccd6a61aaae2f94733c9bd2da9afc9f1ca43e34749f4",
     "packages/generator/tsconfig.json": "2bfff630d2fdbe25c9d2a6c93075e96a8ef2423f6b16af4d6898e82d439c1264",
