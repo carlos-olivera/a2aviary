@@ -68,7 +68,14 @@ export async function libraryArtifacts(root = defaultRoot) {
           canonical(value[key]) === canonical(v),
           'metadata ' + key + ': ' + path,
         );
-    assert(/^\d+\.\d+\.\d+$/.test(value.version), 'version');
+    assert(
+      typeof value.version === 'string' &&
+        value.version.trim() === value.version &&
+        /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/.test(
+          value.version,
+        ),
+      'version',
+    );
     assert(
       ['experimental', 'stable', 'deprecated'].includes(value.status),
       'status',

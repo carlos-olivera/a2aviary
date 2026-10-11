@@ -45,7 +45,7 @@
         },
         "version": {
           "type": "string",
-          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?![\\s\\S])"
         },
         "status": {
           "enum": [
@@ -58,7 +58,7 @@
           "type": "object",
           "minProperties": 1,
           "propertyNames": {
-            "pattern": "^[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9_.-]+)+$"
+            "pattern": "^[a-zA-Z0-9_-]+(?:/[a-zA-Z0-9][a-zA-Z0-9_.-]*)+(?![\\s\\S])"
           },
           "additionalProperties": {
             "type": "string",
