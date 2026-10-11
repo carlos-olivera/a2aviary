@@ -200,6 +200,13 @@ test('registry detects stale data, policy drift, missing/extra packages, symlink
     m.fields.heading.kind = 'link';
     await writeFile(metadata, JSON.stringify(m));
     await assert.rejects(libraryArtifacts(dir), /metadata fields/);
+    for (const version of [['1.0.0'], '01.0.0', '1.0.0\n']) {
+      await writeFile(
+        metadata,
+        JSON.stringify({ ...JSON.parse(before), version }),
+      );
+      await assert.rejects(libraryArtifacts(dir), /version/);
+    }
     await writeFile(metadata, before);
     await rm(join(dir, 'library/hero/variants/standard/style.css'));
     await assert.rejects(libraryArtifacts(dir));
