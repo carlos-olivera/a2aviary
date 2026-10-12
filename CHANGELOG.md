@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-12 — platform and generator CI protection prepared
+
+- Prepared credential-free PR/main platform check/build/Postgres tests, generator static/build/unit/full library browser checks, and the repository-root platform Docker build. Node actions use 22.23.3; existing full action SHA pins and website OIDC delivery are preserved. PR check jobs cancel superseded runs; main check groups are unique per run.
+- Presentation verification and Docker CMS/volume checks are manual-dispatch only. Added CI coverage and owner instructions for required checks and Railway **Wait for CI**; the exact dashboard label was verified read-only and the toggle was off. No production setting was changed.
+- Local platform check/build/tests passed (70 passed, two opt-in fixtures skipped), generator static/build, 79 unit tests and the full library browser matrix passed, services check/build and 104 tests passed, infrastructure build and nine tests passed, and the platform Docker build, presentation verifier and both Docker CMS checks passed. The unpublished broken-import branch failed the platform check with TS2882; the source was restored. Workflow lint, relative links and whitespace passed.
+- The Operator App push was refused for missing `workflows` permission. Saved the complete workflow patch under ignored `.local/ci-workflow.patch` and retained only documentation for publication; current CI is unchanged. No App permission was requested or changed. The full patch also requires generated architecture provenance refresh for the existing website check; generated artifacts remain unchanged under this task's scope. New-job GitHub evidence, required status checks and Railway deployment gating remain owner actions.
+
 ## 2026-10-12 — hosted fixture CMS target
 
 - Select the hosted CMS write target from the verified spec's declared and bound collections instead of assuming `catalog`. Record the CMS stage and HTTP status; a spec with no collections must reject an undeclared write with HTTP 404 and records `no collection to edit`.

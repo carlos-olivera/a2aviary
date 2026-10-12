@@ -28,7 +28,67 @@ node services/scripts/setup.mjs switches on
 
 ## Website delivery and rollback
 
-GitHub `main` checks build and test the website, services and infrastructure before the separate OIDC deployment job. The workflow does not build or test `apps/platform` or `packages/generator`; run their checks locally (see [local development](local-development.md)). Set repository variables `WEBSITE_DEPLOYMENT_ROLE`, `WEBSITE_BUCKET`, `RELEASE_BUCKET`, and `DISTRIBUTION_ID` from the website/CI outputs. Configure GitHub's immutable subject template before relying on the role. Third-party Actions are pinned to commit IDs. PR checks have no identity-token permission or deployment credentials.
+The published release workflow still checks only website, services and
+infrastructure. The local workflow patch is prepared to run `checks` (website check/build, services
+check/build/tests and infrastructure build/tests), `platform` (generator build,
+platform check/build and isolated Postgres tests), `generator` (static validation,
+build, unit tests and the full `library:check` browser matrix), and
+`platform-image` (the repository-root Docker build) on every PR and every push to
+`main`. All Node jobs use 22.23.3. Postgres 17.7 matches local compose; the
+production major is not documented. Only the npm download cache is reused;
+`node_modules`, generated outputs and browser results are not cached.
+
+`presentation-verify` and the Docker `test:cms` / `test:cms:volume` matrix run only
+on `workflow_dispatch`. Hosted/cloud fixtures remain skipped without credentials;
+CI supplies no provider secrets and runs no hosted fixture command. Check jobs
+cancel superseded PR runs individually. Main runs are not cancelled, and the
+website deployment retains its separate serialized, non-cancelling concurrency
+and existing AWS OIDC permissions; it still depends only on `checks`.
+
+GitHub refused the Operator App push on 2026-10-12 because it lacks `workflows`
+permission. The complete workflow diff is saved in ignored
+`.local/ci-workflow.patch`; no App permission was requested, changed or bypassed.
+This documentation-only PR does not activate these jobs. Workflow publication,
+new-job run links/durations and main deployment gating remain unverified.
+
+The existing website check fingerprints workflow bytes and requires generated
+architecture provenance refresh when they change. The full patch therefore
+fails `npm --prefix website run check` with
+`Represented source changed: regenerate architecture`. Generated artifacts are
+unchanged under this task's scope. The documentation-only fallback preserves the
+current workflow and package README fingerprints.
+
+Before activating the prepared jobs, Carlos Olivera Terrazas must apply both
+workflow edits from the patch through an authorized owner route, resolve the
+architecture provenance gate in a separately authorized scope, and obtain
+successful PR/main job evidence. From the repository root, use
+`git apply --check .local/ci-workflow.patch` followed by
+`git apply .local/ci-workflow.patch` on a feature branch; recheck applicability
+against current main and rerun local checks before owner publication. Do not
+expand Operator App permissions or publish directly to main. The patch adds no
+product behavior, migrations, credentials or provider configuration.
+
+Set repository variables `WEBSITE_DEPLOYMENT_ROLE`, `WEBSITE_BUCKET`,
+`RELEASE_BUCKET`, and `DISTRIBUTION_ID` from the website/CI outputs. Configure
+GitHub's immutable subject template before relying on the role. Third-party
+Actions are pinned to full commit SHAs. PR checks have contents-read only, with
+no identity-token permission or deployment credentials.
+
+### Owner actions
+
+1. After the workflow is published and successful runs exist, mark `platform`,
+   `generator` and `platform-image` as required status checks in branch protection
+   for `main`, retaining `checks`, the App-bound `a2aviary-policy`, current-head
+   owner review and disabled auto-merge. This delivery does not change protection.
+2. Enable **Wait for CI** in the platform service's Railway **Settings → Source**
+   section. The exact label was verified read-only in the dashboard on 2026-10-12.
+   Railway's
+   [GitHub autodeploy documentation](https://docs.railway.com/deployments/github-autodeploys#wait-for-ci)
+   requires a push workflow and describes gating on completed GitHub Actions
+   workflow runs. The dashboard showed **Wait for CI** off; activation remains pending. This
+   delivery does not enable it or verify a
+   production deployment gate. Merging still carries the existing auto-deploy and
+   migration risk until the owner completes and verifies this action.
 
 The deployment script creates a unique release ID on every run, including reruns of the same commit, and snapshots every release file and checksums in the private release bucket, uploads fingerprinted assets first and `index.html` last, invalidates, then verifies the public revision and every file checksum, MIME type, and cache header. A failed public check restores the previous release's mutable files. Deployment jobs serialize and never delete existing assets. Keep current/rollback references indefinitely and retain other fingerprinted assets for at least 365 days; owner cleanup may remove unreferenced files older than that only after checking current and rollback manifests. No automated garbage collection is enabled initially.
 
@@ -214,9 +274,11 @@ holds only `apps/platform/railway.json`.
 - `railway.json` builds `apps/platform/Dockerfile`, runs `node dist/migrate.js`
   before each deployment, starts `node dist/main.js` and checks `/healthz`.
 - Auto-deploy from `main` is enabled (owner-reported, 2026-10-08): every merge
-  deploys and migrates production. CI does not build or test the platform, so run
-  the `packages/generator` and then `apps/platform` checks and tests locally before
-  merging platform changes. Keeping auto-deploy is an open owner decision.
+  deploys and migrates production. The prepared CI jobs and **Wait for CI** owner
+  action above must be published/activated and verified before treating CI as a
+  deployment gate. Until then, run the generator and platform checks locally and
+  review the production migration risk before merging. Keeping auto-deploy is an
+  open owner decision.
 - After a deployment, confirm that the serving deployment is the expected commit,
   then that `/healthz` returns HTTP 200, every migration name in the deployed
   source (seven on current main after decision 013) and the expected `mandate`.

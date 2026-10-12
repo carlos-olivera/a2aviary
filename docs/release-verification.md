@@ -2,6 +2,22 @@
 
 Local implementation evidence updated 2026-10-11. Production status was last observed 2026-10-08, following read-only diagnosis and local recovery checks. Decision 013 reached `main` at 2026-10-08 15:49 -0400 in `b9bd1f8` and `6ff79db` (verified from Git history). Public health still returned HTTP 503 at 17:07:11 -0400. Railway logs confirm failed startups; a source fix is prepared and verified locally, with production recovery pending owner review and separate rollout authorization. **Configured** means source/settings exist; **deployed** means the provider accepted the resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. **Owner-reported** and **agent-reported** mark observations relayed by Carlos or by an operating agent that this record has not independently reproduced. The current status table is the authority for present state; dated sections below it are historical evidence and keep the wording that was accurate on their date.
 
+## CI protection — 2026-10-12, prepared locally
+
+The requested platform/generator/image jobs are prepared in ignored
+`.local/ci-workflow.patch`, with manual-only presentation/CMS checks and no hosted credentials.
+The Operator App push was refused for missing `workflows` permission; no App
+permissions were requested, changed or bypassed. The published PR contains only
+documentation; CI coverage remains unchanged. The existing website check
+fingerprints workflow bytes and fails on the full patch with `Represented source changed: regenerate architecture`.
+The task forbids generated-artifact changes, so architecture provenance was not
+refreshed. This is a separate gate from Operator App workflow-write permission;
+neither a local pass nor a documentation PR activates CI or deployment gating.
+The unpublished broken-import branch failed the exact platform check with TS2882
+and the original source was restored. Required status checks and Railway's
+**Wait for CI** (observed off, exact dashboard label verified read-only) remain
+[owner actions](runbooks.md#owner-actions).
+
 ## Current status — 2026-10-08
 
 | Component | State | Evidence |
@@ -23,7 +39,7 @@ Local implementation evidence updated 2026-10-11. Production status was last obs
 | Real Google authentication on upload and approval pages | Not verified; fixtures use fictional sessions | [Server drafts](#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed) |
 | Cost reports, remote PocketBase backup/restore, production Postgres restore | Not exercised; per-site cost reads are blocked because the workspace token cannot read the account identity the usage CLI needs (agent-reported) | [Railway platform runbook](runbooks.md#railway-platform) |
 | Railway auto-deploy from `main` | Enabled (owner-reported): each merge deploys the platform and runs migrations | [Railway platform runbook](runbooks.md#railway-platform) |
-| CI coverage | The release workflow checks website, services and infrastructure; `apps/platform` and `packages/generator` are not built or tested in CI | `.github/workflows/release.yml` |
+| CI coverage | Published workflow still checks only website/services/infra. Local patch prepared 2026-10-12: Node 22.23.3 `platform` (loopback Postgres 17.7), `generator` (static/build/unit/full library browser matrix) and `platform-image` on PRs and main pushes, retaining website/services/infra `checks`. Presentation verifier and Docker CMS/volume checks are dispatch-only; hosted fixtures stay skipped. Operator push refused for missing workflows permission; new-job GitHub-run verification pending; required-check protection and Railway Wait for CI are owner actions, not enabled by this change | `.github/workflows/release.yml`; [Owner actions](runbooks.md#owner-actions) |
 | Payments and checkout | Disabled; nothing is for sale | [Plans](plans.md) |
 
 ## Open gates before the first client site
