@@ -355,7 +355,10 @@ export async function composition(
       'manualCopyLabel',
     ])
       if (props[key]) props[key] = fill(props[key], 500);
-    for (const l of props.links) l.label = fill(l.label, 80);
+    props.links = Array.from({ length: 12 }, (_, i) => ({
+      ...props.links[i % props.links.length],
+      label: fill(props.links[i % props.links.length].label, 80),
+    }));
     if (props.primaryContact)
       props.primaryContact.label = fill(props.primaryContact.label, 80);
     for (const section of spec.pages[0].sections)
