@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-12 — hosted fixture CMS target
+
+- Select the hosted CMS write target from the verified spec's declared and bound collections instead of assuming `catalog`. Record the CMS stage and HTTP status; a spec with no collections must reject an undeclared write with HTTP 404 and records `no collection to edit`.
+- Give every hosted presentation variant one fictional announcements declaration and block, preserving the static presentation compositions. Reject undeclared bindings and declared-but-unbound fixture inputs rather than silently skipping CMS coverage.
+- Add unit coverage for all three hosted variants, target selection and status failures. The opt-in local CMS regression prepares the exact hosted `light-es` input through MCP drafts/uploads, then uses real PocketBase/Caddy to write and read announcements, confirm the old catalog target returns 404, and verify the no-collection case. All three focused tests passed locally; hosted execution remains separately authorized.
+
 ## 2026-10-12 — deployment staging permissions
 
 - Set client web and CMS staging files to `0644` and directories to `0755` before upload, including nested web assets, so container users such as PocketBase UID 1000 can read files copied into the image even when the adapter inherits `umask 077`.

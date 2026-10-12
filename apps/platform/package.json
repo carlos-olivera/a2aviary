@@ -15,7 +15,8 @@
     "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "migrate": "node --env-file-if-exists=.env src/migrate.ts",
     "contracts:check": "node scripts/check-contracts.mjs",
-    "test:browser": "node scripts/test-browser.mjs"
+    "test:browser": "node scripts/test-browser.mjs",
+    "test:fixture:cms": "RUN_LOCAL_FIXTURE_CMS=true node --test test/hosted-fixture-cms.test.mjs"
   },
   "dependencies": {
     "@a2aviary/generator": "file:../../packages/generator",

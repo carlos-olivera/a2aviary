@@ -1,7 +1,4 @@
-import {
-  composition,
-  compositionNames,
-} from '../../../packages/generator/test/fixtures/presentation/compositions.mjs';
+import { compositionNames } from '../../../packages/generator/test/fixtures/presentation/compositions.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -11,6 +8,7 @@ import { siteRuntime, AgentsVerifier, sha256 } from '@a2aviary/generator';
 import { fixture } from './helpers.mjs';
 import { prepare, call } from './draft-fixture.mjs';
 import { cleanupFixture } from './cloud-fixture-cleanup.mjs';
+import { hostedComposition, editFixtureCms } from './hosted-fixture-cms.mjs';
 const require = createRequire(
   new URL('../../../packages/generator/package.json', import.meta.url),
 );
@@ -39,6 +37,7 @@ test(
         reason: 'fixture_not_deployed',
       },
       browser,
+      cmsStage = { stage: 'not reached' },
       stage = 'identity',
       passed = false;
     t.after(async () => {
@@ -119,6 +118,7 @@ test(
               createdAt: new Date().toISOString(),
               passed,
               stage,
+              cmsStage,
               siteId: saved?.siteId,
               specId: saved?.specId,
               test: true,
@@ -173,7 +173,7 @@ test(
     saved = await prepare(
       f,
       user,
-      selection ? await composition(selection) : undefined,
+      selection ? await hostedComposition(selection) : undefined,
       true,
       (created) => {
         saved = created;
@@ -270,23 +270,12 @@ test(
     );
     assert.equal(cms.status, 200);
     const credentials = await cms.json();
-    const record = await fetch(
-      live.siteUrl + '/api/cms/api/collections/catalog/records',
-      {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-          authorization: credentials.token,
-        },
-        body: JSON.stringify({
-          title: 'Fictional smoke content',
-          body: 'Fictional test record',
-          published: true,
-        }),
-        signal: AbortSignal.timeout(30000),
-      },
-    );
-    assert.equal(record.status, 200);
+    cmsStage = { stage: 'editing' };
+    cmsStage = await editFixtureCms({
+      spec: row.spec,
+      origin: live.siteUrl,
+      token: credentials.token,
+    });
     usage = await runtime.deployer.usage(
       resources,
       'cli-' +
