@@ -46,7 +46,7 @@ const escape = (v: unknown) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
-export const GENERATOR_VERSION = '2.2.0';
+export const GENERATOR_VERSION = '2.3.0';
 export interface SourceBundle {
   files: Record<string, string>;
   binaryFiles: Record<string, string>;
@@ -101,7 +101,11 @@ export async function generateSite(
       }
     }
   } else {
-    const checkedAssets = await validateAssets(checked.value.assets, assets, activePolicy);
+    const checkedAssets = await validateAssets(
+      checked.value.assets,
+      assets,
+      activePolicy,
+    );
     if (!checkedAssets.ok)
       throw new SiteError('invalid_assets', checkedAssets.errors);
   }
@@ -126,6 +130,12 @@ export async function generateSite(
     'src/pages/404.astro':
       '<!doctype html><html lang="en"><head><title>Page not found</title><meta name="viewport" content="width=device-width,initial-scale=1" /></head><body><main><h1>Page not found</h1><a href="./">Home</a></main></body></html>\n',
   };
+  if (spec.shell) {
+    const html = `<!doctype html><html lang="${escape(spec.language ?? 'en')}"><head><title>${escape(spec.shell.notFoundTitle)}</title><meta name="viewport" content="width=device-width,initial-scale=1" /></head><body><main><h1>${escape(spec.shell.notFoundTitle)}</h1><p>${escape(spec.shell.notFoundText)}</p><a href="/">${escape(spec.shell.notFoundHomeLabel)}</a></main></body></html>\n`;
+    // Supplied shell text is data, never Astro source (including literal braces).
+    files['src/pages/404.astro'] =
+      `---\nconst html = ${JSON.stringify(html)};\n---\n<Fragment set:html={html} />\n`;
+  }
   if (spec.language)
     files['src/pages/404.astro'] = files['src/pages/404.astro'].replace(
       'lang="en"',
@@ -234,43 +244,81 @@ export function renderPage(
     const variant = variants[b.component + ':' + b.variant];
     if (!variant || variant.component !== b.component)
       throw new SiteError('out_of_catalog');
-    const rendered = interpretTemplate(variant.ast, b.props, (name, value) => {
-      if (name === 'image') return image(value as string);
-      if (name === 'link') return link(value as Link);
-      if (name === 'links')
-        return (
-          '<ul>' +
-          (value as Link[]).map((l) => '<li>' + link(l) + '</li>').join('') +
-          '</ul>'
-        );
-      if (name === 'richText')
-        return (
-          value as Array<{ type: string; text?: string; items?: string[] }>
-        )
-          .map((n) =>
-            n.type === 'paragraph'
-              ? `<p>${escape(n.text)}</p>`
-              : n.type === 'heading'
-                ? `<h2>${escape(n.text)}</h2>`
-                : `<ul>${n.items!.map((t) => `<li>${escape(t)}</li>`).join('')}</ul>`,
+    const rendered = interpretTemplate(
+      variant.ast,
+      b.props,
+      (name, value, field) => {
+        if (name === 'image') return image(value as string);
+        if (name === 'link') {
+          const target = variant.targets?.action;
+          const fx =
+            target &&
+            typeof target === 'object' &&
+            'helper' in target &&
+            target.field === field
+              ? marker(b.effects, 'action')
+              : '';
+          return link(value as Link).replace('<a ', '<a' + fx + ' ');
+        }
+        if (name === 'links')
+          return (
+            '<ul>' +
+            (value as Link[]).map((l) => '<li>' + link(l) + '</li>').join('') +
+            '</ul>'
+          );
+        if (name === 'richText')
+          return (
+            value as Array<{ type: string; text?: string; items?: string[] }>
           )
-          .join('');
-      if (name === 'collection')
-        return `<div data-collection="${escape(value)}" aria-live="polite"><p>${escape(b.props.emptyText)}</p></div>`;
-      throw new SiteError('out_of_catalog');
-    });
+            .map((n) =>
+              n.type === 'paragraph'
+                ? `<p>${escape(n.text)}</p>`
+                : n.type === 'heading'
+                  ? `<h2>${escape(n.text)}</h2>`
+                  : `<ul>${n.items!.map((t) => `<li>${escape(t)}</li>`).join('')}</ul>`,
+            )
+            .join('');
+        if (name === 'collection')
+          return `<div data-collection="${escape(value)}" aria-live="polite"><p>${escape(b.props.emptyText)}</p></div>`;
+        throw new SiteError('out_of_catalog');
+      },
+      (tag, role) => tag.slice(0, -1) + marker(b.effects, role) + '>',
+    );
     return rendered.replace(
       /<(header|div|span|button|h[123]|p|ul|ol|li|details|summary)( class="([^"]*)")?>/g,
       (tag, name, _attr, classes = '') => {
         const tokens = classes.split(' '),
           targets = variant.targets ?? {};
         let attributes = name === 'button' ? ' type="button"' : '';
-        if (targets.root && tokens.includes(targets.root))
-          attributes += ` id="${b.id}-behavior" data-behavior="${variant.behaviors!.join(' ')}"`;
-        if (targets.control && tokens.includes(targets.control))
+        if (
+          targets.root &&
+          typeof targets.root === 'string' &&
+          tokens.includes(targets.root)
+        )
+          attributes += ` id="${b.id}-behavior" data-behavior="${variant.behaviors!.join(' ')}" data-motion="${spec.tokens.motion ?? 'none'}"`;
+        if (
+          targets.control &&
+          typeof targets.control === 'string' &&
+          tokens.includes(targets.control)
+        )
           attributes += ` data-behavior-control hidden aria-controls="${b.id}-behavior"`;
+        if (
+          typeof targets.status === 'string' &&
+          tokens.includes(targets.status)
+        )
+          attributes +=
+            ' data-behavior-status aria-live="polite" aria-atomic="true"';
+        if (
+          typeof targets.messages === 'string' &&
+          tokens.includes(targets.messages)
+        )
+          attributes += ' hidden';
         for (const role of ['items', 'action'])
-          if (targets[role] && tokens.includes(targets[role]))
+          if (
+            targets[role] &&
+            typeof targets[role] === 'string' &&
+            tokens.includes(targets[role] as string)
+          )
             attributes += marker(b.effects, role);
         return tag.slice(0, -1) + attributes + '>';
       },
@@ -279,7 +327,7 @@ export function renderPage(
   const social = page.seo.socialImage
     ? spec.assets.find((a) => a.id === page.seo.socialImage)!
     : undefined;
-  return `<!doctype html><html lang="${escape(spec.language ?? 'en')}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.seo.title)}</title><meta name="description" content="${escape(page.seo.description)}">${social ? `<meta property="og:image" content="${root}assets/${social.sha256}.${social.format === 'jpeg' ? 'jpg' : social.format}">` : ''}<link rel="stylesheet" href="${root}catalog.css"><script src="${root}cms.js" defer></script>${used.behaviors.length ? `<script src="${root}site.js" defer></script>` : ''}</head><body${spec.tokens.layout === 'flush' ? ' class="layout-flush"' : ''}><a class="skip" href="#main">Skip to content</a><nav aria-label="Primary">${spec.navigation.primary.map(link).join(' ')}</nav><main id="main">${page.sections.some((s) => s.blocks.some((b) => b.component === 'hero')) ? '' : '<h1>' + escape(page.seo.title) + '</h1>'}${page.sections.map((s) => `<section id="${s.id}"${marker(s.effects, 'section')}>${spec.tokens.layout === 'flush' ? '<div class="section-inner">' : ''}${s.blocks.map((b) => `<div id="${b.id}" data-component="${b.component}" data-v="${b.component}:${b.variant}"${marker(b.effects, 'block')}>${render(b)}</div>`).join('')}${spec.tokens.layout === 'flush' ? '</div>' : ''}</section>`).join('')}</main><footer><nav aria-label="Footer">${spec.navigation.footer.map(link).join(' ')}</nav></footer></body></html>\n`;
+  return `<!doctype html><html lang="${escape(spec.language ?? 'en')}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(page.seo.title)}</title><meta name="description" content="${escape(page.seo.description)}">${social ? `<meta property="og:image" content="${root}assets/${social.sha256}.${social.format === 'jpeg' ? 'jpg' : social.format}">` : ''}<link rel="stylesheet" href="${root}catalog.css"><script src="${root}cms.js" defer></script>${used.behaviors.length ? `<script src="${root}site.js" defer></script>` : ''}</head><body${spec.tokens.layout === 'flush' ? ' class="layout-flush"' : ''}><a class="skip" href="#main">${escape(spec.shell?.skipLink ?? 'Skip to content')}</a><nav aria-label="${escape(spec.shell?.primaryNavigationLabel ?? 'Primary')}">${spec.navigation.primary.map(link).join(' ')}</nav><main id="main">${page.sections.some((s) => s.blocks.some((b) => b.component === 'hero')) ? '' : '<h1>' + escape(page.seo.title) + '</h1>'}${page.sections.map((s) => `<section id="${s.id}"${marker(s.effects, 'section')}>${spec.tokens.layout === 'flush' ? '<div class="section-inner">' : ''}${s.blocks.map((b) => `<div id="${b.id}" data-component="${b.component}" data-v="${b.component}:${b.variant}"${marker(b.effects, 'block')}>${render(b)}</div>`).join('')}${spec.tokens.layout === 'flush' ? '</div>' : ''}</section>`).join('')}</main><footer><nav aria-label="${escape(spec.shell?.footerNavigationLabel ?? 'Footer')}">${spec.navigation.footer.map(link).join(' ')}</nav></footer></body></html>\n`;
 }
 export function css(
   spec: SiteSpec,
@@ -359,6 +407,14 @@ export function css(
   const effectCss = selected.effects
     .map((id) => activeCatalog[id].css ?? '')
     .join('');
+  const amplitude =
+    packageCss.includes('--motion-distance') ||
+    packageCss.includes('--motion-angle')
+      ? `:root{--motion-distance:${spec.tokens.motion === 'expressive' ? '16px' : spec.tokens.motion === 'subtle' ? '6px' : '0px'};--motion-angle:${spec.tokens.motion === 'expressive' ? '360deg' : spec.tokens.motion === 'subtle' ? '90deg' : '0deg'}}`
+      : '';
+  const fallbackCss = selected.behaviors.length
+    ? '[data-behavior] .copy-fallback{display:block;width:100%;max-width:100%;padding:var(--space-12);background:var(--color-surface);color:var(--color-text);font-family:var(--font-mono);border:1px solid var(--color-border)}[data-behavior] .copy-fallback:focus{outline:3px solid var(--color-accent);outline-offset:4px}'
+    : '';
   const disable =
     hasMotion ||
     selected.effects.length ||
@@ -377,6 +433,8 @@ export function css(
       .join('') +
     effectCss +
     extras +
+    amplitude +
+    fallbackCss +
     disable
   );
 }

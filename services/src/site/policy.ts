@@ -1,3 +1,4 @@
+import frozen21 from '../../../plans/versions/web-simple/2.1.0.policy.json' with { type: 'json' };
 import frozen20 from '../../../plans/versions/web-simple/2.0.0.policy.json' with { type: 'json' };
 import { createHash } from 'node:crypto';
 import source from '../../../plans/web-simple.policy.json' with { type: 'json' };
@@ -42,7 +43,7 @@ const shape = {
   changes: { ...rules('perMonth maxPagesTouched maxBlocksModified maxGlobalOperations maxOperations', 'number'), ...rules('calendar countsWhen', 'string'), ...rules('rollover', 'boolean'), ...rules('operations doesNotCount', 'strings') }
 };
 const fixedProfile: Record<string, unknown> = {
-  planId: 'web-simple', 'firstVersion.contractVersion': '2.1',
+  planId: 'web-simple', 'firstVersion.contractVersion': '2.2',
   'includes.capabilities': ['static-astro', 'pocketbase-cms'], 'includes.system404Counts': false,
   'includes.ssl': true, 'includes.domain': 'client-supplied',
   'includes.excludes': ['custom-backend', 'end-user-auth', 'checkout', 'research', 'ocr', 'image-editing', 'custom-script', 'custom-style', 'raw-html', 'arbitrary-component', 'uploaded-svg'],
@@ -94,7 +95,7 @@ export function assertPolicy(input: unknown): asserts input is Policy {
   // The engine cannot advertise behavior it does not implement.
   for (const [path, supported] of Object.entries(fixedProfile)) {
     const lookup = (v: unknown) => path.split('.').reduce((o, k) => (o as Record<string, unknown>)[k], v) as { value: unknown };
-    if (canonicalJson(lookup(p).value) !== canonicalJson(legacy && path === 'firstVersion.contractVersion' ? '2.0' : supported)) fail('/' + path.replaceAll('.', '/'));
+    if (canonicalJson(lookup(p).value) !== canonicalJson(path === 'firstVersion.contractVersion' ? (legacy ? '2.0' : p.version.value === '2.1.0' ? '2.1' : '2.2') : supported)) fail('/' + path.replaceAll('.', '/'));
   }
   for (const pattern of [p.firstVersion.structure.idPattern.value, p.firstVersion.structure.pagePathPattern.value, p.firstVersion.designTokens.colorPattern.value]) {
     if (!pattern.startsWith('^') || !pattern.endsWith('$')) fail('/patterns');
@@ -105,6 +106,7 @@ export function assertPolicy(input: unknown): asserts input is Policy {
 /** Select only repository-pinned policies, never a client policy document. */
 export function policyForVersion(version: string): Policy {
   if (version === defaultPolicy.version.value) return defaultPolicy;
+  if (version === '2.1.0') return frozen21 as unknown as Policy;
   if (version === '2.0.0') return frozen20 as unknown as Policy;
   throw new Error('Unsupported policy version');
 }

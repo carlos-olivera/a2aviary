@@ -133,60 +133,73 @@ test('library.get follows site-tool visibility', async (t) => {
   assert(!(await r.json()).result.tools.some((t) => t.name === 'library.get'));
 });
 
-test('a historical verified 2.0 snapshot remains approvable and deploys its stored bytes', async (t) => {
-  const deps = testDependencies(),
-    f = await fixture(deps);
-  t.after(f.close);
-  const user = await f.user('legacy-approved@example.invalid'),
-    sites = f.app.sites,
-    saved = await prepare(f, user);
-  await sites.processOne();
-  const row = (
-    await f.pool.query('SELECT * FROM platform_site_spec WHERE id=$1', [
-      saved.specId,
-    ])
-  ).rows[0];
-  const spec = { ...row.spec, contractVersion: '2.0', policyVersion: '2.0.0' },
-    digest = sha256(canonicalJson(spec));
-  const key = 'specs/' + saved.specId + '/build.json',
-    build = JSON.parse(Buffer.from(await deps.objects.get(key)).toString());
-  build.report.specSha256 = digest;
-  build.report.checks = build.report.checks.filter(
-    (c) =>
-      !c.name.startsWith('motion:reduced') && c.name !== 'network:external',
+for (const historical of ['2.0.0', '2.1.0'])
+  test(
+    'a historical verified ' +
+      historical +
+      ' snapshot remains approvable and deploys its stored bytes',
+    async (t) => {
+      const deps = testDependencies(),
+        f = await fixture(deps);
+      t.after(f.close);
+      const user = await f.user('legacy-approved@example.invalid'),
+        sites = f.app.sites,
+        saved = await prepare(f, user);
+      await sites.processOne();
+      const row = (
+        await f.pool.query('SELECT * FROM platform_site_spec WHERE id=$1', [
+          saved.specId,
+        ])
+      ).rows[0];
+      const spec = {
+          ...row.spec,
+          contractVersion: historical.slice(0, 3),
+          policyVersion: historical,
+        },
+        digest = sha256(canonicalJson(spec));
+      const key = 'specs/' + saved.specId + '/build.json',
+        build = JSON.parse(Buffer.from(await deps.objects.get(key)).toString());
+      build.report.specSha256 = digest;
+      if (historical === '2.0.0')
+        build.report.checks = build.report.checks.filter(
+          (c) =>
+            !c.name.startsWith('motion:reduced') &&
+            c.name !== 'network:external',
+        );
+      if (build.artifactHashes['report.json']) {
+        const bytes = Buffer.from(JSON.stringify(build.report));
+        await deps.objects.put(
+          'specs/' + saved.specId + '/artifacts/report.json',
+          bytes,
+        );
+        build.artifactHashes['report.json'] = sha256(bytes);
+      }
+      await deps.objects.put(key, Buffer.from(canonicalJson(build)));
+      await f.pool.query(
+        'UPDATE platform_site SET policy_version=$2 WHERE id=$1',
+        [saved.siteId, historical],
+      );
+      await f.pool.query(
+        'UPDATE platform_site_spec SET spec=$2,spec_sha256=$3,generator_version=$5,artifact_hashes=$4 WHERE id=$1',
+        [
+          saved.specId,
+          JSON.stringify(spec),
+          digest,
+          JSON.stringify(build.artifactHashes),
+          historical === '2.0.0' ? '2.1.0' : '2.2.0',
+        ],
+      );
+      await approve(f, user, saved.specId);
+      await sites.deploy(
+        user.id,
+        saved.siteId,
+        saved.specId,
+        'fictional-password-12345',
+        'DEPLOY_SITE:' + saved.siteId,
+      );
+      await sites.processOne();
+      assert.equal(deps.counts.verifies, 1);
+      assert.equal(deps.counts.deploys, 1);
+      assert.deepEqual(deps.inputs[0].build.files, build.files);
+    },
   );
-  if (build.artifactHashes['report.json']) {
-    const bytes = Buffer.from(JSON.stringify(build.report));
-    await deps.objects.put(
-      'specs/' + saved.specId + '/artifacts/report.json',
-      bytes,
-    );
-    build.artifactHashes['report.json'] = sha256(bytes);
-  }
-  await deps.objects.put(key, Buffer.from(canonicalJson(build)));
-  await f.pool.query(
-    "UPDATE platform_site SET policy_version='2.0.0' WHERE id=$1",
-    [saved.siteId],
-  );
-  await f.pool.query(
-    "UPDATE platform_site_spec SET spec=$2,spec_sha256=$3,generator_version='2.1.0',artifact_hashes=$4 WHERE id=$1",
-    [
-      saved.specId,
-      JSON.stringify(spec),
-      digest,
-      JSON.stringify(build.artifactHashes),
-    ],
-  );
-  await approve(f, user, saved.specId);
-  await sites.deploy(
-    user.id,
-    saved.siteId,
-    saved.specId,
-    'fictional-password-12345',
-    'DEPLOY_SITE:' + saved.siteId,
-  );
-  await sites.processOne();
-  assert.equal(deps.counts.verifies, 1);
-  assert.equal(deps.counts.deploys, 1);
-  assert.deepEqual(deps.inputs[0].build.files, build.files);
-});

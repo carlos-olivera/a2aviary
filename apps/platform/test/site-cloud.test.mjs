@@ -1,3 +1,7 @@
+import {
+  composition,
+  compositionNames,
+} from '../../../packages/generator/test/fixtures/presentation/compositions.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -163,9 +167,18 @@ test(
     const user = await f.user('fixture-owner@example.invalid');
     await f.app.store.tester(owner.id, 'testers.add', user.email);
     stage = 'draft/upload/preview';
-    saved = await prepare(f, user, undefined, true, (created) => {
-      saved = created;
-    });
+    const selection = process.env.SITE_FIXTURE_COMPOSITION;
+    if (selection && !compositionNames.includes(selection))
+      throw Error('invalid_fixture_composition');
+    saved = await prepare(
+      f,
+      user,
+      selection ? await composition(selection) : undefined,
+      true,
+      (created) => {
+        saved = created;
+      },
+    );
     stage = 'hosted-verification';
     await sites.processOne();
     const status = await call(f, user, 'site.status', { siteId: saved.siteId });

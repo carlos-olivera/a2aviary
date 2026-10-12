@@ -178,7 +178,12 @@ export const library: Record<string, LibraryVariant> = {
     ],
     "css": "",
     "behaviors": [],
-    "targets": {}
+    "targets": {
+      "action": {
+        "helper": "link",
+        "field": "action"
+      }
+    }
   },
   "faq:standard": {
     "component": "faq",
@@ -275,7 +280,8 @@ export const library: Record<string, LibraryVariant> = {
         "children": [
           {
             "type": "literal",
-            "value": "<li>"
+            "value": "<li>",
+            "target": "items"
           },
           {
             "type": "literal",
@@ -314,7 +320,12 @@ export const library: Record<string, LibraryVariant> = {
     ],
     "css": "[data-v=\"feature-grid:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"feature-grid:standard\"] .grid li{padding:var(--space-16)}\n",
     "behaviors": [],
-    "targets": {}
+    "targets": {
+      "items": {
+        "each": "items",
+        "tag": "li"
+      }
+    }
   },
   "gallery:standard": {
     "component": "gallery",
@@ -454,7 +465,8 @@ export const library: Record<string, LibraryVariant> = {
         "children": [
           {
             "type": "literal",
-            "value": "<li>"
+            "value": "<li>",
+            "target": "items"
           },
           {
             "type": "literal",
@@ -498,7 +510,204 @@ export const library: Record<string, LibraryVariant> = {
     ],
     "css": "[data-v=\"link-cards:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"link-cards:standard\"] .grid li{padding:var(--space-16)}\n",
     "behaviors": [],
-    "targets": {}
+    "targets": {
+      "items": {
+        "each": "items",
+        "tag": "li"
+      }
+    }
+  },
+  "profile-card:flip-3d": {
+    "component": "profile-card",
+    "ast": [
+      {
+        "type": "literal",
+        "value": "<div class=\"card-root\">"
+      },
+      {
+        "type": "literal",
+        "value": "<div class=\"card-scene\">"
+      },
+      {
+        "type": "literal",
+        "value": "<div class=\"card-turn\">"
+      },
+      {
+        "type": "literal",
+        "value": "<div class=\"card-face card-front is-active\">"
+      },
+      {
+        "type": "if",
+        "field": "image",
+        "children": [
+          {
+            "type": "helper",
+            "field": "image",
+            "helper": "image"
+          }
+        ]
+      },
+      {
+        "type": "literal",
+        "value": "<h2>"
+      },
+      {
+        "type": "text",
+        "field": "name"
+      },
+      {
+        "type": "literal",
+        "value": "</h2>"
+      },
+      {
+        "type": "literal",
+        "value": "<p class=\"card-role\">"
+      },
+      {
+        "type": "text",
+        "field": "role"
+      },
+      {
+        "type": "literal",
+        "value": "</p>"
+      },
+      {
+        "type": "literal",
+        "value": "<button class=\"card-control flip-control\">"
+      },
+      {
+        "type": "text",
+        "field": "flipLabel"
+      },
+      {
+        "type": "literal",
+        "value": "</button>"
+      },
+      {
+        "type": "literal",
+        "value": "</div>"
+      },
+      {
+        "type": "literal",
+        "value": "<div class=\"card-face card-back\">"
+      },
+      {
+        "type": "literal",
+        "value": "<div class=\"card-links\">"
+      },
+      {
+        "type": "helper",
+        "field": "links",
+        "helper": "links"
+      },
+      {
+        "type": "literal",
+        "value": "</div>"
+      },
+      {
+        "type": "if",
+        "field": "primaryContact",
+        "children": [
+          {
+            "type": "literal",
+            "value": "<div class=\"primary-contact\">"
+          },
+          {
+            "type": "helper",
+            "field": "primaryContact",
+            "helper": "link"
+          },
+          {
+            "type": "literal",
+            "value": "</div>"
+          },
+          {
+            "type": "literal",
+            "value": "<button class=\"card-control copy-control\">"
+          },
+          {
+            "type": "text",
+            "field": "copyLabel"
+          },
+          {
+            "type": "literal",
+            "value": "</button>"
+          },
+          {
+            "type": "literal",
+            "value": "<span class=\"copy-message copied-message\">"
+          },
+          {
+            "type": "text",
+            "field": "copiedLabel"
+          },
+          {
+            "type": "literal",
+            "value": "</span>"
+          },
+          {
+            "type": "literal",
+            "value": "<span class=\"copy-message manual-message\">"
+          },
+          {
+            "type": "text",
+            "field": "manualCopyLabel"
+          },
+          {
+            "type": "literal",
+            "value": "</span>"
+          },
+          {
+            "type": "literal",
+            "value": "<p class=\"copy-status\">"
+          },
+          {
+            "type": "literal",
+            "value": "</p>"
+          }
+        ]
+      },
+      {
+        "type": "literal",
+        "value": "<button class=\"card-control back-control\">"
+      },
+      {
+        "type": "text",
+        "field": "backLabel"
+      },
+      {
+        "type": "literal",
+        "value": "</button>"
+      },
+      {
+        "type": "literal",
+        "value": "</div>"
+      },
+      {
+        "type": "literal",
+        "value": "</div>"
+      },
+      {
+        "type": "literal",
+        "value": "</div>"
+      },
+      {
+        "type": "literal",
+        "value": "</div>"
+      }
+    ],
+    "css": "[data-v=\"profile-card:flip-3d\"] .card-root{max-width:42rem;margin:auto;perspective:900px;overflow-wrap:anywhere}\n[data-v=\"profile-card:flip-3d\"] .card-scene{transform:rotateX(var(--pkg-tilt-x)) rotateY(var(--pkg-tilt-y));transition:transform var(--motion-duration) ease-out}\n[data-v=\"profile-card:flip-3d\"] .card-turn{position:relative;transform-style:preserve-3d;transition:transform var(--motion-duration) ease-in-out}\n[data-v=\"profile-card:flip-3d\"] .card-face{padding:var(--space-32);background:var(--color-surface);color:var(--color-text);border:1px solid var(--color-border);border-radius:var(--radius);margin:var(--space-16) 0}\n[data-v=\"profile-card:flip-3d\"] .behavior-ready .card-turn{display:grid}\n[data-v=\"profile-card:flip-3d\"] .behavior-ready .card-face{grid-area:1 / 1;backface-visibility:hidden}\n[data-v=\"profile-card:flip-3d\"] .behavior-ready .card-back{transform:rotateY(180deg)}\n[data-v=\"profile-card:flip-3d\"] .is-flipped .card-turn{transform:rotateY(180deg)}\n[data-v=\"profile-card:flip-3d\"] img{width:10rem;height:10rem;max-width:100%;object-fit:cover;border-radius:var(--radius)}\n[data-v=\"profile-card:flip-3d\"] h2{font-size:2rem;line-height:1.2}\n[data-v=\"profile-card:flip-3d\"] .card-role{font-family:var(--font-mono);max-width:100%}\n[data-v=\"profile-card:flip-3d\"] .card-links{padding:var(--space-16) 0}\n[data-v=\"profile-card:flip-3d\"] button{font-family:var(--font-body);font-size:1rem;background:var(--color-surface);color:var(--color-text);border:1px solid var(--color-text);border-radius:var(--radius);padding:var(--space-12);cursor:pointer;margin:var(--space-8) 0}\n[data-v=\"profile-card:flip-3d\"] button:focus-visible{outline:3px solid var(--color-accent);outline-offset:4px}\n@keyframes pkg-profile-card--flip-3d-type{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}\n[data-v=\"profile-card:flip-3d\"] .motion-expressive .card-role{animation-name:pkg-profile-card--flip-3d-type;animation-duration:calc(var(--motion-duration) * 3);animation-timing-function:steps(24, end);animation-fill-mode:both}\n[data-v=\"profile-card:flip-3d\"] .motion-none .card-turn{transform:none}\n[data-v=\"profile-card:flip-3d\"] .motion-none .card-face{display:none;transform:none}\n[data-v=\"profile-card:flip-3d\"] .motion-none .card-face.is-active{display:block}\n@media (prefers-reduced-motion: reduce){\n[data-v=\"profile-card:flip-3d\"] .card-scene{transition:none;transform:none}\n[data-v=\"profile-card:flip-3d\"] .card-turn{transition:none;transform:none}\n[data-v=\"profile-card:flip-3d\"] .motion-expressive .card-role{animation:none;clip-path:inset(0 0 0 0)}\n[data-v=\"profile-card:flip-3d\"] .behavior-ready .card-face{display:none;transform:none}\n[data-v=\"profile-card:flip-3d\"] .behavior-ready .card-face.is-active{display:block}\n[data-v=\"profile-card:flip-3d\"] .behavior-ready .card-back{transform:none}\n[data-v=\"profile-card:flip-3d\"] .is-flipped .card-turn{transform:none}\n}\n",
+    "behaviors": [
+      "flip",
+      "tilt",
+      "copy-text"
+    ],
+    "targets": {
+      "root": "card-root",
+      "control": "card-control",
+      "status": "copy-status",
+      "messages": "copy-message"
+    }
   },
   "rich-text:standard": {
     "component": "rich-text",
@@ -582,6 +791,72 @@ export const library: Record<string, LibraryVariant> = {
       }
     ],
     "css": "[data-v=\"steps:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"steps:standard\"] .grid li{padding:var(--space-16)}\n",
+    "behaviors": [],
+    "targets": {}
+  },
+  "steps:timeline": {
+    "component": "steps",
+    "ast": [
+      {
+        "type": "literal",
+        "value": "<h2>"
+      },
+      {
+        "type": "text",
+        "field": "heading"
+      },
+      {
+        "type": "literal",
+        "value": "</h2>"
+      },
+      {
+        "type": "literal",
+        "value": "<ol class=\"timeline\">"
+      },
+      {
+        "type": "each",
+        "field": "items",
+        "children": [
+          {
+            "type": "literal",
+            "value": "<li class=\"timeline-item\">"
+          },
+          {
+            "type": "literal",
+            "value": "<h3>"
+          },
+          {
+            "type": "text",
+            "field": "heading"
+          },
+          {
+            "type": "literal",
+            "value": "</h3>"
+          },
+          {
+            "type": "literal",
+            "value": "<p>"
+          },
+          {
+            "type": "text",
+            "field": "text"
+          },
+          {
+            "type": "literal",
+            "value": "</p>"
+          },
+          {
+            "type": "literal",
+            "value": "</li>"
+          }
+        ]
+      },
+      {
+        "type": "literal",
+        "value": "</ol>"
+      }
+    ],
+    "css": "[data-v=\"steps:timeline\"] .timeline{position:relative;list-style:none;padding:0}\n[data-v=\"steps:timeline\"] .timeline::before{content:\"\";position:absolute;inset:0 auto 0 0;width:2px;background:var(--color-border);transform-origin:top;pointer-events:none}\n[data-v=\"steps:timeline\"] .timeline-item{position:relative;padding:var(--space-16) var(--space-32);overflow-wrap:anywhere}\n@keyframes pkg-steps--timeline-draw{from{transform:scale(0)}to{transform:scale(1)}}\n@supports (animation-timeline: view()){[data-v=\"steps:timeline\"] .timeline::before{animation-name:pkg-steps--timeline-draw;animation-duration:var(--motion-duration);animation-timing-function:linear;animation-timeline:view();animation-range:entry 0% cover 100%}}\n@media (prefers-reduced-motion: reduce){[data-v=\"steps:timeline\"] .timeline::before{animation:none;transform:scale(1)}}\n",
     "behaviors": [],
     "targets": {}
   }

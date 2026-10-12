@@ -1,0 +1,24 @@
+{
+  "id": "jetbrains-mono",
+  "type": "font",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "family": "JetBrains Mono",
+  "fallback": "monospace",
+  "source": {
+    "package": "@fontsource/jetbrains-mono",
+    "version": "5.3.0",
+    "license": "OFL-1.1",
+    "subset": "latin"
+  },
+  "files": [
+    {
+      "file": "jetbrains-mono-latin-400-normal.woff2",
+      "weight": 400,
+      "style": "normal",
+      "sha256": "14425ba9c695763c1547f48a206b7aa60350a33ae23de09f0407877f3fcd89eb"
+    }
+  ],
+  "purpose": "Optional self-hosted Latin typography."
+}

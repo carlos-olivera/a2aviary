@@ -4,11 +4,11 @@
     "rationale": "One bounded pilot plan; no price or checkout."
   },
   "version": {
-    "value": "2.1.0",
+    "value": "2.2.0",
     "rationale": "Additive curated library capabilities; historical policies remain frozen."
   },
   "effectiveDate": {
-    "value": "2026-10-11",
+    "value": "2026-10-12",
     "rationale": "Owner-requested contract preparation; not production activation."
   },
   "includes": {
@@ -62,7 +62,7 @@
   },
   "firstVersion": {
     "contractVersion": {
-      "value": "2.1",
+      "value": "2.2",
       "rationale": "Server drafts with curated effects, behaviors and fonts; clients never supply code."
     },
     "structure": {
@@ -216,7 +216,8 @@
         "rationale": "Covers a reference-site pattern or an approved CMS section.",
         "variants": {
           "value": [
-            "standard"
+            "standard",
+            "timeline"
           ],
           "rationale": "One deterministic initial template variant."
         },
@@ -425,6 +426,67 @@
             "rationale": "Typed template input; no executable markup or arbitrary CSS."
           }
         }
+      },
+      "profile-card": {
+        "variants": {
+          "value": [
+            "flip-3d"
+          ],
+          "rationale": "Two-faced progressive enhancement using owner content."
+        },
+        "fields": {
+          "name": {
+            "kind": "heading",
+            "required": true,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "role": {
+            "kind": "shortCopy",
+            "required": true,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "image": {
+            "kind": "image",
+            "required": false,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "links": {
+            "kind": "links",
+            "required": true,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "primaryContact": {
+            "kind": "link",
+            "required": false,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "flipLabel": {
+            "kind": "shortCopy",
+            "required": false,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "backLabel": {
+            "kind": "shortCopy",
+            "required": false,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "copyLabel": {
+            "kind": "shortCopy",
+            "required": false,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "copiedLabel": {
+            "kind": "shortCopy",
+            "required": false,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          },
+          "manualCopyLabel": {
+            "kind": "shortCopy",
+            "required": false,
+            "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+          }
+        },
+        "rationale": "Identity and contact content reusable across sites."
       }
     },
     "designTokens": {
@@ -450,7 +512,9 @@
           "EB Garamond",
           "system-sans",
           "system-serif",
-          "system-mono"
+          "system-mono",
+          "Space Grotesk",
+          "JetBrains Mono"
         ],
         "rationale": "Reference fonts plus no-download system alternatives."
       },
@@ -573,13 +637,20 @@
     },
     "library": {
       "effects": {
-        "value": [],
+        "value": [
+          "aurora",
+          "glow-border",
+          "reveal",
+          "shimmer"
+        ],
         "rationale": "Only reviewed effect IDs are selectable; fixture effects are never shipped."
       },
       "fonts": {
         "value": [
           "inter",
-          "eb-garamond"
+          "eb-garamond",
+          "space-grotesk",
+          "jetbrains-mono"
         ],
         "rationale": "Curated Latin OFL packages backed by pinned @fontsource assets."
       },

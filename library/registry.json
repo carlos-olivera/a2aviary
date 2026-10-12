@@ -27,6 +27,23 @@
       }
     },
     {
+      "id": "aurora",
+      "type": "effect",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "effects/aurora/effect.json": "8aba1f39a686f63d828d0ae9a82f0263c520714bc5e1f299924f6c35330f3fdc",
+        "effects/aurora/fixtures/contrast-es.json": "97cb61b254519129d27663b291d5067014f23794ee631e07058f2f2795f1bd97",
+        "effects/aurora/fixtures/dark-en.json": "97cb61b254519129d27663b291d5067014f23794ee631e07058f2f2795f1bd97",
+        "effects/aurora/fixtures/light-es.json": "97cb61b254519129d27663b291d5067014f23794ee631e07058f2f2795f1bd97",
+        "effects/aurora/style.css": "a5fdc2e8944ddee20bc486af4ea87e0fa253f1ca9bdeb581db5065fbff4c50c4"
+      },
+      "measurements": {
+        "bytes": 1104,
+        "gzipBytes": 412
+      }
+    },
+    {
       "id": "blog",
       "type": "component",
       "version": "1.0.0",
@@ -102,6 +119,20 @@
       }
     },
     {
+      "id": "copy-text",
+      "type": "behavior",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "behaviors/copy-text/behavior.json": "ffc792e370e22eb23d1da461daa06a474cbf4fb6b33daaec8da3670801d260b3",
+        "behaviors/copy-text/index.js": "27d073f1f3a74d12c89fd3d11d45790dbe664a703682e47dd37519b6771c4f12"
+      },
+      "measurements": {
+        "bytes": 489,
+        "gzipBytes": 232
+      }
+    },
+    {
       "id": "cta",
       "type": "component",
       "version": "1.0.0",
@@ -113,13 +144,13 @@
     {
       "id": "cta:standard",
       "type": "variant",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "stable",
       "files": {
         "cta/variants/standard/fixtures/default.json": "f8f40442ea3e94bedc995edf5ac4461a8487b6af3f55825e3259827a3df83210",
         "cta/variants/standard/style.css": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
         "cta/variants/standard/template.html": "b5c5752ce37807e26798ca0197198108b74bda25488742a6fe87b28b58fe2240",
-        "cta/variants/standard/variant.json": "72f65879af67496270f9397ec311edc980fcc25b13e98fb1560a460c04acab6b"
+        "cta/variants/standard/variant.json": "3347fe74e9d645502920ba4fd08cab011ab3972de3e39036a6fe1b042b0ee488"
       },
       "measurements": {
         "bytes": 0,
@@ -174,17 +205,31 @@
     {
       "id": "feature-grid:standard",
       "type": "variant",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "stable",
       "files": {
         "feature-grid/variants/standard/fixtures/default.json": "f67594138a3bd8f2441d96e51d0a658aada6db1d125f04d4d501f6c9dd9df5b5",
         "feature-grid/variants/standard/style.css": "5ec042bef70a8fde2cd539123eabfac55ab0df89d32c4b2c40d776d87b7c331a",
         "feature-grid/variants/standard/template.html": "772ec7630b981e587567467eace6a1c40928e1bc7fdd598058941429cfd88570",
-        "feature-grid/variants/standard/variant.json": "7f10cc77ef8ed63b9c04ab016c66edb6efc65e45904b41cf29c796e195a57e3b"
+        "feature-grid/variants/standard/variant.json": "49100233f9a75464e39f7f3523f39877541dab726ba5d543d4e4adf63fc67ebd"
       },
       "measurements": {
         "bytes": 233,
         "gzipBytes": 177
+      }
+    },
+    {
+      "id": "flip",
+      "type": "behavior",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "behaviors/flip/behavior.json": "888a872b4a1fc31539712c11bb36d74b380247bb276420335eeecff9b698fc47",
+        "behaviors/flip/index.js": "e550f2f13a1663a527234efcdab9ba0488f2345f72bfb77a329adda89e868bb0"
+      },
+      "measurements": {
+        "bytes": 884,
+        "gzipBytes": 277
       }
     },
     {
@@ -210,6 +255,23 @@
       "measurements": {
         "bytes": 297,
         "gzipBytes": 206
+      }
+    },
+    {
+      "id": "glow-border",
+      "type": "effect",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "effects/glow-border/effect.json": "82ed071cd42acbb658478fb7166a98ea5e71e13b75500b96591680fd1e3712ec",
+        "effects/glow-border/fixtures/contrast-es.json": "200f49359ee3df719896adad45d5cb24712d90fcc33ee430a9a7ce14b906b93e",
+        "effects/glow-border/fixtures/dark-en.json": "200f49359ee3df719896adad45d5cb24712d90fcc33ee430a9a7ce14b906b93e",
+        "effects/glow-border/fixtures/light-es.json": "200f49359ee3df719896adad45d5cb24712d90fcc33ee430a9a7ce14b906b93e",
+        "effects/glow-border/style.css": "c74a552e25e6c71a22addb27a051db17ad0e9d4c7b5f0fff0332998fc1571bfd"
+      },
+      "measurements": {
+        "bytes": 1010,
+        "gzipBytes": 398
       }
     },
     {
@@ -249,6 +311,17 @@
       }
     },
     {
+      "id": "jetbrains-mono",
+      "type": "font",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "fonts/jetbrains-mono/LICENSE": "403581b69dac5cff4079205e01c6b467e56af449ecbd7247693ddb1baafa005b",
+        "fonts/jetbrains-mono/font.json": "dc2efd05fc22d01f0862ba923dd23bab68234e730a8bcc36aff4765f53e9c2ac",
+        "fonts/jetbrains-mono/jetbrains-mono-latin-400-normal.woff2": "14425ba9c695763c1547f48a206b7aa60350a33ae23de09f0407877f3fcd89eb"
+      }
+    },
+    {
       "id": "link-cards",
       "type": "component",
       "version": "1.0.0",
@@ -260,17 +333,61 @@
     {
       "id": "link-cards:standard",
       "type": "variant",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "stable",
       "files": {
         "link-cards/variants/standard/fixtures/default.json": "be7ef520bab8eac9afd0e2b10e3189494a0fc9ea34e3f788343f0e832e8f5de9",
         "link-cards/variants/standard/style.css": "b5a4bd6908cd7ec2d6223fcef224941c65ba2b904666766e1eabd8cec0cb3c0e",
         "link-cards/variants/standard/template.html": "6d15b887a00a85f31f80562cf8f1213e320f576823461eef6845a2577fd9185a",
-        "link-cards/variants/standard/variant.json": "e05f6b79831caf02a6a9b4ef734c4dcd7ea01988d6ba9e080870d07ec92988a0"
+        "link-cards/variants/standard/variant.json": "47cd88cc111d5214b8828e9daf2e7a019e48a2800bdfbf51e3015f37b6581950"
       },
       "measurements": {
         "bytes": 229,
         "gzipBytes": 177
+      }
+    },
+    {
+      "id": "profile-card",
+      "type": "component",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "profile-card/component.json": "435eeef4f250930c32384b8614097534f7b26a6042266529c1f332aa748ab460"
+      }
+    },
+    {
+      "id": "profile-card:flip-3d",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "profile-card/variants/flip-3d/fixtures/contrast-es.json": "671d5c51ab7793d65d428972e8d4da885ef16f078f32b1651186222a9e1416e8",
+        "profile-card/variants/flip-3d/fixtures/dark-en.json": "a2f0b165241960652602accc61867ad5212478479125643cddcd6c3e6bb7ee7a",
+        "profile-card/variants/flip-3d/fixtures/light-es.json": "671d5c51ab7793d65d428972e8d4da885ef16f078f32b1651186222a9e1416e8",
+        "profile-card/variants/flip-3d/style.css": "8ae89fc88029df1e6fe32002230c2571658b54fd3e10226132fbc0eecbfe1216",
+        "profile-card/variants/flip-3d/template.html": "0dc604ea5df8ad41a333e1853d44a92a85d9c8cde1abe8a53ffaafaebc0bd49c",
+        "profile-card/variants/flip-3d/variant.json": "e560a00b9ca4dc2f4ccdb67182e33b787fcdb7e25f2d2c289bd21cfa2a4eb3d5"
+      },
+      "measurements": {
+        "bytes": 2889,
+        "gzipBytes": 776
+      }
+    },
+    {
+      "id": "reveal",
+      "type": "effect",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "effects/reveal/effect.json": "e6959f84414e0bab284519ea38f311aecdf622fd6951c5d2c061c4512bc9e541",
+        "effects/reveal/fixtures/contrast-es.json": "200f49359ee3df719896adad45d5cb24712d90fcc33ee430a9a7ce14b906b93e",
+        "effects/reveal/fixtures/dark-en.json": "200f49359ee3df719896adad45d5cb24712d90fcc33ee430a9a7ce14b906b93e",
+        "effects/reveal/fixtures/light-es.json": "200f49359ee3df719896adad45d5cb24712d90fcc33ee430a9a7ce14b906b93e",
+        "effects/reveal/style.css": "34d4a7e0876c4bcbe671895ce4fad4fd16d035285839dd66418291d405411122"
+      },
+      "measurements": {
+        "bytes": 530,
+        "gzipBytes": 256
       }
     },
     {
@@ -299,6 +416,35 @@
       }
     },
     {
+      "id": "shimmer",
+      "type": "effect",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "effects/shimmer/effect.json": "c0906374047c483b7569450736ccaee5e141df4a56da9eb84708db1c2b7e5894",
+        "effects/shimmer/fixtures/contrast-es.json": "4a325fac042dc8419c787e390c0b3a814b10fc9c10480a66b8cc9c0bd6f6cd92",
+        "effects/shimmer/fixtures/dark-en.json": "4a325fac042dc8419c787e390c0b3a814b10fc9c10480a66b8cc9c0bd6f6cd92",
+        "effects/shimmer/fixtures/light-es.json": "4a325fac042dc8419c787e390c0b3a814b10fc9c10480a66b8cc9c0bd6f6cd92",
+        "effects/shimmer/style.css": "5ecd82fe56976cbb628003dac0fbbd60c7c1d47b9a866517cea72b3b978c4c52"
+      },
+      "measurements": {
+        "bytes": 984,
+        "gzipBytes": 418
+      }
+    },
+    {
+      "id": "space-grotesk",
+      "type": "font",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "fonts/space-grotesk/LICENSE": "18a4de52385f6b988782639d5d0cc1326e5a8c2de9a7f01d7b20d9aedcc60943",
+        "fonts/space-grotesk/font.json": "55088f7feae9319bfa29c41ac346320c846d4c194b17fdf48a43f0303d1658dd",
+        "fonts/space-grotesk/space-grotesk-latin-400-normal.woff2": "65fd17fcbd2e2f522940b5f67ead3d23329e02891aa5495e74d11a499c0b0673",
+        "fonts/space-grotesk/space-grotesk-latin-700-normal.woff2": "35f8aec56cfd5cbfdb03cc68733a54a0b05bb3617ffcd5fd332badc0b045ca55"
+      }
+    },
+    {
       "id": "steps",
       "type": "component",
       "version": "1.0.0",
@@ -321,6 +467,38 @@
       "measurements": {
         "bytes": 219,
         "gzipBytes": 173
+      }
+    },
+    {
+      "id": "steps:timeline",
+      "type": "variant",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "steps/variants/timeline/fixtures/contrast-es.json": "e065a073bccceb84ee5b16ced19601d8b11581f50d4b6af5b90144a722564fa1",
+        "steps/variants/timeline/fixtures/dark-en.json": "b16ec3f9cdcb1f60c2c0b01a851abbac6867a0ab0e3f612a22e9e80116d7ad21",
+        "steps/variants/timeline/fixtures/light-es.json": "e065a073bccceb84ee5b16ced19601d8b11581f50d4b6af5b90144a722564fa1",
+        "steps/variants/timeline/style.css": "9559a10e83e07d628292913c0a52fdc98d78d8efe48bd18410441573beceba10",
+        "steps/variants/timeline/template.html": "ead38ccee06073bb391c1311b94189ec89e8d813f8c2baaa8f6d0a8b9aec74e4",
+        "steps/variants/timeline/variant.json": "c9c4baad087f4fc49cd9334d427764536e47ec5e79a1d65ae202b73e7793017d"
+      },
+      "measurements": {
+        "bytes": 843,
+        "gzipBytes": 386
+      }
+    },
+    {
+      "id": "tilt",
+      "type": "behavior",
+      "version": "1.0.0",
+      "status": "experimental",
+      "files": {
+        "behaviors/tilt/behavior.json": "15a1af360ecc71b257badccdde95960bfddd79b774643faae245396df0ac7ac0",
+        "behaviors/tilt/index.js": "f5555327ea4f965e39bb7c233f5221a9b2bc35464a082248fe69e120cdb76fb2"
+      },
+      "measurements": {
+        "bytes": 557,
+        "gzipBytes": 282
       }
     }
   ]

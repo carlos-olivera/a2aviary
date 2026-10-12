@@ -1,0 +1,18 @@
+{
+  "id": "process",
+  "component": "steps",
+  "variant": "timeline",
+  "props": {
+    "heading": "Proceso",
+    "items": [
+      {
+        "heading": "Imaginar",
+        "text": "Explorar posibilidades."
+      },
+      {
+        "heading": "Crear",
+        "text": "Preparar una muestra."
+      }
+    ]
+  }
+}

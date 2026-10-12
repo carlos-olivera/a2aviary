@@ -1,0 +1,10 @@
+{
+  "id": "aurora",
+  "type": "effect",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "target": "section",
+  "compatibility": [],
+  "purpose": "Token-colored atmosphere behind opaque content surfaces."
+}

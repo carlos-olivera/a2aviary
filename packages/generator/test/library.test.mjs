@@ -137,7 +137,7 @@ test('CSS validates every selector and rejects alternate syntax or resource load
       css,
     );
 });
-test('registry has 26 schema-valid curated packages', async () => {
+test('registry has 38 schema-valid curated packages', async () => {
   const { registry } = await checkLibrary();
   const value = JSON.parse(registry);
   const validate = new Ajv({ strict: false }).compile(
@@ -146,14 +146,17 @@ test('registry has 26 schema-valid curated packages', async () => {
     ),
   );
   assert(validate(value), JSON.stringify(validate.errors));
-  assert.equal(value.packages.length, 26);
+  assert.equal(value.packages.length, 38);
   assert.deepEqual([...new Set(value.packages.map((p) => p.type))].sort(), [
+    'behavior',
     'component',
+    'effect',
     'font',
     'variant',
   ]);
   assert(
-    value.packages.every((p) => p.version === '1.0.0' && p.status === 'stable'),
+    value.packages.filter((p) => p.status === 'experimental').length === 12 &&
+      value.packages.filter((p) => p.status === 'stable').length === 26,
   );
   for (const type of ['behavior', 'effect', 'font'])
     assert(
@@ -183,7 +186,11 @@ test('registry detects stale data, policy drift, missing/extra packages, symlink
       join(dir, 'packages/generator/src/library-data.ts'),
       { recursive: true },
     );
-    await cp(new URL('services/src/site/library-data.ts', root),join(dir,'services/src/site/library-data.ts'),{recursive:true});
+    await cp(
+      new URL('services/src/site/library-data.ts', root),
+      join(dir, 'services/src/site/library-data.ts'),
+      { recursive: true },
+    );
     await checkLibrary(dir);
     const target = join(dir, 'library/hero/variants/standard/template.html'),
       original = await readFile(target, 'utf8');
@@ -224,7 +231,7 @@ test('fixtures render each policy component, helpers preserve links, assets and 
     (p) => p.type === 'variant',
   )) {
     const path = Object.keys(packageEntry.files).find((p) =>
-      p.endsWith('/fixtures/default.json'),
+      /\/fixtures\/[^/]+\.json$/.test(p),
     );
     const block = JSON.parse(
       await readFile(new URL('library/' + path, root), 'utf8'),
@@ -233,12 +240,33 @@ test('fixtures render each policy component, helpers preserve links, assets and 
     const section = spec.pages
       .flatMap((p) => p.sections)
       .find((s) => s.blocks.some((b) => b.component === block.component));
+    if (!section) {
+      spec.pages[1].sections[0].blocks.push(block);
+      spec.shell = {
+        skipLink: 'Skip',
+        primaryNavigationLabel: 'Main',
+        footerNavigationLabel: 'Footer',
+        notFoundTitle: 'Missing',
+        notFoundText: 'Unavailable page.',
+        notFoundHomeLabel: 'Home',
+      };
+      await generateSite(spec, assets, { test: true });
+      continue;
+    }
     const index = section.blocks.findIndex(
       (b) => b.component === block.component,
     );
     block.id = section.blocks[index].id;
     section.blocks[index] = block;
-    await generateSite(spec, assets);
+    spec.shell = {
+      skipLink: 'Skip',
+      primaryNavigationLabel: 'Main',
+      footerNavigationLabel: 'Footer',
+      notFoundTitle: 'Missing',
+      notFoundText: 'Unavailable page.',
+      notFoundHomeLabel: 'Home',
+    };
+    await generateSite(spec, assets, { test: true });
   }
   const spec = structuredClone(input.spec),
     hero = spec.pages
@@ -252,7 +280,7 @@ test('fixtures render each policy component, helpers preserve links, assets and 
   const nested = spec.pages.find((p) => p.path !== '/');
   assert(renderPage(spec, nested.id).includes('../catalog.css'));
   const source = await generateSite(spec, assets);
-  assert.equal(GENERATOR_VERSION, '2.2.0');
+  assert.equal(GENERATOR_VERSION, '2.3.0');
   assert.equal(source.specSha256.length, 64);
 });
 test('CSS includes only used variants once in sorted order and keeps deterministic bundles', async () => {
@@ -307,8 +335,52 @@ test('CSS includes only used variants once in sorted order and keeps determinist
     );
 });
 
-test('default boxed output retains exact PR #29 HTML, CSS, CMS and font bytes',async()=>{
- const golden=JSON.parse(await readFile(new URL('./fixtures/boxed-2.1.json',import.meta.url)));
- const source=await generateSite(input.spec,assets);
- for(const [path,hash] of Object.entries(golden.hashes))assert.equal(sha256(path in source.binaryFiles?Buffer.from(source.binaryFiles[path],'base64'):source.files[path]),hash,path);
+test('default boxed output retains exact PR #29 HTML, CSS, CMS and font bytes', async () => {
+  const golden = JSON.parse(
+    await readFile(new URL('./fixtures/boxed-2.1.json', import.meta.url)),
+  );
+  const source = await generateSite(input.spec, assets);
+  for (const [path, hash] of Object.entries(golden.hashes))
+    assert.equal(
+      sha256(
+        path in source.binaryFiles
+          ? Buffer.from(source.binaryFiles[path], 'base64')
+          : source.files[path],
+      ),
+      hash,
+      path,
+    );
+});
+
+test('new package control labels and empty live regions are authoring contracts', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'a2aviary-label-authoring-'));
+  try {
+    await cp(new URL('library', root), join(dir, 'library'), {
+      recursive: true,
+    });
+    await cp(new URL('plans', root), join(dir, 'plans'), { recursive: true });
+    const path = join(
+        dir,
+        'library/profile-card/variants/flip-3d/template.html',
+      ),
+      original = await readFile(path, 'utf8');
+    for (const changed of [
+      original.replace('{{flipLabel}}', ''),
+      original.replace(
+        '<p class="copy-status"></p>',
+        '<p class="copy-status">{{name}}</p>',
+      ),
+      original.replace('{{flipLabel}}', '{{copyLabel}}'),
+    ]) {
+      await writeFile(path, changed);
+      await assert.rejects(
+        libraryArtifacts(dir),
+        /controls\/messages require owner text|status must be initially empty|label must be required/,
+      );
+    }
+    await writeFile(path, original);
+    await libraryArtifacts(dir);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
 });

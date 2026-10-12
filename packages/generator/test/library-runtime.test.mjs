@@ -1,6 +1,7 @@
 import test from 'node:test';
+import { shells } from './fixtures/presentation/compositions.mjs';
 import assert from 'node:assert/strict';
-import { readFile, writeFile, cp, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, cp, mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 import { parse } from 'acorn';
@@ -26,7 +27,7 @@ import {
 } from '../src/library-manifest.ts';
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const baseline = JSON.parse(
-  await readFile(join(root, 'contracts/site/2.1.0/examples/site-spec.json')),
+  await readFile(join(root, 'contracts/site/2.2.0/examples/site-spec.json')),
 );
 const withFixture = async (fn) => {
   const f = await runtimeFixture(root, libraryArtifacts);
@@ -206,7 +207,10 @@ test('extended CSS values, scoped pseudos, media/supports/keyframes and properti
 test('2.1 optional defaults, language subset, literal code and historical validation', () => {
   assert(validateSiteSpec(baseline).ok);
   for (const language of ['en', 'es', 'es-BO', 'zh-Hant-TW', 'es-419'])
-    assert(validateSiteSpec({ ...baseline, language }).ok, language);
+    assert(
+      validateSiteSpec({ ...baseline, language, shell: shells.en }).ok,
+      language,
+    );
   for (const language of [
     'en_US',
     'en-u-ca-gregory',
@@ -216,7 +220,7 @@ test('2.1 optional defaults, language subset, literal code and historical valida
     'es-bo',
   ])
     assert.equal(
-      validateSiteSpec({ ...baseline, language }).ok,
+      validateSiteSpec({ ...baseline, language, shell: shells.en }).ok,
       false,
       language,
     );
@@ -335,7 +339,7 @@ test('package and aggregate budgets include shared bundles, loader, font bytes a
     }
     const paths = [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.1.0.policy.json',
+      'plans/versions/web-simple/2.2.0.policy.json',
     ];
     for (const key of [
       'components',
@@ -409,16 +413,19 @@ test('schemas, policy agreement, duplicate signatures and font provenance reject
     q.firstVersion.library.effects.value = [];
     for (const p of [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.1.0.policy.json',
+      'plans/versions/web-simple/2.2.0.policy.json',
     ])
       await writeFile(join(f.root, p), JSON.stringify(q));
     await assert.rejects(libraryArtifacts(f.root), /registry\/policy/);
     for (const p of [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.1.0.policy.json',
+      'plans/versions/web-simple/2.2.0.policy.json',
     ])
       await writeFile(join(f.root, p), JSON.stringify(f.policy));
     await cp(join(f.root, 'library/steps'), join(f.root, 'library/duplicate'), {
+      recursive: true,
+    });
+    await rm(join(f.root, 'library/duplicate/variants/timeline'), {
       recursive: true,
     });
     const m = JSON.parse(
@@ -462,10 +469,13 @@ test('schemas, policy agreement, duplicate signatures and font provenance reject
       JSON.stringify(fixture),
     );
     const p = structuredClone(f.policy);
-    p.firstVersion.components.duplicate = p.firstVersion.components.steps;
+    p.firstVersion.components.duplicate = structuredClone(
+      p.firstVersion.components.steps,
+    );
+    p.firstVersion.components.duplicate.variants.value = ['standard'];
     for (const path of [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.1.0.policy.json',
+      'plans/versions/web-simple/2.2.0.policy.json',
     ])
       await writeFile(join(f.root, path), JSON.stringify(p));
     await assert.rejects(
@@ -477,20 +487,38 @@ test('manifest fits context and package details contain no executable source or 
   assert(libraryDetail('hero').exampleProps);
   assert.throws(() => libraryDetail('__proto__'), /library_package_not_found/);
   assert(Buffer.byteLength(JSON.stringify(compactLibraryManifest())) <= 24576);
-  assert.equal(compactLibraryManifest().manifest.packages.length, 26);
+  assert.equal(compactLibraryManifest().manifest.packages.length, 35);
   assert.equal(libraryDetail('inter').source.subset, 'latin');
   assert(!JSON.stringify(libraryDetail('inter')).includes('d09GMg'));
   assert.throws(() => libraryDetail('fixture-glow'));
 });
 
-test('full generator emits only trusted behavior code and binds package metadata to provenance', () => withFixture(async f => {
-  const {generateSite}=await import('../dist/index.js');
-  const spec=specimen(f),pixel=await readFile(join(root,'contracts/site/2.1.0/examples/fictional-pixel.webp')),assets=new Map([[spec.assets[0].id,pixel]]);
-  spec.pages[0].sections[0].effects=['fixture-glow'];
-  await assert.rejects(generateSite(spec,assets,{fixtureLibrary:f}),/invalid_spec/);
-  const source=await generateSite(spec,assets,{test:true,fixtureLibrary:f});
-  assert(source.files['public/site.js'].includes('fixture-toggle'));assert(!source.files['public/site.js'].includes('fixture-failure'));
-  assert(source.files['verify.mjs'].startsWith('// network-guard-sha256: '));
-  const changed={...f,catalog:structuredClone(f.catalog)};changed.catalog['hero:interactive'].version='1.0.1';
-  const next=await generateSite(spec,assets,{test:true,fixtureLibrary:changed});assert.notEqual(source.sourceSha256,next.sourceSha256);assert.deepEqual(source.files,next.files);
-}));
+test('full generator emits only trusted behavior code and binds package metadata to provenance', () =>
+  withFixture(async (f) => {
+    const { generateSite } = await import('../dist/index.js');
+    const spec = specimen(f),
+      pixel = await readFile(
+        join(root, 'contracts/site/2.2.0/examples/fictional-pixel.webp'),
+      ),
+      assets = new Map([[spec.assets[0].id, pixel]]);
+    spec.pages[0].sections[0].effects = ['fixture-glow'];
+    await assert.rejects(
+      generateSite(spec, assets, { fixtureLibrary: f }),
+      /invalid_spec/,
+    );
+    const source = await generateSite(spec, assets, {
+      test: true,
+      fixtureLibrary: f,
+    });
+    assert(source.files['public/site.js'].includes('fixture-toggle'));
+    assert(!source.files['public/site.js'].includes('fixture-failure'));
+    assert(source.files['verify.mjs'].startsWith('// network-guard-sha256: '));
+    const changed = { ...f, catalog: structuredClone(f.catalog) };
+    changed.catalog['hero:interactive'].version = '1.0.1';
+    const next = await generateSite(spec, assets, {
+      test: true,
+      fixtureLibrary: changed,
+    });
+    assert.notEqual(source.sourceSha256, next.sourceSha256);
+    assert.deepEqual(source.files, next.files);
+  }));

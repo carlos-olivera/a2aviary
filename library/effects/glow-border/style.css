@@ -1,0 +1,6 @@
+@property --pkg-glow-border-angle{syntax:"<angle>";inherits:false;initial-value:0deg;}
+[data-fx~="glow-border"]{position:relative;border:2px solid transparent;border-radius:var(--radius);padding:var(--space-16);background:linear-gradient(var(--color-surface),var(--color-surface)) padding-box, conic-gradient(from var(--pkg-glow-border-angle),var(--color-primary),var(--color-accent),var(--color-primary)) border-box;overflow-wrap:anywhere}
+[data-fx~="glow-border"]:hover{animation-name:pkg-glow-border-turn;animation-duration:calc(var(--motion-duration) * 3);animation-timing-function:linear}
+[data-fx~="glow-border"]:focus-within{animation-name:pkg-glow-border-turn;animation-duration:calc(var(--motion-duration) * 3);animation-timing-function:linear}
+@keyframes pkg-glow-border-turn{from{--pkg-glow-border-angle:0deg}to{--pkg-glow-border-angle:var(--motion-angle)}}
+@media (prefers-reduced-motion: reduce){[data-fx~="glow-border"]:hover{animation:none}[data-fx~="glow-border"]:focus-within{animation:none}}

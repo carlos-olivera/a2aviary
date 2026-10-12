@@ -1,0 +1,6 @@
+[data-fx~="aurora"]{position:relative;overflow:hidden;background:var(--color-background)}
+[data-fx~="aurora"]::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle,color-mix(in srgb,var(--color-primary) 30%,transparent),transparent);filter:blur(32px);animation-name:pkg-aurora-drift;animation-duration:calc(var(--motion-duration) * 8);animation-timing-function:ease-in-out}
+[data-fx~="aurora"]::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle,color-mix(in srgb,var(--color-accent) 15%,transparent),transparent);filter:blur(48px);animation-name:pkg-aurora-drift;animation-duration:calc(var(--motion-duration) * 8);animation-direction:reverse;animation-timing-function:ease-in-out}
+[data-fx~="aurora"] .section-inner{position:relative;z-index:1;background:var(--color-surface)}
+@keyframes pkg-aurora-drift{from{transform:translateX(0)}to{transform:translateX(var(--motion-distance))}}
+@media (prefers-reduced-motion: reduce){[data-fx~="aurora"]::before{animation:none}[data-fx~="aurora"]::after{animation:none}}

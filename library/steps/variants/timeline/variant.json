@@ -1,0 +1,11 @@
+{
+  "id": "steps:timeline",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "component": "steps",
+  "variant": "timeline",
+  "behaviors": [],
+  "purpose": "Ordered process with progressive scroll-linked line."
+}

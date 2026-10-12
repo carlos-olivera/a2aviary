@@ -73,6 +73,8 @@ export async function prepare(
     {
       op: 'settings',
       settings: {
+        ...(input.spec.language ? { language: input.spec.language } : {}),
+        ...(input.spec.shell ? { shell: input.spec.shell } : {}),
         tokens: input.spec.tokens,
         navigation: input.spec.navigation,
         cms: input.spec.cms,

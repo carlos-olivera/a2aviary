@@ -1,8 +1,8 @@
 # 014 — Component library foundation
 
 - Date: 2026-10-11
-- Status: accepted (foundation); 2.1 amendment implemented for owner PR review
-- Basis: foundation merged in PR #29 (`d4bd963`); owner-approved 2.1 implementation plan
+- Status: accepted (foundation); 2.2 amendment implemented for owner PR review
+- Basis: foundation merged in PR #29 (`d4bd963`); owner-approved 2.1 and 2.2 implementation plans
 
 ## Context
 
@@ -88,7 +88,7 @@ reviewed repository files, not downloaded client packages.
 
 Contract 2.1, new components/variants, behavior/effect/font packages and execution,
 section/block effect selection, budgets, experimental gating, contributions and
-La Tarjeta presentation work remain later PRs. No policy, schema, migration, MCP,
+specialized presentation work remain later PRs. No policy, schema, migration, MCP,
 payment, production configuration or hosted fixture change is included.
 
 ## 2.1 amendment — 2026-10-11
@@ -122,4 +122,39 @@ local; existing CI enforces static checks without workflow permission changes.
 Caddy enables zstd/gzip on static serving without changing CSP or CMS routing.
 Production HTTP 503, real hosted verification and owner-authorized rollout remain
 separate gates. No new client code, migrations, production configuration,
-La Tarjeta packages or contribution process are included.
+specialized presentation packages or contribution process are included.
+
+
+## 2.2 amendment — 2026-10-12
+
+The owner approved twelve generic experimental packages through the existing MCP
+draft flow: profile card/flip variant, timeline variant, flip/tilt/copy behaviors,
+aurora/glow/reveal/shimmer effects and two curated fonts. Policy becomes 2.2.0,
+contract 2.2, generator 2.3.0. Frozen 2.1 artifacts remain unchanged. Test-only
+selection, unchanged budgets and server-owned classification apply transitively.
+No migration, production change or hosted run is part of this amendment.
+
+Owner-supplied shell content is conditionally required by effective language,
+explicit shell presence and declarative package metadata. Variant metadata defines
+conditional accessible control labels. Saving incomplete drafts remains possible;
+apply/get summaries identify missing labels and preview/build reject them.
+Legacy English compositions retain byte equivalence. Existing 2.1 drafts follow
+the retirement behavior established for 2.0; approved snapshots retain stored
+bytes. No automatic upgrade or translation is introduced.
+
+Extend the existing compiler with validated repeated-item/helper targets,
+core-owned status/message markup, confined pointer/clipboard capabilities and
+bounded numeric custom properties. Keep global access, general async code,
+timers, arbitrary style/DOM access and client code prohibited. Core owns manual
+copy fallback, stale-completion suppression and initializer rollback. CSS adds
+only the bounded grammar required by this batch. Reduced/disabled motion and
+unsupported APIs keep complete readable content. Full authoring limits and
+content requirements are in the [2.2 library guide](../../library/README.md#contract-22-amendment).
+
+Three equal-status fictional compositions test English/Spanish, dark/light/high
+contrast, font/system choices and optional/content-boundary combinations. Local
+MCP and browser/full-verifier evidence remain distinct from hosted verification.
+The hosted runner gains an allowlisted composition selector with unchanged
+provider authorization gates. Generic packages contain no fixture copy, client
+identity or predefined site compositions. Owner review, merge timing and a
+separately authorized hosted run remain outside this implementation delivery.

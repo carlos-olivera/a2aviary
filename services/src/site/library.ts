@@ -1,3 +1,4 @@
+import { behaviorLoader } from './behavior-loader.ts';
 import { gzipSync } from 'node:zlib';
 import type { Policy } from './policy.ts';
 import type { LibraryContext, ValidationError } from './types.ts';
@@ -11,7 +12,16 @@ export interface LibraryPackage {
   variant?: string;
   fields?: Record<string, any>;
   behaviors?: string[];
-  targets?: Record<string, string>;
+  targets?: Record<
+    string,
+    string | { each: string; tag: 'li' } | { helper: 'link'; field: string }
+  >;
+  requiresShellContent?: boolean;
+  contentRequirements?: { when?: string; fields: string[] }[];
+  styleProperties?: Record<
+    string,
+    { unit: string; min: number; max: number; initial: number }
+  >;
   target?: 'section' | 'block' | 'items' | 'action';
   compatibility?: string[];
   css?: string;
@@ -49,7 +59,12 @@ export function behaviorBundle(
     .sort()
     .map((id) => JSON.stringify(id) + ':' + catalog[id].code)
     .join(',');
-  return `(()=>{const b={${entries}},c={reducedMotion:${motion === 'none' ? 'true' : "matchMedia('(prefers-reduced-motion: reduce)').matches"}};for(const e of document.querySelectorAll('[data-behavior]')){let ok=true;for(const id of e.dataset.behavior.split(' ')){try{b[id](e,c)}catch{ok=false}}if(ok){e.classList.add('behavior-ready');for(const control of e.querySelectorAll('[data-behavior-control]'))control.hidden=false}}})();\n`;
+  const properties = Object.fromEntries(
+    [...new Set(ids)]
+      .sort()
+      .map((id) => [id, catalog[id].styleProperties ?? {}]),
+  );
+  return `(${behaviorLoader})({${entries}},${JSON.stringify(properties)},${JSON.stringify(motion)});\n`;
 }
 export function selectedPackages(spec: any, catalog: LibraryCatalog) {
   const variants = new Set<string>(),
@@ -116,7 +131,8 @@ export function validateLibrarySelection(
   context: LibraryContext = {},
 ): ValidationError[] {
   if (policy.version.value === '2.0.0') return [];
-  const errors: ValidationError[] = [];
+  const errors: ValidationError[] =
+    policy.version.value === '2.1.0' ? [] : contentErrors(spec, catalog);
   const rules = policy.firstVersion.library,
     budget = rules.budgets;
   const add = (
@@ -281,5 +297,67 @@ export function validateLibrarySelection(
         actual,
         'Reduce packages in the shared resources loaded by this page.',
       );
+  return errors;
+}
+
+/** Incomplete draft content is accepted, but these requirements block preview/build. */
+export function contentErrors(
+  spec: any,
+  catalog: LibraryCatalog,
+): ValidationError[] {
+  const errors: ValidationError[] = [];
+  const requireText = (path: string, value: unknown) => {
+    if (typeof value !== 'string' || !value.trim())
+      errors.push({
+        path,
+        rule: 'content.required',
+        limit: 'non-empty owner-supplied text',
+        actual: null,
+        suggestion:
+          'Supply ' +
+          path +
+          ' in the site language; no default text is substituted.',
+      });
+  };
+  let needsShell = spec.shell !== undefined || (spec.language ?? 'en') !== 'en';
+  const use = (id: string) => {
+    if (catalog[id]?.requiresShellContent) needsShell = true;
+  };
+  for (const [pi, p] of (spec.pages ?? []).entries())
+    for (const [si, s] of (p.sections ?? []).entries()) {
+      for (const id of s.effects ?? []) use(id);
+      for (const [bi, b] of (s.blocks ?? []).entries()) {
+        use(b.component);
+        const id = b.component + ':' + b.variant;
+        use(id);
+        const variant = catalog[id];
+        for (const id of [...(b.effects ?? []), ...(variant?.behaviors ?? [])])
+          use(id);
+        for (const requirement of variant?.contentRequirements ?? [])
+          if (!requirement.when || b.props?.[requirement.when]) {
+            for (const key of requirement.fields)
+              requireText(
+                `/pages/${pi}/sections/${si}/blocks/${bi}/props/${key}`,
+                b.props?.[key],
+              );
+          }
+      }
+    }
+  for (const p of Object.values(catalog))
+    if (
+      p.type === 'font' &&
+      Object.values(spec.tokens?.fonts ?? {}).includes(p.family)
+    )
+      use(p.id);
+  if (needsShell)
+    for (const key of [
+      'skipLink',
+      'primaryNavigationLabel',
+      'footerNavigationLabel',
+      'notFoundTitle',
+      'notFoundText',
+      'notFoundHomeLabel',
+    ])
+      requireText('/shell/' + key, spec.shell?.[key]);
   return errors;
 }

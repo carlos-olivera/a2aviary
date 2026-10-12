@@ -1,0 +1,8 @@
+{
+  "id": "copy-text",
+  "type": "behavior",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "purpose": "Copy a tracked contact link with owner-supplied accessible status."
+}

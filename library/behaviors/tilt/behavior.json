@@ -1,0 +1,22 @@
+{
+  "id": "tilt",
+  "type": "behavior",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "purpose": "Bounded fine-pointer tilt controlled by motion tokens.",
+  "styleProperties": {
+    "--pkg-tilt-x": {
+      "unit": "deg",
+      "min": -8,
+      "max": 8,
+      "initial": 0
+    },
+    "--pkg-tilt-y": {
+      "unit": "deg",
+      "min": -8,
+      "max": 8,
+      "initial": 0
+    }
+  }
+}

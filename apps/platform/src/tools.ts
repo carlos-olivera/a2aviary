@@ -237,6 +237,7 @@ export function createServer(
                 .object({
                   tokens: z.unknown().optional(),
                   language: z.string().optional(),
+                  shell: z.unknown().optional(),
                   navigation: z.unknown().optional(),
                   cms: z.unknown().optional(),
                 })
@@ -320,7 +321,7 @@ export function createServer(
     );
     add(
       'site.draft.apply',
-      'Apply an atomic batch up to 32 operations/64 KiB with revision checking. Settings accept language and tokens including mono font, motion and layout; sections/blocks accept effects. Supply content only; never code, audience, image bytes, hashes or approvals.',
+      'Apply an atomic batch up to 32 operations/64 KiB with revision checking. Settings accept owner-supplied shell labels, language and tokens including mono font, motion and layout; sections/blocks accept effects. Supply content only; never code, audience, image bytes, hashes or approvals.',
       z.object({ draftId, requestId, expectedRevision, operations }).strict(),
       (a) => sites.drafts.apply(principal.id, a),
       false,

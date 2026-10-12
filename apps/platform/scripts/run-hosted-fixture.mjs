@@ -1,3 +1,5 @@
+import { fixtureSelection } from './fixture-selection.mjs';
+const selectedComposition = fixtureSelection(process.argv.slice(2));
 // Read production configuration only. Secret values never reach a file or stdout.
 import { execFile, spawn } from 'node:child_process';
 import { promisify } from 'node:util';
@@ -133,6 +135,9 @@ try {
         SITE_WORKFLOW_ENABLED: 'true',
         SITE_DRAFTS_ENABLED: 'true',
         SITE_DEPLOY_ENVIRONMENT: 'fixture',
+        ...(selectedComposition
+          ? { SITE_FIXTURE_COMPOSITION: selectedComposition }
+          : {}),
         RUN_SITE_CLOUD_E2E: 'true',
         RUN_TESTER_CLOUD_E2E: 'true',
         FIXTURE_VARIABLE_NAMES: JSON.stringify(names),

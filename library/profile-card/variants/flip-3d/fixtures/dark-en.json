@@ -1,0 +1,24 @@
+{
+  "id": "identity",
+  "component": "profile-card",
+  "variant": "flip-3d",
+  "props": {
+    "name": "Robin Vale",
+    "role": "Imaginary object design",
+    "links": [
+      {
+        "label": "Samples",
+        "url": "https://example.com/work"
+      }
+    ],
+    "flipLabel": "View contact",
+    "backLabel": "Back",
+    "primaryContact": {
+      "label": "Email",
+      "url": "mailto:studio@example.com"
+    },
+    "copyLabel": "Copy",
+    "copiedLabel": "Copied",
+    "manualCopyLabel": "Copy the selected text with your keyboard"
+  }
+}

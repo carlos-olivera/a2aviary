@@ -1,0 +1,12 @@
+{
+  "id": "shimmer",
+  "type": "effect",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "target": "action",
+  "compatibility": [
+    "cta:standard"
+  ],
+  "purpose": "Decorative sheen outside the readable action surface."
+}
