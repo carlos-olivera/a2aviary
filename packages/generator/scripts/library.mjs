@@ -362,6 +362,7 @@ export async function libraryArtifacts(root = defaultRoot) {
           parse,
           m.id,
           m.styleProperties ?? {},
+          m.requiresShellContent,
         );
         const min = transformSync('export default ' + fn, {
           minify: true,
