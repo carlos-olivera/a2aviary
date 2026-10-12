@@ -6,7 +6,7 @@ The current server-draft workflow uses [policy 2.2.0](../plans/versions/web-simp
 
 ## Source and generated artifacts
 
-[plans/web-simple.policy.json](../plans/web-simple.policy.json) is the generating source. Every behavioral value retains a rationale. Node.js 22 `services` commands `site:generate` and `site:check` produce/check deterministic, immutable versioned artifacts:
+[plans/web-simple.policy.json](../plans/web-simple.policy.json) is the generating source. Every behavioral value retains a rationale. Node.js 22.23.3 root commands `npm run site:generate` and `npm run site:check`, owned by [site-core](../packages/site-core/README.md), produce/check deterministic, immutable versioned artifacts:
 
 - [Site schema](../contracts/site/2.2.0/site-spec.schema.json)
 - [Disabled change schema](../contracts/site/2.2.0/change-request.schema.json)

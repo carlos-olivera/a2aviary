@@ -1,11 +1,11 @@
-import { catalog } from '../../../services/src/site/library-data.ts';
+import { catalog } from '@a2aviary/site-core';
 import {
   selectedPackages,
   fontPackages,
   behaviorBundle,
   type LibraryCatalog,
-} from '../../../services/src/site/library.ts';
-import type { LibraryContext } from '../../../services/src/site/types.ts';
+} from '@a2aviary/site-core';
+import type { LibraryContext } from '@a2aviary/site-core';
 import type { LibraryVariant } from './library-template.ts';
 import { library } from './library-data.ts';
 import { interpretTemplate } from './library-template.ts';
@@ -15,17 +15,17 @@ import {
   sha256,
   specDigest,
   type Policy,
-} from '../../../services/src/site/policy.ts';
+} from '@a2aviary/site-core';
 import {
   validateSiteSpec,
   validateAssets,
-} from '../../../services/src/site/validator.ts';
+} from '@a2aviary/site-core';
 import type {
   Block,
   Link,
   SiteSpec,
   ValidationError,
-} from '../../../services/src/site/types.ts';
+} from '@a2aviary/site-core';
 import { normalizedDimensions } from './webp.ts';
 import { readFile } from 'node:fs/promises';
 import { posix } from 'node:path';

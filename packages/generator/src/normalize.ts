@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { normalizedDimensions } from './webp.ts';
-import { sha256 } from '../../../services/src/site/policy.ts';
+import { sha256 } from '@a2aviary/site-core';
 import { SiteError } from './render.ts';
 export const NORMALIZER_VERSION = '1.0.0';
 export async function normalizeImage(

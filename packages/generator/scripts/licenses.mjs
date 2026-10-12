@@ -5,15 +5,16 @@ import {
   copyFile,
   writeFile
 } from 'node:fs/promises';
-const root = new URL('../', import.meta.url);
+const packageRoot = new URL('../', import.meta.url);
+const root = new URL('../../../', import.meta.url);
 const lock = JSON.parse(
   await readFile(new URL('package-lock.json', root), 'utf8')
 );
-const out = new URL('dist/licenses/', root);
+const out = new URL('dist/licenses/', packageRoot);
 await mkdir(out, { recursive: true });
 const inventory = [];
 for (const [path, info] of Object.entries(lock.packages)) {
-  if (!path || info.dev) continue;
+  if (!path || info.dev || info.link || !path.includes('node_modules/')) continue;
   const directory = new URL(path + '/', root);
   let metadata;
   try {

@@ -31,13 +31,14 @@ bytes, keyed by library-relative path. Initial packages are `1.0.0`, `stable`.
 The generated TypeScript catalog contains only validated AST and CSS data.
 
 ```sh
-npm run library:generate --prefix packages/generator
-npm run library:check --prefix packages/generator
+npm run library:generate
+npm run library:check
 ```
 
 Generation validates before writing; checking never repairs stale artifacts.
-Generator check/build/test and services check (already run in CI) enforce the same
-registry, policy, template and CSS checks. A generator build bundles the catalog;
+Generator check/build/test and root `library:check:static` enforce the same
+registry, policy, template and CSS checks. The workspace CI patch is pending
+owner application; it restores these relocated checks in the existing checks job. A generator build bundles the catalog;
 the deployed runtime needs no source `library/` directory. No dependency was added.
 
 ## Template grammar
@@ -191,10 +192,11 @@ Normalized declaration overlap of at least 80% produces a warning.
 renders every production and fictional variant/effect fixture at 390/1280px,
 normal/reduced motion, with axe and screenshots in ignored `.local/library-check/`.
 Generator check/test invoke the full matrix. `library:check:static` is the explicit
-non-browser gate used by builds and the existing services CI path. CI does not
-claim the browser/platform suites; workflow files and permissions are unchanged.
-The compiler resolves its development dependencies from the explicit services
-host in CI, so it does not require generator node_modules there.
+non-browser gate used by builds and the prepared workspace CI patch.
+That patch also includes browser/platform suites, pending owner application;
+current hosted CI execution and App permissions are unchanged.
+The compiler resolves its pinned development dependencies from the root workspace
+installation. Services no longer hosts the compiler or site domain.
 
 See [runtime tests](../packages/generator/test/library-runtime.test.mjs),
 [network tests](../packages/generator/test/network-guard.test.mjs), and
@@ -303,7 +305,7 @@ Neither changes defaults. The high-contrast reference uses system fonts only.
 ### Local verification and hosted selection
 
 Three equal-status fictional test inputs live in
-[the presentation fixtures](../packages/generator/test/fixtures/presentation/README.md):
+[the presentation fixtures](../packages/site-core/fixtures/presentation/README.md):
 dark English, light Spanish and high-contrast Spanish. They exercise every
 non-font package, both new fonts across palettes, content boundaries, optional
 image/contact combinations, keyboard/focus, no JS, initialization failure,

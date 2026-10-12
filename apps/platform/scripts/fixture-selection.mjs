@@ -1,4 +1,4 @@
-import { compositionNames } from '../../../packages/generator/test/fixtures/presentation/compositions.mjs';
+import { compositionNames } from '@a2aviary/site-core/fixtures/presentation';
 /** Pure parsing only; importing this module never reads credentials or calls providers. */
 export function fixtureSelection(args) {
   let selected;

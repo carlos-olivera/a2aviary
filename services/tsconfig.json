@@ -15,7 +15,6 @@
     "allowImportingTsExtensions": true
   },
   "include": [
-    "src/**/*.ts",
-    "scripts/site/**/*.ts"
+    "src/**/*.ts"
   ]
 }

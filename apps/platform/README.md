@@ -11,7 +11,10 @@ The [decision](../../docs/decisions/008-platform-auth-and-mcp.md) records the bo
 From this directory, with Node.js 22.23.3 and Docker available:
 
 ```sh
+cd ../..
 npm ci
+npm run build
+cd apps/platform
 docker compose up -d --wait
 cp .env.example .env
 # Set private Google credentials, a random secret and the owner email in .env.
@@ -39,9 +42,10 @@ Build a container from the repository root:
 docker build -f apps/platform/Dockerfile -t a2aviary-platform:local .
 ```
 
-Existing GitHub CI remains scoped to the AWS services, website and infrastructure.
-The platform/Postgres suite must be run separately before publication; CI wiring
-requires a later reviewed workflow change with appropriate owner authorization.
+The prepared workspace CI patch includes platform/Postgres, generator/browser and
+image jobs. Operator App workflow-write permission is absent, so the patch needs
+owner application before merge; hosted CI execution remains unverified.
+The platform/Postgres suite has been run locally before publication.
 No Operator App permission expansion is included.
 
 Project code is Apache 2.0; [dependency notices](THIRD_PARTY.md) remain intact.
@@ -53,3 +57,10 @@ fixture site cleanup needs narrowly scoped provider delete/list permissions.
 ## Initial-site drafts (current source)
 
 Both `SITE_WORKFLOW_ENABLED=true` and default-false `SITE_DRAFTS_ENABLED=true` are required. Policy 2.0.0 replaces client preview intake with revisioned drafts, shared raw uploads, isolated normalization, server snapshots and scoped browser approval before exact-byte deployment. `site.build` and `/api/site-specs` are removed; `change.request` returns `change_requests_unavailable`. Read [current operations](../../docs/sites.md) and [release evidence](../../docs/release-verification.md). All seven migration names/hashes must match; production 006 reconciliation is unresolved. Run `npm run test:browser` for the real local browser check and the separately authorized one-shot hosted runner only with fixture overrides and a disposable local database.
+
+The platform and generator use the root npm workspace lockfile. Domain imports
+use [site-core](../../packages/site-core/README.md); `plans.ts` uses its canonical
+JSON/digest functions. The repository-root Docker build installs that graph once,
+checks/builds in dependency order and prunes development dependencies before
+copying the non-root Node 22.23.3 runtime. The Railway pre-deploy migration command
+and all seven SQL files are unchanged. See [local refactor evidence](../../docs/evidence/site-core-workspaces/README.md).

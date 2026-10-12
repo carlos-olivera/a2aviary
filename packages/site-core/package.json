@@ -1,0 +1,33 @@
+{
+  "name": "@a2aviary/site-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.23.3 <23"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    },
+    "./fixtures/catalog": "./fixtures/catalog.mjs",
+    "./fixtures/presentation": "./fixtures/presentation/compositions.mjs"
+  },
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly",
+    "check": "tsc --noEmit && npm run site:check",
+    "test": "node --test test/*.test.mjs",
+    "site:generate": "node scripts/generate.ts",
+    "site:check": "node scripts/generate.ts --check"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.15",
+    "typescript": "7.0.2"
+  }
+}

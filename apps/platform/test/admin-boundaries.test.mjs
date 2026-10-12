@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fixture } from './helpers.mjs';
 import { testDependencies } from './site-dependencies.mjs';
-import { fixtureSubmission } from '../../../packages/generator/scripts/fixture-lib.mjs';
+import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 import { TOOL_ROLES } from '../src/store.ts';
 import { redactedAudit } from '../src/audit.ts';
 

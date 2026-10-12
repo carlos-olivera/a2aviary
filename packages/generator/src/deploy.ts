@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { SiteError } from './render.ts';
-import { sha256 } from '../../../services/src/site/policy.ts';
+import { sha256 } from '@a2aviary/site-core';
 import { safePath, type VerifiedBuild } from './verification.ts';
 import {
   pocketBaseMigration,
@@ -16,7 +16,7 @@ import {
   cmsEditorScript
 } from './pocketbase.ts';
 import {railwayUsage, type SiteUsage} from './costs.ts';
-import type { SiteSpec } from '../../../services/src/site/types.ts';
+import type { SiteSpec } from '@a2aviary/site-core';
 export interface SiteResources {
   projectId?: string;
   environmentId?: string;

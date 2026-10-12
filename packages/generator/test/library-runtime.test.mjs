@@ -1,5 +1,5 @@
 import test from 'node:test';
-import { shells } from './fixtures/presentation/compositions.mjs';
+import { shells } from '@a2aviary/site-core/fixtures/presentation';
 import assert from 'node:assert/strict';
 import { readFile, writeFile, cp, mkdir, rm } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -9,17 +9,17 @@ import { validateBehavior } from '../src/library-behavior.ts';
 import { validateVariantCss } from '../src/library-css.ts';
 import { libraryArtifacts } from '../scripts/library.mjs';
 import { runtimeFixture } from './fixtures/library-runtime/fixture.mjs';
-import { validateSiteSpec } from '../../../services/src/site/validator.ts';
+import { validateSiteSpec } from '@a2aviary/site-core';
 import {
   defaultPolicy,
   policyForVersion,
-} from '../../../services/src/site/policy.ts';
+} from '@a2aviary/site-core';
 import {
   validateLibrarySelection,
   gzipBytes,
   selectedPackages,
   behaviorBundle,
-} from '../../../services/src/site/library.ts';
+} from '@a2aviary/site-core';
 import { renderPage, css } from '../src/render.ts';
 import {
   compactLibraryManifest,

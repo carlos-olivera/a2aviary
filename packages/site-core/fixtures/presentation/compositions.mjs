@@ -30,7 +30,7 @@ export async function composition(
   const spec = JSON.parse(
     await readFile(
       new URL(
-        '../../../../../contracts/site/2.2.0/examples/site-spec.json',
+        '../../../../contracts/site/2.2.0/examples/site-spec.json',
         import.meta.url,
       ),
     ),

@@ -6,17 +6,19 @@ import {
 } from 'node:crypto';
 import type { PoolClient } from 'pg';
 import {
-  generateSite,
   contentErrors,
   catalog,
   canonicalJson,
   sha256,
   defaultPolicy,
+  type SiteSpec,
+} from '@a2aviary/site-core';
+import {
+  generateSite,
   GENERATOR_VERSION,
   normalizeImage,
   SiteError,
   type VerifiedBuild,
-  type SiteSpec,
 } from '@a2aviary/generator';
 import type { Sites } from './sites.ts';
 import { siteAccess } from './site-administration.ts';

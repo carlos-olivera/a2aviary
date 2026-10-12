@@ -2,7 +2,8 @@ import { randomUUID } from 'node:crypto';
 import { calculateJwkThumbprint, importJWK, type JWK } from 'jose';
 import type { Pool, PoolClient } from 'pg';
 import type { Config } from './config.ts';
-import { defaultPolicy } from '@a2aviary/generator';
+import { defaultPolicy } from '@a2aviary/site-core';
+
 import { redactedAudit } from './audit.ts';
 
 export type Role = 'superadmin' | 'admin' | 'client' | 'tester';

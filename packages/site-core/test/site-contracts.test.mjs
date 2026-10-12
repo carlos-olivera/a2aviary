@@ -4,14 +4,13 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import sharp from 'sharp';
-import { validateSiteSpec, validateAssets, validateChangeRequest, specDigest, defaultPolicy } from '../dist/site/validator.js';
-import { artifactDirectory, assertPolicySnapshot, generateContracts, flattenRules } from '../dist/site/generator.js';
-import { makeExamples } from '../dist/site/examples.js';
-import { policyDecision } from '../dist/policy.js';
+import { validateSiteSpec, validateAssets, validateChangeRequest, specDigest, defaultPolicy } from '@a2aviary/site-core';
+import { artifactDirectory, assertPolicySnapshot, generateContracts, flattenRules } from '@a2aviary/site-core';
+import { makeExamples } from '@a2aviary/site-core';
 
-const fixture = JSON.parse(await readFile('../contracts/site/2.2.0/examples/site-spec.json', 'utf8'));
-const changeFixture = JSON.parse(await readFile('../contracts/site/2.2.0/examples/change-request.json', 'utf8'));
-const pixels = await readFile('../contracts/site/2.2.0/examples/fictional-pixel.webp');
+const fixture = JSON.parse(await readFile('../../contracts/site/2.2.0/examples/site-spec.json', 'utf8'));
+const changeFixture = JSON.parse(await readFile('../../contracts/site/2.2.0/examples/change-request.json', 'utf8'));
+const pixels = await readFile('../../contracts/site/2.2.0/examples/fictional-pixel.webp');
 const invalid = JSON.parse(await readFile('test/site-fixtures/invalid-specs.json', 'utf8'));
 const context = () => ({ month: '2026-10', appliedRequests: 0, now: new Date('2026-10-06T12:00:00.000Z') });
 const spec = () => structuredClone(fixture);
@@ -132,7 +131,7 @@ test('serialized submission cap, cyclic and non-JSON values', () => {
 
 test('policy generates deterministic schemas and examples; drift check is read-only', () => {
   assert.deepEqual(generateContracts(defaultPolicy),generateContracts(structuredClone(defaultPolicy)));
-  execFileSync(process.execPath,['scripts/site/generate.ts','--check'],{stdio:'pipe'});
+  execFileSync(process.execPath,['scripts/generate.ts','--check'],{stdio:'pipe'});
   assert.deepEqual(makeExamples(defaultPolicy,fixture.assets[0]),{spec:fixture,change:changeFixture});
   const p=structuredClone(defaultPolicy);p.includes.maxPages.value=6;const schema=generateContracts(p).siteSchema;assert.equal(schema.properties.pages.maxItems,6);expectError(validateSiteSpec(fixture,p),'schema.maxItems');
   const example=makeExamples(p,fixture.assets[0]);assert.equal(validateSiteSpec(example.spec,p).ok,true);
@@ -142,14 +141,6 @@ test('policy generates deterministic schemas and examples; drift check is read-o
 test('unsupported policy settings, missing rationale, invalid dates and limits fail closed', () => {
   for(const mutate of [p=>p.changes.calendar.value='local',p=>p.firstVersion.images.formats.value.push('svg'),p=>p.includes.capabilities.value.push('custom-backend'),p=>p.includes.ssl.value=false,p=>p.includes.maxPages.value=0,p=>p.firstVersion.copy.heading.value=1.5,p=>p.version.value='latest',p=>p.effectiveDate.value='2026-02-30',p=>delete p.changes.perMonth.rationale,p=>p.firstVersion.components.hero.fields.heading.kind='execute',p=>p.extra=true]) {const p=structuredClone(defaultPolicy);mutate(p);assert.throws(()=>generateContracts(p));}
   assert(flattenRules(defaultPolicy).every(r=>r.rationale.trim()));
-});
-
-test('plan paths and rename origins require current-head owner approval', () => {
-  for(const files of [[{filename:'plans/web-simple.policy.json'}],[{filename:'docs/safe.md',previous_filename:'plans/web-simple.policy.json'}]]){
-    assert.equal(policyDecision(files,[],'head').allowed,false);
-    assert.equal(policyDecision(files,[{user:{login:'carlos-olivera'},state:'APPROVED',commit_id:'old'}],'head').allowed,false);
-    assert.equal(policyDecision(files,[{user:{login:'carlos-olivera'},state:'APPROVED',commit_id:'head'}],'head').allowed,true);
-  }
 });
 
 test('change requests are explicitly unavailable',()=>{expectError(validateChangeRequest({},fixture,context()),'change_requests_unavailable');});

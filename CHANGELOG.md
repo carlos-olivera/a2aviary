@@ -1,5 +1,30 @@
 # Changelog
 
+## 2026-10-12 — site-core and npm workspace graph
+
+- Move the website domain from the legacy email package into `@a2aviary/site-core`,
+  with an explicit API and test-only catalog/presentation fixture exports. Platform
+  and generator use package imports; plan loading reuses canonical JSON/SHA-256.
+  Keep generated library data with its domain/presentation owners, byte-identical.
+- Add one root workspace lockfile for `packages/*` and platform, retaining services,
+  infra and website installations. Compare all direct versions and 913 historical
+  generator/platform dependency edges: zero resolved-version differences. Remove
+  services' unused Acorn compiler and Sharp dependencies, including Sharp-only
+  transitive/native entries, without upgrading any dependency.
+- Preserve all policy, contract, migration, package/template bytes and generator
+  2.3.0. Five fixtures retain exact source and Astro output hashes; the relocated
+  52 contract tests, 79 generator tests, 52 email tests and platform's 71 tests
+  pass locally (two platform opt-in tests remain skipped). Add complete per-role
+  MCP tools/list snapshots captured before the move and a reusable parity gate.
+  Full library checking passes 148 captures and 168 presentation cases.
+- Build the workspace image from repository root, prune dev dependencies and run
+  as UID 1000 on Node 22.23.3 against disposable loopback Postgres with all seven
+  migrations: health 200, discovery-only. Railway configuration is unchanged.
+  [Verification and hashes](docs/evidence/site-core-workspaces/README.md) distinguish
+  local evidence from hosted operation. The Operator lacks workflow-write scope;
+  prepare the updated prompt-1 CI patch in excluded `.local/ci-workflow.patch` for
+  owner application before merge. Stop at an Operator-authored PR; no deployment.
+
 ## 2026-10-12 — application types and categories recorded (docs only)
 
 - Add proposed [ADR 015](docs/decisions/015-application-types-and-categories.md) recording the owner's four axes, one-time data-only starters, immutable provenance, agent-supplied values, two preview levels, live editing, experimental promotion and exclusions. Include a fictional empty-props example, explicit conflicts with earlier records, prompts 3–7 and the two open starter questions.

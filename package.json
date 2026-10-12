@@ -1,0 +1,25 @@
+{
+  "name": "a2aviary",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=22.23.3 <23"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/platform"
+  ],
+  "scripts": {
+    "build": "npm run build -w @a2aviary/site-core && npm run build -w @a2aviary/generator && npm run build -w a2aviary-platform",
+    "check": "npm run check -w @a2aviary/site-core && npm run check:static -w @a2aviary/generator && npm run check -w a2aviary-platform",
+    "site:generate": "npm run site:generate -w @a2aviary/site-core",
+    "site:check": "npm run site:check -w @a2aviary/site-core",
+    "library:generate": "npm run library:generate -w @a2aviary/generator",
+    "library:check": "npm run library:check -w @a2aviary/generator",
+    "library:check:static": "npm run library:check:static -w @a2aviary/generator",
+    "test": "npm test -w @a2aviary/site-core && npm test -w @a2aviary/generator && npm test -w a2aviary-platform",
+    "test:parity": "node scripts/check-workspace-parity.mjs"
+  }
+}

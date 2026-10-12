@@ -10,7 +10,7 @@ import {
   canonicalJson,
   sha256
 } from '../dist/index.js';
-import { fixtureSubmission } from '../scripts/fixture-lib.mjs';
+import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 const input = await fixtureSubmission(),
   source = await generateSite(
     input.spec,

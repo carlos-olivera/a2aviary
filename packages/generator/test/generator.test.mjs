@@ -13,7 +13,7 @@ import {
   caddyfile,
   RailwayDeployer
 } from '../dist/index.js';
-import { fixtureSubmission } from '../scripts/fixture-lib.mjs';
+import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 const input = await fixtureSubmission();
 const assets = new Map(
   Object.entries(input.assets).map(([id, b64]) => [
