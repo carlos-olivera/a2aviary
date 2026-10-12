@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-12 — deployment staging permissions
+
+- Set client web and CMS staging files to `0644` and directories to `0755` before upload, including nested web assets, so container users such as PocketBase UID 1000 can read files copied into the image even when the adapter inherits `umask 077`.
+- Add an isolated adapter regression that stages both services under `umask 077`, checks every staged file/directory mode, preserves web artifact bytes and confirms temporary-directory cleanup. It reproduced the original `0700` CMS directory and passes with the fix.
+- Node.js 22.23.3 generator check/build, the library browser matrix (including 168 presentation cases) and all 79 generator tests passed. Platform check/build and 68 tests passed; the hosted test remained skipped. No hosted run or deployment was performed; delivery stops at an Operator App PR for owner review.
+
 ## 2026-10-12 — first reusable presentation package batch
 
 - Add policy 2.2.0/contract 2.2 and generator 2.3.0 with twelve 1.0.0 experimental, tester-only packages: profile card/flip, timeline, flip/tilt/copy behaviors, aurora/glow/reveal/shimmer effects, and pinned Latin Space Grotesk/JetBrains Mono with original OFL licenses. Stable feature-grid/link-cards/CTA variants become 1.1.0 for item/anchor targets. Existing budgets and defaults remain unchanged.

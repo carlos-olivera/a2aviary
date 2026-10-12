@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { mkdtemp, mkdir, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, rm, readdir, chmod } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { randomBytes } from 'node:crypto';
@@ -64,6 +64,16 @@ type Graphql = (
   query: string,
   variables: Record<string, unknown>
 ) => Promise<any>;
+async function makeStagingReadable(directory: string): Promise<void> {
+  // Creation modes are filtered by umask. Set final modes before Docker COPY
+  // preserves them in images whose services run as non-owner users.
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) await makeStagingReadable(path);
+    else await chmod(path, 0o644);
+  }
+  await chmod(directory, 0o755);
+}
 export class RailwayDeployer implements SiteDeployer {
   private readonly options: RailwayOptions;
   private readonly query: Graphql;
@@ -322,6 +332,8 @@ export class RailwayDeployer implements SiteDeployer {
         join(cms, 'pb_public', 'editor.js'),
         cmsEditorScript(input.spec)
       );
+      await makeStagingReadable(web);
+      await makeStagingReadable(cms);
       const cmsDeployment = await this.upload(cms, r, r.cmsServiceId!);
       await this.waitHealthy(r, r.cmsServiceId!, cmsDeployment);
       const webDeployment = await this.upload(web, r, r.webServiceId!);
