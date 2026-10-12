@@ -6,6 +6,8 @@
 - Give every hosted presentation variant one fictional announcements declaration and block, preserving the static presentation compositions. Reject undeclared bindings and declared-but-unbound fixture inputs rather than silently skipping CMS coverage.
 - Add unit coverage for all three hosted variants, target selection and status failures. The opt-in local CMS regression prepares the exact hosted `light-es` input through MCP drafts/uploads, then uses real PocketBase/Caddy to write and read announcements, confirm the old catalog target returns 404, and verify the no-collection case. All three focused tests passed locally; hosted execution remains separately authorized.
 
+- Node.js 22.23.3 generator check/build, all 79 tests and the library browser matrix (including 168 presentation cases) passed. Platform check/build and 70 tests passed; the hosted test remained skipped and the separate local CMS suite passed all three tests. Website check/build, all four gates for six regenerated architecture drawings, and integrated browser checks passed. Refresh provenance, CMS evidence and desktop/mobile/hosting captures without changing topology. No hosted run or deployment was performed; stop at an Operator App PR for owner review.
+
 ## 2026-10-12 — deployment staging permissions
 
 - Set client web and CMS staging files to `0644` and directories to `0755` before upload, including nested web assets, so container users such as PocketBase UID 1000 can read files copied into the image even when the adapter inherits `umask 077`.

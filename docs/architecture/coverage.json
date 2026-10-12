@@ -138,7 +138,7 @@
     "mode": "Separate local tooling"
   },
   "hosting-cms": {
-    "note": "Each catalog site uses PocketBase with constrained content editing, separate owner credentials and its existing persistent volume and backups.",
+    "note": "Each catalog site uses PocketBase with constrained content editing, separate owner credentials and its existing persistent volume and backups. The hosted fixture selects a declared/bound CMS target; a local MCP-to-PocketBase/Caddy regression covers hosted light-es announcements and the no-collection 404 case. This local coverage does not establish a hosted pass.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
