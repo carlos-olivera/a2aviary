@@ -128,7 +128,7 @@
     "mode": "Cloud-only"
   },
   "hosting-railway": {
-    "note": "Catalog sites use dedicated guarded Railway projects, exact recorded service identifiers and protected project/domain checks. The current provider and architecture are preserved.",
+    "note": "Catalog sites use dedicated guarded Railway projects, exact recorded service identifiers and protected project/domain checks. The current provider and architecture are preserved. Before upload, web and CMS staging files receive mode 0644 and directories 0755; the local adapter regression verifies both trees under umask 077. Hosted validation of this fix remains unverified.",
     "status": "Implemented",
     "mode": "Cloud-only"
   },

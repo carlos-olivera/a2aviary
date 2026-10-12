@@ -2,14 +2,14 @@
   "schemaVersion": 2,
   "generator": "Archify",
   "version": "3.0.1",
-  "sourceRevision": "f6cddd358e2d3987c0457cbf5f99d5edba349ea7",
-  "manifestSha256": "bfebbc16c73d5548b703bfc4a8ca2f143c7c2234d0d168f644d00718c4bd35e9",
-  "coverageSha256": "435d67817639973de111eb97fd712da75c0891230105b422a861fb7b5ecddfeb",
+  "sourceRevision": "3dce66819a30c327f98593c8b70566339d722c2c",
+  "manifestSha256": "2bcfad2bc3cd3705c057e8597a05ba2fa0a9ca1c16cf5cce84d74c3f45b98d33",
+  "coverageSha256": "edcf600a8620bc375b808792bfc03eee79aa86eea33e3e0718717e3bc914ca25",
   "diagrams": {
     "overview": {
       "candidatePath": "docs/architecture/map.json",
-      "candidateSha256": "8b8854ad974b1abf568cd1b0680c20d14b4efb0b5829e04aca6e4c18af807968",
-      "rawArtifactSha256": "d608845fce2d82e54bd7d8aee1c41b73098a1e973af86662c44700f040260733",
+      "candidateSha256": "854bd0fdcb74a4b834ee49899006ffd0870dc134aa266a02741a3a1fb1544110",
+      "rawArtifactSha256": "283c9d1f49b3778f82d1597d8a4d5798b6c47bc8b35a868f20fee295aec6e249",
       "generatedDrawingSha256": "9169d487381c830729a530fb1ad0c95ec9a3479fca5ed5e8ca6587d9ea74b860",
       "gates": {
         "validate": "pass",
@@ -20,8 +20,8 @@
     },
     "client": {
       "candidatePath": "docs/architecture/diagrams/client.json",
-      "candidateSha256": "7e8f009b4a610ca9cb60bcffe544cfd207cb3860872aed4d4866d653f0f23c18",
-      "rawArtifactSha256": "84aef06169f461764e64f87d48e2f537e0a0510909c1f8bc875f8842a14361bb",
+      "candidateSha256": "1d13e127931b025f75c4cefe457bdbea17b10e7ef9eea108795b887d009d33bc",
+      "rawArtifactSha256": "5883c138ecdd4127e0aacb4d42489e2a2a93ac02f7395f6371f01ff2b0bafe65",
       "generatedDrawingSha256": "45d4290ff179cc89293945cb850f73af6ff9babad8ed4b0425cef3dab7c494cf",
       "gates": {
         "validate": "pass",
@@ -32,8 +32,8 @@
     },
     "gate": {
       "candidatePath": "docs/architecture/diagrams/gate.json",
-      "candidateSha256": "c0e9752024a55eb5eaf1d3afd628ebd14fe9f2865caed8fe7963b9a152991e7b",
-      "rawArtifactSha256": "ed7ee7ac8aee8f1855b5b83bb81a8df967e3e2f1de56ab0eded30d9af7c08fa3",
+      "candidateSha256": "089f8a4e3546acc2adc7d822dfe73b1649794fdca3b1aceaef81902cca211945",
+      "rawArtifactSha256": "bab630b8014dc4cc152e54bef79008c6ba39f08c6bca69a078b0053b856961c9",
       "generatedDrawingSha256": "944eafd01e7bb7ed5863d6b5c5be20375463ffe40573e6785cac3869657df791",
       "gates": {
         "validate": "pass",
@@ -44,8 +44,8 @@
     },
     "engine": {
       "candidatePath": "docs/architecture/diagrams/engine.json",
-      "candidateSha256": "e063d93b9d87a369f45bf6dc7b9de89c6ace2b749080933dfaf4ea3920aeed9f",
-      "rawArtifactSha256": "42adbe79146fcaa59a335cf1a5b7322da1defdb3ea20e3f0d352d5429b885144",
+      "candidateSha256": "27c9f12a3e5be92cd26724b50a5f3e92a40b58892f065a0a22051b21724e2133",
+      "rawArtifactSha256": "fa3442bca296aa71845053ad6deda067477ae80e137bb05e5c4cc085edac5190",
       "generatedDrawingSha256": "62bd6aec7e48dd3e53ae24f59208bf8d75f6c56f4bf1100359e08b4b10b1c179",
       "gates": {
         "validate": "pass",
@@ -56,8 +56,8 @@
     },
     "hosting": {
       "candidatePath": "docs/architecture/diagrams/hosting.json",
-      "candidateSha256": "b39699cf35cfccce971f34ff47ee56fcb5ae18f26382fc875a66693274da3bdf",
-      "rawArtifactSha256": "62d90622502276142d3c539e1283854c82d9b069da9ad62f1507e88a5a03ff24",
+      "candidateSha256": "0276e80868c35291169c2a1dd15e4a5880b559a1d850ad5f331b7cf5d914be1d",
+      "rawArtifactSha256": "267282efb8c9ccdd48e837f0aa83f0ed8b37d1035ce0527da079bd487385cfb9",
       "generatedDrawingSha256": "821e9bcd3a7b30622e0514451907502fd1d42fc90eab47883e005a0eee311b51",
       "gates": {
         "validate": "pass",
@@ -68,8 +68,8 @@
     },
     "ops": {
       "candidatePath": "docs/architecture/diagrams/ops.json",
-      "candidateSha256": "b27881d77bec05d0330e71618754229f27714507cfe2c74409f66ae01ad81dcc",
-      "rawArtifactSha256": "e188005a8fbed03fd1043d79351ada8681031002295159afe5095310b5793b61",
+      "candidateSha256": "3ec9f918cb9e5e984c175c12e362f35527b98e9d27736c2783107d28c6771034",
+      "rawArtifactSha256": "70921e952791904867b92e41b3035a8874b5f26a89dafed9aa59bdcee2443c74",
       "generatedDrawingSha256": "94b08e2f7acc7f24ed24c1e0f134adf580ad90dbe8a2ff7a14df5b9e5cc6536a",
       "gates": {
         "validate": "pass",
@@ -79,7 +79,7 @@
       }
     }
   },
-  "integratedPageSha256": "d26a53bc59988d76e1cfebbe4da8569390a009af3366b5b439961c5fc4ca8196",
+  "integratedPageSha256": "83c550e725dc81a28fc9b49ee1de069d7ab5d9ecf6323fe8ede570fa9139d513",
   "assetSha256": {
     "architecture.css": "1ebd910731acf8fd4ed0a110d4086b1722fad07c82b7e815cd8832d528f8ddb4",
     "architecture.js": "f97addd4fdf06856b907aa6b459fc10f90be698a223f14a5e912731c1cb58a2c"
@@ -333,7 +333,7 @@
     "packages/generator/scripts/test-cms-volume.mjs": "713af2a0c34f93e186f5e4503429cab1469cb51aedc637d3b1415e75a35d4106",
     "packages/generator/scripts/test-cms.mjs": "7dfe84ce3805f3f3fd77bb6fa702c5216fbf1be8e39b116d752d8bad9fcb50af",
     "packages/generator/src/costs.ts": "4df0ce00532c023746ea3af5709cd5998a02c66448add6188ffe11f28427a6fe",
-    "packages/generator/src/deploy.ts": "2d6cddee1cde6ded158cb990df666484ca35730efb998118433ebe787b314336",
+    "packages/generator/src/deploy.ts": "67faabac0f7014c0eeb0defa4f7a676ccbac0266534b2277e3a18f687ac64eb1",
     "packages/generator/src/index.ts": "e1fdc50bbea335fdf14813f33fb1a231bf1be9ce2272a877fce9aa66adc89bce",
     "packages/generator/src/library-behavior.ts": "fc4730f160cc36e6df79c5740f40c8b80081aebeed0e87cf8833043546114b41",
     "packages/generator/src/library-css.ts": "87b90d02d1b35af44884dd77bf0cfec1cb0895d01fb944da24b8cc9229eb16c5",
@@ -354,6 +354,7 @@
     "packages/generator/template/verify.mjs": "d9133d267708927ba1e5f25e8131545a7732d03e67db920d423da44a633f2a7b",
     "packages/generator/test/adapters.test.mjs": "3e1ad35144d9b5320e88e85d2bc9baa608054db4afe2765468f7dd2d0d52ee13",
     "packages/generator/test/costs.test.mjs": "e671fda0e0f0b82e2a7189aff44c7807156c8918f0f5664755de0f17db66e0c9",
+    "packages/generator/test/deploy-permissions.test.mjs": "d598db4f39049605a9fc3e0a7f8386a6666f5b3ba0af618d42b34fe8ebf4e546",
     "packages/generator/test/fixtures/boxed-2.1.json": "e61eb39d7c6949f2a4da831f8bc982fffe80da3a2390a69ddc256a3c1e40db00",
     "packages/generator/test/fixtures/library-baseline.json": "a29da6af031243be0a98026a45bff7ad6287dcc08e40f8daa9483fabb7f11222",
     "packages/generator/test/fixtures/library-runtime/fixture.mjs": "8fdf5abfc38a1292d4f72091b1592d2634cc56fd4e32faaed411ec080b85536d",
