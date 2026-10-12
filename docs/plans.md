@@ -2,6 +2,8 @@
 
 The current server-draft workflow uses [policy 2.2.0](../plans/versions/web-simple/2.2.0.policy.json) and site contract **2.2**. Both implementation flags default off. Nothing is for sale: no live checkout or active Paddle merchant of record. This manifest defines allowed catalog behavior, not a commercial offer or evidence of deployed operation. See [site operations](sites.md), [decision 013](decisions/013-server-drafts-and-preview.md) and [release evidence](release-verification.md).
 
+[ADR 015](decisions/015-application-types-and-categories.md) records the owner's 2026-10-12 direction to separate the website runtime, data-only starters, shared library catalog and one plan for every website category. Categories never change limits or price or supply blockers; catalog rules, plan limits and verification govern all compositions. The ADR remains proposed until owner merge, and the separation is future refactoring: this docs-only record changes no current policy, contract, historical artifact or availability of `change.request` and live edits.
+
 ## Source and generated artifacts
 
 [plans/web-simple.policy.json](../plans/web-simple.policy.json) is the generating source. Every behavioral value retains a rationale. Node.js 22 `services` commands `site:generate` and `site:check` produce/check deterministic, immutable versioned artifacts:

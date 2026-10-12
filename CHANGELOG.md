@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-12 — application types and categories recorded (docs only)
+
+- Add proposed [ADR 015](docs/decisions/015-application-types-and-categories.md) recording the owner's four axes, one-time data-only starters, immutable provenance, agent-supplied values, two preview levels, live editing, experimental promotion and exclusions. Include a fictional empty-props example, explicit conflicts with earlier records, prompts 3–7 and the two open starter questions.
+- Link the decision from agent instructions, the decision index/confirmed owner direction, vision and plans without rewriting historical evidence. Verified all 359 relative documentation links, parsed the fictional JSON with empty seeded props, reviewed decision consistency and confirmed six Markdown files only with clean whitespace.
+- No source, migration, policy, contract, provider or deployment changes. ADR status remains proposed until owner merge; publication stops at an Operator App PR for review.
+
 ## 2026-10-12 — platform and generator CI protection prepared
 
 - Prepared credential-free PR/main platform check/build/Postgres tests, generator static/build/unit/full library browser checks, and the repository-root platform Docker build. Node actions use 22.23.3; existing full action SHA pins and website OIDC delivery are preserved. PR check jobs cancel superseded runs; main check groups are unique per run.
