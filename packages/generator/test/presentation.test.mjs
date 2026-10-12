@@ -397,3 +397,25 @@ test('a newer trusted copy interaction suppresses the earlier async completion',
   await Promise.resolve();
   assert.equal(status.textContent, '');
 });
+
+test('owner-copy behavior packages cannot introduce literal messages or accessible labels', () => {
+  const compile = (body) =>
+    validateBehavior(
+      'export default (element, context)=>{' + body + '};',
+      parse,
+      'copy-text',
+      {},
+      true,
+    );
+  compile(
+    "const text=element.querySelector('.message').textContent;element.textContent=text;element.textContent='';element.setAttribute('aria-label',text);context.copyText(element.querySelector('a'),text,ok=>{element.textContent=text;});",
+  );
+  for (const body of [
+    "element.textContent='Copied'",
+    "const text='Copied';element.textContent=text",
+    "element.textContent=element.textContent+' copied'",
+    "element.setAttribute('aria-label','Copy')",
+    "context.copyText(element.querySelector('a'),'Manual copy',ok=>{})",
+  ])
+    assert.throws(() => compile(body), /owner-supplied/);
+});

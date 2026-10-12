@@ -8,6 +8,7 @@ export function validateBehavior(
     string,
     { unit: string; min: number; max: number; initial: number }
   > = {},
+  ownerCopy = false,
 ): string {
   const fail = (why: string): never => {
     throw Error('Invalid library behavior: ' + why);
@@ -35,12 +36,14 @@ export function validateBehavior(
     | 'event'
     | 'classList'
     | 'scalar'
+    | 'content'
     | 'number'
     | 'rect'
     | 'style'
     | 'pointerEvent';
   const edits: { start: number; end: number; text: string }[] = [];
-  const scalar = (k: Kind) => k === 'scalar' || k === 'number';
+  const scalar = (k: Kind) =>
+    k === 'scalar' || k === 'number' || k === 'content';
   const methods: Record<string, [Kind, number, number]> = {
     querySelector: ['element', 1, 1],
     querySelectorAll: ['elements', 1, 1],
@@ -140,6 +143,7 @@ export function validateBehavior(
       if (k === 'context' && p === 'motionIntensity') return 'number';
       if (k === 'context' && p === 'finePointer') return 'scalar';
       if (k === 'element' && p === 'classList') return 'classList';
+      if (k === 'element' && p === 'textContent' && ownerCopy) return 'content';
       if (k === 'element' && ['hidden', 'inert', 'textContent'].includes(p))
         return 'scalar';
       if (k === 'context' && p === 'reducedMotion') return 'scalar';
@@ -157,6 +161,13 @@ export function validateBehavior(
       )
         fail('assignment');
       if (!scalar(expr(n.right, env))) fail('scalar assignment');
+      if (
+        ownerCopy &&
+        n.left.property.name === 'textContent' &&
+        expr(n.right, env) !== 'content' &&
+        !(n.right.type === 'Literal' && n.right.value === '')
+      )
+        fail('owner-supplied text required');
       return 'scalar';
     }
     if (
@@ -217,6 +228,8 @@ export function validateBehavior(
           !scalar(expr(n.arguments[1], env))
         )
           fail('copy arguments');
+        if (ownerCopy && expr(n.arguments[1], env) !== 'content')
+          fail('owner-supplied copy label required');
         callback(n.arguments[2], env, 'scalar');
         return 'scalar';
       }
@@ -234,6 +247,13 @@ export function validateBehavior(
           !attr.test(literal(n.arguments[0]))
         )
           fail('attribute');
+        if (
+          ownerCopy &&
+          p === 'setAttribute' &&
+          literal(n.arguments[0]) === 'aria-label' &&
+          expr(n.arguments[1], env) !== 'content'
+        )
+          fail('owner-supplied accessible label required');
         if (p === 'addEventListener') {
           if (
             ![
