@@ -331,3 +331,69 @@ test('owner 404 braces remain data rather than executable Astro expressions', as
     ),
   );
 });
+
+test('a newer trusted copy interaction suppresses the earlier async completion', async () => {
+  const { behaviorLoader } =
+    await import('../../../services/src/site/behavior-loader.ts');
+  const { runInNewContext } = await import('node:vm');
+  const events = new Map(),
+    pending = [],
+    status = { textContent: '' };
+  class Anchor {
+    href = 'mailto:studio@example.com';
+  }
+  const link = new Anchor();
+  const root = {
+    innerHTML: 'readable',
+    dataset: { behavior: 'copy-text' },
+    isConnected: true,
+    addEventListener(name, fn) {
+      if (!events.has(name)) events.set(name, []);
+      events.get(name).push(fn);
+    },
+    querySelectorAll: () => [status],
+    contains: (item) => item === link,
+    classList: { add() {}, remove() {} },
+  };
+  const boot = runInNewContext('(' + behaviorLoader + ')', {
+    matchMedia: () => ({ matches: false, addEventListener() {} }),
+    document: { querySelectorAll: () => [root] },
+    AbortController,
+    URL,
+    HTMLAnchorElement: Anchor,
+    location: { protocol: 'https:' },
+    navigator: {
+      clipboard: {
+        writeText: () => new Promise((resolve) => pending.push(resolve)),
+      },
+    },
+  });
+  boot(
+    {
+      'copy-text': (_, context) =>
+        context.listen(root, 'click', () =>
+          context.copyText(link, 'Copy selected address', (ok) => {
+            status.textContent = ok ? 'Copied' : 'Manual';
+          }),
+        ),
+    },
+    {},
+    'none',
+  );
+  const click = () =>
+    events.get('click').forEach((fn) => fn({ isTrusted: true, type: 'click' }));
+  click();
+  click();
+  assert.equal(pending.length, 2);
+  pending[0]();
+  await Promise.resolve();
+  assert.equal(status.textContent, '');
+  pending[1]();
+  await Promise.resolve();
+  assert.equal(status.textContent, 'Copied');
+  click();
+  events.get('blur').forEach((fn) => fn());
+  pending[2]();
+  await Promise.resolve();
+  assert.equal(status.textContent, '');
+});
