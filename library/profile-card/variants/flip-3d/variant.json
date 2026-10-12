@@ -1,0 +1,37 @@
+{
+  "id": "profile-card:flip-3d",
+  "type": "variant",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "component": "profile-card",
+  "variant": "flip-3d",
+  "behaviors": [
+    "flip",
+    "tilt",
+    "copy-text"
+  ],
+  "targets": {
+    "root": "card-root",
+    "control": "card-control",
+    "status": "copy-status",
+    "messages": "copy-message"
+  },
+  "contentRequirements": [
+    {
+      "fields": [
+        "flipLabel",
+        "backLabel"
+      ]
+    },
+    {
+      "when": "primaryContact",
+      "fields": [
+        "copyLabel",
+        "copiedLabel",
+        "manualCopyLabel"
+      ]
+    }
+  ],
+  "purpose": "Progressively enhanced identity and contact card."
+}

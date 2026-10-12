@@ -6,6 +6,7 @@ import {
   SiteError,
   validateSiteSpec,
   validateLibrarySelection,
+  contentErrors,
   catalog,
   type LibraryContext,
   type SiteSpec,
@@ -15,7 +16,7 @@ export type DraftContent = Partial<
   Omit<SiteSpec, 'contractVersion' | 'planId' | 'policyVersion'>
 > & { pages: any[]; assets: any[] };
 export const identity = () => ({
-  contractVersion: '2.1',
+  contractVersion: '2.2',
   planId: defaultPolicy.planId.value,
   policyVersion: defaultPolicy.version.value,
 });
@@ -49,6 +50,12 @@ ajv.addFormat('site-link', (s: string) => {
   }
 });
 const validate = ajv.compile(schema);
+const ownerLabelFields = new Set(
+  Object.values(catalog).flatMap((p) =>
+    (p.contentRequirements ?? []).flatMap((r) => r.fields),
+  ),
+);
+
 export const problem = (
   path: string,
   rule: string,
@@ -76,7 +83,23 @@ export function validateDraft(
   const spec = { ...identity(), ...content },
     errors: ValidationError[] = [];
   if (!validate(spec))
-    for (const e of validate.errors ?? [])
+    for (const e of validate.errors ?? []) {
+      // AJV also emits a redundant parent if error; child failures remain actionable.
+      if (e.keyword === 'if') continue;
+      // Keep blank draft labels editable; full validation still rejects them.
+      const ownerLabel =
+        e.instancePath.startsWith('/shell/') ||
+        (/^\/pages\/\d+\/sections\/\d+\/blocks\/\d+\/props\/[^/]+$/.test(
+          e.instancePath,
+        ) &&
+          ownerLabelFields.has(e.instancePath.split('/').at(-1) ?? ''));
+      if (
+        ownerLabel &&
+        typeof e.data === 'string' &&
+        !e.data.trim() &&
+        ['minLength', 'pattern', 'const', 'anyOf'].includes(e.keyword)
+      )
+        continue;
       errors.push(
         problem(
           e.instancePath +
@@ -89,6 +112,7 @@ export function validateDraft(
           e.message ?? 'Correct this value.',
         ),
       );
+    }
   // Budget traversal assumes schema-shaped containers. Return structured errors
   // before inspecting malformed nested values such as null sections or props.
   if (errors.length) return errors.slice(0, 20);
@@ -209,7 +233,7 @@ export function validateDraft(
         'Remove images.',
       ),
     );
-  return errors.slice(0, 20);
+  return errors.filter((e) => e.rule !== 'content.required').slice(0, 20);
 }
 export function blockers(content: DraftContent, context: LibraryContext = {}) {
   const r = validateSiteSpec(
@@ -219,7 +243,12 @@ export function blockers(content: DraftContent, context: LibraryContext = {}) {
   );
   return r.ok
     ? []
-    : r.errors.slice(0, 20).map((e) => ({ ...e, actual: e.actual ?? null }));
+    : [
+        ...contentErrors(content, context.catalog ?? catalog),
+        ...r.errors.filter((e) => e.rule !== 'content.required'),
+      ]
+        .slice(0, 20)
+        .map((e) => ({ ...e, actual: e.actual ?? null }));
 }
 export function applyContent(
   content: DraftContent,
@@ -282,7 +311,8 @@ export function applyContent(
         if (
           !object(op.settings) ||
           Object.keys(op.settings).some(
-            (k) => !['tokens', 'navigation', 'cms', 'language'].includes(k),
+            (k) =>
+              !['tokens', 'navigation', 'cms', 'language', 'shell'].includes(k),
           )
         )
           throw new SiteError('draft_settings');

@@ -1,16 +1,16 @@
 # Plan policies and site contracts
 
-The current server-draft workflow uses [policy 2.1.0](../plans/versions/web-simple/2.1.0.policy.json) and site contract **2.1**. Both implementation flags default off. Nothing is for sale: no live checkout or active Paddle merchant of record. This manifest defines allowed catalog behavior, not a commercial offer or evidence of deployed operation. See [site operations](sites.md), [decision 013](decisions/013-server-drafts-and-preview.md) and [release evidence](release-verification.md).
+The current server-draft workflow uses [policy 2.2.0](../plans/versions/web-simple/2.2.0.policy.json) and site contract **2.2**. Both implementation flags default off. Nothing is for sale: no live checkout or active Paddle merchant of record. This manifest defines allowed catalog behavior, not a commercial offer or evidence of deployed operation. See [site operations](sites.md), [decision 013](decisions/013-server-drafts-and-preview.md) and [release evidence](release-verification.md).
 
 ## Source and generated artifacts
 
 [plans/web-simple.policy.json](../plans/web-simple.policy.json) is the generating source. Every behavioral value retains a rationale. Node.js 22 `services` commands `site:generate` and `site:check` produce/check deterministic, immutable versioned artifacts:
 
-- [Site schema](../contracts/site/2.1.0/site-spec.schema.json)
-- [Disabled change schema](../contracts/site/2.1.0/change-request.schema.json)
-- [Markdown manifest](../contracts/site/2.1.0/manifest.md)
-- [JSON manifest](../contracts/site/2.1.0/manifest.json)
-- [Complete fictional canonical example](../contracts/site/2.1.0/examples/site-spec.json)
+- [Site schema](../contracts/site/2.2.0/site-spec.schema.json)
+- [Disabled change schema](../contracts/site/2.2.0/change-request.schema.json)
+- [Markdown manifest](../contracts/site/2.2.0/manifest.md)
+- [JSON manifest](../contracts/site/2.2.0/manifest.json)
+- [Complete fictional canonical example](../contracts/site/2.2.0/examples/site-spec.json)
 
 The example contains fictional copy and a generated WebP pixel. It contains no approval or preview declaration. Runtime derives asset IDs/hash/bytes/dimensions/format from normalized upload output; clients can set alt text. The complete canonical spec is hashed using sorted-key JSON with array order preserved. Approval is recorded separately through verified browser membership and a single-use CSRF token.
 
@@ -28,4 +28,4 @@ The historical monthly-change limits remain in policy/accounting records for con
 
 Current-head owner approval is required for policy changes. Prepare contracts/decisions/check evidence in Git, publish through the a2aviary Operator App only, and stop at the PR for Carlos's review. No manifest, build or PR establishes production activation. Migrations 001–006 remain unchanged; production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported). Check relevant package behavior, deterministic generated artifacts, fictional-data boundaries and documentation links. Preserve Apache 2.0 and dependency licenses.
 
-Historical 2.0.0 drafts are read/discard only; stored snapshots retain frozen validation and exact-byte deployment. See the [library runtime amendment](sites.md#library-runtime-contract-21).
+Historical 2.0.0 and 2.1.0 drafts are read/discard only; stored snapshots retain frozen validation and exact-byte deployment. See the [library runtime amendment](sites.md#library-runtime-contract-22).

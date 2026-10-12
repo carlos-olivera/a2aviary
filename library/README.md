@@ -1,6 +1,6 @@
 # Component library
 
-Current source implements the [contract 2.1 amendment](#contract-21-amendment).
+Current source implements the [contract 2.2 amendment](#contract-22-amendment).
 The following foundation section preserves the PR #29 model and is extended below.
 
 The library is repository-authored data consumed by the trusted generator. The
@@ -200,3 +200,123 @@ See [runtime tests](../packages/generator/test/library-runtime.test.mjs),
 [network tests](../packages/generator/test/network-guard.test.mjs), and
 [platform tests](../apps/platform/test/library-runtime.test.mjs). Unknown status,
 compatibility, budgets and malformed values return structured correction guidance.
+
+
+## Contract 2.2 amendment
+
+Policy **2.2.0**, contract **2.2**, and generator **2.3.0** add the first generic
+presentation batch. All twelve new entries are `1.0.0`, `experimental`, and
+selectable only with immutable server-owned test classification:
+
+| Type | IDs |
+| --- | --- |
+| Component | `profile-card` |
+| Variants | `profile-card:flip-3d`, `steps:timeline` |
+| Behaviors | `flip`, `tilt`, `copy-text` |
+| Effects | `aurora`, `glow-border`, `reveal`, `shimmer` |
+| Fonts | `space-grotesk`, `jetbrains-mono` |
+
+The target-enabled `feature-grid:standard`, `link-cards:standard`, and
+`cta:standard` remain stable and become `1.1.0`. Without selected effects they
+emit the original markup. Existing budgets are unchanged; oversize compositions
+are rejected. None of these packages becomes a default or customer template.
+
+### Owner content and incomplete drafts
+
+MCP `settings` accepts a site-level `shell`: `skipLink`,
+`primaryNavigationLabel`, `footerNavigationLabel`, `notFoundTitle`,
+`notFoundText`, and `notFoundHomeLabel`. These reuse label (80), heading (120),
+and short-copy (500) limits. All six are mandatory when effective language is
+not exactly `en`, any selected package or transitive dependency declares
+`requiresShellContent: true`, or any shell object is explicitly supplied.
+Omitted language is still `en`. Only legacy English compositions without new
+packages or explicit shell content retain the original English shell bytes.
+No translation or silent fallback is performed.
+
+`profile-card` requires `name`, `role`, and `links`; `image` and `primaryContact`
+are optional. Its `flip-3d` variant declares `contentRequirements` for
+`flipLabel`/`backLabel`, plus `copyLabel`/`copiedLabel`/`manualCopyLabel` when
+`primaryContact` exists. All are owner-supplied short copy. Empty optional text
+emits no element or substitute copy. New package templates reject literal text;
+accessible controls and fallback messages must come from typed content.
+
+Incomplete drafts can be saved. Every apply/get summary includes compact
+`missingLabels` groups with an exact JSON Pointer parent and missing field names;
+combine them to locate each field. Preview/build reject missing or blank required
+labels. The compact summary does not return supplied private copy. Historical
+2.1 (and 2.0) drafts remain readable/discardable, but edits and previews return an
+actionable retired-policy error. There is no upgrade path or database migration.
+Previously approved snapshots keep deploying their stored bytes under their
+original validation/checker profile.
+
+### Targets and confined runtime capabilities
+
+In addition to literal class targets, `items: {each: "items", tag: "li"}`
+references repeated template items and `action: {helper: "link", field: "action"}`
+references the actual helper anchor. The compiler validates their existence and
+field kinds; core adds effect attributes only when selected. `status` and
+`messages` class targets identify an initially empty polite live region and
+hidden owner-supplied message content. Core owns IDs, button type, ARIA,
+enhancement visibility, helper output and the selected manual-copy input.
+
+The behavior language adds tracked pointer listeners, numeric `clientX`/`clientY`,
+root rectangle numeric fields, and live `context.finePointer`,
+`context.reducedMotion`, and `context.motionIntensity`. Behaviors declare
+`styleProperties` with their `--pkg-<id>-` namespace, fixed unit, finite initial
+value and numeric bounds. Only provably numeric writes to declared properties
+compile. Core rejects non-finite values and clamps to bounds; variants can consume
+these variables only through declared behavior dependencies. Preference changes
+reset tilt immediately. Expressive tilt is bounded to ±8 degrees; subtle uses
+35% amplitude; none/reduced/coarse-pointer input disables tilt.
+
+`context.copyText(link, manualCopyLabel, callback)` accepts only a tracked anchor
+inside the root during a trusted user interaction. Core extracts a mailto/tel
+address or resolved URL. The callback receives success/failure after clipboard
+completion. Denied/unavailable access exposes a visible, focused, selected
+readonly address with the supplied accessible label. Blur/new interaction
+invalidates prior completion messages. Packages receive no promises, URL parser,
+globals, timers, animation frames, arbitrary styles or untracked DOM access.
+Failed initialization aborts package listeners and restores readable markup.
+
+### Presentation and CSS additions
+
+The restricted grammar adds bounded `rotateX`/`rotateY`, scoped class combinations,
+overlapping grid faces, safe wrapping/clipping, `clip-path: inset()`, `steps()`
+(1–120), motion-duration multiplication (1–8), conic starting angles, and literal
+`nth-child()` positions (1–40). It still rejects arbitrary selectors, URL values,
+literal colors, unscoped state rules and undeclared custom properties.
+
+Flip uses real controls, synchronized `aria-pressed`, focus transfer and inert,
+ARIA-hidden inactive faces after enhancement. Both faces are stacked/readable
+without JS. None/reduced motion swaps instantly. The expressive-only role reveal
+clips visual rendering while retaining the full accessible text and wrapping.
+Subtle/none retain static role text. Timeline has a complete static connecting
+line when scroll animation is unsupported or disabled. Opaque text surfaces,
+one-pass hover/focus decorations, token-derived speed/amplitude (`--motion-distance` is 0/6/16px and
+`--motion-angle` is 0/90/360 degrees for none/subtle/expressive) and entrance
+animations under five seconds preserve readable fallback content.
+
+Space Grotesk 400/700 and JetBrains Mono 400 use pinned Fontsource **5.3.0** Latin
+WOFF2, original OFL licenses, registry hashes and generated resource notices.
+Neither changes defaults. The high-contrast reference uses system fonts only.
+
+### Local verification and hosted selection
+
+Three equal-status fictional test inputs live in
+[the presentation fixtures](../packages/generator/test/fixtures/presentation/README.md):
+dark English, light Spanish and high-contrast Spanish. They exercise every
+non-font package, both new fonts across palettes, content boundaries, optional
+image/contact combinations, keyboard/focus, no JS, initialization failure,
+pointer/preferences and asynchronous clipboard outcomes. They are not defaults.
+`library:check` includes the 390/1280 normal/reduced front/back browser matrix,
+axe including contrast, overflow and external-request checks. Reports/screenshots
+stay in `.local/library-check/` and `.local/presentation-check/`.
+
+Run `node packages/generator/scripts/presentation-verify.mjs` with Node 22 after a
+generator build for all three full local verifier runs. Measured resource sizes,
+Lighthouse, axe, reduced-motion/network checks and captures are written under
+`.local/presentation-verifier/`. Platform tests use isolated loopback Postgres and
+exercise real MCP draft tools, normal uploads, preview/build and server gating.
+The hosted fixture runner accepts only `--composition dark-en|light-es|contrast-es`;
+its existing authorization gates remain intact. Pure selection is tested locally;
+this option does not authorize provider operations or a hosted run.

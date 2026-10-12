@@ -66,8 +66,22 @@ export async function libraryArtifacts(root = defaultRoot) {
     validate = ajv.compile(schema),
     validateRegistry = ajv.compile(registrySchema);
   const blockSchema = generateContracts(policy).siteSchema;
-  ajv.addFormat('site-link', value => { try { const u = new URL(value); return ['https:','mailto:','tel:'].includes(u.protocol) && !u.username && !u.password; } catch { return false; } });
-  const validateBlock = ajv.compile({definitions:blockSchema.definitions,$ref:'#/definitions/block'});
+  ajv.addFormat('site-link', (value) => {
+    try {
+      const u = new URL(value);
+      return (
+        ['https:', 'mailto:', 'tel:'].includes(u.protocol) &&
+        !u.username &&
+        !u.password
+      );
+    } catch {
+      return false;
+    }
+  });
+  const validateBlock = ajv.compile({
+    definitions: blockSchema.definitions,
+    $ref: '#/definitions/block',
+  });
   const packages = [],
     compiled = {},
     catalog = {},
@@ -172,36 +186,137 @@ export async function libraryArtifacts(root = defaultRoot) {
           ),
           'missing fixture field',
         );
-        assert(validateBlock(f),'fixture schema '+p+': '+ajv.errorsText(validateBlock.errors));
-      catalog[id].fixture ??= f;
+        assert(
+          validateBlock(f),
+          'fixture schema ' + p + ': ' + ajv.errorsText(validateBlock.errors),
+        );
+        catalog[id].fixture ??= f;
         (catalog[id].fixtures ??= []).push(f);
       }
       const source = (await read(base + 'template.html')).toString(),
-        ast = parseTemplate(source, c.fields),
+        ast = parseTemplate(source, c.fields, v.requiresShellContent),
         css = (await read(base + 'style.css')).toString();
-      validateVariantCss(css, id);
-      for (const [role, cls] of Object.entries(v.targets ?? {}))
-        assert(
-          new RegExp('class="(?:[^"]* )?' + cls + '(?: [^"]*)?"').test(source),
-          'missing ' + role + ' target',
-        );
-      assert(!v.behaviors.length || v.targets?.root, 'behavior root required');
+
+      const walkNodes = (nodes, visit) => {
+        for (const node of nodes) {
+          visit(node);
+          if (node.children) walkNodes(node.children, visit);
+        }
+      };
+      for (const [role, target] of Object.entries(v.targets ?? {})) {
+        if (typeof target === 'string') {
+          assert(
+            new RegExp(
+              'class="(?:[^"\\n]* )?' + target + '(?: [^"\\n]*)?"',
+            ).test(source),
+            'missing ' + role + ' target',
+          );
+          if (role === 'control')
+            assert(
+              new RegExp(
+                '<button class="(?:[^"\\n]* )?' + target + '(?: [^"\\n]*)?">',
+              ).test(source),
+              'control must be button',
+            );
+        } else {
+          let count = 0;
+          walkNodes(ast, (node) => {
+            if (
+              role === 'items' &&
+              node.type === 'each' &&
+              node.field === target.each
+            ) {
+              const first = node.children.find(
+                (n) => n.type !== 'literal' || n.value.trim(),
+              );
+              assert(
+                first?.type === 'literal' && first.value === '<li>',
+                'items must select the direct repeated li',
+              );
+              first.target = role;
+              count++;
+            }
+            if (
+              role === 'action' &&
+              node.type === 'helper' &&
+              node.helper === target.helper &&
+              node.field === target.field
+            )
+              count++;
+          });
+          assert(count === 1, 'target must resolve exactly once');
+        }
+      }
+      assert(
+        !v.behaviors.length || typeof v.targets?.root === 'string',
+        'behavior root required',
+      );
       assert(
         !v.targets?.control || v.behaviors.length,
         'control needs behavior',
       );
-      if (v.targets?.control)
+      const classes = Object.values(v.targets ?? {}).filter(
+        (v) => typeof v === 'string',
+      );
+      assert(
+        new Set(classes).size === classes.length,
+        'ambiguous target class',
+      );
+      for (const req of v.contentRequirements ?? []) {
         assert(
-          new RegExp(
-            '<button class="(?:[^"]* )?' + v.targets.control + '(?: [^"]*)?">',
-          ).test(source),
-          'control must be button',
+          !req.when || Object.hasOwn(c.fields, req.when),
+          'unknown requirement condition',
         );
-      for (const cls of Object.values(v.targets ?? {}))
-        assert(
-          Object.values(v.targets).filter((v) => v === cls).length === 1,
-          'ambiguous target class',
-        );
+        for (const field of req.fields)
+          assert(
+            ['heading', 'shortCopy'].includes(c.fields[field]?.kind),
+            'requirement must name a text field',
+          );
+      }
+      if (v.requiresShellContent) {
+        const checkLabels = (nodes, conditions = []) => {
+          for (let i = 0; i < nodes.length; i++) {
+            const node = nodes[i];
+            if (node.children)
+              checkLabels(
+                node.children,
+                node.type === 'if' ? [...conditions, node.field] : conditions,
+              );
+            if (node.type !== 'literal' || !/^<[a-z]/.test(node.value))
+              continue;
+            const match = /^<([a-z0-9]+)(?: class="([^"]+)")?>$/.exec(
+                node.value,
+              ),
+              classes = match?.[2]?.split(' ') ?? [];
+            if (classes.includes(v.targets?.status))
+              assert(
+                nodes[i + 1]?.value === '</' + match[1] + '>',
+                'status must be initially empty',
+              );
+            if (
+              match?.[1] === 'button' ||
+              classes.includes(v.targets?.messages)
+            ) {
+              const text = nodes[i + 1],
+                end = nodes[i + 2];
+              assert(
+                text?.type === 'text' && end?.value === '</' + match[1] + '>',
+                'controls/messages require owner text',
+              );
+              assert(
+                c.fields[text.field]?.required ||
+                  (v.contentRequirements ?? []).some(
+                    (r) =>
+                      r.fields.includes(text.field) &&
+                      (!r.when || conditions.includes(r.when)),
+                  ),
+                'control/message label must be required when rendered',
+              );
+            }
+          }
+        };
+        checkLabels(ast);
+      }
       catalog[id].css = css;
       compiled[id] = {
         component: name,
@@ -235,7 +350,19 @@ export async function libraryArtifacts(root = defaultRoot) {
           'behavior files',
         );
         const source = (await read(base + 'index.js')).toString();
-        const fn = validateBehavior(source, parse);
+        for (const [key, value] of Object.entries(m.styleProperties ?? {}))
+          assert(
+            key.startsWith('--pkg-' + m.id + '-') &&
+              value.min <= value.initial &&
+              value.initial <= value.max,
+            'behavior property declaration',
+          );
+        const fn = validateBehavior(
+          source,
+          parse,
+          m.id,
+          m.styleProperties ?? {},
+        );
         const min = transformSync('export default ' + fn, {
           minify: true,
           target: 'es2022',
@@ -348,9 +475,14 @@ export async function libraryArtifacts(root = defaultRoot) {
     'font family/policy mismatch',
   );
   for (const p of Object.values(catalog))
-    if (p.type === 'variant')
-      for (const id of p.behaviors)
+    if (p.type === 'variant') {
+      const properties = {};
+      for (const id of p.behaviors) {
         assert(catalog[id]?.type === 'behavior', 'unknown behavior');
+        Object.assign(properties, catalog[id].styleProperties ?? {});
+      }
+      validateVariantCss(p.css, p.id, 'variant', properties);
+    }
   for (const [type, key] of [
     ['component', 'components'],
     ['variant', 'variants'],

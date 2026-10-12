@@ -97,9 +97,9 @@ test('Postgres roles, key ownership and atomic audit writes',async t=>{
     const invalid=await call(owner,'admin.audit.list',{limit:101,confirmation:'READ_PRIVATE_AUDIT_LOG'});assert.ok(invalid.error||invalid.result?.isError);
   });
   await t.test('read-only plan tools serve exact generated artifacts and reject unsupported versions and capabilities',async()=>{
-    const plans=await call(client,'plans.list');assert.deepEqual(JSON.parse(plans.result.content[0].text).plans,[{planId:'web-simple',policyVersion:'2.1.0',status:'contract-only'}]);
+    const plans=await call(client,'plans.list');assert.deepEqual(JSON.parse(plans.result.content[0].text).plans,[{planId:'web-simple',policyVersion:'2.2.0',status:'contract-only'}]);
     for(const [name,expected] of [['plan.get_manifest',compactLibraryManifest().manifest],['plan.get_schemas',f.app.plans.siteSpec]]) {
-      const result=await call(client,name,{planId:'web-simple',policyVersion:'2.1.0'});const value=JSON.parse(result.result.content[0].text);assert.deepEqual(name==='plan.get_manifest'?value.manifest:value.siteSpec,expected);
+      const result=await call(client,name,{planId:'web-simple',policyVersion:'2.2.0'});const value=JSON.parse(result.result.content[0].text);assert.deepEqual(name==='plan.get_manifest'?value.manifest:value.siteSpec,expected);
       const invalid=await call(client,name,{planId:'../private',policyVersion:'latest'});assert.ok(invalid.error||invalid.result?.isError);
     }
     const version=await call(client,'policy.version');assert.equal(JSON.parse(version.result.content[0].text).policySha256,f.app.plans.manifest.policySha256);

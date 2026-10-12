@@ -1,0 +1,13 @@
+{
+  "id": "glow-border",
+  "type": "effect",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "target": "items",
+  "compatibility": [
+    "feature-grid:standard",
+    "link-cards:standard"
+  ],
+  "purpose": "Decorative rotating border on item hover or focus."
+}

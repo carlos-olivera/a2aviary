@@ -33,7 +33,7 @@ const usage = {
  approval: 'A verified owner or enabled site administrator approves a verified server snapshot through the browser. Approval binds the spec and output hashes and draft revision. No MCP approval.',
  previews: 'Server-generated, sandbox-verified artifact and screenshots; deployment uses these exact bytes without rebuilding.',
  changes: 'change_requests_unavailable. CMS content edits remain available directly through PocketBase.',
- versions: 'Policy 2.1.0 and site contract 2.1 replace intake. Historical policies are frozen, retired artifacts.'
+ versions: 'Policy 2.2.0 and site contract 2.2 replace intake. Historical policies are frozen, retired artifacts.'
 };
 const rules = flattenRules(defaultPolicy);
 const manifest = { ...generated.provenance, planId: defaultPolicy.planId.value, usage, includes: defaultPolicy.includes, firstVersion: defaultPolicy.firstVersion, changes: defaultPolicy.changes, schemas: { site: 'site-spec.schema.json', change: 'change-request.schema.json' }, examples: { spec: examples.spec, change: examples.change } };

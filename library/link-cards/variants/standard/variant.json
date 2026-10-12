@@ -1,9 +1,15 @@
 {
   "id": "link-cards:standard",
   "type": "variant",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "status": "stable",
   "component": "link-cards",
   "variant": "standard",
-  "behaviors": []
+  "behaviors": [],
+  "targets": {
+    "items": {
+      "each": "items",
+      "tag": "li"
+    }
+  }
 }

@@ -74,6 +74,8 @@ local evidence, independent of the hosted verifier and production status.
 
 ## Library runtime verification
 
+The following paragraph records the 2.1 historical baseline.
+
 Policy 2.1.0 / contract 2.1 use generator 2.2.0. The library now includes two
 curated font packages. `library:check` runs the complete local browser matrix;
 `library:check:static` and `check:static` are explicit build/container gates.
@@ -89,3 +91,21 @@ services and generator checking. Existing esbuild performs minification. There
 is no parser dependency in generated client sites. Fontsource generator
 runtime dependencies are removed; curated bytes and OFL notices are stored in
 `library/fonts` and included with generated font resources.
+
+
+## Presentation batch verification
+
+Current source uses policy 2.2.0 / contract 2.2 and generator 2.3.0. The
+[twelve experimental entries](../../library/README.md#contract-22-amendment) are
+tester-only and require owner-supplied shell/control content. All historical 2.1
+contract files remain frozen. `library:check` adds three equal-status fictional
+compositions, front/back states, 390/1280px, normal/reduced motion, content/optional
+boundaries, font palettes, no-JS and input/clipboard failure paths.
+
+After building, run `node scripts/presentation-verify.mjs` from this directory for
+all three real local Astro verifier runs. Evidence (including resource sizes,
+Lighthouse scores, axe, reduced motion, network guards and screenshots) remains
+in ignored `.local/presentation-verifier/` at the repository root. See
+[dated release evidence](../../docs/release-verification.md#presentation-batch--2026-10-12-local-implementation).
+No runtime dependency, infrastructure, migration or provider integration was
+added. Generated selected fonts carry original OFL licenses and registry hashes.

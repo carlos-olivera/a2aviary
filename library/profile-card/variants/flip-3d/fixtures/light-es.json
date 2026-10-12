@@ -1,0 +1,24 @@
+{
+  "id": "identity",
+  "component": "profile-card",
+  "variant": "flip-3d",
+  "props": {
+    "name": "Iria Nube",
+    "role": "Dise\u00f1o de objetos imaginarios",
+    "links": [
+      {
+        "label": "Muestras",
+        "url": "https://example.com/work"
+      }
+    ],
+    "flipLabel": "Ver contacto",
+    "backLabel": "Volver",
+    "primaryContact": {
+      "label": "Correo",
+      "url": "mailto:studio@example.com"
+    },
+    "copyLabel": "Copiar",
+    "copiedLabel": "Copiado",
+    "manualCopyLabel": "Copia el texto seleccionado con el teclado"
+  }
+}

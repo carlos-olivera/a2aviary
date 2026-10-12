@@ -10,6 +10,7 @@ export function generateContracts(policy: Policy) {
   assertPolicy(policy);
   const f = policy.firstVersion, s = f.structure, c = f.copy;
   const modern = policy.version.value !== '2.0.0';
+  const presentation = !['2.0.0','2.1.0'].includes(policy.version.value);
   const tag = (schema: Schema, policyPath: string): Schema => ({ ...schema, 'x-policyPath': policyPath });
   const obj = (properties: Schema, required = Object.keys(properties)): Schema => ({ type: 'object', additionalProperties: false, required, properties });
   const ref = (name: string): Schema => ({ $ref: '#/definitions/' + name });
@@ -43,13 +44,14 @@ export function generateContracts(policy: Policy) {
       if: { properties: { component: { const: name } }, required: ['component'] },
       then: { properties: {
         variant: tag({ enum: component.variants.value }, '/firstVersion/components/' + ptr(name) + '/variants'),
-        props: tag(obj(Object.fromEntries(Object.entries(component.fields).map(([key, field]) => [key, fieldSchema(field.kind)])), Object.entries(component.fields).filter(([, field]) => field.required).map(([key]) => key)), '/firstVersion/components/' + ptr(name) + '/fields')
+        props: tag(obj(Object.fromEntries(Object.entries(component.fields).map(([key, field]) => [key, presentation && !field.required && ['heading','shortCopy'].includes(field.kind) ? {anyOf:[fieldSchema(field.kind),{const:''}]} : fieldSchema(field.kind)])), Object.entries(component.fields).filter(([, field]) => field.required).map(([key]) => key)), '/firstVersion/components/' + ptr(name) + '/fields')
       } }
     }))
   };
   defs.section = obj({ id, blocks: arr(ref('block'), s.maxBlocksPerSection.value, '/firstVersion/structure/maxBlocksPerSection', 1), ...(modern ? {effects} : {}) }, ['id','blocks']);
   defs.seo = obj({ title: copy('seoTitle'), description: copy('seoDescription'), socialImage: id }, ['title', 'description']);
   defs.page = obj({ id, path: tag({ type: 'string', pattern: s.pagePathPattern.value }, '/firstVersion/structure/pagePathPattern'), seo: ref('seo'), sections: arr(ref('section'), s.maxSectionsPerPage.value, '/firstVersion/structure/maxSectionsPerPage', 1) });
+  if (presentation) defs.shell = obj({skipLink: copy('label'), primaryNavigationLabel: copy('label'), footerNavigationLabel: copy('label'), notFoundTitle: copy('heading'), notFoundText: copy('shortCopy'), notFoundHomeLabel: copy('label')}, []);
   defs.tokens = obj({
     colors: tag(obj(Object.fromEntries(f.designTokens.colorSlots.value.map(slot => [slot, tag({ type: 'string', pattern: f.designTokens.colorPattern.value }, '/firstVersion/designTokens/colorPattern')]))), '/firstVersion/designTokens/colorSlots'),
     fonts: obj({ heading: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), body: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), ...(modern ? {mono: tag({enum: f.designTokens.fonts.value}, '/firstVersion/designTokens/fonts')} : {}) }, ['heading','body']),
@@ -63,7 +65,7 @@ export function generateContracts(policy: Policy) {
   const identity = { contractVersion: { const: f.contractVersion.value }, planId: { const: policy.planId.value }, policyVersion: { const: policy.version.value } };
   const provenance = { policyVersion: policy.version.value, policySha256: sha256(canonicalJson(policy)) };
   const schema = (name: string, body: Schema): Schema => ({ $schema: 'http://json-schema.org/draft-07/schema#', $id: `https://a2aviary.io/contracts/site/${policy.version.value}/${name}`, ...body, definitions: defs, 'x-provenance': provenance });
-  const siteSchema = schema('site-spec-v1', obj({ ...identity, ...(modern ? {language: {type:'string', pattern:f.language.value}} : {}), pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms']));
+  const siteSchema = schema('site-spec-v1', obj({ ...identity, ...(presentation ? {shell:ref('shell')} : {}), ...(modern ? {language: {type:'string', pattern:f.language.value}} : {}), pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms']));
   const operationShapes: Record<string, Schema> = {
     'add-block': { pageId: id, sectionId: id, index: { type: 'integer', minimum: 0, maximum: s.maxBlocksPerSection.value }, block: ref('block') },
     'update-block': { pageId: id, sectionId: id, blockId: id, block: ref('block') },

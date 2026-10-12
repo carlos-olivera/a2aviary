@@ -1,12 +1,16 @@
 import { catalog } from '../../../services/src/site/library-data.ts';
-import { defaultPolicy, canonicalJson, sha256 } from '../../../services/src/site/policy.ts';
+import {
+  defaultPolicy,
+  canonicalJson,
+  sha256,
+} from '../../../services/src/site/policy.ts';
 import { SiteError } from './render.ts';
 export function compactLibraryManifest() {
   const manifest = {
     planId: 'web-simple',
     policyVersion: defaultPolicy.version.value,
     policySha256: sha256(canonicalJson(defaultPolicy)),
-    contractVersion: '2.1',
+    contractVersion: '2.2',
     defaults: { language: 'en', motion: 'none', layout: 'boxed', effects: [] },
     budgets: defaultPolicy.firstVersion.library.budgets,
     packages: Object.values(catalog)
@@ -15,6 +19,10 @@ export function compactLibraryManifest() {
         id: p.id,
         type: p.type,
         status: p.status,
+        ...(p.requiresShellContent ? { requiresShellContent: true } : {}),
+        ...(p.contentRequirements
+          ? { contentRequirements: p.contentRequirements }
+          : {}),
         purpose:
           p.purpose ??
           (p.type === 'component'
@@ -45,15 +53,26 @@ export function compactLibraryManifest() {
 export function libraryDetail(id: string) {
   const p = Object.hasOwn(catalog, id) ? catalog[id] : undefined;
   if (!p) throw new SiteError('library_package_not_found');
-  const { code, css, license, files, fixtures, ...detail } = p;
+  const { code, css, license, files, fixtures, fixture, ...detail } = p;
   return {
     ...detail,
-    ...(p.type==='variant'?{fields:catalog[p.component!].fields}:{}),
+    ...(p.type === 'variant' ? { fields: catalog[p.component!].fields } : {}),
     ...(files ? { files: files.map(({ data, ...f }) => f) } : {}),
-    exampleProps:
-      p.fixture?.props ??
-      (p.type === 'component'
-        ? catalog[p.id + ':standard']?.fixture?.props
-        : undefined),
+    ...(p.requiresShellContent
+      ? {
+          examples: (
+            p.fixtures ??
+            Object.values(catalog)
+              .filter((v) => v.component === p.id)
+              .flatMap((v) => v.fixtures ?? [])
+          ).map((f) => ({ props: f.props })),
+        }
+      : {}),
+    exampleProps: p.requiresShellContent
+      ? undefined
+      : (p.fixture?.props ??
+        (p.type === 'component'
+          ? catalog[p.id + ':standard']?.fixture?.props
+          : undefined)),
   };
 }

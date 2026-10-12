@@ -1,0 +1,59 @@
+{
+  "id": "profile-card",
+  "type": "component",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "fields": {
+    "name": {
+      "kind": "heading",
+      "required": true,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "role": {
+      "kind": "shortCopy",
+      "required": true,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "image": {
+      "kind": "image",
+      "required": false,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "links": {
+      "kind": "links",
+      "required": true,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "primaryContact": {
+      "kind": "link",
+      "required": false,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "flipLabel": {
+      "kind": "shortCopy",
+      "required": false,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "backLabel": {
+      "kind": "shortCopy",
+      "required": false,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "copyLabel": {
+      "kind": "shortCopy",
+      "required": false,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "copiedLabel": {
+      "kind": "shortCopy",
+      "required": false,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    },
+    "manualCopyLabel": {
+      "kind": "shortCopy",
+      "required": false,
+      "rationale": "Owner-supplied typed content; no executable markup or implicit copy."
+    }
+  }
+}

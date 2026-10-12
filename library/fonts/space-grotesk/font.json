@@ -1,0 +1,30 @@
+{
+  "id": "space-grotesk",
+  "type": "font",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "family": "Space Grotesk",
+  "fallback": "sans-serif",
+  "source": {
+    "package": "@fontsource/space-grotesk",
+    "version": "5.3.0",
+    "license": "OFL-1.1",
+    "subset": "latin"
+  },
+  "files": [
+    {
+      "file": "space-grotesk-latin-400-normal.woff2",
+      "weight": 400,
+      "style": "normal",
+      "sha256": "65fd17fcbd2e2f522940b5f67ead3d23329e02891aa5495e74d11a499c0b0673"
+    },
+    {
+      "file": "space-grotesk-latin-700-normal.woff2",
+      "weight": 700,
+      "style": "normal",
+      "sha256": "35f8aec56cfd5cbfdb03cc68733a54a0b05bb3617ffcd5fd332badc0b045ca55"
+    }
+  ],
+  "purpose": "Optional self-hosted Latin typography."
+}

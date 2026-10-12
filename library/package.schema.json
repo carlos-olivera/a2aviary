@@ -66,6 +66,9 @@
               "rationale"
             ]
           }
+        },
+        "requiresShellContent": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -127,10 +130,60 @@
               "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
             },
             "items": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "each",
+                    "tag"
+                  ],
+                  "properties": {
+                    "each": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-zA-Z]*$"
+                    },
+                    "tag": {
+                      "const": "li"
+                    }
+                  }
+                }
+              ]
+            },
+            "action": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "helper",
+                    "field"
+                  ],
+                  "properties": {
+                    "helper": {
+                      "const": "link"
+                    },
+                    "field": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-zA-Z]*$"
+                    }
+                  }
+                }
+              ]
+            },
+            "status": {
               "type": "string",
               "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
             },
-            "action": {
+            "messages": {
               "type": "string",
               "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$"
             }
@@ -141,6 +194,34 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 240
+        },
+        "requiresShellContent": {
+          "type": "boolean"
+        },
+        "contentRequirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "fields"
+            ],
+            "properties": {
+              "when": {
+                "type": "string",
+                "pattern": "^[a-z][a-zA-Z]*$"
+              },
+              "fields": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-zA-Z]*$"
+                }
+              }
+            }
+          }
         }
       },
       "required": [
@@ -195,6 +276,9 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 240
+        },
+        "requiresShellContent": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -233,6 +317,50 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 240
+        },
+        "requiresShellContent": {
+          "type": "boolean"
+        },
+        "styleProperties": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^--pkg-[a-z][a-z0-9-]*$"
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "unit",
+              "min",
+              "max",
+              "initial"
+            ],
+            "properties": {
+              "unit": {
+                "enum": [
+                  "deg",
+                  "px",
+                  "%",
+                  ""
+                ]
+              },
+              "min": {
+                "type": "number",
+                "minimum": -999,
+                "maximum": 999
+              },
+              "max": {
+                "type": "number",
+                "minimum": -999,
+                "maximum": 999
+              },
+              "initial": {
+                "type": "number",
+                "minimum": -999,
+                "maximum": 999
+              }
+            }
+          }
         }
       },
       "required": [
@@ -343,6 +471,9 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 240
+        },
+        "requiresShellContent": {
+          "type": "boolean"
         }
       },
       "required": [

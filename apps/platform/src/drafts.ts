@@ -7,6 +7,8 @@ import {
 import type { PoolClient } from 'pg';
 import {
   generateSite,
+  contentErrors,
+  catalog,
   canonicalJson,
   sha256,
   defaultPolicy,
@@ -115,7 +117,7 @@ export class Drafts {
           limit: defaultPolicy.version.value,
           actual: site.policy_version,
           suggestion:
-            'Read or discard this historical draft; create a new 2.1 draft to edit or preview.',
+            'Read or discard this historical draft; create a new 2.2 draft to edit or preview.',
         },
       ]);
   }
@@ -147,10 +149,21 @@ export class Drafts {
                 path: '/policyVersion',
                 rule: 'policy.retired',
                 limit: defaultPolicy.version.value,
-                suggestion: 'Create a new 2.1 draft to edit or preview.',
+                suggestion: 'Create a new 2.2 draft to edit or preview.',
               },
             ]
           : blockers(d.content, { test: d.test_mode }),
+      missingLabels: Object.entries(
+        contentErrors(d.content, catalog).reduce(
+          (groups: Record<string, string[]>, e) => {
+            const at = e.path.lastIndexOf('/'),
+              prefix = e.path.slice(0, at);
+            (groups[prefix] ??= []).push(e.path.slice(at + 1));
+            return groups;
+          },
+          {},
+        ),
+      ).map(([path, fields]) => ({ path, fields })),
       budget: {
         jsonBytesRemaining:
           262144 -

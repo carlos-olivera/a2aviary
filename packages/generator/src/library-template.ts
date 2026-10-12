@@ -1,7 +1,7 @@
 // Core-owned grammar and interpreter. Packages supply data, never executable code.
 export type Fields = Record<string, { kind: string; required?: boolean }>;
 export type TemplateNode =
-  | { type: 'literal'; value: string }
+  | { type: 'literal'; value: string; target?: string }
   | { type: 'text' | 'helper'; field: string; helper?: string }
   | { type: 'if' | 'each'; field: string; children: TemplateNode[] };
 export interface LibraryVariant {
@@ -9,7 +9,7 @@ export interface LibraryVariant {
   ast: TemplateNode[];
   css: string;
   behaviors?: string[];
-  targets?: Record<string, string>;
+  targets?: import('../../../services/src/site/library.ts').LibraryPackage['targets'];
 }
 const tags = new Set([
   'button',
@@ -52,7 +52,11 @@ const helpers: Record<string, string[]> = {
 const invalid = (reason: string): never => {
   throw new Error('Invalid library template: ' + reason);
 };
-export function parseTemplate(source: string, fields: Fields): TemplateNode[] {
+export function parseTemplate(
+  source: string,
+  fields: Fields,
+  ownerCopy = false,
+): TemplateNode[] {
   // Reject everything outside this small, balanced language; no browser error recovery.
   const tokens = source.trim().match(/{{[\s\S]*?}}|<[^>]*>|[^<{]+|[<{]/g) ?? [];
   let index = 0;
@@ -125,6 +129,7 @@ export function parseTemplate(source: string, fields: Fields): TemplateNode[] {
         } else stack.push(match![2]);
         nodes.push({ type: 'literal', value: token });
       } else {
+        if (ownerCopy && token.trim()) invalid('literal package copy');
         if (token.includes('{')) invalid('unsupported expression');
         nodes.push({ type: 'literal', value: token });
       }
@@ -144,7 +149,8 @@ export const escapeHtml = (value: unknown) =>
 export function interpretTemplate(
   nodes: TemplateNode[],
   props: Record<string, unknown>,
-  helper: (name: string, value: unknown) => string,
+  helper: (name: string, value: unknown, field: string) => string,
+  decorate: (tag: string, role: string) => string = (tag) => tag,
 ): string {
   const read = (scope: unknown, field: string): unknown =>
     field === 'this'
@@ -157,7 +163,8 @@ export function interpretTemplate(
   const render = (list: TemplateNode[], scope: unknown): string =>
     list
       .map((node) => {
-        if (node.type === 'literal') return node.value;
+        if (node.type === 'literal')
+          return node.target ? decorate(node.value, node.target) : node.value;
         const value = read(scope, node.field);
         if (node.type === 'if')
           return value ? render(node.children, scope) : '';
@@ -168,7 +175,8 @@ export function interpretTemplate(
         }
         if (value === undefined || value === null)
           throw new Error('Missing library field: ' + node.field);
-        if (node.type === 'helper') return helper(node.helper!, value);
+        if (node.type === 'helper')
+          return helper(node.helper!, value, node.field);
         if (typeof value !== 'string')
           throw new Error('Invalid library text value');
         return escapeHtml(value);

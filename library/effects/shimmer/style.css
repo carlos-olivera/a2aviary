@@ -1,0 +1,6 @@
+[data-fx~="shimmer"]{display:inline-block;position:relative;padding:var(--space-12);border:1px solid var(--color-border);border-radius:var(--radius);background:var(--color-surface);color:var(--color-primary);overflow-wrap:anywhere}
+[data-fx~="shimmer"]::after{content:"";position:absolute;inset:auto 0 0 0;height:2px;pointer-events:none;background:linear-gradient(90deg,var(--color-primary),var(--color-accent));transform-origin:left}
+[data-fx~="shimmer"]:hover::after{animation-name:pkg-shimmer-sheen;animation-duration:calc(var(--motion-duration) * 2);animation-timing-function:ease-in-out}
+[data-fx~="shimmer"]:focus-visible::after{animation-name:pkg-shimmer-sheen;animation-duration:calc(var(--motion-duration) * 2);animation-timing-function:ease-in-out}
+@keyframes pkg-shimmer-sheen{from{transform:scale(0)}to{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){[data-fx~="shimmer"]:hover::after{animation:none}[data-fx~="shimmer"]:focus-visible::after{animation:none}}

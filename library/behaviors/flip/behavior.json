@@ -1,0 +1,8 @@
+{
+  "id": "flip",
+  "type": "behavior",
+  "version": "1.0.0",
+  "status": "experimental",
+  "requiresShellContent": true,
+  "purpose": "Accessible two-face disclosure with focus transfer."
+}
