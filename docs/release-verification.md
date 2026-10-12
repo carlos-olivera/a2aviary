@@ -9,10 +9,17 @@ The requested platform/generator/image jobs are prepared in ignored
 The Operator App push was refused for missing `workflows` permission; no App
 permissions were requested, changed or bypassed. The published PR contains only
 documentation; CI coverage remains unchanged. The existing website check
-fingerprints workflow bytes and fails on the full patch with `Represented source changed: regenerate architecture`.
-The task forbids generated-artifact changes, so architecture provenance was not
-refreshed. This is a separate gate from Operator App workflow-write permission;
-neither a local pass nor a documentation PR activates CI or deployment gating.
+fingerprints workflow bytes. After the owner authorized the minimum provenance
+exception, `website/scripts/integrate-architecture.mjs` regenerated
+`docs/architecture/provenance.json` using the existing six matching finalized
+artifacts and receipts. Only the two workflow hashes changed; the emitted
+`website/architecture/index.html` is byte-for-byte unchanged. The full patch now
+passes website check/build locally. Provenance is retained with both workflows
+in the owner patch because publishing it without those edits would fail the
+current website check. No application, migration, contract, policy, library or
+generator output changed. This workflow/provenance coupling is expected to be
+relaxed in a later cleanup PR. Operator workflow publication remains blocked;
+a local pass or documentation PR does not activate CI or deployment gating.
 The unpublished broken-import branch failed the exact platform check with TS2882
 and the original source was restored. Required status checks and Railway's
 **Wait for CI** (observed off, exact dashboard label verified read-only) remain
