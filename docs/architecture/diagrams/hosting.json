@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Live Hosting & CMS",
-    "output": ".local/architecture/deploy-permissions/hosting.html",
+    "output": ".local/architecture/cms-target/hosting.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "3dce66819a30c327f98593c8b70566339d722c2c",
+      "revision": "cd065ae0da5b81c238b6d91c7f6b77a352f5cfc6",
       "provider": "github",
       "link_mode": "web"
     }
@@ -115,6 +115,11 @@
           "path": "packages/generator/src/pocketbase.ts",
           "line": 43,
           "end_line": 58
+        },
+        {
+          "path": "apps/platform/test/hosted-fixture-cms.mjs",
+          "line": 38,
+          "end_line": 76
         }
       ],
       "pos": [
