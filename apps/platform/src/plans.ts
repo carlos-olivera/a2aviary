@@ -2,10 +2,10 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 
 export async function loadPlans(root = new URL('../../../', import.meta.url)) {
-  const manifest = JSON.parse(await readFile(new URL('contracts/site/2.0.0/manifest.json', root), 'utf8'));
-  const markdown = await readFile(new URL('contracts/site/2.0.0/manifest.md', root), 'utf8');
-  const siteSpec = JSON.parse(await readFile(new URL('contracts/site/2.0.0/site-spec.schema.json', root), 'utf8'));
-  const changeRequest = JSON.parse(await readFile(new URL('contracts/site/2.0.0/change-request.schema.json', root), 'utf8'));
+  const manifest = JSON.parse(await readFile(new URL('contracts/site/2.1.0/manifest.json', root), 'utf8'));
+  const markdown = await readFile(new URL('contracts/site/2.1.0/manifest.md', root), 'utf8');
+  const siteSpec = JSON.parse(await readFile(new URL('contracts/site/2.1.0/site-spec.schema.json', root), 'utf8'));
+  const changeRequest = JSON.parse(await readFile(new URL('contracts/site/2.1.0/change-request.schema.json', root), 'utf8'));
   const policyBytes = await readFile(new URL('plans/web-simple.policy.json', root));
   const policy = JSON.parse(policyBytes.toString('utf8'));
   // Match the Phase 1 sorted-JSON policy digest, independent of file formatting.

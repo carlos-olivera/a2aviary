@@ -17,3 +17,8 @@ export * from './costs.ts';
 
 export * from './normalize.ts';
 export {generateContracts} from '../../../services/src/site/generator.ts';
+
+export { catalog } from '../../../services/src/site/library-data.ts';
+export { validateLibrarySelection, selectedPackages } from '../../../services/src/site/library.ts';
+export { policyForVersion } from '../../../services/src/site/policy.ts';
+export { compactLibraryManifest, libraryDetail } from './library-manifest.ts';

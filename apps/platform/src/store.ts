@@ -34,6 +34,7 @@ export const TOOL_ROLES: Record<string, readonly Role[]> = {
   'site.draft.create': ALL_ROLES,
   'site.draft.apply': ALL_ROLES,
   'site.draft.get': ALL_ROLES,
+  'library.get': ALL_ROLES,
   'site.draft.discard': ALL_ROLES,
   'site.upload.open': ALL_ROLES,
   'site.upload.status': ALL_ROLES,

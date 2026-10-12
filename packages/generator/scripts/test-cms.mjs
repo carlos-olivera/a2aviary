@@ -1,3 +1,5 @@
+import { request as httpRequest } from 'node:http';
+import { gunzipSync, zstdDecompressSync } from 'node:zlib';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -9,7 +11,7 @@ import {
   cmsEditorHtml,
   cmsEditorScript,
   caddyfile,
-  caddyDockerfile
+  caddyDockerfile,
 } from '../dist/index.js';
 import { fixtureSubmission } from './fixture-lib.mjs';
 const { spec } = await fixtureSubmission(),
@@ -39,7 +41,7 @@ const variables = {
   PB_BACKUP_REGION: 'auto',
   PB_BACKUP_ACCESS_KEY_ID: 'fictional-key',
   PB_BACKUP_SECRET_ACCESS_KEY: 'fictional-secret',
-  PB_BACKUP_FORCE_PATH_STYLE: 'true'
+  PB_BACKUP_FORCE_PATH_STYLE: 'true',
 };
 try {
   execFileSync('docker', ['network', 'create', network], { stdio: 'pipe' });
@@ -59,12 +61,12 @@ try {
       '--mount',
       'type=volume,source=' + volume + ',target=/pb/pb_data',
       ...Object.entries(variables).flatMap(([k, v]) => ['--env', k + '=' + v]),
-      image
+      image,
     ],
-    { stdio: 'pipe' }
+    { stdio: 'pipe' },
   );
   const port = execFileSync('docker', ['port', name, '8090'], {
-      encoding: 'utf8'
+      encoding: 'utf8',
     })
       .trim()
       .split(':')
@@ -89,10 +91,10 @@ try {
         .map((l) =>
           l
             .replace(/https?:\/\/\S+/g, '[url]')
-            .replace(/[A-Za-z0-9_-]{30,}/g, '[redacted]')
+            .replace(/[A-Za-z0-9_-]{30,}/g, '[redacted]'),
         )
         .slice(-4)
-        .join('\n')
+        .join('\n'),
     );
   }
   assert.ok(ready, 'PocketBase readiness');
@@ -101,13 +103,13 @@ try {
       method,
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: token } : {})
+        ...(token ? { Authorization: token } : {}),
       },
-      body: data ? JSON.stringify(data) : undefined
+      body: data ? JSON.stringify(data) : undefined,
     });
   const auth = await request('collections/editors/auth-with-password', 'POST', {
     identity: variables.PB_CLIENT_EMAIL,
-    password: variables.PB_CLIENT_PASSWORD
+    password: variables.PB_CLIENT_PASSWORD,
   });
   if (!auth.ok) {
     const logResult = spawnSync('docker', ['logs', name], { encoding: 'utf8' });
@@ -115,7 +117,7 @@ try {
       ((logResult.stdout ?? '') + (logResult.stderr ?? ''))
         .split('\n')
         .filter((l) => l.includes('Fixture bootstrap'))
-        .join('\n')
+        .join('\n'),
     );
     const failure = await auth.clone().json();
     console.error(
@@ -123,17 +125,17 @@ try {
         authFailure: {
           code: failure.code,
           message: failure.message,
-          fields: Object.keys(failure.data ?? {})
-        }
-      })
+          fields: Object.keys(failure.data ?? {}),
+        },
+      }),
     );
     const rootAuth = await request(
       'collections/_superusers/auth-with-password',
       'POST',
       {
         identity: variables.PB_ADMIN_EMAIL,
-        password: variables.PB_ADMIN_PASSWORD
-      }
+        password: variables.PB_ADMIN_PASSWORD,
+      },
     );
     console.error('adminAuthStatus:' + rootAuth.status);
     if (rootAuth.ok) {
@@ -149,20 +151,20 @@ try {
   const anonymous = await request('collections/catalog/records', 'POST', {
     title: 'Fictional entry',
     body: 'Prepared content',
-    published: true
+    published: true,
   });
   assert.equal(anonymous.ok, false);
   const signup = await request('collections/editors/records', 'POST', {
     email: 'intruder@example.invalid',
     password: 'fictional-uninvited-password',
-    passwordConfirm: 'fictional-uninvited-password'
+    passwordConfirm: 'fictional-uninvited-password',
   });
   assert.equal(signup.ok, false);
   const created = await request(
     'collections/catalog/records',
     'POST',
     { title: 'Fictional entry', body: 'Prepared content', published: false },
-    client
+    client,
   );
   assert.equal(created.status, 200);
   const record = await created.json();
@@ -174,7 +176,7 @@ try {
     'collections/catalog/records/' + record.id,
     'PATCH',
     { published: true, body: 'Edited directly through CMS' },
-    client
+    client,
   );
   assert.equal(edited.status, 200);
   const published = await (await request('collections/catalog/records')).json();
@@ -183,7 +185,7 @@ try {
     'collections/catalog/records/' + record.id,
     'PATCH',
     { title: 'x'.repeat(121) },
-    client
+    client,
   );
   assert.equal(tooLong.ok, false);
   const adminAuth = await request(
@@ -191,8 +193,8 @@ try {
     'POST',
     {
       identity: variables.PB_ADMIN_EMAIL,
-      password: variables.PB_ADMIN_PASSWORD
-    }
+      password: variables.PB_ADMIN_PASSWORD,
+    },
   );
   assert.equal(adminAuth.status, 200);
   const admin = (await adminAuth.json()).token;
@@ -208,18 +210,22 @@ try {
   await mkdir(webDir + '/site', { recursive: true });
   await writeFile(
     webDir + '/site/index.html',
-    '<!doctype html><html><title>Fictional fixture</title><body><h1>Fictional fixture</h1></body></html>'
+    '<!doctype html><html><title>Fictional fixture</title><body><h1>Fictional fixture</h1></body></html>',
   );
   await writeFile(
     webDir + '/site/404.html',
-    '<!doctype html><html><title>Missing</title><body><h1>Missing</h1></body></html>'
+    '<!doctype html><html><title>Missing</title><body><h1>Missing</h1></body></html>',
   );
+  const compressible =
+    '/* Fictional compression fixture */\n' +
+    '.fictional{color:inherit}\n'.repeat(200);
+  await writeFile(webDir + '/site/fixture.css', compressible);
   await writeFile(webDir + '/Dockerfile', caddyDockerfile);
   await writeFile(webDir + '/Caddyfile', caddyfile(spec));
   execFileSync(
     'docker',
     ['build', '--tag', 'a2aviary-phase3-web:local', webDir],
-    { stdio: 'inherit' }
+    { stdio: 'inherit' },
   );
   execFileSync(
     'docker',
@@ -234,12 +240,12 @@ try {
       '127.0.0.1::8080',
       '--env',
       'CMS_UPSTREAM=cms:8090',
-      'a2aviary-phase3-web:local'
+      'a2aviary-phase3-web:local',
     ],
-    { stdio: 'pipe' }
+    { stdio: 'pipe' },
   );
   const webPort = execFileSync('docker', ['port', webName, '8080'], {
-      encoding: 'utf8'
+      encoding: 'utf8',
     })
       .trim()
       .split(':')
@@ -257,17 +263,47 @@ try {
   }
   if (!webReady) {
     console.error(
-      spawnSync('docker', ['logs', webName], { encoding: 'utf8' }).stderr
+      spawnSync('docker', ['logs', webName], { encoding: 'utf8' }).stderr,
     );
   }
   assert.ok(webReady, 'Caddy readiness');
+  for (const encoding of ['gzip', 'zstd']) {
+    const response = await new Promise((resolve, reject) => {
+      const req = httpRequest(
+        webOrigin + '/fixture.css',
+        { headers: { 'accept-encoding': encoding } },
+        (res) => {
+          const chunks = [];
+          res.on('data', (b) => chunks.push(b));
+          res.on('end', () =>
+            resolve({ headers: res.headers, bytes: Buffer.concat(chunks) }),
+          );
+        },
+      );
+      req.on('error', reject);
+      req.end();
+    });
+    assert.equal(response.headers['content-encoding'], encoding);
+    assert.equal(
+      (encoding === 'gzip'
+        ? gunzipSync(response.bytes)
+        : zstdDecompressSync(response.bytes)
+      ).toString(),
+      compressible,
+    );
+    assert.equal(
+      response.headers['content-security-policy'],
+      "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
+    );
+    assert(response.bytes.length < Buffer.byteLength(compressible));
+  }
   assert.equal((await fetch(webOrigin + '/')).status, 200);
   assert.equal((await fetch(webOrigin + '/missing')).status, 404);
   assert.equal((await fetch(webOrigin + '/api/cms/editor.html')).status, 200);
   for (const path of [
     '/api/cms/_/',
     '/api/cms/api/settings',
-    '/api/cms/api/collections/_superusers/auth-with-password'
+    '/api/cms/api/collections/_superusers/auth-with-password',
   ])
     assert.equal((await fetch(webOrigin + path)).status, 404);
   const proxiedAuth = await fetch(
@@ -277,31 +313,32 @@ try {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         identity: variables.PB_CLIENT_EMAIL,
-        password: variables.PB_CLIENT_PASSWORD
-      })
-    }
+        password: variables.PB_CLIENT_PASSWORD,
+      }),
+    },
   );
   assert.equal(proxiedAuth.status, 200);
   const proxiedRecords = await fetch(
     webOrigin +
-      '/api/cms/api/collections/catalog/records?filter=published%3Dtrue'
+      '/api/cms/api/collections/catalog/records?filter=published%3Dtrue',
   );
   assert.equal(proxiedRecords.status, 200);
   assert.equal(
     (await proxiedRecords.json()).items[0].body,
-    'Edited directly through CMS'
+    'Edited directly through CMS',
   );
   console.log(
     JSON.stringify({
       cms: 'pass',
       login: true,
       caddyProxy: true,
+      staticCompression: 'gzip and zstd; decompressed bytes and CSP verified',
       adminApisBlocked: true,
       anonymousWritesRejected: true,
       contentEditWithoutRedeploy: true,
       backupSchedule: 'configured; remote backup execution not verified',
-      version: '0.40.4'
-    })
+      version: '0.40.4',
+    }),
   );
 } finally {
   try {

@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "tsc --noEmit && npm run site:check && node ../packages/generator/scripts/library.mjs",
+    "check": "tsc --noEmit && npm run site:check && LIBRARY_TOOL_HOST=services node ../packages/generator/scripts/library.mjs --static",
     "test": "node --test test/*.test.mjs",
     "site:generate": "node scripts/site/generate.ts",
     "site:check": "node scripts/site/generate.ts --check"
@@ -29,6 +29,7 @@
   "devDependencies": {
     "@types/mailparser": "3.4.6",
     "@types/node": "22.19.15",
+    "acorn": "8.19.0",
     "esbuild": "0.25.12",
     "typescript": "7.0.2"
   }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-11 — web-simple 2.1 library runtime
+
+- Add policy 2.1.0/contract 2.1 and generator 2.2.0: optional section/block effects, strict language tags, mono fonts, motion and flush layout. Preserve default boxed HTML/CSS and legacy font resources byte-for-byte against PR #29 fixtures. Freeze all 1.0.x/2.0.0 artifacts; old drafts remain readable/discardable and stored historical approved snapshots deploy their original verified bytes.
+- Extend the curated compiler to five strict package types with dependency/status/compatibility checks, deterministic gzip budgets, duplicate signatures and overlap warnings. Package the pinned Latin Inter/EB Garamond bytes with OFL licenses. Restricted templates, CSS and Acorn-validated behaviors compile to inert data; conditional external JavaScript supports native/no-JS content, keyboard interaction and initializer failure isolation. Fictional effects/behaviors/variants remain isolated test fixtures.
+- Apply immutable server-owned test audience to draft/preview/worker admission, retain atomic revisions/idempotency, expose a 24 KiB compact manifest and gated read-only `library.get`, and bind preview reuse to policy/generator/checker/package provenance. Require full-route reduced-motion and browser-wide external-request checks, including Lighthouse. Add Caddy zstd/gzip negotiation with byte/CSP regression coverage.
+- Record local checks and rejection-rule coverage in [release evidence](docs/release-verification.md#web-simple-21--2026-10-11-local-implementation). Services CI and Docker retain explicit static library checks; generator check/test run the full local browser matrix. Workflows, migrations, hosted fixtures and production configuration are unchanged. The recorded production HTTP 503 remains unresolved; delivery stops at an Operator App PR for owner review.
+
 ## 2026-10-11 — component library foundation
 
 - Move the twelve policy 2.0.0 components and their standard presentations into [versioned library packages](library/README.md). Add a generated 24-package registry with exact file hashes and policy agreement checks; reserve behavior/effect/font metadata without implementing packages.

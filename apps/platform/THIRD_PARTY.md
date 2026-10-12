@@ -16,3 +16,12 @@ Upstream sources: [Better Auth](https://github.com/better-auth/better-auth),
 [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk),
 [node-postgres](https://github.com/brianc/node-postgres),
 [jose](https://github.com/panva/jose), [Zod](https://github.com/colinhacks/zod).
+
+
+The library compiler pins **Acorn 8.19.0 (MIT)** as a development dependency for
+AST validation; regex scanning cannot enforce the restricted behavior language.
+Existing **esbuild 0.25.12 (MIT)** minifies approved behavior expressions. Neither
+parser nor minifier is shipped in generated sites. Curated Inter and EB Garamond
+Latin WOFF2 files retain their pinned @fontsource 5.3.0 provenance and original
+SIL Open Font License 1.1 files under `library/fonts/`; generated sites include
+those notices. Project Apache-2.0 licensing does not replace dependency licenses.

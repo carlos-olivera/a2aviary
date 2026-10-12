@@ -47,12 +47,15 @@ export function testDependencies() {
         const checks = [
           'catalog-syntax',
           'astro-build',
+          'network:external',
           ...spec.pages.flatMap((p) => [
             'a11y:' + p.path,
             'links:' + p.path,
             'lighthouse:' + p.path,
             'screenshot:' + p.path + ':390',
-            'screenshot:' + p.path + ':1280'
+            'motion:reduced:' + p.path + ':390',
+      'motion:reduced:' + p.path + ':1280',
+      'screenshot:' + p.path + ':1280'
           ])
         ].map((name) => ({
           name,

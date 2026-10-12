@@ -51,12 +51,16 @@ export function assertVerified(
   const required = [
     'catalog-syntax',
     'astro-build',
+    ...(spec.policyVersion === '2.0.0' ? [] : ['network:external']),
     ...spec.pages.flatMap((p) => [
       'a11y:' + p.path,
       'links:' + p.path,
       'lighthouse:' + p.path,
       'screenshot:' + p.path + ':390',
       'screenshot:' + p.path + ':1280',
+      ...(spec.policyVersion === '2.0.0'
+        ? []
+        : [390, 1280].map((width) => 'motion:reduced:' + p.path + ':' + width)),
     ]),
   ];
   if (

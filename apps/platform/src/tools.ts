@@ -15,7 +15,11 @@ import {
 import type { Plans } from './plans.ts';
 import type { Sites } from './sites.ts';
 import type { SiteAdministration } from './site-administration.ts';
-import { SiteError } from '@a2aviary/generator';
+import {
+  SiteError,
+  compactLibraryManifest,
+  libraryDetail,
+} from '@a2aviary/generator';
 
 export function createServer(
   principal: Principal,
@@ -193,9 +197,9 @@ export function createServer(
   );
   add(
     'plan.get_manifest',
-    'Read the exact pinned policy manifest in JSON and Markdown.',
+    'Read compact pinned policy and curated package summaries; use library.get for details when site tools are enabled.',
     plan,
-    () => ({ manifest: plans.manifest, markdown: plans.markdown }),
+    () => compactLibraryManifest(),
   );
   add(
     'plan.get_schemas',
@@ -214,6 +218,12 @@ export function createServer(
     }),
   );
   if (sites) {
+    add(
+      'library.get',
+      'Read one curated package, compatibility, status and fictional example props. Does not accept code.',
+      z.object({ id: z.string().max(96) }).strict(),
+      (a) => libraryDetail(a.id),
+    );
     const draftId = z.uuid(),
       requestId = z.uuid(),
       expectedRevision = z.number().int().min(0);
@@ -226,6 +236,7 @@ export function createServer(
               settings: z
                 .object({
                   tokens: z.unknown().optional(),
+                  language: z.string().optional(),
                   navigation: z.unknown().optional(),
                   cms: z.unknown().optional(),
                 })
@@ -309,14 +320,14 @@ export function createServer(
     );
     add(
       'site.draft.apply',
-      'Apply an atomic batch up to 32 operations/64 KiB with revision checking. Supply content only; never image bytes, hashes or approvals.',
+      'Apply an atomic batch up to 32 operations/64 KiB with revision checking. Settings accept language and tokens including mono font, motion and layout; sections/blocks accept effects. Supply content only; never code, audience, image bytes, hashes or approvals.',
       z.object({ draftId, requestId, expectedRevision, operations }).strict(),
       (a) => sites.drafts.apply(principal.id, a),
       false,
     );
     add(
       'site.draft.get',
-      'Compact missing-input/budget summary. Use detail full, assets, or a page ID for content. Assets paginate with after.',
+      'Compact language/token/effect and missing-input/budget summary. Use detail full, assets, or a page ID for content. Assets paginate with after.',
       z
         .object({
           draftId,

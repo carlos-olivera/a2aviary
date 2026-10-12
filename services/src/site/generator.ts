@@ -9,6 +9,7 @@ export function assertPolicySnapshot(policy: Policy, snapshot: unknown): void {
 export function generateContracts(policy: Policy) {
   assertPolicy(policy);
   const f = policy.firstVersion, s = f.structure, c = f.copy;
+  const modern = policy.version.value !== '2.0.0';
   const tag = (schema: Schema, policyPath: string): Schema => ({ ...schema, 'x-policyPath': policyPath });
   const obj = (properties: Schema, required = Object.keys(properties)): Schema => ({ type: 'object', additionalProperties: false, required, properties });
   const ref = (name: string): Schema => ({ $ref: '#/definitions/' + name });
@@ -35,8 +36,9 @@ export function generateContracts(policy: Policy) {
     throw new Error('Unsupported component field kind: ' + kind);
   };
   const components = Object.entries(f.components);
+  const effects = { type: 'array', uniqueItems: true, maxItems: modern ? f.library.budgets.effects.value : 0, items: modern && f.library.effects.value.length ? {enum: f.library.effects.value} : false };
   defs.block = {
-    ...obj({ id, component: tag({ enum: components.map(([name]) => name) }, '/firstVersion/components'), variant: { type: 'string' }, props: { type: 'object' } }),
+    ...obj({ id, component: tag({ enum: components.map(([name]) => name) }, '/firstVersion/components'), variant: { type: 'string' }, props: { type: 'object' }, ...(modern ? {effects} : {}) }, ['id','component','variant','props']),
     allOf: components.map(([name, component]) => ({
       if: { properties: { component: { const: name } }, required: ['component'] },
       then: { properties: {
@@ -45,14 +47,15 @@ export function generateContracts(policy: Policy) {
       } }
     }))
   };
-  defs.section = obj({ id, blocks: arr(ref('block'), s.maxBlocksPerSection.value, '/firstVersion/structure/maxBlocksPerSection', 1) });
+  defs.section = obj({ id, blocks: arr(ref('block'), s.maxBlocksPerSection.value, '/firstVersion/structure/maxBlocksPerSection', 1), ...(modern ? {effects} : {}) }, ['id','blocks']);
   defs.seo = obj({ title: copy('seoTitle'), description: copy('seoDescription'), socialImage: id }, ['title', 'description']);
   defs.page = obj({ id, path: tag({ type: 'string', pattern: s.pagePathPattern.value }, '/firstVersion/structure/pagePathPattern'), seo: ref('seo'), sections: arr(ref('section'), s.maxSectionsPerPage.value, '/firstVersion/structure/maxSectionsPerPage', 1) });
   defs.tokens = obj({
     colors: tag(obj(Object.fromEntries(f.designTokens.colorSlots.value.map(slot => [slot, tag({ type: 'string', pattern: f.designTokens.colorPattern.value }, '/firstVersion/designTokens/colorPattern')]))), '/firstVersion/designTokens/colorSlots'),
-    fonts: obj({ heading: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), body: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts') }),
-    spacing: tag({ enum: f.designTokens.spacing.value }, '/firstVersion/designTokens/spacing'), radius: tag({ enum: f.designTokens.radius.value }, '/firstVersion/designTokens/radius')
-  });
+    fonts: obj({ heading: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), body: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), ...(modern ? {mono: tag({enum: f.designTokens.fonts.value}, '/firstVersion/designTokens/fonts')} : {}) }, ['heading','body']),
+    spacing: tag({ enum: f.designTokens.spacing.value }, '/firstVersion/designTokens/spacing'), radius: tag({ enum: f.designTokens.radius.value }, '/firstVersion/designTokens/radius'),
+    ...(modern ? {motion: {enum:f.designTokens.motion.value}, layout: {enum:f.designTokens.layout.value}} : {})
+  }, ['colors','fonts','spacing','radius']);
   defs.navigation = obj({ primary: arr(ref('link'), f.navigation.maxPrimary.value, '/firstVersion/navigation/maxPrimary'), footer: arr(ref('link'), f.navigation.maxFooter.value, '/firstVersion/navigation/maxFooter') });
   defs.asset = obj({ id, format: tag({ enum: f.images.formats.value }, '/firstVersion/images/formats'), bytes: tag({ type: 'integer', minimum: 1, maximum: f.images.maxBytes.value }, '/firstVersion/images/maxBytes'), width: tag({ type: 'integer', minimum: 1, maximum: f.images.maxWidth.value }, '/firstVersion/images/maxWidth'), height: tag({ type: 'integer', minimum: 1, maximum: f.images.maxHeight.value }, '/firstVersion/images/maxHeight'), alt: copy('alt'), sha256: hash });
   defs.assets = arr(ref('asset'), f.images.maxAssets.value, '/firstVersion/images/maxAssets');
@@ -60,7 +63,7 @@ export function generateContracts(policy: Policy) {
   const identity = { contractVersion: { const: f.contractVersion.value }, planId: { const: policy.planId.value }, policyVersion: { const: policy.version.value } };
   const provenance = { policyVersion: policy.version.value, policySha256: sha256(canonicalJson(policy)) };
   const schema = (name: string, body: Schema): Schema => ({ $schema: 'http://json-schema.org/draft-07/schema#', $id: `https://a2aviary.io/contracts/site/${policy.version.value}/${name}`, ...body, definitions: defs, 'x-provenance': provenance });
-  const siteSchema = schema('site-spec-v1', obj({ ...identity, pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms']));
+  const siteSchema = schema('site-spec-v1', obj({ ...identity, ...(modern ? {language: {type:'string', pattern:f.language.value}} : {}), pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms']));
   const operationShapes: Record<string, Schema> = {
     'add-block': { pageId: id, sectionId: id, index: { type: 'integer', minimum: 0, maximum: s.maxBlocksPerSection.value }, block: ref('block') },
     'update-block': { pageId: id, sectionId: id, blockId: id, block: ref('block') },

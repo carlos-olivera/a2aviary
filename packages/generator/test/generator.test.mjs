@@ -110,11 +110,14 @@ test('report text alone, missing checks, forged hashes and altered output bytes 
   const names = [
     'catalog-syntax',
     'astro-build',
+    'network:external',
     ...input.spec.pages.flatMap((p) => [
       'a11y:' + p.path,
       'links:' + p.path,
       'lighthouse:' + p.path,
       'screenshot:' + p.path + ':390',
+      'motion:reduced:' + p.path + ':390',
+      'motion:reduced:' + p.path + ':1280',
       'screenshot:' + p.path + ':1280'
     ])
   ];

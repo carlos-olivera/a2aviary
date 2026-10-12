@@ -64,6 +64,24 @@
             "type": "string",
             "pattern": "^[a-f0-9]{64}$"
           }
+        },
+        "measurements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bytes",
+            "gzipBytes"
+          ],
+          "properties": {
+            "bytes": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "gzipBytes": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
         }
       }
     }

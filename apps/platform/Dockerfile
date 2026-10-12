@@ -8,7 +8,7 @@ COPY services/package.json /app/services/package.json
 COPY library /app/library
 COPY plans /app/plans
 COPY LICENSE /app/LICENSE
-RUN npm run check && npm run build
+RUN npm run check:static && npm run build
 WORKDIR /app/apps/platform
 COPY apps/platform/package*.json ./
 RUN npm ci

@@ -1,3 +1,4 @@
+import { installNetworkGuard } from './network-guard.mjs';
 // This fixed checker runs inside the secret-free Agents API sandbox, before the model turn.
 import { readFile, readdir, mkdir, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -36,9 +37,12 @@ const report = {
 };
 const check = (name, passed, details) =>
   report.checks.push({ name, passed, details });
-let browser, server;
+let browser, server, guard;
 try {
-  const syntax = ['astro.config.mjs', 'public/cms.js'].map(
+  const syntaxFiles = ['astro.config.mjs', 'public/cms.js'];
+  if ((await readdir('public')).includes('site.js'))
+    syntaxFiles.push('public/site.js');
+  const syntax = syntaxFiles.map(
     (file) =>
       spawnSync(process.execPath, ['--check', file], { stdio: 'pipe' })
         .status === 0,
@@ -110,12 +114,8 @@ try {
     headless: true,
     args: ['--no-sandbox', '--remote-debugging-port=' + chromePort],
   });
-  const context = await browser.newContext();
-  await context.route('**/*', (r) =>
-    [origin].includes(new URL(r.request().url()).origin)
-      ? r.continue()
-      : r.abort(),
-  );
+  guard = await installNetworkGuard(chromePort, origin);
+  const context = await browser.newContext({ serviceWorkers: 'block' });
   const page = await context.newPage();
   for (const path of input.paths) {
     await page.goto(origin + path, { waitUntil: 'networkidle' });
@@ -187,6 +187,32 @@ try {
       };
       const id = hash(path).slice(0, 12) + '-' + width;
       await writeFile('outputs/' + id + '-actual.png', actual);
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await page.goto(origin + path, { waitUntil: 'networkidle' });
+      await page.evaluate(async () => {
+        for (
+          let y = 0;
+          y < document.documentElement.scrollHeight;
+          y += Math.max(1, innerHeight / 2)
+        ) {
+          scrollTo(0, y);
+          await new Promise((r) =>
+            requestAnimationFrame(() => requestAnimationFrame(r)),
+          );
+        }
+        await new Promise((r) => setTimeout(r, 100));
+      });
+      const moving = await page.evaluate(
+        () =>
+          document
+            .getAnimations()
+            .filter((a) => a.playState === 'running' || a.pending).length,
+      );
+      check('motion:reduced:' + path + ':' + width, moving === 0, {
+        running: moving,
+      });
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+
       check(
         'screenshot:' + path + ':' + width,
         dimensions.width === width && dimensions.height > 0,
@@ -194,6 +220,9 @@ try {
       );
     }
   }
+  check('network:external', guard.failures.length === 0, {
+    requests: guard.failures,
+  });
   const files = {};
   async function visit(dir, prefix = '') {
     for (const e of (await readdir(dir, { withFileTypes: true })).sort((a, b) =>
@@ -217,6 +246,7 @@ try {
 } catch {
   check('verification-complete', false, { error: 'verification_failed' });
 } finally {
+  guard?.close();
   if (browser) await browser.close();
   if (server) await new Promise((r) => server.close(r));
   await writeFile(
