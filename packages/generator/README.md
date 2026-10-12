@@ -31,7 +31,7 @@ attempt marker or substitute production database credentials. See
 [release evidence](../../docs/release-verification.md) for the observed result,
 cleanup limits, unavailable billing amounts and unresolved rollout gates.
 
-## Component library
+## Component library foundation (PR #29 historical baseline)
 
 [Library maintenance](../../library/README.md) documents the 12 component contracts,
 12 standard variants, template grammar, CSS subset and generated registry. Run
@@ -41,7 +41,7 @@ it. Services check also runs the validator through the existing CI workflow.
 The Docker build includes library source; the runtime bundle contains only checked
 AST/CSS data and needs no source library directory. No dependency was added.
 
-`GENERATOR_VERSION` is `2.1.0`, a minor additive presentation capability retaining
+The foundation used `GENERATOR_VERSION` `2.1.0`, a minor additive presentation capability retaining
 policy/contract 2.0.0. Output bytes change (`data-v`, tokenized/selected CSS), so
 existing version-bound source hashes and preview deduplication use a new identity.
 Approved stored snapshots are still deployed without rebuilding.
@@ -70,3 +70,22 @@ On 2026-10-11 all 84 comparisons had zero changed pixels, and all HTML compariso
 passed. The checked-in golden fixture pins baseline HTML and the unchanged CMS
 script digest. No intentional visual/content difference was introduced. This is
 local evidence, independent of the hosted verifier and production status.
+
+
+## Library runtime verification
+
+Policy 2.1.0 / contract 2.1 use generator 2.2.0. The library now includes two
+curated font packages. `library:check` runs the complete local browser matrix;
+`library:check:static` and `check:static` are explicit build/container gates.
+Static CI is invoked through services; browser/platform CI remains unconfigured.
+Browser screenshots and summary are ignored under `.local/library-check/`.
+Run platform tests with a dedicated loopback `TEST_DATABASE_URL`, never production.
+The local CMS test also checks actual gzip/zstd responses, decompressed bytes and
+unchanged CSP. The normal fixture verifier adds motion/network checks to all
+existing gates. Hosted tests require separate authorization and are skipped here.
+
+Acorn 8.19.0 (MIT) is the only new development dependency, shared explicitly by
+services and generator checking. Existing esbuild performs minification. There
+is no parser dependency in generated client sites. Fontsource generator
+runtime dependencies are removed; curated bytes and OFL notices are stored in
+`library/fonts` and included with generated font resources.

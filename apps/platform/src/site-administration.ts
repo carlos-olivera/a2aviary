@@ -41,7 +41,7 @@ export async function siteAccess(
   // Fixture identities cannot operate production sites, even if a stale grant exists.
   if (p.testMode !== site.test_mode && !(p.role === 'superadmin' && history))
     throw new SiteError('site_mode_mismatch');
-  if (site.policy_version !== defaultPolicy.version.value)
+  if (![defaultPolicy.version.value,'2.0.0'].includes(site.policy_version))
     throw new SiteError('unsupported_pinned_policy');
   return site;
 }

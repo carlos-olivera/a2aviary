@@ -1,8 +1,8 @@
 # 014 — Component library foundation
 
 - Date: 2026-10-11
-- Status: proposed
-- Basis: owner-requested foundation; PR review remains pending
+- Status: accepted (foundation); 2.1 amendment implemented for owner PR review
+- Basis: foundation merged in PR #29 (`d4bd963`); owner-approved 2.1 implementation plan
 
 ## Context
 
@@ -90,3 +90,36 @@ Contract 2.1, new components/variants, behavior/effect/font packages and executi
 section/block effect selection, budgets, experimental gating, contributions and
 La Tarjeta presentation work remain later PRs. No policy, schema, migration, MCP,
 payment, production configuration or hosted fixture change is included.
+
+## 2.1 amendment — 2026-10-11
+
+The owner requested additive policy 2.1.0 / contract 2.1, implemented on the
+existing compiler. The foundation remains accepted; this amendment is prepared
+for the owner's PR review, not an activation claim. Generator provenance becomes
+2.2.0 and binds package metadata plus emitted resources. Checker provenance binds
+the browser-wide network guard as well as the verifier.
+
+Add optional effects, language, mono font, motion and flush layout. Default boxed
+output retains PR #29 bytes; flush moves the 1120px content constraint into each
+section's core-owned wrapper, allowing full-width decoration. HTML language is
+validated, not translated. Package status is enforced using immutable site test
+classification through drafts, preview and build jobs. No schema migration is
+needed. Existing 2.0 drafts are readable/discardable but cannot be edited or newly
+previewed; stored historical snapshots retain their frozen validator/checker and
+exact approved-byte deployment path.
+
+Use a closed Acorn AST language for confined behavior references, a balanced
+extension of the existing CSS allowlist, and core-owned interaction attributes.
+Only selected variants declare behavior code. Curated Latin OFL font packages
+replace generator dependencies on Fontsource; original bytes/licenses remain.
+All runtime examples are isolated test fixtures, never selectable release IDs.
+The authoring rules, explicit bounds and policy budgets are in the
+[library guide](../../library/README.md#contract-21-amendment).
+
+Keep discovery context bounded with a compact package manifest and a read-only
+single-package tool visible only with site tools. Library browser checks remain
+local; existing CI enforces static checks without workflow permission changes.
+Caddy enables zstd/gzip on static serving without changing CSP or CMS routing.
+Production HTTP 503, real hosted verification and owner-authorized rollout remain
+separate gates. No new client code, migrations, production configuration,
+La Tarjeta packages or contribution process are included.

@@ -1,226 +1,458 @@
 import { readFile, writeFile, readdir, lstat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
+import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import { resolve, relative, sep } from 'node:path';
 import { parseTemplate } from '../src/library-template.ts';
 import { validateVariantCss } from '../src/library-css.ts';
+import { validateBehavior } from '../src/library-behavior.ts';
+import { generateContracts } from '../../../services/src/site/generator.ts';
+import { gzipBytes } from '../../../services/src/site/library.ts';
 const defaultRoot = fileURLToPath(new URL('../../../', import.meta.url));
-const json = (value) => JSON.stringify(value, null, 2) + '\n';
-const canonical = (value) =>
-  Array.isArray(value)
-    ? '[' + value.map(canonical).join(',') + ']'
-    : value && typeof value === 'object'
+// Explicit host supports services-only CI without generator node_modules.
+const host =
+  process.env.LIBRARY_TOOL_HOST === 'services'
+    ? '../../../services/package.json'
+    : '../package.json';
+const require = createRequire(new URL(host, import.meta.url));
+const Ajv = require('ajv'),
+  { parse } = require('acorn'),
+  { transformSync } = require('esbuild');
+const json = (v) => JSON.stringify(v, null, 2) + '\n';
+const canonical = (v) =>
+  Array.isArray(v)
+    ? '[' + v.map(canonical).join(',') + ']'
+    : v && typeof v === 'object'
       ? '{' +
-        Object.keys(value)
+        Object.keys(v)
           .sort()
-          .map((k) => JSON.stringify(k) + ':' + canonical(value[k]))
+          .map((k) => JSON.stringify(k) + ':' + canonical(v[k]))
           .join(',') +
         '}'
-      : JSON.stringify(value);
-const assert = (condition, message) => {
-  if (!condition) throw Error('Invalid library: ' + message);
+      : JSON.stringify(v);
+const sha = (b) => createHash('sha256').update(b).digest('hex');
+const assert = (ok, message) => {
+  if (!ok) throw Error('Invalid library: ' + message);
 };
-const sha = (data) => createHash('sha256').update(data).digest('hex');
 export async function libraryArtifacts(root = defaultRoot) {
-  const library = resolve(root, 'library'),
+  const dir = resolve(root, 'library'),
     policy = JSON.parse(
-      await readFile(
-        resolve(root, 'plans/versions/web-simple/2.0.0.policy.json'),
-        'utf8',
-      ),
+      await readFile(resolve(root, 'plans/web-simple.policy.json'), 'utf8'),
     );
-  const active = JSON.parse(
-    await readFile(resolve(root, 'plans/web-simple.policy.json'), 'utf8'),
-  );
   assert(
-    canonical(active) === canonical(policy),
-    'active policy differs from pinned 2.0.0',
+    canonical(policy) ===
+      canonical(
+        JSON.parse(
+          await readFile(
+            resolve(
+              root,
+              'plans/versions/web-simple/' +
+                policy.version.value +
+                '.policy.json',
+            ),
+            'utf8',
+          ),
+        ),
+      ),
+    'active policy differs from pinned ' + policy.version.value,
   );
-  const components = policy.firstVersion.components,
-    packages = [],
+  const schema = JSON.parse(
+      await readFile(resolve(dir, 'package.schema.json'), 'utf8'),
+    ),
+    registrySchema = JSON.parse(
+      await readFile(resolve(dir, 'registry.schema.json'), 'utf8'),
+    );
+  const ajv = new Ajv({ allErrors: true, strict: false }),
+    validate = ajv.compile(schema),
+    validateRegistry = ajv.compile(registrySchema);
+  const blockSchema = generateContracts(policy).siteSchema;
+  ajv.addFormat('site-link', value => { try { const u = new URL(value); return ['https:','mailto:','tel:'].includes(u.protocol) && !u.username && !u.password; } catch { return false; } });
+  const validateBlock = ajv.compile({definitions:blockSchema.definitions,$ref:'#/definitions/block'});
+  const packages = [],
     compiled = {},
-    seen = new Set();
-  async function files(directory) {
-    const list = [];
-    for (const name of (await readdir(directory)).sort()) {
+    catalog = {},
+    owned = new Set([
+      'README.md',
+      'registry.json',
+      'registry.schema.json',
+      'package.schema.json',
+    ]),
+    all = [];
+  assert(!(await lstat(dir)).isSymbolicLink(), 'library root symlink');
+  async function walk(path) {
+    for (const name of (await readdir(path)).sort()) {
       assert(/^[a-zA-Z0-9][a-zA-Z0-9_.-]*$/.test(name), 'unsafe path');
-      const path = resolve(directory, name),
-        stat = await lstat(path);
-      assert(!stat.isSymbolicLink(), 'symlink: ' + name);
-      if (stat.isDirectory()) list.push(...(await files(path)));
+      const p = resolve(path, name),
+        s = await lstat(p);
+      assert(!s.isSymbolicLink(), 'symlink');
+      if (s.isDirectory()) await walk(p);
       else {
-        assert(stat.isFile(), 'non-file: ' + name);
-        list.push(path);
+        assert(s.isFile(), 'non-file');
+        all.push(relative(dir, p).split(sep).join('/'));
       }
     }
-    return list;
   }
-  async function manifest(path, expected) {
-    const value = JSON.parse(await readFile(path, 'utf8'));
-    assert(
-      canonical(Object.keys(value).sort()) ===
-        canonical(Object.keys(expected).sort()),
-      'metadata keys: ' + path,
-    );
-    for (const [key, v] of Object.entries(expected))
-      if (v !== undefined)
-        assert(
-          canonical(value[key]) === canonical(v),
-          'metadata ' + key + ': ' + path,
-        );
-    assert(
-      typeof value.version === 'string' &&
-        value.version.trim() === value.version &&
-        /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/.test(
-          value.version,
-        ),
-      'version',
-    );
-    assert(
-      ['experimental', 'stable', 'deprecated'].includes(value.status),
-      'status',
-    );
-    assert(!seen.has(value.id), 'duplicate ID');
-    seen.add(value.id);
-    return value;
+  await walk(dir);
+  async function read(path) {
+    return readFile(resolve(dir, path));
   }
-  async function entry(metadata, paths) {
+  async function add(path, expectedType) {
+    const meta = JSON.parse(await read(path));
+    assert(
+      validate(meta),
+      'package schema ' + path + ': ' + ajv.errorsText(validate.errors),
+    );
+    assert(meta.type === expectedType, 'package type');
+    assert(!catalog[meta.id], 'duplicate ID');
+    assert(meta.version.trim() === meta.version, 'version');
+    catalog[meta.id] = structuredClone(meta);
+    return meta;
+  }
+  async function entry(meta, files) {
     const hashes = {};
-    for (const path of paths.sort())
-      hashes[relative(library, path).split(sep).join('/')] = sha(
-        await readFile(path),
-      );
+    for (const p of files.sort()) {
+      assert(!owned.has(p), 'duplicate file owner');
+      owned.add(p);
+      hashes[p] = sha(await read(p));
+    }
     packages.push({
-      id: metadata.id,
-      type: metadata.type,
-      version: metadata.version,
-      status: metadata.status,
+      id: meta.id,
+      type: meta.type,
+      version: meta.version,
+      status: meta.status,
       files: hashes,
     });
   }
-  assert(!(await lstat(library)).isSymbolicLink(), 'library root symlink');
-  const rootEntries = await readdir(library);
-  for (const name of rootEntries)
-    assert(
-      !(await lstat(resolve(library, name))).isSymbolicLink(),
-      'root symlink: ' + name,
-    );
-  for (const name of rootEntries)
-    assert(
-      Object.hasOwn(components, name) ||
-        ['README.md', 'registry.json', 'registry.schema.json'].includes(name),
-      'unexpected root package/file: ' + name,
-    );
+  const components = policy.firstVersion.components;
   for (const name of Object.keys(components).sort()) {
-    const dir = resolve(library, name),
-      paths = await files(dir),
-      componentPath = resolve(dir, 'component.json');
-    const metadata = await manifest(componentPath, {
-      id: name,
-      type: 'component',
-      version: undefined,
-      status: undefined,
-      fields: components[name].fields,
-    });
-    await entry(metadata, [componentPath]);
-    const owned = new Set([componentPath]);
+    const path = name + '/component.json',
+      c = await add(path, 'component');
+    assert(
+      c.id === name &&
+        canonical(c.fields) === canonical(components[name].fields),
+      'component fields/policy',
+    );
+    await entry(c, [path]);
     for (const variant of [...components[name].variants.value].sort()) {
       const id = name + ':' + variant,
-        vdir = resolve(dir, 'variants', variant),
-        vpath = resolve(vdir, 'variant.json');
-      const vmeta = await manifest(vpath, {
-        id,
-        type: 'variant',
-        version: undefined,
-        status: undefined,
-        component: name,
-        variant,
-        behaviors: [],
-      });
-      const vfiles = paths.filter((p) => p.startsWith(vdir + sep));
-      for (const path of vfiles) {
-        const rel = relative(vdir, path).split(sep).join('/');
-        assert(
-          ['variant.json', 'template.html', 'style.css'].includes(rel) ||
-            /^fixtures\/[a-z0-9-]+\.json$/.test(rel),
-          'unexpected package file: ' + rel,
-        );
-        owned.add(path);
-      }
-      const fixturePaths = vfiles.filter((p) =>
-        p.includes(sep + 'fixtures' + sep),
+        base = name + '/variants/' + variant + '/',
+        v = await add(base + 'variant.json', 'variant');
+      assert(
+        v.id === id && v.component === name && v.variant === variant,
+        'variant identity',
       );
-      assert(fixturePaths.length > 0, 'missing fixtures: ' + id);
-      for (const path of fixturePaths) {
-        const fixture = JSON.parse(await readFile(path, 'utf8'));
-        assert(
-          fixture.component === name && fixture.variant === variant,
-          'fixture identity: ' + id,
-        );
-        assert(
-          fixture.props &&
-            typeof fixture.props === 'object' &&
-            !Array.isArray(fixture.props),
-          'fixture props',
-        );
-        for (const field of Object.keys(fixture.props))
-          assert(
-            Object.hasOwn(metadata.fields, field),
-            'unknown fixture field',
-          );
-        for (const [field, contract] of Object.entries(metadata.fields))
-          assert(
-            !contract.required || Object.hasOwn(fixture.props, field),
-            'missing fixture field',
-          );
-      }
-      const ast = parseTemplate(
-        await readFile(resolve(vdir, 'template.html'), 'utf8'),
-        metadata.fields,
+      const paths = all.filter((p) => p.startsWith(base));
+      assert(
+        paths.every(
+          (p) =>
+            ['variant.json', 'template.html', 'style.css'].includes(
+              p.slice(base.length),
+            ) || /^fixtures\/[a-z0-9-]+\.json$/.test(p.slice(base.length)),
+        ),
+        'unexpected variant file',
       );
-      const css = await readFile(resolve(vdir, 'style.css'), 'utf8');
+      const fixtures = paths.filter((p) => p.startsWith(base + 'fixtures/'));
+      assert(fixtures.length, 'missing fixtures');
+      for (const p of fixtures) {
+        const f = JSON.parse(await read(p));
+        assert(
+          f.component === name &&
+            f.variant === variant &&
+            f.props &&
+            !Array.isArray(f.props),
+          'fixture identity/props',
+        );
+        assert(
+          Object.keys(f.props).every((k) => Object.hasOwn(c.fields, k)),
+          'unknown fixture field',
+        );
+        assert(
+          Object.entries(c.fields).every(
+            ([k, fld]) => !fld.required || Object.hasOwn(f.props, k),
+          ),
+          'missing fixture field',
+        );
+        assert(validateBlock(f),'fixture schema '+p+': '+ajv.errorsText(validateBlock.errors));
+      catalog[id].fixture ??= f;
+        (catalog[id].fixtures ??= []).push(f);
+      }
+      const source = (await read(base + 'template.html')).toString(),
+        ast = parseTemplate(source, c.fields),
+        css = (await read(base + 'style.css')).toString();
       validateVariantCss(css, id);
-      compiled[id] = { component: name, ast, css };
-      await entry(vmeta, vfiles);
+      for (const [role, cls] of Object.entries(v.targets ?? {}))
+        assert(
+          new RegExp('class="(?:[^"]* )?' + cls + '(?: [^"]*)?"').test(source),
+          'missing ' + role + ' target',
+        );
+      assert(!v.behaviors.length || v.targets?.root, 'behavior root required');
+      assert(
+        !v.targets?.control || v.behaviors.length,
+        'control needs behavior',
+      );
+      if (v.targets?.control)
+        assert(
+          new RegExp(
+            '<button class="(?:[^"]* )?' + v.targets.control + '(?: [^"]*)?">',
+          ).test(source),
+          'control must be button',
+        );
+      for (const cls of Object.values(v.targets ?? {}))
+        assert(
+          Object.values(v.targets).filter((v) => v === cls).length === 1,
+          'ambiguous target class',
+        );
+      catalog[id].css = css;
+      compiled[id] = {
+        component: name,
+        ast,
+        css,
+        behaviors: v.behaviors,
+        targets: v.targets ?? {},
+      };
+      await entry(v, paths);
     }
-    assert(
-      paths.every((p) => owned.has(p)),
-      'unknown variant or executable package file: ' + name,
-    );
   }
-  packages.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  for (const [folder, type] of [
+    ['behaviors', 'behavior'],
+    ['effects', 'effect'],
+    ['fonts', 'font'],
+  ]) {
+    const manifests = all.filter((p) =>
+      new RegExp('^' + folder + '/[a-z][a-z0-9-]*/' + type + '\\.json$').test(
+        p,
+      ),
+    );
+    for (const path of manifests) {
+      const m = await add(path, type),
+        base = path.slice(0, path.lastIndexOf('/') + 1);
+      assert(base === folder + '/' + m.id + '/', 'package directory');
+      const paths = all.filter((p) => p.startsWith(base));
+      if (type === 'behavior') {
+        assert(
+          canonical(paths.map((p) => p.slice(base.length)).sort()) ===
+            canonical(['behavior.json', 'index.js']),
+          'behavior files',
+        );
+        const source = (await read(base + 'index.js')).toString();
+        const fn = validateBehavior(source, parse);
+        const min = transformSync('export default ' + fn, {
+          minify: true,
+          target: 'es2022',
+        }).code;
+        const expression = parse(min, {
+          ecmaVersion: 2022,
+          sourceType: 'module',
+        }).body[0].declaration;
+        catalog[m.id].code = min.slice(expression.start, expression.end);
+      }
+      if (type === 'effect') {
+        assert(
+          paths.every(
+            (p) =>
+              ['effect.json', 'style.css'].includes(p.slice(base.length)) ||
+              /^fixtures\/[a-z0-9-]+\.json$/.test(p.slice(base.length)),
+          ),
+          'effect files',
+        );
+        assert(
+          paths.some((p) => p.startsWith(base + 'fixtures/')),
+          'effect fixture',
+        );
+        catalog[m.id].css = (await read(base + 'style.css')).toString();
+        validateVariantCss(catalog[m.id].css, m.id, 'effect');
+        catalog[m.id].fixtures = [];
+        for (const path of paths.filter((p) =>
+          p.startsWith(base + 'fixtures/'),
+        )) {
+          const f = JSON.parse(await read(path));
+          assert(
+            catalog[f.component + ':' + f.variant]?.type === 'variant',
+            'effect fixture identity',
+          );
+          catalog[m.id].fixtures.push(f);
+        }
+        catalog[m.id].fixture = catalog[m.id].fixtures[0];
+        for (const id of m.compatibility)
+          assert(catalog[id]?.type === 'variant', 'effect compatibility');
+      }
+      if (type === 'font') {
+        assert(
+          new Set(m.files.map((f) => f.file)).size === m.files.length,
+          'duplicate font file',
+        );
+        assert(
+          paths.length === m.files.length + 2 &&
+            paths.every((p) =>
+              [
+                type + '.json',
+                'LICENSE',
+                ...m.files.map((f) => f.file),
+              ].includes(p.slice(base.length)),
+            ),
+          'font files',
+        );
+        const license = (await read(base + 'LICENSE')).toString();
+        assert(
+          /SIL OPEN FONT LICENSE Version 1.1/i.test(license),
+          'font license',
+        );
+        catalog[m.id].license = license;
+        for (const f of catalog[m.id].files) {
+          assert(
+            f.file.includes('-latin-') && !f.file.includes('-latin-ext-'),
+            'Latin subset required',
+          );
+          const b = await read(base + f.file);
+          assert(
+            b.toString('ascii', 0, 4) === 'wOF2' && sha(b) === f.sha256,
+            'font bytes/hash',
+          );
+          f.data = b.toString('base64');
+        }
+      }
+      await entry(m, paths);
+    }
+  }
+  assert(
+    all.every((p) => owned.has(p)),
+    'unknown package/file',
+  );
+  const rules = policy.firstVersion.library,
+    b = rules.budgets;
+  const ids = (t) =>
+    Object.values(catalog)
+      .filter((p) => p.type === t)
+      .map((p) => p.id)
+      .sort();
+  assert(
+    canonical(ids('effect')) === canonical([...rules.effects.value].sort()),
+    'effect registry/policy mismatch',
+  );
+  assert(
+    canonical(ids('font')) === canonical([...rules.fonts.value].sort()),
+    'font registry/policy mismatch',
+  );
+  assert(
+    canonical(
+      Object.values(catalog)
+        .filter((p) => p.type === 'font')
+        .map((p) => p.family)
+        .sort(),
+    ) ===
+      canonical(
+        policy.firstVersion.designTokens.fonts.value
+          .filter((f) => !f.startsWith('system-'))
+          .sort(),
+      ),
+    'font family/policy mismatch',
+  );
+  for (const p of Object.values(catalog))
+    if (p.type === 'variant')
+      for (const id of p.behaviors)
+        assert(catalog[id]?.type === 'behavior', 'unknown behavior');
+  for (const [type, key] of [
+    ['component', 'components'],
+    ['variant', 'variants'],
+    ['behavior', 'behaviors'],
+    ['effect', 'effects'],
+    ['font', 'fonts'],
+  ])
+    assert(ids(type).length <= b[key].value, 'budget ' + key);
+  for (const p of Object.values(catalog))
+    if (['variant', 'effect', 'behavior'].includes(p.type)) {
+      const key =
+        p.type === 'variant'
+          ? 'variantCss'
+          : p.type === 'effect'
+            ? 'effectCss'
+            : 'behaviorJs';
+      const source =
+        p.type === 'behavior' ? 'export default ' + p.code + ';' : p.css;
+      const bytes = gzipBytes(source, b.gzipLevel.value);
+      assert(bytes <= b[key].value, 'budget ' + key + ' ' + p.id);
+      packages.find((e) => e.id === p.id).measurements = {
+        bytes: Buffer.byteLength(source),
+        gzipBytes: bytes,
+      };
+    }
+  const signatures = new Map();
+  for (const id of ids('component')) {
+    const p = catalog[id],
+      sig = canonical(
+        Object.entries(p.fields)
+          .sort()
+          .map(([k, v]) => [k, v.kind, v.required]),
+      );
+    const other = signatures.get(sig);
+    assert(
+      !other || [other, id].sort().join(',') === 'feature-grid,steps',
+      'duplicate component field signature: ' + id + ' / ' + other,
+    );
+    signatures.set(sig, id);
+  }
+  const styles = Object.values(catalog).filter((p) => p.css?.trim());
+  const decl = (p) =>
+    new Set(
+      [...p.css.matchAll(/([a-z-]+)\s*:\s*([^;{}]+)[;}]/g)].map(
+        (m) => m[1] + ':' + m[2].replace(/pkg-[a-z-]+/g, 'PACKAGE'),
+      ),
+    );
+  const warnings = [];
+  for (let i = 0; i < styles.length; i++)
+    for (let j = i + 1; j < styles.length; j++) {
+      const a = decl(styles[i]),
+        c = decl(styles[j]),
+        intersection = [...a].filter((x) => c.has(x)).length;
+      if (a.size && c.size && intersection / Math.max(a.size, c.size) >= 0.8)
+        warnings.push(
+          'CSS overlap >=80%: ' + styles[i].id + ' / ' + styles[j].id,
+        );
+    }
+  packages.sort((a, b) => a.id.localeCompare(b.id));
+  const registry = { schemaVersion: 1, packages };
+  assert(validateRegistry(registry), 'registry schema');
   return {
-    registry: json({ schemaVersion: 1, packages }),
+    registry: json(registry),
     data:
       "// Generated by scripts/library.mjs; do not edit.\nimport type { LibraryVariant } from './library-template.ts';\nexport const library: Record<string, LibraryVariant> = " +
-      JSON.stringify(compiled, null, 2) +
+      json(compiled).trim() +
       ';\n',
+    metadata:
+      "// Generated by the library compiler; inert reviewed package data.\nimport type { LibraryCatalog } from './library.ts';\nexport const catalog: LibraryCatalog = " +
+      json(catalog).trim() +
+      ';\n',
+    catalog,
+    variants: compiled,
+    warnings,
   };
 }
 export async function checkLibrary(root = defaultRoot, write = false) {
-  const output = await libraryArtifacts(root);
+  const out = await libraryArtifacts(root);
   for (const [path, bytes] of [
-    ['library/registry.json', output.registry],
-    ['packages/generator/src/library-data.ts', output.data],
+    ['library/registry.json', out.registry],
+    ['packages/generator/src/library-data.ts', out.data],
+    ['services/src/site/library-data.ts', out.metadata],
   ]) {
-    const target = resolve(root, path);
-    if (write) await writeFile(target, bytes);
+    if (write) await writeFile(resolve(root, path), bytes);
     else
       assert(
-        (await readFile(target, 'utf8').catch(() => null)) === bytes,
+        (await readFile(resolve(root, path), 'utf8').catch(() => null)) ===
+          bytes,
         'stale ' + path + '; run library:generate',
       );
   }
-  return output;
+  return out;
 }
 if (
   process.argv[1] &&
   resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 ) {
-  await checkLibrary(defaultRoot, process.argv.includes('--write'));
-  console.log(
-    process.argv.includes('--write')
-      ? 'Library artifacts generated'
-      : 'Library registry, templates, CSS and policy consistency passed',
-  );
+  const out = await checkLibrary(defaultRoot, process.argv.includes('--write'));
+  for (const w of out.warnings) console.warn(w);
+  console.log('Library static validation passed');
+  if (!process.argv.includes('--write') && !process.argv.includes('--static')) {
+    const { checkLibraryBrowser } = await import('./library-browser.mjs');
+    await checkLibraryBrowser(defaultRoot, out, libraryArtifacts);
+  }
 }

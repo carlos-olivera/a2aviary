@@ -1,0 +1,20 @@
+{
+  "commit": "ce5078e7c71735ee1b49cf92463580497eb760fa",
+  "hashes": {
+    "public/catalog.css": "be2e09a3f2e8a72b1124e2bda310462197995033be224b14f17dc6d0fe1b7200",
+    "public/cms.js": "9e59c4dec3093a29f4579617cfc910f6b02cec9d2fe9202e6e7f732282834d3a",
+    "src/pages/404.astro": "04f75667fd03577b3427e5f4ab8ff8d76b2ff1d1d35739900adddbc418d85a1b",
+    "src/pages/index.astro": "02b7ff8f1ac3d120c545c174d884ff6e5113912393498a524b3336398e0ad9b4",
+    "src/pages/about/index.astro": "1f9883ce716dc307e723876a0445e5c6bade6e74f4db1157c60c5654301df7e5",
+    "src/pages/north/index.astro": "3660a1a0bd105dbb9ffc60d1e2563d250e3dc611eacf45cec44b4be0a23fa39d",
+    "src/pages/south/index.astro": "86c4d2096dc0442da51fa10213065236fb78f8090a7ed9b865c279f99978be73",
+    "src/pages/west/index.astro": "c0d89c466c3bf03f7ce6e21fc40e56e74d83922fc9242ed2269ab362a7df9452",
+    "src/pages/privacy/index.astro": "227addd3603120828b3084b1da4cd5a227c4046749cb63eceec17728c91c32d1",
+    "src/pages/contact/index.astro": "2f1f18677548de3e4eadf5f8b5bc74e2e3027a175d205a3901f01041ce20634c",
+    "public/fonts/inter-LICENSE.txt": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345",
+    "public/fonts/eb-garamond-LICENSE.txt": "f03c8eda63076cd52317dcd40aa04db8472d4cb592dfaafa385129dfdafc7f9c",
+    "public/assets/9a776b277b4967fcc500db02122799ef3832f2c6448026b19ca6a632256d7f25.webp": "9a776b277b4967fcc500db02122799ef3832f2c6448026b19ca6a632256d7f25",
+    "public/fonts/inter.woff2": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc",
+    "public/fonts/eb-garamond.woff2": "912929dba0faab5e151849ea5e988adba3080ad6d2bcc4dbff27aa427896498d"
+  }
+}

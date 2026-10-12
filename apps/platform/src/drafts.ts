@@ -90,6 +90,8 @@ export class Drafts {
       )
         throw new SiteError('deployment_busy');
     }
+    d.test_mode = site.test_mode;
+    d.policy_version = site.policy_version;
     return { d, site };
   }
   private revision(d: any, expected: number) {
@@ -104,6 +106,19 @@ export class Drafts {
         },
       ]);
   }
+  private currentPolicy(site: any) {
+    if (site.policy_version !== defaultPolicy.version.value)
+      throw new SiteError('draft_policy_retired', [
+        {
+          path: '/policyVersion',
+          rule: 'policy.retired',
+          limit: defaultPolicy.version.value,
+          actual: site.policy_version,
+          suggestion:
+            'Read or discard this historical draft; create a new 2.1 draft to edit or preview.',
+        },
+      ]);
+  }
   private summary(d: any) {
     const result = {
       draftId: d.id,
@@ -112,7 +127,30 @@ export class Drafts {
       state: d.state,
       pages: d.content.pages.length,
       assets: d.content.assets.length,
-      missing: blockers(d.content),
+      policyVersion: d.policy_version ?? defaultPolicy.version.value,
+      language: d.content.language ?? 'en',
+      tokens: d.content.tokens,
+      effects: [
+        ...new Set<string>(
+          d.content.pages.flatMap((p: any) =>
+            (p.sections ?? []).flatMap((s: any) => [
+              ...(s.effects ?? []),
+              ...(s.blocks ?? []).flatMap((b: any) => b.effects ?? []),
+            ]),
+          ),
+        ),
+      ],
+      missing:
+        d.policy_version && d.policy_version !== defaultPolicy.version.value
+          ? [
+              {
+                path: '/policyVersion',
+                rule: 'policy.retired',
+                limit: defaultPolicy.version.value,
+                suggestion: 'Create a new 2.1 draft to edit or preview.',
+              },
+            ]
+          : blockers(d.content, { test: d.test_mode }),
       budget: {
         jsonBytesRemaining:
           262144 -
@@ -283,14 +321,21 @@ export class Drafts {
         await this.access(c, actor, saved.site_id);
         return r.response;
       }
-      const { d } = await this.draft(c, actor, input.draftId, true);
+      const { d, site } = await this.draft(c, actor, input.draftId, true);
+      this.currentPolicy(site);
       this.revision(d, input.expectedRevision);
-      const content = applyContent(d.content, input.operations);
+      const content = applyContent(d.content, input.operations, {
+        test: site.test_mode,
+      });
       const updated =
         canonicalJson(d.content) === canonicalJson(content)
           ? d
           : await this.edit(c, d, content);
-      const result = this.summary(updated);
+      const result = this.summary({
+        ...updated,
+        test_mode: site.test_mode,
+        policy_version: site.policy_version,
+      });
       await this.saveReceipt(c, actor, input.requestId, d.id, r.hash, result);
       await this.event(c, actor, d.site_id, 'site.draft.apply', 'updated');
       return result;
@@ -390,6 +435,7 @@ export class Drafts {
           op: 'upload.open',
           draftId: id,
         });
+      this.currentPolicy(site);
       if (r.response) {
         const s = await this.session(c, actor, r.response.sessionId);
         return this.channels(s);
@@ -430,7 +476,8 @@ export class Drafts {
       )
     ).rows[0];
     if (!found) throw new SiteError('upload_session_invalid');
-    await this.draft(c, actor, found.draft_id, true);
+    const foundDraft = await this.draft(c, actor, found.draft_id, true);
+    this.currentPolicy(foundDraft.site);
     const s = (
       await c.query(
         'SELECT * FROM platform_upload_session WHERE id=$1 FOR UPDATE',
@@ -551,6 +598,7 @@ export class Drafts {
       const admitted = await this.sites.store.transaction(async (c) => {
         const s = await this.session(c, actor, id),
           { d, site } = await this.draft(c, actor, s.draft_id, true);
+        this.currentPolicy(site);
         testMode = site.test_mode;
         const existing = (
           await c.query(
@@ -638,7 +686,13 @@ export class Drafts {
       });
     } catch (error) {
       if (error instanceof SiteError) throw error;
-      console.error(JSON.stringify({ event: 'site.upload.failed', test: testMode, code: 'upload_unavailable' }));
+      console.error(
+        JSON.stringify({
+          event: 'site.upload.failed',
+          test: testMode,
+          code: 'upload_unavailable',
+        }),
+      );
       throw new SiteError('upload_unavailable');
     } finally {
       if (locked)
@@ -652,12 +706,36 @@ export class Drafts {
     return this.sites.store.siteAction(actor, 'site.preview', async (c, p) => {
       const { d, site } = await this.draft(c, actor, id, true);
       this.revision(d, revision);
-      const missing = blockers(d.content);
+      this.currentPolicy(site);
+      const missing = blockers(d.content, { test: site.test_mode });
       if (missing.length) throw new SiteError('draft_incomplete', missing);
+      const spec = { ...identity(), ...d.content } as SiteSpec,
+        assets = new Map<string, Uint8Array>();
+      for (const a of spec.assets)
+        assets.set(
+          a.id,
+          await this.sites.objects.get('drafts/' + id + '/assets/' + a.id),
+        );
+      const source = await generateSite(spec, assets, {
+          serverNormalized: true,
+          test: site.test_mode,
+        }),
+        checker = sha256(source.files['verify.mjs']),
+        cacheKey = sha256(
+          canonicalJson({
+            owner: site.owner_id,
+            test: site.test_mode,
+            spec: source.specSha256,
+            generator: GENERATOR_VERSION,
+            source: source.sourceSha256,
+            checker,
+            policy: sha256(canonicalJson(defaultPolicy)),
+          }),
+        );
       const existing = (
         await c.query(
-          "SELECT id,state FROM platform_site_spec WHERE draft_id=$1 AND draft_revision=$2 AND NOT artifacts_deleted AND expires_at>now() AND state IN ('queued','building','verified','approved') ORDER BY created_at DESC LIMIT 1",
-          [id, revision],
+          "SELECT id,state FROM platform_site_spec WHERE draft_id=$1 AND draft_revision=$2 AND cache_key=$3 AND NOT artifacts_deleted AND expires_at>now() AND state IN ('queued','building','verified','approved') ORDER BY created_at DESC LIMIT 1",
+          [id, revision, cacheKey],
         )
       ).rows[0];
       if (existing)
@@ -677,28 +755,6 @@ export class Drafts {
         ).rows[0].n >= 3
       )
         throw new SiteError('snapshot_quota');
-      const spec = { ...identity(), ...d.content } as SiteSpec,
-        assets = new Map<string, Uint8Array>();
-      for (const a of spec.assets)
-        assets.set(
-          a.id,
-          await this.sites.objects.get('drafts/' + id + '/assets/' + a.id),
-        );
-      const source = await generateSite(spec, assets, {
-          serverNormalized: true,
-        }),
-        checker = sha256(source.files['verify.mjs']),
-        cacheKey = sha256(
-          canonicalJson({
-            owner: site.owner_id,
-            test: site.test_mode,
-            spec: source.specSha256,
-            generator: GENERATOR_VERSION,
-            source: source.sourceSha256,
-            checker,
-            policy: sha256(canonicalJson(defaultPolicy)),
-          }),
-        );
       const cached = (
         await c.query(
           "SELECT p.* FROM platform_site_spec p JOIN platform_site s ON s.id=p.site_id WHERE s.owner_id=$1 AND s.test_mode=$2 AND p.cache_key=$3 AND p.state IN ('verified','approved','live','superseded') AND p.output_sha256 IS NOT NULL AND p.expires_at>now() AND NOT p.artifacts_deleted ORDER BY p.created_at DESC LIMIT 1",

@@ -2,8 +2,8 @@ import {readFile,mkdir,writeFile} from 'node:fs/promises';
 import {join,dirname} from 'node:path';
 import {canonicalJson} from '../dist/index.js';
 export async function fixtureSubmission(){
- const spec=JSON.parse(await readFile(new URL('../../../contracts/site/2.0.0/examples/site-spec.json',import.meta.url),'utf8'));
- const bytes=await readFile(new URL('../../../contracts/site/2.0.0/examples/fictional-pixel.webp',import.meta.url));
+ const spec=JSON.parse(await readFile(new URL('../../../contracts/site/2.1.0/examples/site-spec.json',import.meta.url),'utf8'));
+ const bytes=await readFile(new URL('../../../contracts/site/2.1.0/examples/fictional-pixel.webp',import.meta.url));
  return {slug:'fictional-guide',spec,assets:{[spec.assets[0].id]:bytes.toString('base64')}};
 }
 export async function writeSource(directory,source,spec){

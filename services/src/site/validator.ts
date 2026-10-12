@@ -1,3 +1,6 @@
+import { catalog } from './library-data.ts';
+import { validateLibrarySelection } from './library.ts';
+import type { LibraryContext } from './types.ts';
 import { Ajv, type ErrorObject } from 'ajv';
 import type { Policy } from './policy.ts';
 import { canonicalJson, defaultPolicy, sha256, specDigest } from './policy.ts';
@@ -60,12 +63,12 @@ function jsonBound(value: unknown, policy: Policy): ValidationError[] {
   } catch { return [failure('', 'submission.json', 'JSON values only', 'Supply a finite, serializable JSON document.')]; }
 }
 
-export function validateSiteSpec(input: unknown, policy: Policy = defaultPolicy): ValidationResult<SiteSpec> {
+export function validateSiteSpec(input: unknown, policy: Policy = defaultPolicy, context: LibraryContext = {}): ValidationResult<SiteSpec> {
   const bounded = jsonBound(input, policy);
   if (bounded.length) return failed(bounded);
   const validators = compiled(policy);
   if (!validators.site(input)) return failed(schemaErrors(validators.site.errors!, validators.siteSchema));
-  const spec = input as SiteSpec, errors: ValidationError[] = [];
+  const spec = input as SiteSpec, errors: ValidationError[] = validateLibrarySelection(input, policy, context.catalog ?? catalog, context);
   const add = (path: string, rule: string, limit: unknown, suggestion: string, policyPath?: string) => errors.push(failure(path, rule, limit, suggestion, policyPath));
   const unique = (ids: string[], paths: string[], scope: string) => {
     const seen = new Set<string>();

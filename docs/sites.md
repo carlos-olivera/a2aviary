@@ -4,7 +4,7 @@ Current source implements [decision 013](decisions/013-server-drafts-and-preview
 
 ## Current workflow and contracts
 
-The client's LLM supplies catalog content incrementally. a2aviary normalizes uploads and owns snapshot generation/verification. Human approval happens through the authenticated browser page after verification, followed by explicit MCP deployment confirmation. Current policy is `web-simple` **2.0.0**, site contract **2.0**. Canonical specs contain complete catalog content and server-generated normalized asset metadata, without client approval or preview fields. Hash the entire spec using sorted-key JSON, preserving array order. Immutable approval records separately bind revision/spec/output, actor and time.
+The client's LLM supplies catalog content incrementally. a2aviary normalizes uploads and owns snapshot generation/verification. Human approval happens through the authenticated browser page after verification, followed by explicit MCP deployment confirmation. Current policy is `web-simple` **2.1.0**, site contract **2.1**. Canonical specs contain complete catalog content and server-generated normalized asset metadata, without client approval or preview fields. Hash the entire spec using sorted-key JSON, preserving array order. Immutable approval records separately bind revision/spec/output, actor and time.
 
 Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepted as intake contracts. `POST /api/site-specs` and `site.build` are removed. `change.request` returns `change_requests_unavailable`: its draft/approval redesign is pending; CMS edits remain available. Initial-site drafts cannot redeploy an already-live site.
 
@@ -21,7 +21,7 @@ Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepte
 | `site.status` | `siteId` | Latest snapshots, approval/verification/deployment states and artifacts |
 | `site.deploy` | `siteId`, `specId`, `cmsPassword`, `confirmation`, optional initial `domain` | Deploy approved stored bytes |
 
-Operations: `settings` supplies tokens/navigation/CMS; `upsert-page`/`remove-page`; `upsert-section`/`remove-section`; `upsert-block`/`remove-block`; `asset-metadata` sets alt text on server assets; `remove-asset` removes metadata. IDs remain stable; insertion uses zero-based `index`; supplying it on an existing ID also reorders that entity. Upserts replace the selected entity, so retain desired fields/children in its payload. A parent must exist before inserting its child. Missing required content and forward references are allowed during drafting and reported as preview blockers. Supplied values and aggregate budgets are validated immediately. A failed batch writes nothing. At most 32 operations and 64 KiB per batch, 256 KiB complete JSON, 20 errors, 4 KiB default summaries. Errors identify operation index/path/rule/limit/actual and correction guidance. Request IDs are actor-scoped and bind the full request; conflicting reuse fails. Revisions prevent overwrite and increment only for actual content changes, including newly attached normalized assets.
+Operations: `settings` supplies language/tokens/navigation/CMS; `upsert-page`/`remove-page`; `upsert-section`/`remove-section`; `upsert-block`/`remove-block`; `asset-metadata` sets alt text on server assets; `remove-asset` removes metadata. IDs remain stable; insertion uses zero-based `index`; supplying it on an existing ID also reorders that entity. Upserts replace the selected entity, so retain desired fields/children in its payload. A parent must exist before inserting its child. Missing required content and forward references are allowed during drafting and reported as preview blockers. Supplied values and aggregate budgets are validated immediately. A failed batch writes nothing. At most 32 operations and 64 KiB per batch, 256 KiB complete JSON, 20 errors, 4 KiB default summaries. Errors identify operation index/path/rule/limit/actual and correction guidance. Request IDs are actor-scoped and bind the full request; conflicting reuse fails. Revisions prevent overwrite and increment only for actual content changes, including newly attached normalized assets.
 
 ## Shared upload session
 
@@ -117,7 +117,7 @@ production platform; it does not authorize one. Record the outcome in
    project, PocketBase volume and the `drafts/<UUID>/` and `specs/<UUID>/` bucket
    prefixes are gone.
 
-## Component library foundation
+## Component library foundation (PR #29 historical baseline)
 
 The generator resolves the unchanged policy 2.0.0 catalog through repository-owned
 [component/variant packages](../library/README.md). Build/CI checks validate package
@@ -127,5 +127,34 @@ HTML/CSS/JS. The core adds `data-v` to each existing block wrapper and emits onl
 used variant CSS into `catalog.css`. Generator version `2.1.0` distinguishes the
 new output for source hashes and preview reuse. Existing approved snapshots retain
 exact-byte deployment. CMS JavaScript, self-hosted fonts, CSP, policy, migrations
-and tool interfaces are unchanged. See [proposed decision 014](decisions/014-component-library.md);
+and tool interfaces are unchanged. See [decision 014](decisions/014-component-library.md);
 this source change does not establish production recovery or activation.
+
+## Library runtime contract 2.1
+
+Sections and blocks accept optional `effects`. Tokens add optional `fonts.mono`,
+`motion` (none/subtle/expressive) and `layout` (boxed/flush); site `language`
+defaults to en. Defaults preserve boxed rendering. Flush sections span the
+viewport, with readable inner content. The shipped catalog currently has no
+selectable effects/behaviors; fictional packages exercise the pipeline only.
+Inter and EB Garamond are curated Latin OFL packages. See
+[authoring and budgets](../library/README.md#contract-21-amendment).
+
+Package status uses the site's immutable test flag, never client input. Draft
+summaries include language, selected tokens/effects and structured blockers.
+`plan.get_manifest` returns a compact package index; `library.get {id}` returns
+one package's detail/example, only when site tools are visible. Policy schemas
+remain available through `plan.get_schemas`. Client code remains excluded.
+
+Existing 2.0.0 drafts can be read/discarded but new edits/uploads/previews fail
+with `draft_policy_retired`; recreate content in a 2.1 draft. Existing historical
+snapshots can still be approved/deployed using their stored bytes and original
+checker requirements. No migrations or automatic draft upgrades occur.
+
+New verification requires reduced-motion checks after full scrolling at both
+viewports and a browser-wide external-request check including Lighthouse tabs.
+Same-origin static and CMS requests remain allowed. A blocked external attempt
+fails verification. Preview cache keys bind policy, generator, package metadata,
+source and checker; same-revision requests cannot bypass these checks. Static
+Caddy responses negotiate zstd/gzip; configured compression is distinct from a
+verified production deployment. The CSP remains unchanged.

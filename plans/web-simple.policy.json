@@ -4,12 +4,12 @@
     "rationale": "One bounded pilot plan; no price or checkout."
   },
   "version": {
-    "value": "2.0.0",
-    "rationale": "Nonfunctional rationale correction; all catalog limits remain unchanged."
+    "value": "2.1.0",
+    "rationale": "Additive curated library capabilities; historical policies remain frozen."
   },
   "effectiveDate": {
-    "value": "2026-10-08",
-    "rationale": "Initial policy date; activation/enrollment is a later responsibility."
+    "value": "2026-10-11",
+    "rationale": "Owner-requested contract preparation; not production activation."
   },
   "includes": {
     "capabilities": {
@@ -57,13 +57,13 @@
         "arbitrary-component",
         "uploaded-svg"
       ],
-      "rationale": "Work stays within deterministic templates and prepared client materials."
+      "rationale": "Client-supplied scripts, styles and raw HTML remain excluded. Reviewed repository-authored behaviors are platform implementations, not client scripts."
     }
   },
   "firstVersion": {
     "contractVersion": {
-      "value": "2.0",
-      "rationale": "Separate wire-contract version from policy semver."
+      "value": "2.1",
+      "rationale": "Server drafts with curated effects, behaviors and fonts; clients never supply code."
     },
     "structure": {
       "maxSectionsPerPage": {
@@ -449,7 +449,8 @@
           "Inter",
           "EB Garamond",
           "system-sans",
-          "system-serif"
+          "system-serif",
+          "system-mono"
         ],
         "rationale": "Reference fonts plus no-download system alternatives."
       },
@@ -477,6 +478,21 @@
           24
         ],
         "rationale": "Restrained template rounding."
+      },
+      "motion": {
+        "value": [
+          "none",
+          "subtle",
+          "expressive"
+        ],
+        "rationale": "Motion is opt-in; user reduced-motion preferences take precedence."
+      },
+      "layout": {
+        "value": [
+          "boxed",
+          "flush"
+        ],
+        "rationale": "Preserve boxed defaults; flush permits full-width section decoration."
       }
     },
     "navigation": {
@@ -549,6 +565,81 @@
       "previewRequired": {
         "value": true,
         "rationale": "The server-produced verified snapshot and required screenshots must be reviewable before browser approval."
+      }
+    },
+    "language": {
+      "value": "^[a-z]{2,3}(?:-[A-Z][a-z]{3})?(?:-(?:[A-Z]{2}|[0-9]{3}))?$",
+      "rationale": "Bounded BCP 47 language, optional script and region; defaults to en."
+    },
+    "library": {
+      "effects": {
+        "value": [],
+        "rationale": "Only reviewed effect IDs are selectable; fixture effects are never shipped."
+      },
+      "fonts": {
+        "value": [
+          "inter",
+          "eb-garamond"
+        ],
+        "rationale": "Curated Latin OFL packages backed by pinned @fontsource assets."
+      },
+      "budgets": {
+        "variantCss": {
+          "value": 4096,
+          "rationale": "Bound each variant stylesheet."
+        },
+        "effectCss": {
+          "value": 4096,
+          "rationale": "Bound each decorative stylesheet."
+        },
+        "behaviorJs": {
+          "value": 2048,
+          "rationale": "Keep each progressive enhancement small."
+        },
+        "pageCss": {
+          "value": 30720,
+          "rationale": "Bound compressed package CSS actually loaded by any page."
+        },
+        "pageJs": {
+          "value": 8192,
+          "rationale": "Bound compressed behaviors including their loader."
+        },
+        "fontFamilies": {
+          "value": 3,
+          "rationale": "One downloadable family for each heading/body/mono slot."
+        },
+        "fontFiles": {
+          "value": 4,
+          "rationale": "Permit one extra weight without unbounded font downloads."
+        },
+        "fontBytes": {
+          "value": 153600,
+          "rationale": "Bound actual Latin WOFF2 bytes; do not gzip already-compressed fonts."
+        },
+        "components": {
+          "value": 20,
+          "rationale": "Keep the curated catalog understandable."
+        },
+        "variants": {
+          "value": 40,
+          "rationale": "Bound presentation choices."
+        },
+        "behaviors": {
+          "value": 12,
+          "rationale": "Bound reviewed executable surface."
+        },
+        "effects": {
+          "value": 12,
+          "rationale": "Bound decorative choices."
+        },
+        "fonts": {
+          "value": 6,
+          "rationale": "Bound curated font inventory."
+        },
+        "gzipLevel": {
+          "value": 9,
+          "rationale": "Deterministic gzip reference measurement; 1 KiB is 1024 bytes. JS is minified first."
+        }
       }
     }
   },

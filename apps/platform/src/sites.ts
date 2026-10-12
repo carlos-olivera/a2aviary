@@ -8,6 +8,7 @@ import type { PoolClient } from 'pg';
 import {
   generateSite,
   validateSiteSpec,
+  policyForVersion,
   validateAssets,
   sha256,
   canonicalJson,
@@ -539,7 +540,7 @@ export class Sites {
         return snapshot;
       });
       hash = row.spec_sha256;
-      const validated = validateSiteSpec(row.spec);
+      const validated = validateSiteSpec(row.spec, policyForVersion(row.spec.policyVersion), {test:site.test_mode});
       if (!validated.ok) throw new SiteError('invalid_spec', validated.errors);
       const assets = new Map<string, Uint8Array>();
       for (const a of row.spec.assets)
@@ -548,6 +549,7 @@ export class Sites {
           await this.objects.get('specs/' + row.id + '/assets/' + a.id),
         );
       if (job.kind === 'build') {
+        if(row.spec.policyVersion!==defaultPolicy.version.value)throw new SiteError('draft_policy_retired');
         if (new Date(row.expires_at).getTime() <= Date.now())
           throw new SiteError('snapshot_expired');
         if (row.state === 'superseded')
@@ -572,6 +574,7 @@ export class Sites {
             throw new SiteError('cached_verification_failed');
           const source = await generateSite(row.spec, assets, {
             serverNormalized: true,
+            test: site.test_mode,
           });
           if (
             row.source_sha256 !== source.sourceSha256 ||

@@ -1,0 +1,23 @@
+{
+  "id": "inter",
+  "type": "font",
+  "version": "1.0.0",
+  "status": "stable",
+  "family": "Inter",
+  "fallback": "sans-serif",
+  "source": {
+    "package": "@fontsource/inter",
+    "version": "5.3.0",
+    "license": "OFL-1.1",
+    "subset": "latin"
+  },
+  "files": [
+    {
+      "file": "inter-latin-400-normal.woff2",
+      "weight": 400,
+      "style": "normal",
+      "sha256": "8909904ab6c872eb994093482a88a28eca2cd95912d7b6fecd72103b0dc07edc"
+    }
+  ],
+  "purpose": "Self-hosted Latin Inter typography."
+}

@@ -5,6 +5,9 @@ import {
   defaultPolicy,
   SiteError,
   validateSiteSpec,
+  validateLibrarySelection,
+  catalog,
+  type LibraryContext,
   type SiteSpec,
   type ValidationError,
 } from '@a2aviary/generator';
@@ -12,7 +15,7 @@ export type DraftContent = Partial<
   Omit<SiteSpec, 'contractVersion' | 'planId' | 'policyVersion'>
 > & { pages: any[]; assets: any[] };
 export const identity = () => ({
-  contractVersion: '2.0',
+  contractVersion: '2.1',
   planId: defaultPolicy.planId.value,
   policyVersion: defaultPolicy.version.value,
 });
@@ -66,7 +69,10 @@ export const problem = (
         : (actual ?? null),
   suggestion,
 });
-export function validateDraft(content: DraftContent): ValidationError[] {
+export function validateDraft(
+  content: DraftContent,
+  context: LibraryContext = {},
+): ValidationError[] {
   const spec = { ...identity(), ...content },
     errors: ValidationError[] = [];
   if (!validate(spec))
@@ -86,6 +92,14 @@ export function validateDraft(content: DraftContent): ValidationError[] {
   // Budget traversal assumes schema-shaped containers. Return structured errors
   // before inspecting malformed nested values such as null sections or props.
   if (errors.length) return errors.slice(0, 20);
+  errors.push(
+    ...validateLibrarySelection(
+      spec,
+      defaultPolicy,
+      context.catalog ?? catalog,
+      context,
+    ),
+  );
   const bytes = Buffer.byteLength(canonicalJson(spec));
   if (bytes > 262144)
     errors.push(problem('', 'draft.bytes', 262144, bytes, 'Reduce content.'));
@@ -197,8 +211,12 @@ export function validateDraft(content: DraftContent): ValidationError[] {
     );
   return errors.slice(0, 20);
 }
-export function blockers(content: DraftContent) {
-  const r = validateSiteSpec({ ...identity(), ...content });
+export function blockers(content: DraftContent, context: LibraryContext = {}) {
+  const r = validateSiteSpec(
+    { ...identity(), ...content },
+    defaultPolicy,
+    context,
+  );
   return r.ok
     ? []
     : r.errors.slice(0, 20).map((e) => ({ ...e, actual: e.actual ?? null }));
@@ -206,6 +224,7 @@ export function blockers(content: DraftContent) {
 export function applyContent(
   content: DraftContent,
   operations: any[],
+  context: LibraryContext = {},
 ): DraftContent {
   if (
     !Array.isArray(operations) ||
@@ -263,7 +282,7 @@ export function applyContent(
         if (
           !object(op.settings) ||
           Object.keys(op.settings).some(
-            (k) => !['tokens', 'navigation', 'cms'].includes(k),
+            (k) => !['tokens', 'navigation', 'cms', 'language'].includes(k),
           )
         )
           throw new SiteError('draft_settings');
@@ -292,7 +311,7 @@ export function applyContent(
           else remove(section.blocks, op.blockId);
         }
       }
-      const errors = validateDraft(next);
+      const errors = validateDraft(next, context);
       if (errors.length) throw new SiteError('draft_validation', errors);
     } catch (error) {
       if (error instanceof SiteError)

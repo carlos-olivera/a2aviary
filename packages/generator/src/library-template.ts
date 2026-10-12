@@ -8,8 +8,12 @@ export interface LibraryVariant {
   component: string;
   ast: TemplateNode[];
   css: string;
+  behaviors?: string[];
+  targets?: Record<string, string>;
 }
 const tags = new Set([
+  'button',
+  'span',
   'header',
   'div',
   'h1',

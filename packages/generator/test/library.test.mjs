@@ -137,7 +137,7 @@ test('CSS validates every selector and rejects alternate syntax or resource load
       css,
     );
 });
-test('registry has 24 schema-valid packages and no future package implementation', async () => {
+test('registry has 26 schema-valid curated packages', async () => {
   const { registry } = await checkLibrary();
   const value = JSON.parse(registry);
   const validate = new Ajv({ strict: false }).compile(
@@ -146,9 +146,10 @@ test('registry has 24 schema-valid packages and no future package implementation
     ),
   );
   assert(validate(value), JSON.stringify(validate.errors));
-  assert.equal(value.packages.length, 24);
+  assert.equal(value.packages.length, 26);
   assert.deepEqual([...new Set(value.packages.map((p) => p.type))].sort(), [
     'component',
+    'font',
     'variant',
   ]);
   assert(
@@ -182,6 +183,7 @@ test('registry detects stale data, policy drift, missing/extra packages, symlink
       join(dir, 'packages/generator/src/library-data.ts'),
       { recursive: true },
     );
+    await cp(new URL('services/src/site/library-data.ts', root),join(dir,'services/src/site/library-data.ts'),{recursive:true});
     await checkLibrary(dir);
     const target = join(dir, 'library/hero/variants/standard/template.html'),
       original = await readFile(target, 'utf8');
@@ -189,7 +191,7 @@ test('registry detects stale data, policy drift, missing/extra packages, symlink
     await assert.rejects(checkLibrary(dir), /stale/);
     await writeFile(target, original);
     await writeFile(join(dir, 'library/hero/run.js'), 'throw Error()');
-    await assert.rejects(libraryArtifacts(dir), /unknown variant|unexpected/);
+    await assert.rejects(libraryArtifacts(dir), /unknown package|unexpected/);
     await rm(join(dir, 'library/hero/run.js'));
     await symlink(target, join(dir, 'library/hero/extra.html'));
     await assert.rejects(libraryArtifacts(dir), /symlink/);
@@ -199,7 +201,7 @@ test('registry detects stale data, policy drift, missing/extra packages, symlink
       m = JSON.parse(before);
     m.fields.heading.kind = 'link';
     await writeFile(metadata, JSON.stringify(m));
-    await assert.rejects(libraryArtifacts(dir), /metadata fields/);
+    await assert.rejects(libraryArtifacts(dir), /component fields/);
     for (const version of [['1.0.0'], '01.0.0', '1.0.0\n']) {
       await writeFile(
         metadata,
@@ -250,7 +252,7 @@ test('fixtures render each policy component, helpers preserve links, assets and 
   const nested = spec.pages.find((p) => p.path !== '/');
   assert(renderPage(spec, nested.id).includes('../catalog.css'));
   const source = await generateSite(spec, assets);
-  assert.equal(GENERATOR_VERSION, '2.1.0');
+  assert.equal(GENERATOR_VERSION, '2.2.0');
   assert.equal(source.specSha256.length, 64);
 });
 test('CSS includes only used variants once in sorted order and keeps deterministic bundles', async () => {
@@ -303,4 +305,10 @@ test('CSS includes only used variants once in sorted order and keeps determinist
         .trim(),
       baseline.html[page.id],
     );
+});
+
+test('default boxed output retains exact PR #29 HTML, CSS, CMS and font bytes',async()=>{
+ const golden=JSON.parse(await readFile(new URL('./fixtures/boxed-2.1.json',import.meta.url)));
+ const source=await generateSite(input.spec,assets);
+ for(const [path,hash] of Object.entries(golden.hashes))assert.equal(sha256(path in source.binaryFiles?Buffer.from(source.binaryFiles[path],'base64'):source.files[path]),hash,path);
 });

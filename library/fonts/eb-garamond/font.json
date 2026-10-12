@@ -1,0 +1,23 @@
+{
+  "id": "eb-garamond",
+  "type": "font",
+  "version": "1.0.0",
+  "status": "stable",
+  "family": "EB Garamond",
+  "fallback": "serif",
+  "source": {
+    "package": "@fontsource/eb-garamond",
+    "version": "5.3.0",
+    "license": "OFL-1.1",
+    "subset": "latin"
+  },
+  "files": [
+    {
+      "file": "eb-garamond-latin-400-normal.woff2",
+      "weight": 400,
+      "style": "normal",
+      "sha256": "912929dba0faab5e151849ea5e988adba3080ad6d2bcc4dbff27aa427896498d"
+    }
+  ],
+  "purpose": "Self-hosted Latin EB Garamond typography."
+}

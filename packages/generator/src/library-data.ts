@@ -28,7 +28,9 @@ export const library: Record<string, LibraryVariant> = {
         "helper": "collection"
       }
     ],
-    "css": ""
+    "css": "",
+    "behaviors": [],
+    "targets": {}
   },
   "blog:standard": {
     "component": "blog",
@@ -57,7 +59,9 @@ export const library: Record<string, LibraryVariant> = {
         "helper": "collection"
       }
     ],
-    "css": ""
+    "css": "",
+    "behaviors": [],
+    "targets": {}
   },
   "catalog:standard": {
     "component": "catalog",
@@ -86,7 +90,9 @@ export const library: Record<string, LibraryVariant> = {
         "helper": "collection"
       }
     ],
-    "css": ""
+    "css": "",
+    "behaviors": [],
+    "targets": {}
   },
   "contact:standard": {
     "component": "contact",
@@ -127,7 +133,9 @@ export const library: Record<string, LibraryVariant> = {
         "helper": "links"
       }
     ],
-    "css": ""
+    "css": "",
+    "behaviors": [],
+    "targets": {}
   },
   "cta:standard": {
     "component": "cta",
@@ -168,7 +176,9 @@ export const library: Record<string, LibraryVariant> = {
         "helper": "link"
       }
     ],
-    "css": ""
+    "css": "",
+    "behaviors": [],
+    "targets": {}
   },
   "faq:standard": {
     "component": "faq",
@@ -230,7 +240,9 @@ export const library: Record<string, LibraryVariant> = {
         ]
       }
     ],
-    "css": "[data-v=\"faq:standard\"] summary{cursor:pointer}\n"
+    "css": "[data-v=\"faq:standard\"] summary{cursor:pointer}\n",
+    "behaviors": [],
+    "targets": {}
   },
   "feature-grid:standard": {
     "component": "feature-grid",
@@ -300,7 +312,9 @@ export const library: Record<string, LibraryVariant> = {
         "value": "</ul>"
       }
     ],
-    "css": "[data-v=\"feature-grid:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"feature-grid:standard\"] .grid li{padding:var(--space-16)}\n"
+    "css": "[data-v=\"feature-grid:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"feature-grid:standard\"] .grid li{padding:var(--space-16)}\n",
+    "behaviors": [],
+    "targets": {}
   },
   "gallery:standard": {
     "component": "gallery",
@@ -343,7 +357,9 @@ export const library: Record<string, LibraryVariant> = {
         "value": "</div>"
       }
     ],
-    "css": "[data-v=\"gallery:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"gallery:standard\"] .grid li{padding:var(--space-16)}\n[data-v=\"gallery:standard\"] img{display:block;max-width:100%;height:auto}\n"
+    "css": "[data-v=\"gallery:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"gallery:standard\"] .grid li{padding:var(--space-16)}\n[data-v=\"gallery:standard\"] img{display:block;max-width:100%;height:auto}\n",
+    "behaviors": [],
+    "targets": {}
   },
   "hero:standard": {
     "component": "hero",
@@ -403,7 +419,9 @@ export const library: Record<string, LibraryVariant> = {
         "value": "</header>"
       }
     ],
-    "css": "[data-v=\"hero:standard\"] img{display:block;max-width:100%;height:auto}\n"
+    "css": "[data-v=\"hero:standard\"] img{display:block;max-width:100%;height:auto}\n",
+    "behaviors": [],
+    "targets": {}
   },
   "link-cards:standard": {
     "component": "link-cards",
@@ -478,7 +496,9 @@ export const library: Record<string, LibraryVariant> = {
         "value": "</ul>"
       }
     ],
-    "css": "[data-v=\"link-cards:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"link-cards:standard\"] .grid li{padding:var(--space-16)}\n"
+    "css": "[data-v=\"link-cards:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"link-cards:standard\"] .grid li{padding:var(--space-16)}\n",
+    "behaviors": [],
+    "targets": {}
   },
   "rich-text:standard": {
     "component": "rich-text",
@@ -489,7 +509,9 @@ export const library: Record<string, LibraryVariant> = {
         "helper": "richText"
       }
     ],
-    "css": ""
+    "css": "",
+    "behaviors": [],
+    "targets": {}
   },
   "steps:standard": {
     "component": "steps",
@@ -559,6 +581,8 @@ export const library: Record<string, LibraryVariant> = {
         "value": "</ol>"
       }
     ],
-    "css": "[data-v=\"steps:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"steps:standard\"] .grid li{padding:var(--space-16)}\n"
+    "css": "[data-v=\"steps:standard\"] .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-24);list-style:none;padding:0}\n[data-v=\"steps:standard\"] .grid li{padding:var(--space-16)}\n",
+    "behaviors": [],
+    "targets": {}
   }
 };
