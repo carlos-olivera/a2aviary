@@ -46,22 +46,24 @@ website deployment retains its separate serialized, non-cancelling concurrency
 and existing AWS OIDC permissions; it still depends only on `checks`.
 
 GitHub refused the Operator App push on 2026-10-12 because it lacks `workflows`
-permission. The complete workflow diff is saved in ignored
+permission. The complete workflow and matching provenance diff is saved in ignored
 `.local/ci-workflow.patch`; no App permission was requested, changed or bypassed.
 This documentation-only PR does not activate these jobs. Workflow publication,
 new-job run links/durations and main deployment gating remain unverified.
 
-The existing website check fingerprints workflow bytes and requires generated
-architecture provenance refresh when they change. The full patch therefore
-fails `npm --prefix website run check` with
-`Represented source changed: regenerate architecture`. Generated artifacts are
-unchanged under this task's scope. The documentation-only fallback preserves the
-current workflow and package README fingerprints.
+The existing website check fingerprints workflow bytes. With the owner's narrow
+exception, the official `website/scripts/integrate-architecture.mjs` regenerated
+`docs/architecture/provenance.json` from the existing six matching finalized
+artifacts/receipts. Only the two workflow hashes changed; the emitted architecture
+HTML is byte-for-byte unchanged. Website check/build passes with the full patch.
+The matching provenance remains in the owner patch with both workflow files;
+publishing it alone would fail the current check. No other generated artifact
+changed. This workflow/provenance coupling is expected to be relaxed in a later
+cleanup PR.
 
-Before activating the prepared jobs, Carlos Olivera Terrazas must apply both
-workflow edits from the patch through an authorized owner route, resolve the
-architecture provenance gate in a separately authorized scope, and obtain
-successful PR/main job evidence. From the repository root, use
+Before activating the prepared jobs, Carlos Olivera Terrazas must apply all three
+patch files together through an authorized owner route and obtain successful
+PR/main job evidence. From the repository root, use
 `git apply --check .local/ci-workflow.patch` followed by
 `git apply .local/ci-workflow.patch` on a feature branch; recheck applicability
 against current main and rerun local checks before owner publication. Do not
