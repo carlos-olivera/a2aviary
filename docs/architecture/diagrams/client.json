@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Client & Local Agent",
-    "output": ".local/architecture/library-core-final/client.html",
+    "output": ".local/architecture/library-runtime/client.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "07c2d0175c9b493b722eefcb99fc156cc3d6ef10",
+      "revision": "88edf41f305e2ac1f8eb8b871cad7b03b4d03654",
       "provider": "github",
       "link_mode": "web"
     }
@@ -22,13 +22,13 @@
       "sources": [
         {
           "path": "apps/platform/src/tools.ts",
-          "line": 311,
-          "end_line": 318
+          "line": 322,
+          "end_line": 329
         },
         {
           "path": "apps/platform/src/draft-content.ts",
-          "line": 206,
-          "end_line": 213
+          "line": 224,
+          "end_line": 232
         }
       ],
       "pos": [
@@ -49,8 +49,8 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 529,
-          "end_line": 536
+          "line": 576,
+          "end_line": 583
         },
         {
           "path": "packages/generator/src/normalize.ts",
@@ -76,8 +76,8 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 831,
-          "end_line": 854
+          "line": 887,
+          "end_line": 910
         },
         {
           "path": "apps/platform/src/site-pages.ts",
@@ -103,8 +103,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 176,
-          "end_line": 207
+          "line": 177,
+          "end_line": 208
         }
       ],
       "pos": [

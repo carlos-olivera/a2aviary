@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/library-core-final/engine.html",
+    "output": ".local/architecture/library-runtime/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "07c2d0175c9b493b722eefcb99fc156cc3d6ef10",
+      "revision": "88edf41f305e2ac1f8eb8b871cad7b03b4d03654",
       "provider": "github",
       "link_mode": "web"
     }
@@ -22,8 +22,8 @@
       "sources": [
         {
           "path": "apps/platform/src/draft-content.ts",
-          "line": 206,
-          "end_line": 213
+          "line": 224,
+          "end_line": 232
         },
         {
           "path": "packages/generator/src/normalize.ts",
@@ -49,8 +49,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 471,
-          "end_line": 494
+          "line": 472,
+          "end_line": 495
         },
         {
           "path": "apps/platform/migrations/007-server-drafts-preview.sql",
@@ -72,22 +72,22 @@
       "id": "engine-astro",
       "type": "backend",
       "label": "Astro catalog generator",
-      "sublabel": "Checked templates / scoped CSS",
+      "sublabel": "Packages / effects / behaviors",
       "sources": [
         {
           "path": "packages/generator/src/render.ts",
-          "line": 179,
-          "end_line": 185
-        },
-        {
-          "path": "packages/generator/src/library-template.ts",
-          "line": 153,
-          "end_line": 170
+          "line": 58,
+          "end_line": 104
         },
         {
           "path": "packages/generator/scripts/library.mjs",
-          "line": 177,
-          "end_line": 188
+          "line": 232,
+          "end_line": 251
+        },
+        {
+          "path": "packages/generator/scripts/library.mjs",
+          "line": 350,
+          "end_line": 393
         }
       ],
       "pos": [
@@ -104,17 +104,22 @@
       "id": "engine-verify",
       "type": "backend",
       "label": "Agents verification",
-      "sublabel": "Build / axe / links / screenshots",
+      "sublabel": "Browser / motion / network",
       "sources": [
         {
           "path": "packages/generator/src/verification.ts",
-          "line": 187,
-          "end_line": 214
+          "line": 59,
+          "end_line": 69
         },
         {
-          "path": "packages/generator/src/verification.ts",
-          "line": 58,
-          "end_line": 65
+          "path": "packages/generator/template/verify.mjs",
+          "line": 180,
+          "end_line": 227
+        },
+        {
+          "path": "packages/generator/template/network-guard.mjs",
+          "line": 1,
+          "end_line": 32
         }
       ],
       "pos": [
@@ -135,8 +140,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 426,
-          "end_line": 449
+          "line": 427,
+          "end_line": 450
         },
         {
           "path": "packages/generator/src/storage.ts",
@@ -162,8 +167,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 603,
-          "end_line": 634
+          "line": 606,
+          "end_line": 637
         }
       ],
       "pos": [

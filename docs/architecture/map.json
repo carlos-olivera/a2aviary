@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Architecture overview",
-    "output": ".local/architecture/library-core-final/overview.html",
+    "output": ".local/architecture/library-runtime/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "07c2d0175c9b493b722eefcb99fc156cc3d6ef10",
+      "revision": "88edf41f305e2ac1f8eb8b871cad7b03b4d03654",
       "provider": "github",
       "link_mode": "web"
     }
@@ -74,13 +74,13 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 651,
-          "end_line": 658
+          "line": 705,
+          "end_line": 736
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 471,
-          "end_line": 478
+          "line": 472,
+          "end_line": 479
         }
       ],
       "tag": "Explore stage"
@@ -106,8 +106,8 @@
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 176,
-          "end_line": 183
+          "line": 177,
+          "end_line": 184
         }
       ],
       "tag": "Catalog implementation"
