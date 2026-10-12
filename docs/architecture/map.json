@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Architecture overview",
-    "output": ".local/architecture/library-runtime/overview.html",
+    "output": ".local/architecture/presentation-reviewed/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "88edf41f305e2ac1f8eb8b871cad7b03b4d03654",
+      "revision": "f6cddd358e2d3987c0457cbf5f99d5edba349ea7",
       "provider": "github",
       "link_mode": "web"
     }
@@ -74,8 +74,8 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 705,
-          "end_line": 736
+          "line": 718,
+          "end_line": 749
         },
         {
           "path": "apps/platform/src/sites.ts",

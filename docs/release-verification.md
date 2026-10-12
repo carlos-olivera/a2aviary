@@ -611,3 +611,81 @@ The first manifest incorrectly selected `installation`; GitHub rejected it befor
   publication. Permissions were not expanded and no personal publishing fallback
   was used. The integration CI job remains advisory/non-blocking and unverified
   on a real GitHub runner.
+
+## Presentation batch — 2026-10-12 local implementation
+
+### Implemented
+
+Policy **2.2.0**, contract **2.2**, and generator **2.3.0** add twelve generic,
+experimental presentation entries through the existing tester-only MCP draft
+flow. Three stable standard variants gain validated item/action targets and
+become 1.1.0. Shell and conditional control copy are owner supplied; incomplete
+drafts report exact missing labels, while preview/build reject missing or blank
+requirements. No English translation/default is substituted for new packages.
+Frozen 2.1 artifacts and legacy English HTML/CSS/JS/font/404 bytes are preserved;
+retired drafts remain readable/discardable and historical approved snapshots
+retain stored-byte deployment. No migration is introduced.
+
+The core adds confined pointer coordinates, bounded numeric style properties,
+clipboard completion/fallback handling and initializer rollback. Package markup
+cannot supply literal copy or its own accessibility attributes. Static/no-JS,
+reduced-motion and unsupported-API paths retain readable content. The hosted
+fixture runner accepts an allowlisted composition option; only its pure local
+selection path was exercised. See [ADR 014](decisions/014-component-library.md)
+and the [library guide](../library/README.md#contract-22-amendment).
+
+### Verified locally
+
+Node.js **22.23.3**, locked dependencies, isolated loopback Postgres and fictional
+fixtures were used. Services check/build and **104 tests**, platform check/build
+and **68 tests** (one hosted test explicitly skipped), generator build and **78
+unit tests**, and infrastructure build/**nine tests** pass. Generator check and
+test invoke the complete `library:check`: **148 library captures** plus **168
+presentation cases**, with additional no-JS, keyboard/focus, pointer/preference,
+initializer-failure and clipboard success/denial/unavailability/stale-completion
+checks. Each reference palette has 390/1280px normal/reduced front/back captures;
+content/optional boundaries and new/system font controls cover those same widths
+and preferences. Axe includes contrast; no overflow or external requests pass.
+
+All **three full local verifier runs** pass their ten configured checks, including
+real Astro build, axe, links, Lighthouse accessibility/best practices, screenshots,
+`motion:reduced` and `network:external`. Each records Lighthouse **100/100**, zero
+axe violations and zero external requests. Performance/SEO scores are not part
+of this verifier. Measured HTML/CSS/JS/font bytes and gzip, package sizes, exact
+hashes, genericity details and nine inspected fictional captures are in
+[sanitized presentation evidence](evidence/presentation/README.md). Complete
+local evidence remains under `.local/presentation-check/` and
+`.local/presentation-verifier/`.
+
+The platform integration uses real local `site.draft.create`/`apply`/`get`, normal
+asset upload and preview/worker admission. It verifies tester acceptance,
+non-test rejection, classification-spoof rejection, incomplete/blank labels,
+retired 2.1 drafts and stored-byte 2.0/2.1 snapshots. Its provider boundary uses
+explicit doubles; the separate full verifier above runs actual browser tools.
+After final authoring-only rejection checks, the 78-unit-test suite and static checks
+were rerun; all three generated source hashes still match the passing full-verifier
+evidence exactly. No-JS content is inspected with scripting disabled; axe audits the same serialized
+static DOM in a scripting-capable harness with application scripts removed.
+Unsupported scroll behavior is tested by removing conditional enhancement rules.
+
+The disposable LocalStack foundation passes `local:up`, `local:deploy` and
+`local:test`: queued signed intake, stored result, cleanup/concurrency release,
+verified captured signed reply, duplicate/tamper rejection, mock Operator PR,
+watchdog and configured controls. This is local emulation with fake credentials,
+not a production deployment or real email/AI/GitHub service call. Six architecture
+drawings were refreshed against committed source; all four Archify gates pass.
+Website checks/build and the integrated 5-stage/44-node desktop/mobile,
+keyboard/focus, no-JS and production-CSP browser assertions pass. Relative-link,
+whitespace and scoped secret/client-data reviews are part of this delivery.
+
+### Not verified
+
+No hosted tester composition was run, no production settings/permissions/data
+were changed, and no migration, merge or production deployment was performed.
+The dated production failure evidence above remains unchanged. Chromium local
+coverage does not establish cross-browser/device behavior or hosted clipboard
+policy. The App's current repository-only installation and enabled development
+broker were checked; repository auto-merge remains disabled and main is protected.
+Detailed branch-protection administration remains unreadable to the App (HTTP
+403); no permissions were expanded. Owner review, merge timing and a separately
+authorized hosted run remain required after the Operator App PR.
