@@ -51,7 +51,7 @@
     "mode": "Separate local tooling"
   },
   "gate-policy": {
-    "note": "Policy 2.1.0 and contract 2.1 enforce supplied values, package status against immutable test mode, aggregate budgets and atomic quotas. Retired 2.0 drafts are read/discard only; historical stored approvals retain their original policy/checker profile.",
+    "note": "Policy 2.2.0 / contract 2.2 enforce owner shell/control labels, immutable tester-only package classification and unchanged budgets. Incomplete drafts report missing labels; preview/build require them. Retired 2.0/2.1 drafts are read/discard only; historical stored approvals retain their original profile.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
@@ -82,7 +82,7 @@
     "mode": "Separate local tooling"
   },
   "engine-astro": {
-    "note": "Five curated package types compile to inert checked template/CSS/behavior/font data. Generator 2.2.0 emits optional effects, flush wrappers and confined external behavior JavaScript; package metadata contributes to provenance. Default boxed bytes remain equal to PR #29. Production activation is unverified.",
+    "note": "Generator 2.3.0 compiles reviewed package data and emits the experimental presentation batch with confined pointer/clipboard behavior, core-owned accessibility and bounded styles. Legacy English bytes remain equal. New packages require owner copy and trusted test classification; production activation is unverified.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },

@@ -1,0 +1,349 @@
+{
+  "complete": true,
+  "compositions": [
+    {
+      "name": "dark-en",
+      "weight": {
+        "html": {
+          "bytes": 4139,
+          "gzipBytes": 1671,
+          "files": 2
+        },
+        "images": {
+          "bytes": 10420,
+          "gzipBytes": 10443,
+          "files": 1
+        },
+        "css": {
+          "bytes": 10486,
+          "gzipBytes": 2322,
+          "files": 1
+        },
+        "js": {
+          "bytes": 6447,
+          "gzipBytes": 2389,
+          "files": 2
+        },
+        "other": {
+          "bytes": 13402,
+          "gzipBytes": 5974,
+          "files": 3
+        },
+        "fonts": {
+          "bytes": 71060,
+          "gzipBytes": 71137,
+          "files": 4
+        }
+      },
+      "sourceSha256": "2105cee89511f3c3dc5eb14fdba5ac3e1812c9514c8eba83810b13d386bfa428",
+      "report": {
+        "version": 1,
+        "sourceSha256": "2105cee89511f3c3dc5eb14fdba5ac3e1812c9514c8eba83810b13d386bfa428",
+        "specSha256": "c020d3b40b3a944081e95ccab111e1bd9c493a1e3c7dffb96ef6241798d6aca9",
+        "passed": true,
+        "checks": [
+          {
+            "name": "catalog-syntax",
+            "passed": true,
+            "details": {
+              "files": 3
+            }
+          },
+          {
+            "name": "astro-build",
+            "passed": true,
+            "details": {
+              "exitCode": 0
+            }
+          },
+          {
+            "name": "a11y:/",
+            "passed": true,
+            "details": {
+              "rules": []
+            }
+          },
+          {
+            "name": "links:/",
+            "passed": true,
+            "details": {
+              "broken": 0
+            }
+          },
+          {
+            "name": "lighthouse:/",
+            "passed": true,
+            "details": {
+              "accessibility": 1,
+              "bestPractices": 1
+            }
+          },
+          {
+            "name": "motion:reduced:/:390",
+            "passed": true,
+            "details": {
+              "running": 0
+            }
+          },
+          {
+            "name": "screenshot:/:390",
+            "passed": true,
+            "details": {
+              "width": 390,
+              "height": 2337
+            }
+          },
+          {
+            "name": "motion:reduced:/:1280",
+            "passed": true,
+            "details": {
+              "running": 0
+            }
+          },
+          {
+            "name": "screenshot:/:1280",
+            "passed": true,
+            "details": {
+              "width": 1280,
+              "height": 2035
+            }
+          },
+          {
+            "name": "network:external",
+            "passed": true,
+            "details": {
+              "requests": []
+            }
+          }
+        ],
+        "outputSha256": "54d9b91f5cf4fcc35fadfaa0202fa686fff4e3553462ab2c3bc7b171ea32f835"
+      }
+    },
+    {
+      "name": "light-es",
+      "weight": {
+        "html": {
+          "bytes": 4220,
+          "gzipBytes": 1725,
+          "files": 2
+        },
+        "images": {
+          "bytes": 10420,
+          "gzipBytes": 10443,
+          "files": 1
+        },
+        "css": {
+          "bytes": 10095,
+          "gzipBytes": 2280,
+          "files": 1
+        },
+        "js": {
+          "bytes": 6447,
+          "gzipBytes": 2389,
+          "files": 2
+        },
+        "other": {
+          "bytes": 8996,
+          "gzipBytes": 3999,
+          "files": 2
+        },
+        "fonts": {
+          "bytes": 47484,
+          "gzipBytes": 47515,
+          "files": 2
+        }
+      },
+      "sourceSha256": "225df4a34010f9a90baa4d3006576d24bcdc1ab3680be9120494dc20d318277c",
+      "report": {
+        "version": 1,
+        "sourceSha256": "225df4a34010f9a90baa4d3006576d24bcdc1ab3680be9120494dc20d318277c",
+        "specSha256": "7b9c481f80bceaa48e99f3d557dacecd473a9c88961f7a8e767c094e959d8b74",
+        "passed": true,
+        "checks": [
+          {
+            "name": "catalog-syntax",
+            "passed": true,
+            "details": {
+              "files": 3
+            }
+          },
+          {
+            "name": "astro-build",
+            "passed": true,
+            "details": {
+              "exitCode": 0
+            }
+          },
+          {
+            "name": "a11y:/",
+            "passed": true,
+            "details": {
+              "rules": []
+            }
+          },
+          {
+            "name": "links:/",
+            "passed": true,
+            "details": {
+              "broken": 0
+            }
+          },
+          {
+            "name": "lighthouse:/",
+            "passed": true,
+            "details": {
+              "accessibility": 1,
+              "bestPractices": 1
+            }
+          },
+          {
+            "name": "motion:reduced:/:390",
+            "passed": true,
+            "details": {
+              "running": 0
+            }
+          },
+          {
+            "name": "screenshot:/:390",
+            "passed": true,
+            "details": {
+              "width": 390,
+              "height": 2337
+            }
+          },
+          {
+            "name": "motion:reduced:/:1280",
+            "passed": true,
+            "details": {
+              "running": 0
+            }
+          },
+          {
+            "name": "screenshot:/:1280",
+            "passed": true,
+            "details": {
+              "width": 1280,
+              "height": 2035
+            }
+          },
+          {
+            "name": "network:external",
+            "passed": true,
+            "details": {
+              "requests": []
+            }
+          }
+        ],
+        "outputSha256": "06299f0ca1d526023e7b38182b647a4455a2d571d6d6351645285575814cff35"
+      }
+    },
+    {
+      "name": "contrast-es",
+      "weight": {
+        "html": {
+          "bytes": 4220,
+          "gzipBytes": 1725,
+          "files": 2
+        },
+        "images": {
+          "bytes": 10420,
+          "gzipBytes": 10443,
+          "files": 1
+        },
+        "css": {
+          "bytes": 9895,
+          "gzipBytes": 2181,
+          "files": 1
+        },
+        "js": {
+          "bytes": 6447,
+          "gzipBytes": 2389,
+          "files": 2
+        }
+      },
+      "sourceSha256": "b88b47e4e2de4243097ad3560d5fad5515a899690de8e8042dc326064a093f2f",
+      "report": {
+        "version": 1,
+        "sourceSha256": "b88b47e4e2de4243097ad3560d5fad5515a899690de8e8042dc326064a093f2f",
+        "specSha256": "7925d2d29fce3deb4555e2f7e88bc2c46e79d1240780bcab8300f26357ebde63",
+        "passed": true,
+        "checks": [
+          {
+            "name": "catalog-syntax",
+            "passed": true,
+            "details": {
+              "files": 3
+            }
+          },
+          {
+            "name": "astro-build",
+            "passed": true,
+            "details": {
+              "exitCode": 0
+            }
+          },
+          {
+            "name": "a11y:/",
+            "passed": true,
+            "details": {
+              "rules": []
+            }
+          },
+          {
+            "name": "links:/",
+            "passed": true,
+            "details": {
+              "broken": 0
+            }
+          },
+          {
+            "name": "lighthouse:/",
+            "passed": true,
+            "details": {
+              "accessibility": 1,
+              "bestPractices": 1
+            }
+          },
+          {
+            "name": "motion:reduced:/:390",
+            "passed": true,
+            "details": {
+              "running": 0
+            }
+          },
+          {
+            "name": "screenshot:/:390",
+            "passed": true,
+            "details": {
+              "width": 390,
+              "height": 2311
+            }
+          },
+          {
+            "name": "motion:reduced:/:1280",
+            "passed": true,
+            "details": {
+              "running": 0
+            }
+          },
+          {
+            "name": "screenshot:/:1280",
+            "passed": true,
+            "details": {
+              "width": 1280,
+              "height": 2034
+            }
+          },
+          {
+            "name": "network:external",
+            "passed": true,
+            "details": {
+              "requests": []
+            }
+          }
+        ],
+        "outputSha256": "08d271b648759ca77af96577a0a2ae4e10efa7e9764e3de5d7f095cae87e9961"
+      }
+    }
+  ]
+}

@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/library-runtime/engine.html",
+    "output": ".local/architecture/presentation-reviewed/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "88edf41f305e2ac1f8eb8b871cad7b03b4d03654",
+      "revision": "f6cddd358e2d3987c0457cbf5f99d5edba349ea7",
       "provider": "github",
       "link_mode": "web"
     }
@@ -22,8 +22,8 @@
       "sources": [
         {
           "path": "apps/platform/src/draft-content.ts",
-          "line": 224,
-          "end_line": 232
+          "line": 253,
+          "end_line": 261
         },
         {
           "path": "packages/generator/src/normalize.ts",
@@ -81,13 +81,13 @@
         },
         {
           "path": "packages/generator/scripts/library.mjs",
-          "line": 232,
-          "end_line": 251
+          "line": 477,
+          "end_line": 486
         },
         {
-          "path": "packages/generator/scripts/library.mjs",
-          "line": 350,
-          "end_line": 393
+          "path": "services/src/site/behavior-loader.ts",
+          "line": 1,
+          "end_line": 49
         }
       ],
       "pos": [
