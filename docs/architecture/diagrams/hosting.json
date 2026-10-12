@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Live Hosting & CMS",
-    "output": ".local/architecture/presentation-reviewed/hosting.html",
+    "output": ".local/architecture/deploy-permissions/hosting.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "f6cddd358e2d3987c0457cbf5f99d5edba349ea7",
+      "revision": "3dce66819a30c327f98593c8b70566339d722c2c",
       "provider": "github",
       "link_mode": "web"
     }
@@ -50,7 +50,17 @@
         {
           "path": "packages/generator/src/deploy.ts",
           "line": 67,
-          "end_line": 78
+          "end_line": 149
+        },
+        {
+          "path": "packages/generator/src/deploy.ts",
+          "line": 335,
+          "end_line": 340
+        },
+        {
+          "path": "packages/generator/test/deploy-permissions.test.mjs",
+          "line": 8,
+          "end_line": 81
         }
       ],
       "pos": [
@@ -71,13 +81,13 @@
       "sources": [
         {
           "path": "packages/generator/src/deploy.ts",
-          "line": 510,
-          "end_line": 521
+          "line": 522,
+          "end_line": 533
         },
         {
           "path": "packages/generator/src/deploy.ts",
-          "line": 537,
-          "end_line": 543
+          "line": 549,
+          "end_line": 555
         }
       ],
       "pos": [
@@ -147,8 +157,8 @@
       "sources": [
         {
           "path": "packages/generator/src/deploy.ts",
-          "line": 497,
-          "end_line": 512
+          "line": 509,
+          "end_line": 524
         }
       ],
       "pos": [

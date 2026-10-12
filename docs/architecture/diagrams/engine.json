@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/presentation-reviewed/engine.html",
+    "output": ".local/architecture/deploy-permissions/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "f6cddd358e2d3987c0457cbf5f99d5edba349ea7",
+      "revision": "3dce66819a30c327f98593c8b70566339d722c2c",
       "provider": "github",
       "link_mode": "web"
     }

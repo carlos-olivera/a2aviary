@@ -5,6 +5,7 @@
 - Set client web and CMS staging files to `0644` and directories to `0755` before upload, including nested web assets, so container users such as PocketBase UID 1000 can read files copied into the image even when the adapter inherits `umask 077`.
 - Add an isolated adapter regression that stages both services under `umask 077`, checks every staged file/directory mode, preserves web artifact bytes and confirms temporary-directory cleanup. It reproduced the original `0700` CMS directory and passes with the fix.
 - Node.js 22.23.3 generator check/build, the library browser matrix (including 168 presentation cases) and all 79 generator tests passed. Platform check/build and 68 tests passed; the hosted test remained skipped. No hosted run or deployment was performed; delivery stops at an Operator App PR for owner review.
+- Regenerate all six architecture drawings against the committed permission fix, refresh source ranges/fingerprints and desktop/mobile/hosting captures, and link staging behavior to its local regression. All four Archify gates, website check/build and integrated browser checks (five stages, 44 nodes, keyboard/focus, mobile, CSP and JavaScript-free access) passed. Inspect the existing hosting readiness detour without changing layout; rerun generator/platform checks, builds and tests with the same passing counts above.
 
 ## 2026-10-12 — first reusable presentation package batch
 
