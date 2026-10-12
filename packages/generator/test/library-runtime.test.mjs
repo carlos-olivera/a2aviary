@@ -474,6 +474,8 @@ test('schemas, policy agreement, duplicate signatures and font provenance reject
     );
   }));
 test('manifest fits context and package details contain no executable source or font bytes', () => {
+  assert(libraryDetail('hero').exampleProps);
+  assert.throws(() => libraryDetail('__proto__'), /library_package_not_found/);
   assert(Buffer.byteLength(JSON.stringify(compactLibraryManifest())) <= 24576);
   assert.equal(compactLibraryManifest().manifest.packages.length, 26);
   assert.equal(libraryDetail('inter').source.subset, 'latin');
