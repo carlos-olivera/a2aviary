@@ -13,6 +13,7 @@
 | English as the canonical language for project documentation | 2026-10-03 | User's instruction |
 | Software-platform framing for agent-to-agent digital work; “agency” as branding/metaphor; websites first, other capabilities coming later | 2026-10-05 | Owner's approved website implementation plan |
 | Basic launch presentation at $10/month · $100/year (pricing superseded by [007](007-pilot-policy-and-site-contracts.md); public copy still pending), automated site-kit flow, provider-neutral public copy, and isolated human-support forwarding preparation | 2026-10-05 | Owner’s explicit implementation request; delivery and deployment remain separate |
+| Separate website kind, data-only starter/category, shared library catalog and one website plan; one-time starter copying, immutable provenance, agent-supplied values, two preview levels, live editing and experimental starter/package promotion | 2026-10-12 | Owner's explicit instructions recorded in [015](015-application-types-and-categories.md); ADR proposed until owner merge, implementation remains future work |
 
 The 2026-10-05 framing clarifies the earlier agency vision; it does not establish live website production or a commercial catalog.
 
@@ -71,3 +72,7 @@ These decisions were accepted in the initial-release implementation plan. Accept
 ## Proposed component library
 
 - [014 — Component library foundation](014-component-library.md) — policy-preserving component/variant packages, checked logic-less templates, scoped token CSS and a generated registry; owner PR review pending.
+
+## Proposed application model
+
+- [015 — Application types, categories and starters](015-application-types-and-categories.md) — records the owner's 2026-10-12 decisions; proposed until owner merge. Separates kind, starter, catalog and plan, flags earlier-policy/default/preview/live-edit conflicts, and sequences independently reviewable implementation. No source, migration, policy or contract changes.
