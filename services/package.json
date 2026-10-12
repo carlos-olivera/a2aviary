@@ -5,10 +5,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "check": "tsc --noEmit && npm run site:check && LIBRARY_TOOL_HOST=services node ../packages/generator/scripts/library.mjs --static",
-    "test": "node --test test/*.test.mjs",
-    "site:generate": "node scripts/site/generate.ts",
-    "site:check": "node scripts/site/generate.ts --check"
+    "check": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-cloudfront": "3.1146.0",
@@ -23,13 +21,11 @@
     "ajv": "8.20.0",
     "jose": "6.2.12",
     "mailparser": "3.9.34",
-    "openai": "7.27.0",
-    "sharp": "0.35.5"
+    "openai": "7.27.0"
   },
   "devDependencies": {
     "@types/mailparser": "3.4.6",
     "@types/node": "22.19.15",
-    "acorn": "8.19.0",
     "esbuild": "0.25.12",
     "typescript": "7.0.2"
   }

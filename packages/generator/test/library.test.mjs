@@ -20,7 +20,7 @@ import {
   GENERATOR_VERSION,
   sha256,
 } from '../dist/index.js';
-import { fixtureSubmission } from '../scripts/fixture-lib.mjs';
+import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 const root = new URL('../../../', import.meta.url);
 const input = await fixtureSubmission(),
   assets = new Map(
@@ -187,8 +187,8 @@ test('registry detects stale data, policy drift, missing/extra packages, symlink
       { recursive: true },
     );
     await cp(
-      new URL('services/src/site/library-data.ts', root),
-      join(dir, 'services/src/site/library-data.ts'),
+      new URL('packages/site-core/src/library-data.ts', root),
+      join(dir, 'packages/site-core/src/library-data.ts'),
       { recursive: true },
     );
     await checkLibrary(dir);

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import assert from 'node:assert/strict';
-import { fixtureSubmission } from '../../../packages/generator/scripts/fixture-lib.mjs';
+import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 export async function call(f, user, name, args = {}) {
   const response = await f.rpc(await f.token(user), 'tools/call', {
       name,

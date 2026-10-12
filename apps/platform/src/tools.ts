@@ -15,11 +15,7 @@ import {
 import type { Plans } from './plans.ts';
 import type { Sites } from './sites.ts';
 import type { SiteAdministration } from './site-administration.ts';
-import {
-  SiteError,
-  compactLibraryManifest,
-  libraryDetail,
-} from '@a2aviary/generator';
+import { SiteError, compactLibraryManifest, libraryDetail } from '@a2aviary/generator';
 
 export function createServer(
   principal: Principal,

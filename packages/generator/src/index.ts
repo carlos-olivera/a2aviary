@@ -10,19 +10,19 @@ export {
   validateChangeRequest,
   specDigest,
   defaultPolicy,
-} from '../../../services/src/site/validator.ts';
-export { canonicalJson, sha256 } from '../../../services/src/site/policy.ts';
-export type * from '../../../services/src/site/types.ts';
+} from '@a2aviary/site-core';
+export { canonicalJson, sha256 } from '@a2aviary/site-core';
+export type * from '@a2aviary/site-core';
 export * from './costs.ts';
 
 export * from './normalize.ts';
-export { generateContracts } from '../../../services/src/site/generator.ts';
+export { generateContracts } from '@a2aviary/site-core';
 
-export { catalog } from '../../../services/src/site/library-data.ts';
+export { catalog } from '@a2aviary/site-core';
 export {
   contentErrors,
   validateLibrarySelection,
   selectedPackages,
-} from '../../../services/src/site/library.ts';
-export { policyForVersion } from '../../../services/src/site/policy.ts';
+} from '@a2aviary/site-core';
+export { policyForVersion } from '@a2aviary/site-core';
 export { compactLibraryManifest, libraryDetail } from './library-manifest.ts';

@@ -1,10 +1,10 @@
 import { readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
-import { defaultPolicy } from '../../../services/src/site/policy.ts';
+import { defaultPolicy } from '@a2aviary/site-core';
 import {
   assertPolicySnapshot,
   generateContracts,
-} from '../../../services/src/site/generator.ts';
+} from '@a2aviary/site-core';
 const root = new URL('../../../', import.meta.url);
 const read = async (path) =>
   JSON.parse(await readFile(new URL(path, root), 'utf8'));

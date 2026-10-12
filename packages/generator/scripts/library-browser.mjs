@@ -9,8 +9,8 @@ import { renderPage, css } from '../src/render.ts';
 import {
   behaviorBundle,
   fontPackages,
-} from '../../../services/src/site/library.ts';
-import { validateSiteSpec } from '../../../services/src/site/validator.ts';
+} from '@a2aviary/site-core';
+import { validateSiteSpec } from '@a2aviary/site-core';
 import { runtimeFixture } from '../test/fixtures/library-runtime/fixture.mjs';
 export async function checkLibraryBrowser(root, production, compiler) {
   const fixture = await runtimeFixture(root, compiler),

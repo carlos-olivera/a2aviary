@@ -5,9 +5,10 @@ server image normalization, hosted Agents API verification, private artifact
 storage and isolated Railway/PocketBase provisioning. It does not extend the AWS
 brief-analysis flow.
 
-Read [site operations](../../docs/sites.md) before activation. Run `npm ci`,
-`npm run check`, `npm run build`, `npm test` and `npm run fixture` here. Build
-before installing the local dependency in `apps/platform`. The build emits
+Read [site operations](../../docs/sites.md) before activation. Run `npm ci` and `npm run build` from the repository root, then
+`npm run check -w @a2aviary/generator`, `npm test -w @a2aviary/generator` and
+`npm run fixture -w @a2aviary/generator`. The root workspace links the
+[site-core](../site-core/README.md) domain and platform without a `file:` install. The build emits
 runtime/types, replaces the copied trusted checker resources, installs the
 SHA-pinned Railway CLI and preserves dependency licenses. Astro is pinned to
 7.3.6 and PocketBase to 0.40.4.
@@ -37,7 +38,8 @@ cleanup limits, unavailable billing amounts and unresolved rollout gates.
 12 standard variants, template grammar, CSS subset and generated registry. Run
 `npm run library:generate` after package edits, then `npm run check`, `npm run build`
 and `npm test`. Check/test/build reject stale data; they never silently regenerate
-it. Services check also runs the validator through the existing CI workflow.
+it. Root `site:check` and `library:check:static` enforce the relocated domain gates.
+The prepared workspace CI patch requires owner application before merge.
 The Docker build includes library source; the runtime bundle contains only checked
 AST/CSS data and needs no source library directory. No dependency was added.
 
@@ -79,7 +81,8 @@ The following paragraph records the 2.1 historical baseline.
 Policy 2.1.0 / contract 2.1 use generator 2.2.0. The library now includes two
 curated font packages. `library:check` runs the complete local browser matrix;
 `library:check:static` and `check:static` are explicit build/container gates.
-Static CI is invoked through services; browser/platform CI remains unconfigured.
+At that historical baseline, static CI was invoked through services. Current
+workspace CI is prepared as an owner-applied patch with browser/platform jobs.
 Browser screenshots and summary are ignored under `.local/library-check/`.
 Run platform tests with a dedicated loopback `TEST_DATABASE_URL`, never production.
 The local CMS test also checks actual gzip/zstd responses, decompressed bytes and
@@ -109,3 +112,19 @@ in ignored `.local/presentation-verifier/` at the repository root. See
 [dated release evidence](../../docs/release-verification.md#presentation-batch--2026-10-12-local-implementation).
 No runtime dependency, infrastructure, migration or provider integration was
 added. Generated selected fonts carry original OFL licenses and registry hashes.
+
+
+## Workspace ownership
+
+Install once at the repository root with Node 22.23.3. Build site-core declarations
+before checking/building generator, and build generator before platform. Root
+`npm run build` follows that order. The explicit root `npm run check` uses the
+static library gate; generator `check` and `test` retain the full browser matrix.
+
+Generator imports site domain code only through `@a2aviary/site-core`; its existing
+exports retain compatibility aliases. Test helpers use the test-only
+`@a2aviary/site-core/fixtures/catalog` and `/fixtures/presentation` exports.
+The compiler retains presentation AST/CSS in `src/library-data.ts` and writes
+catalog metadata to `packages/site-core/src/library-data.ts`. Both remain
+byte-identical to the pre-move artifacts. Package files, template lockfile and
+`GENERATOR_VERSION` are unchanged. See [refactor evidence](../../docs/evidence/site-core-workspaces/README.md).

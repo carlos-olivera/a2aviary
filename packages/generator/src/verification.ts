@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
 import { randomUUID } from 'node:crypto';
 import { setTimeout as delay } from 'node:timers/promises';
-import { canonicalJson, sha256 } from '../../../services/src/site/policy.ts';
-import type { SiteSpec } from '../../../services/src/site/types.ts';
+import { canonicalJson, sha256 } from '@a2aviary/site-core';
+import type { SiteSpec } from '@a2aviary/site-core';
 import { SiteError, type SourceBundle } from './render.ts';
 
 export interface VerificationReport {

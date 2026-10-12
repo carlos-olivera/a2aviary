@@ -7,23 +7,14 @@
     "skipLibCheck": true,
     "erasableSyntaxOnly": true,
     "declaration": true,
-    "rootDir": "../..",
+    "rootDir": "src",
     "outDir": "dist",
     "rewriteRelativeImportExtensions": true,
     "types": [
       "node"
-    ],
-    "paths": {
-      "ajv": [
-        "./node_modules/ajv/dist/ajv.d.ts"
-      ],
-      "sharp": [
-        "./node_modules/sharp/lib/index.d.ts"
-      ]
-    }
+    ]
   },
   "include": [
-    "src/**/*.ts",
-    "../../services/src/site/*.ts"
+    "src/**/*.ts"
   ]
 }

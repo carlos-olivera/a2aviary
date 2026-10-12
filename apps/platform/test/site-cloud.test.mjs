@@ -1,10 +1,11 @@
-import { compositionNames } from '../../../packages/generator/test/fixtures/presentation/compositions.mjs';
+import { compositionNames } from '@a2aviary/site-core/fixtures/presentation';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { randomBytes } from 'node:crypto';
-import { siteRuntime, AgentsVerifier, sha256 } from '@a2aviary/generator';
+import { sha256 } from '@a2aviary/site-core';
+import { siteRuntime, AgentsVerifier } from '@a2aviary/generator';
 import { fixture } from './helpers.mjs';
 import { prepare, call } from './draft-fixture.mjs';
 import { cleanupFixture } from './cloud-fixture-cleanup.mjs';

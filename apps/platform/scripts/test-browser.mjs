@@ -6,8 +6,9 @@ import { promisify } from 'node:util';
 import { fixture } from '../test/helpers.mjs';
 import { prepare } from '../test/draft-fixture.mjs';
 import { testDependencies } from '../test/site-dependencies.mjs';
-import { writeSource } from '../../../packages/generator/scripts/fixture-lib.mjs';
-import { sha256, canonicalJson } from '@a2aviary/generator';
+import { writeSource } from '@a2aviary/site-core/fixtures/catalog';
+import { sha256, canonicalJson } from '@a2aviary/site-core';
+
 const require = createRequire(
     new URL('../../../packages/generator/package.json', import.meta.url),
   ),

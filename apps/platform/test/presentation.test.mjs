@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto';
 import { fixture } from './helpers.mjs';
 import { testDependencies } from './site-dependencies.mjs';
 import { call, prepare } from './draft-fixture.mjs';
-import { composition } from '../../../packages/generator/test/fixtures/presentation/compositions.mjs';
+import { composition } from '@a2aviary/site-core/fixtures/presentation';
 
 test('real MCP drafts/upload accept the presentation for tester sites and reject non-test sites', async (t) => {
   const deps = testDependencies(),

@@ -8,7 +8,7 @@ const sharp = createRequire(
 import { fixture } from './helpers.mjs';
 import { testDependencies } from './site-dependencies.mjs';
 import { prepare, approve, call } from './draft-fixture.mjs';
-import { fixtureSubmission } from '../../../packages/generator/scripts/fixture-lib.mjs';
+import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 
 test('revisioned MCP drafts validate partial content, atomicity, conflicts, missing inputs and compact budgets', async (t) => {
   const f = await fixture(testDependencies());
@@ -557,7 +557,7 @@ test('artifact tampering fails at approval, admission and worker; edits and appr
     original = deps.data.get(key),
     altered = JSON.parse(original);
   altered.files['index.html'] = Buffer.from('tampered').toString('base64');
-  const { sha256, canonicalJson } = await import('@a2aviary/generator');
+  const { sha256, canonicalJson } = await import('@a2aviary/site-core');
   altered.report.outputSha256 = sha256(canonicalJson(altered.files));
   deps.data.set(key, Buffer.from(JSON.stringify(altered)));
   await assert.rejects(approve(f, u, saved.specId));

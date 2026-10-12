@@ -1,8 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import type { PoolClient } from 'pg';
+import { defaultPolicy } from '@a2aviary/site-core';
 import {
   SiteError,
-  defaultPolicy,
   type SiteResources,
   type SiteUsage,
   type SiteDeployer,

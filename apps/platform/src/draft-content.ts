@@ -1,9 +1,9 @@
 import { Ajv } from 'ajv';
-import { generateContracts } from '@a2aviary/generator';
+import { generateContracts } from '@a2aviary/site-core';
+
 import {
   canonicalJson,
   defaultPolicy,
-  SiteError,
   validateSiteSpec,
   validateLibrarySelection,
   contentErrors,
@@ -11,7 +11,8 @@ import {
   type LibraryContext,
   type SiteSpec,
   type ValidationError,
-} from '@a2aviary/generator';
+} from '@a2aviary/site-core';
+import { SiteError } from '@a2aviary/generator';
 export type DraftContent = Partial<
   Omit<SiteSpec, 'contractVersion' | 'planId' | 'policyVersion'>
 > & { pages: any[]; assets: any[] };

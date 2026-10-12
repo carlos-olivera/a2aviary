@@ -1,9 +1,5 @@
-import {
-  canonicalJson,
-  sha256,
-  SiteError,
-  VerificationFailure
-} from '@a2aviary/generator';
+import { canonicalJson, sha256 } from '@a2aviary/site-core';
+import { SiteError, VerificationFailure } from '@a2aviary/generator';
 import {createRequire} from 'node:module';
 const sharp=createRequire(new URL('../../../packages/generator/package.json',import.meta.url))('sharp');
 export function testDependencies() {

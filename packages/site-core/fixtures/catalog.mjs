@@ -1,6 +1,6 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
-import { canonicalJson } from '../dist/index.js';
+import { canonicalJson } from '@a2aviary/site-core';
 export async function fixtureSubmission() {
   const spec = JSON.parse(
     await readFile(

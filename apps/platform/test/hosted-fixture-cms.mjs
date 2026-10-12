@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { boundCollections } from '@a2aviary/generator';
-import { composition } from '../../../packages/generator/test/fixtures/presentation/compositions.mjs';
+import { composition } from '@a2aviary/site-core/fixtures/presentation';
 
 /** Hosted variants exercise CMS without changing the static presentation matrix. */
 export async function hostedComposition(name) {

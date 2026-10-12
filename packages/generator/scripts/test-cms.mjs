@@ -13,7 +13,7 @@ import {
   caddyfile,
   caddyDockerfile,
 } from '../dist/index.js';
-import { fixtureSubmission } from './fixture-lib.mjs';
+import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 const { spec } = await fixtureSubmission(),
   dir = fileURLToPath(new URL('../../../work/phase3-cms', import.meta.url)),
   name = 'a2aviary-phase3-cms-' + process.pid,

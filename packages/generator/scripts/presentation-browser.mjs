@@ -7,15 +7,15 @@ import AxeBuilder from '@axe-core/playwright';
 import {
   composition,
   compositionNames,
-} from '../test/fixtures/presentation/compositions.mjs';
+} from '@a2aviary/site-core/fixtures/presentation';
 import { renderPage, css } from '../src/render.ts';
-import { catalog } from '../../../services/src/site/library-data.ts';
+import { catalog } from '@a2aviary/site-core';
 import {
   behaviorBundle,
   fontPackages,
   selectedPackages,
-} from '../../../services/src/site/library.ts';
-import { validateSiteSpec } from '../../../services/src/site/validator.ts';
+} from '@a2aviary/site-core';
+import { validateSiteSpec } from '@a2aviary/site-core';
 export async function checkPresentationBrowser(root, interactionOnly = false) {
   const out = join(root, '.local/presentation-check');
   await mkdir(out, { recursive: true });

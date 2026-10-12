@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { RailwayDeployer } from '../dist/index.js';
-import { fixtureSubmission } from '../scripts/fixture-lib.mjs';
+import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 
 test('deployment staging is readable by non-owner users under umask 077', async () => {
   const { spec } = await fixtureSubmission();

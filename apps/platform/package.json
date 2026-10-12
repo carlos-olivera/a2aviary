@@ -19,7 +19,7 @@
     "test:fixture:cms": "RUN_LOCAL_FIXTURE_CMS=true node --test test/hosted-fixture-cms.test.mjs"
   },
   "dependencies": {
-    "@a2aviary/generator": "file:../../packages/generator",
+    "@a2aviary/generator": "0.1.0",
     "@better-auth/cimd": "1.7.7",
     "@better-auth/mcp": "1.7.7",
     "@better-auth/oauth-provider": "1.7.7",
@@ -29,7 +29,8 @@
     "jose": "6.2.12",
     "pg": "8.16.3",
     "qrcode": "1.5.4",
-    "zod": "4.6.5"
+    "zod": "4.6.5",
+    "@a2aviary/site-core": "0.1.0"
   },
   "devDependencies": {
     "@types/node": "22.19.15",

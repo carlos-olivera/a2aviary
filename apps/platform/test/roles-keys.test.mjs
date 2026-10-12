@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPair, exportJWK} from 'jose';
 import {Store, TOOL_ROLES, ALL_ROLES, requireRole, validatePublicKey} from '../src/store.ts';
-import {compactLibraryManifest} from '@a2aviary/generator';
+import { compactLibraryManifest } from '@a2aviary/generator';
 import {fixture} from './helpers.mjs';
 
 

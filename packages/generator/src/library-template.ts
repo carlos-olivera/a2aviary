@@ -9,7 +9,7 @@ export interface LibraryVariant {
   ast: TemplateNode[];
   css: string;
   behaviors?: string[];
-  targets?: import('../../../services/src/site/library.ts').LibraryPackage['targets'];
+  targets?: import('@a2aviary/site-core').LibraryPackage['targets'];
 }
 const tags = new Set([
   'button',

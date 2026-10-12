@@ -6,19 +6,19 @@ import { validateBehavior } from '../src/library-behavior.ts';
 import { validateVariantCss } from '../src/library-css.ts';
 import { parseTemplate } from '../src/library-template.ts';
 import { renderPage, css, generateSite } from '../dist/index.js';
-import { validateSiteSpec } from '../../../services/src/site/validator.ts';
+import { validateSiteSpec } from '@a2aviary/site-core';
 import {
   policyForVersion,
   defaultPolicy,
   sha256,
-} from '../../../services/src/site/policy.ts';
-import { catalog } from '../../../services/src/site/library-data.ts';
-import { contentErrors } from '../../../services/src/site/library.ts';
+} from '@a2aviary/site-core';
+import { catalog } from '@a2aviary/site-core';
+import { contentErrors } from '@a2aviary/site-core';
 import {
   composition,
   compositionNames,
   shells,
-} from './fixtures/presentation/compositions.mjs';
+} from '@a2aviary/site-core/fixtures/presentation';
 const baseline = JSON.parse(
   await readFile(
     new URL(
@@ -256,7 +256,7 @@ test('each added CSS grammar has accepted and rejected bounds', () => {
 
 test('reviewed setters clamp numbers, reject nonfinite writes and reset live preferences', async () => {
   const { behaviorLoader } =
-    await import('../../../services/src/site/behavior-loader.ts');
+    await import('@a2aviary/site-core');
   const { runInNewContext } = await import('node:vm');
   const values = new Map(),
     listeners = [];
@@ -334,7 +334,7 @@ test('owner 404 braces remain data rather than executable Astro expressions', as
 
 test('a newer trusted copy interaction suppresses the earlier async completion', async () => {
   const { behaviorLoader } =
-    await import('../../../services/src/site/behavior-loader.ts');
+    await import('@a2aviary/site-core');
   const { runInNewContext } = await import('node:vm');
   const events = new Map(),
     pending = [],

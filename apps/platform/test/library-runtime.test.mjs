@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { fixture } from './helpers.mjs';
 import { testDependencies } from './site-dependencies.mjs';
-import { canonicalJson, sha256 } from '@a2aviary/generator';
+import { canonicalJson, sha256 } from '@a2aviary/site-core';
+
 import { prepare, call, approve } from './draft-fixture.mjs';
 
 test('MCP 2.1 settings and effects remain atomic, compact and cannot supply trusted audience', async (t) => {

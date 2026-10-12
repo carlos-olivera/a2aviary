@@ -4,9 +4,8 @@ import { execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, writeFile, rm, chmod } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { validateSiteSpec, defaultPolicy } from '@a2aviary/site-core';
 import {
-  validateSiteSpec,
-  defaultPolicy,
   pocketBaseMigration,
   pocketBaseBootstrap,
   pocketBaseDockerfile,
@@ -16,7 +15,7 @@ import {
 import {
   composition,
   compositionNames,
-} from '../../../packages/generator/test/fixtures/presentation/compositions.mjs';
+} from '@a2aviary/site-core/fixtures/presentation';
 import { hostedComposition, editFixtureCms } from './hosted-fixture-cms.mjs';
 import { fixture } from './helpers.mjs';
 import { testDependencies } from './site-dependencies.mjs';

@@ -1,5 +1,5 @@
-import { defaultPolicy } from '../../../services/src/site/policy.ts';
-import type { SiteSpec } from '../../../services/src/site/types.ts';
+import { defaultPolicy } from '@a2aviary/site-core';
+import type { SiteSpec } from '@a2aviary/site-core';
 import { boundCollections } from './render.ts';
 export const POCKETBASE_VERSION = '0.40.4';
 export const POCKETBASE_ZIP_SHA256 =

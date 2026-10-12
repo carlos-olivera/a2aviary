@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
+import { canonicalJson, sha256 } from '@a2aviary/site-core';
 
 export async function loadPlans(root = new URL('../../../', import.meta.url)) {
   const manifest = JSON.parse(
@@ -25,21 +25,7 @@ export async function loadPlans(root = new URL('../../../', import.meta.url)) {
     new URL('plans/web-simple.policy.json', root),
   );
   const policy = JSON.parse(policyBytes.toString('utf8'));
-  // Match the Phase 1 sorted-JSON policy digest, independent of file formatting.
-  const canonical = (value: any): string =>
-    Array.isArray(value)
-      ? '[' + value.map(canonical).join(',') + ']'
-      : value !== null && typeof value === 'object'
-        ? '{' +
-          Object.keys(value)
-            .sort()
-            .map((k) => JSON.stringify(k) + ':' + canonical(value[k]))
-            .join(',') +
-          '}'
-        : JSON.stringify(value);
-  const policySha256 = createHash('sha256')
-    .update(canonical(policy))
-    .digest('hex');
+  const policySha256 = sha256(canonicalJson(policy));
   if (
     manifest.planId !== policy.planId.value ||
     manifest.policyVersion !== policy.version.value ||

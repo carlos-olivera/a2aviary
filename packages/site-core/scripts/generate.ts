@@ -1,10 +1,10 @@
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
-import { defaultPolicy, sha256 } from '../../src/site/policy.ts';
-import { artifactDirectory, assertPolicySnapshot, flattenRules, generateContracts } from '../../src/site/generator.ts';
-import { makeExamples } from '../../src/site/examples.ts';
-import { validateAssets, validateChangeRequest, validateSiteSpec } from '../../src/site/validator.ts';
+import { defaultPolicy, sha256 } from '../src/policy.ts';
+import { artifactDirectory, assertPolicySnapshot, flattenRules, generateContracts } from '../src/generator.ts';
+import { makeExamples } from '../src/examples.ts';
+import { validateAssets, validateChangeRequest, validateSiteSpec } from '../src/validator.ts';
 
 const root = fileURLToPath(new URL('../../..', import.meta.url));
 const out = resolve(root, 'contracts/site', artifactDirectory(defaultPolicy));
@@ -49,7 +49,7 @@ for (const [path, content] of files) {
   if (check) {
     let actual: Buffer;
     try { actual = await readFile(path); } catch { throw new Error('Missing generated artifact: ' + path); }
-    if (!actual.equals(expected)) throw new Error('Stale generated artifact: ' + path + '; run npm run site:generate in services.');
+    if (!actual.equals(expected)) throw new Error('Stale generated artifact: ' + path + '; run npm run site:generate at the repository root.');
   } else { await mkdir(resolve(path, '..'), { recursive: true }); await writeFile(path, expected); }
 }
 if (!check && snapshot === undefined) {

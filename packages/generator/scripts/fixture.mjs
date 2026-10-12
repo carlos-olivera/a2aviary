@@ -1,5 +1,5 @@
 import { writeFile, mkdir } from 'node:fs/promises';
-import { fixtureSubmission, writeSource } from './fixture-lib.mjs';
+import { fixtureSubmission, writeSource } from '@a2aviary/site-core/fixtures/catalog';
 import { fileURLToPath } from 'node:url';
 import { generateSite } from '../dist/index.js';
 const input = await fixtureSubmission(),

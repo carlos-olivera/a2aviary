@@ -10,6 +10,13 @@ Created by **Carlos Olivera Terrazas — Founder & Principal Architect**. Licens
 
 ## Develop and operate
 
+Platform, generator and [site-core](packages/site-core/README.md) share one npm
+workspace graph. With Node.js 22.23.3, run `npm ci`, `npm run build`, and
+`npm run check` at the repository root. `npm run site:check`,
+`npm run library:check` and `npm run test:parity` expose the domain/browser/parity
+gates. See [workspace verification](docs/evidence/site-core-workspaces/README.md).
+Services, infra and website retain standalone pinned installations.
+
 ```sh
 cd website
 npm ci

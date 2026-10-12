@@ -4,11 +4,11 @@ import { spawn } from 'node:child_process';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { generateSite } from '../dist/index.js';
-import { writeSource } from './fixture-lib.mjs';
+import { writeSource } from '@a2aviary/site-core/fixtures/catalog';
 import {
   composition,
   compositionNames,
-} from '../test/fixtures/presentation/compositions.mjs';
+} from '@a2aviary/site-core/fixtures/presentation';
 const root = new URL('../../../', import.meta.url).pathname,
   out = join(root, '.local/presentation-verifier');
 await mkdir(out, { recursive: true });
@@ -30,7 +30,7 @@ for (const name of compositionNames) {
   await writeSource(directory, source, input.spec);
   try {
     await symlink(
-      join(root, 'packages/generator/node_modules'),
+      join(root, 'node_modules'),
       join(directory, 'node_modules'),
       'dir',
     );

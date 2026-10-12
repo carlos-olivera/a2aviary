@@ -7,7 +7,7 @@ contacts are fictional. No credentials, client records, user accounts, hosted
 resource identifiers or private logs are included.
 
 The source implementation is policy 2.2.0 / contract 2.2 / generator 2.3.0.
-[Fixture provenance](../../../packages/generator/test/fixtures/presentation/README.md)
+[Fixture provenance](../../../packages/site-core/fixtures/presentation/README.md)
 and [authoring contracts](../../../library/README.md#contract-22-amendment) describe
 content and runtime boundaries. The raw local evidence is retained in ignored
 `.local/presentation-check/` and `.local/presentation-verifier/`.

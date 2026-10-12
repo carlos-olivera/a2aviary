@@ -1,9 +1,9 @@
-import { catalog } from '../../../services/src/site/library-data.ts';
+import { catalog } from '@a2aviary/site-core';
 import {
   defaultPolicy,
   canonicalJson,
   sha256,
-} from '../../../services/src/site/policy.ts';
+} from '@a2aviary/site-core';
 import { SiteError } from './render.ts';
 export function compactLibraryManifest() {
   const manifest = {

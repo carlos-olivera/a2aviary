@@ -1,3 +1,4 @@
+import { canonicalJson } from '@a2aviary/site-core';
 import { readFile, writeFile, readdir, lstat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
@@ -6,30 +7,15 @@ import { resolve, relative, sep } from 'node:path';
 import { parseTemplate } from '../src/library-template.ts';
 import { validateVariantCss } from '../src/library-css.ts';
 import { validateBehavior } from '../src/library-behavior.ts';
-import { generateContracts } from '../../../services/src/site/generator.ts';
-import { gzipBytes } from '../../../services/src/site/library.ts';
+import { generateContracts } from '@a2aviary/site-core';
+import { gzipBytes } from '@a2aviary/site-core';
 const defaultRoot = fileURLToPath(new URL('../../../', import.meta.url));
-// Explicit host supports services-only CI without generator node_modules.
-const host =
-  process.env.LIBRARY_TOOL_HOST === 'services'
-    ? '../../../services/package.json'
-    : '../package.json';
-const require = createRequire(new URL(host, import.meta.url));
+const require = createRequire(new URL('../package.json', import.meta.url));
 const Ajv = require('ajv'),
   { parse } = require('acorn'),
   { transformSync } = require('esbuild');
 const json = (v) => JSON.stringify(v, null, 2) + '\n';
-const canonical = (v) =>
-  Array.isArray(v)
-    ? '[' + v.map(canonical).join(',') + ']'
-    : v && typeof v === 'object'
-      ? '{' +
-        Object.keys(v)
-          .sort()
-          .map((k) => JSON.stringify(k) + ':' + canonical(v[k]))
-          .join(',') +
-        '}'
-      : JSON.stringify(v);
+const canonical = canonicalJson;
 const sha = (b) => createHash('sha256').update(b).digest('hex');
 const assert = (ok, message) => {
   if (!ok) throw Error('Invalid library: ' + message);
@@ -565,7 +551,7 @@ export async function checkLibrary(root = defaultRoot, write = false) {
   for (const [path, bytes] of [
     ['library/registry.json', out.registry],
     ['packages/generator/src/library-data.ts', out.data],
-    ['services/src/site/library-data.ts', out.metadata],
+    ['packages/site-core/src/library-data.ts', out.metadata],
   ]) {
     if (write) await writeFile(resolve(root, path), bytes);
     else
