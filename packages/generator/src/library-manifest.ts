@@ -43,7 +43,7 @@ export function compactLibraryManifest() {
   return { manifest };
 }
 export function libraryDetail(id: string) {
-  const p = catalog[id];
+  const p = Object.hasOwn(catalog, id) ? catalog[id] : undefined;
   if (!p) throw new SiteError('library_package_not_found');
   const { code, css, license, files, fixtures, ...detail } = p;
   return {
@@ -52,8 +52,8 @@ export function libraryDetail(id: string) {
     ...(files ? { files: files.map(({ data, ...f }) => f) } : {}),
     exampleProps:
       p.fixture?.props ??
-      (p.type === 'variant'
-        ? catalog[p.component!]?.fixture?.props
+      (p.type === 'component'
+        ? catalog[p.id + ':standard']?.fixture?.props
         : undefined),
   };
 }
