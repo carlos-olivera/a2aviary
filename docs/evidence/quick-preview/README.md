@@ -49,11 +49,38 @@ Use Node.js 22.23.3 and the loopback-only Postgres test fixture:
 
 ```sh
 npm ci
+npx playwright install --with-deps chromium
 npm run build
 npm run check
 npm test
 node packages/generator/scripts/quick-preview-benchmark.mjs
 ```
+
+### PR #41 CI prerequisite correction
+
+In [run 38446942105, platform job 115467684283](https://github.com/carlos-olivera/a2aviary/actions/runs/38446942105/job/115467684283),
+the `npm test -w a2aviary-platform` step reported 89 passes, seven failures and
+two opt-in skips. All seven failures were `browserType.launch: Executable doesn't
+exist` for Playwright's `chromium_headless_shell-1243`: the five composition cases
+at `quick-preview.test.mjs:82`, the chosen-sandbox test at line 323, and the
+rejected `allow-scripts` candidate test at line 416. The generator job installed
+Chromium, but its separate runner cannot supply the platform job's browser cache.
+The developer machine already had the matching browser, masking this prerequisite.
+
+The platform package now installs the lockfile-selected Playwright Chromium and
+Linux dependencies in `pretest`, using the same command as the generator job.
+This also provisions a fresh local checkout. GitHub rejected a workflow-file edit
+because the Operator App lacks `workflows` permission; the package test prerequisite
+uses existing App permissions and leaves workflow files and required checks intact. No tests
+are skipped and no quota, concurrency or child-process budget is changed: the quota
+and concurrent-verification cases passed in the failed run, and no render timeout
+was reported. This correction changes test setup only, not production behavior.
+
+Local verification of the correction reproduced the launch error with an empty
+browser cache, installed Chromium into that cache and successfully launched
+153.0.8010.12. The complete platform suite passed (96 passes, zero failures, two
+existing opt-in skips); website checks passed with current architecture source
+fingerprints. The new PR CI run remains the independent Linux-runner verification.
 
 The benchmark normalizes fictional inputs once, then measures quick child startup,
 validation and direct rendering against source generation plus the unchanged real

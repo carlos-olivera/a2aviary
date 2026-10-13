@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-13 — PR #41 platform CI browser prerequisite
+
+- Install Chromium and its system dependencies through platform `pretest` before
+  running the preview browser tests. The first PR run failed seven tests at
+  browser launch because that job had no Playwright browser installation;
+  quotas, concurrency and the production render budget were not the cause.
+- Add the browser setup command to the local reproduction instructions and
+  record the failing job and diagnosis in the quick-preview evidence.
+
 ## 2026-10-13 — Unverified quick preview (prepared for review)
 
 - Add `site.preview.quick` using the trusted renderer directly, with explicit
