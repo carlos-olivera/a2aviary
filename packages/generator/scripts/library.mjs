@@ -1,3 +1,4 @@
+import { starterArtifacts } from './starters.mjs';
 import { collectionArtifacts } from './collections.mjs';
 import { canonicalJson } from '@a2aviary/site-core';
 import { readFile, writeFile, readdir, lstat } from 'node:fs/promises';
@@ -535,6 +536,7 @@ export async function libraryArtifacts(root = defaultRoot) {
   const registry = { schemaVersion: 1, packages };
   assert(validateRegistry(registry), 'registry schema');
   return {
+    starters: await starterArtifacts(root, policy, catalog),
     collections: collectionOutput.data,
     registry: json(registry),
     data:
@@ -554,6 +556,7 @@ export async function checkLibrary(root = defaultRoot, write = false) {
   const out = await libraryArtifacts(root);
   for (const [path, bytes] of [
     ['packages/site-core/src/collections-data.ts', out.collections],
+    ['packages/site-core/src/starters-data.ts', out.starters],
     ['library/registry.json', out.registry],
     ['packages/generator/src/library-data.ts', out.data],
     ['packages/site-core/src/library-data.ts', out.metadata],

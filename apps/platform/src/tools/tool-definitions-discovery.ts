@@ -34,6 +34,7 @@ export const discoveryTools = [
       ).map((t) => t.name),
       websiteProduction: Boolean(sites) && principal.role !== 'tester',
       payments: false,
+      starters: { available: Boolean(sites), description: 'Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site.' },
       changeRequests: {
         available: false,
         reason: 'change_requests_unavailable',
@@ -73,7 +74,7 @@ export const discoveryTools = [
     recordsSiteFailure: false,
     order: 2,
     inputSchema: ({ plans }) => plan(plans),
-    handler: (_context) => compactLibraryManifest(),
+    handler: (_context) => ({ ...compactLibraryManifest(), starters: 'Use starters.list and starter.get when site tools are enabled. A starter copies structure once, preserves immutable provenance and never restricts later catalog composition.' }),
   }),
   defineTool({
     name: 'plan.get_schemas',

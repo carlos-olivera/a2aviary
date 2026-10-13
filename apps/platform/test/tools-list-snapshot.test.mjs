@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile,writeFile} from 'node:fs/promises';
 import {fixture} from './helpers.mjs';
 import {testDependencies} from './site-dependencies.mjs';
 const snapshot=new URL('./fixtures/tools-list.json',import.meta.url);
@@ -19,5 +19,6 @@ test('complete MCP tools/list responses preserve every role and workflow mode',a
    }
   }finally{await f.close();}
  }
+ if (process.env.UPDATE_TOOL_VISIBILITY_SNAPSHOTS === 'true') await writeFile(snapshot,JSON.stringify(actual,null,2)+'\n');
  assert.deepEqual(actual,JSON.parse(await readFile(snapshot,'utf8')));
 });

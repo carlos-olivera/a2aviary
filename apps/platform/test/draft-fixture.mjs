@@ -19,6 +19,7 @@ export async function prepare(
   input,
   viaMcp = false,
   onCreated = () => {},
+  starter,
 ) {
   input ??= await fixtureSubmission();
   const drafts = f.app.sites.drafts;
@@ -29,8 +30,8 @@ export async function prepare(
   };
   const created = await invoke(
     'site.draft.create',
-    { slug: input.slug, requestId: randomUUID() },
-    () => drafts.create(user.id, input.slug, randomUUID()),
+    { slug: input.slug, requestId: randomUUID(), ...(starter ? {starter} : {}) },
+    () => drafts.create(user.id, input.slug, randomUUID(), starter),
   );
   onCreated(created);
   const opened = await invoke(

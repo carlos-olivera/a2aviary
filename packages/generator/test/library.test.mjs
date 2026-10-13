@@ -182,6 +182,7 @@ test('registry detects stale data, policy drift, missing/extra packages, symlink
     });
     await cp(new URL('plans', root), join(dir, 'plans'), { recursive: true });
     await cp(new URL('collections', root), join(dir, 'collections'), { recursive: true });
+    await cp(new URL('starters', root), join(dir, 'starters'), { recursive: true });
     await cp(
       new URL('packages/generator/src/library-data.ts', root),
       join(dir, 'packages/generator/src/library-data.ts'),
@@ -193,6 +194,7 @@ test('registry detects stale data, policy drift, missing/extra packages, symlink
       { recursive: true },
     );
     await cp(new URL('packages/site-core/src/collections-data.ts', root), join(dir, 'packages/site-core/src/collections-data.ts'));
+    await cp(new URL('packages/site-core/src/starters-data.ts', root), join(dir, 'packages/site-core/src/starters-data.ts'));
     await checkLibrary(dir);
     const target = join(dir, 'library/hero/variants/standard/template.html'),
       original = await readFile(target, 'utf8');
@@ -362,6 +364,7 @@ test('new package control labels and empty live regions are authoring contracts'
     });
     await cp(new URL('plans', root), join(dir, 'plans'), { recursive: true });
     await cp(new URL('collections', root), join(dir, 'collections'), { recursive: true });
+    await cp(new URL('starters', root), join(dir, 'starters'), { recursive: true });
     const path = join(
         dir,
         'library/profile-card/variants/flip-3d/template.html',

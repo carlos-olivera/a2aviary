@@ -212,6 +212,8 @@
                   "plan.get_schemas",
                   "policy.version",
                   "library.get",
+                  "starters.list",
+                  "starter.get",
                   "site.draft.create",
                   "site.draft.apply",
                   "site.draft.get",
@@ -511,6 +513,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -732,6 +738,8 @@
                   "plan.get_schemas",
                   "policy.version",
                   "library.get",
+                  "starters.list",
+                  "starter.get",
                   "site.draft.create",
                   "site.draft.apply",
                   "site.draft.get",
@@ -1160,6 +1168,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -1381,6 +1393,8 @@
                   "plan.get_schemas",
                   "policy.version",
                   "library.get",
+                  "starters.list",
+                  "starter.get",
                   "site.draft.create",
                   "site.draft.apply",
                   "site.draft.get",
@@ -1680,6 +1694,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -1901,6 +1919,8 @@
                   "plan.get_schemas",
                   "policy.version",
                   "library.get",
+                  "starters.list",
+                  "starter.get",
                   "site.draft.create",
                   "site.draft.apply",
                   "site.draft.get",
@@ -2329,6 +2349,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -2550,6 +2574,8 @@
                   "plan.get_schemas",
                   "policy.version",
                   "library.get",
+                  "starters.list",
+                  "starter.get",
                   "site.draft.create",
                   "site.draft.apply",
                   "site.draft.get",
@@ -2849,6 +2875,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -3070,6 +3100,8 @@
                   "plan.get_schemas",
                   "policy.version",
                   "library.get",
+                  "starters.list",
+                  "starter.get",
                   "site.draft.create",
                   "site.draft.apply",
                   "site.draft.get",
@@ -3498,6 +3530,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -3634,8 +3670,50 @@
           }
         },
         {
+          "name": "starters.list",
+          "description": "List data-only starting points visible to this principal. Experimental starters require tester classification.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "starter.get",
+          "description": "Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
           "name": "site.draft.create",
-          "description": "Create an incomplete server draft for an initial catalog site.",
+          "description": "Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -3648,6 +3726,23 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "starter": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -4284,6 +4379,8 @@
                   "plan.get_schemas",
                   "policy.version",
                   "library.get",
+                  "starters.list",
+                  "starter.get",
                   "site.draft.create",
                   "site.draft.apply",
                   "site.draft.get",
@@ -4673,6 +4770,8 @@
         "plan.get_schemas",
         "policy.version",
         "library.get",
+        "starters.list",
+        "starter.get",
         "site.draft.create",
         "site.draft.apply",
         "site.draft.get",
@@ -4700,6 +4799,10 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "starters": {
+        "available": true,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -4852,8 +4955,50 @@
           }
         },
         {
+          "name": "starters.list",
+          "description": "List data-only starting points visible to this principal. Experimental starters require tester classification.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "starter.get",
+          "description": "Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
           "name": "site.draft.create",
-          "description": "Create an incomplete server draft for an initial catalog site.",
+          "description": "Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -4866,6 +5011,23 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "starter": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -5502,6 +5664,8 @@
                   "plan.get_schemas",
                   "policy.version",
                   "library.get",
+                  "starters.list",
+                  "starter.get",
                   "site.draft.create",
                   "site.draft.apply",
                   "site.draft.get",
@@ -6044,6 +6208,8 @@
         "plan.get_schemas",
         "policy.version",
         "library.get",
+        "starters.list",
+        "starter.get",
         "site.draft.create",
         "site.draft.apply",
         "site.draft.get",
@@ -6076,6 +6242,10 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "starters": {
+        "available": true,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -6346,6 +6516,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -6630,6 +6804,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -6884,6 +7062,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -7168,6 +7350,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -7422,6 +7608,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -7706,6 +7896,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -7842,8 +8036,50 @@
           }
         },
         {
+          "name": "starters.list",
+          "description": "List data-only starting points visible to this principal. Experimental starters require tester classification.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "starter.get",
+          "description": "Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
           "name": "site.draft.create",
-          "description": "Create an incomplete server draft for an initial catalog site.",
+          "description": "Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -7856,6 +8092,23 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "starter": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -8520,6 +8773,8 @@
         "plan.get_schemas",
         "policy.version",
         "library.get",
+        "starters.list",
+        "starter.get",
         "site.draft.create",
         "site.draft.apply",
         "site.draft.get",
@@ -8537,6 +8792,10 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "starters": {
+        "available": true,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -8689,8 +8948,50 @@
           }
         },
         {
+          "name": "starters.list",
+          "description": "List data-only starting points visible to this principal. Experimental starters require tester classification.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "starter.get",
+          "description": "Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
           "name": "site.draft.create",
-          "description": "Create an incomplete server draft for an initial catalog site.",
+          "description": "Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -8703,6 +9004,23 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "starter": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -9424,6 +9742,8 @@
         "plan.get_schemas",
         "policy.version",
         "library.get",
+        "starters.list",
+        "starter.get",
         "site.draft.create",
         "site.draft.apply",
         "site.draft.get",
@@ -9443,6 +9763,10 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "starters": {
+        "available": true,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -9713,6 +10037,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -9997,6 +10325,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -10251,6 +10583,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -10535,6 +10871,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -10789,6 +11129,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -11073,6 +11417,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -11209,8 +11557,50 @@
           }
         },
         {
+          "name": "starters.list",
+          "description": "List data-only starting points visible to this principal. Experimental starters require tester classification.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "starter.get",
+          "description": "Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
           "name": "site.draft.create",
-          "description": "Create an incomplete server draft for an initial catalog site.",
+          "description": "Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -11223,6 +11613,23 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "starter": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -11887,6 +12294,8 @@
         "plan.get_schemas",
         "policy.version",
         "library.get",
+        "starters.list",
+        "starter.get",
         "site.draft.create",
         "site.draft.apply",
         "site.draft.get",
@@ -11904,6 +12313,10 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "starters": {
+        "available": true,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -12056,8 +12469,50 @@
           }
         },
         {
+          "name": "starters.list",
+          "description": "List data-only starting points visible to this principal. Experimental starters require tester classification.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "starter.get",
+          "description": "Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
           "name": "site.draft.create",
-          "description": "Create an incomplete server draft for an initial catalog site.",
+          "description": "Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -12070,6 +12525,23 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "starter": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -12791,6 +13263,8 @@
         "plan.get_schemas",
         "policy.version",
         "library.get",
+        "starters.list",
+        "starter.get",
         "site.draft.create",
         "site.draft.apply",
         "site.draft.get",
@@ -12810,6 +13284,10 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "starters": {
+        "available": true,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -13085,6 +13563,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -13344,6 +13826,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -13603,6 +14089,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -13862,6 +14352,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -14121,6 +14615,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -14380,6 +14878,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": false,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -14516,8 +15018,50 @@
           }
         },
         {
+          "name": "starters.list",
+          "description": "List data-only starting points visible to this principal. Experimental starters require tester classification.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "starter.get",
+          "description": "Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
           "name": "site.draft.create",
-          "description": "Create an incomplete server draft for an initial catalog site.",
+          "description": "Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -14530,6 +15074,23 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "starter": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -15199,6 +15760,8 @@
         "plan.get_schemas",
         "policy.version",
         "library.get",
+        "starters.list",
+        "starter.get",
         "site.draft.create",
         "site.draft.apply",
         "site.draft.get",
@@ -15216,6 +15779,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": true,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",
@@ -15368,8 +15935,50 @@
           }
         },
         {
+          "name": "starters.list",
+          "description": "List data-only starting points visible to this principal. Experimental starters require tester classification.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "starter.get",
+          "description": "Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "version": {
+                "type": "string",
+                "maxLength": 64
+              }
+            },
+            "required": [
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": false
+          }
+        },
+        {
           "name": "site.draft.create",
-          "description": "Create an incomplete server draft for an initial catalog site.",
+          "description": "Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -15382,6 +15991,23 @@
                 "type": "string",
                 "format": "uuid",
                 "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "starter": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "version": {
+                    "type": "string",
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
@@ -16051,6 +16677,8 @@
         "plan.get_schemas",
         "policy.version",
         "library.get",
+        "starters.list",
+        "starter.get",
         "site.draft.create",
         "site.draft.apply",
         "site.draft.get",
@@ -16068,6 +16696,10 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "starters": {
+        "available": true,
+        "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
+      },
       "changeRequests": {
         "available": false,
         "reason": "change_requests_unavailable",

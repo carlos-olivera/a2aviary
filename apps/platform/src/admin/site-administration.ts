@@ -18,6 +18,9 @@ import {
 import { Store, type Principal } from '../identity/store.ts';
 
 export interface CatalogSite {
+  kind: 'website';
+  starter_id: string | null;
+  starter_version: string | null;
   id: string;
   owner_id: string;
   number: string;

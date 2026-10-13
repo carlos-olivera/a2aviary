@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 
 // Tests, evidence records, workflow orchestration and general prose are not runtime architecture.
 export function architectureRelevantPath(path) {
-  return /^(?:infra\/src\/|services\/src\/|local\/|apps\/platform\/(?:src\/|migrations\/|Dockerfile$)|packages\/(?:site-core|generator)\/(?:src\/|template\/|scripts\/(?:library|collections|build)\.mjs$)|plans\/|contracts\/|library\/|collections\/|docs\/architecture\/|website\/(?:architecture\/|public\/architecture\.(?:js|css)$|scripts\/(?:architecture-[^/]+|check-architecture|integrate-architecture)\.mjs$))/.test(path)
+  return /^(?:infra\/src\/|services\/src\/|local\/|apps\/platform\/(?:src\/|migrations\/|Dockerfile$)|packages\/(?:site-core|generator)\/(?:src\/|template\/|scripts\/(?:library|collections|starters|build)\.mjs$)|plans\/|contracts\/|library\/|collections\/|starters\/|docs\/architecture\/|website\/(?:architecture\/|public\/architecture\.(?:js|css)$|scripts\/(?:architecture-[^/]+|check-architecture|integrate-architecture)\.mjs$))/.test(path)
     || /^(?:AGENTS\.md|docker-compose\.local\.yml|\.env\.local\.example|(?:package(?:-lock)?|(?:infra|services|apps\/platform|packages\/(?:site-core|generator))\/package)\.json)$/.test(path);
 }
 
