@@ -26,6 +26,7 @@ const inputs = [
   ['boxed-2.1', boxedInput],
   ...await Promise.all(compositionNames.map(async name => [name, await composition(name)])),
 ];
+const boxedGolden = JSON.parse(await readFile('packages/generator/test/fixtures/boxed-2.1.json', 'utf8'));
 const results = {};
 for (const [name, input] of inputs) {
   const options = { test: true };
@@ -34,6 +35,14 @@ for (const [name, input] of inputs) {
   }
   const assets = new Map(Object.entries(input.assets).map(([id, b64]) => [id, Buffer.from(b64, 'base64')]));
   const source = await generateSite(input.spec, assets, options);
+  if (name === 'catalog' || name === 'boxed-2.1') {
+    for (const [path, expectedHash] of Object.entries(boxedGolden.hashes)) {
+      const bytes = path in source.binaryFiles
+        ? Buffer.from(source.binaryFiles[path], 'base64')
+        : source.files[path];
+      assert.equal(sha256(bytes), expectedHash, `${name}: historical boxed bytes changed at ${path}`);
+    }
+  }
   const directory = join(root, '.local/workspace-parity', name);
   await rm(directory, { recursive: true, force: true });
   await mkdir(directory, { recursive: true });

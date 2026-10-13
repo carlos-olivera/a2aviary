@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Live Hosting & CMS",
-    "output": ".local/architecture/cms-target/hosting.html",
+    "output": ".local/architecture/site-core-review/hosting.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "cd065ae0da5b81c238b6d91c7f6b77a352f5cfc6",
+      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
       "provider": "github",
       "link_mode": "web"
     }
@@ -22,13 +22,13 @@
       "sources": [
         {
           "path": "docs/release-verification.md",
-          "line": 5,
-          "end_line": 16
+          "line": 28,
+          "end_line": 39
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 793,
-          "end_line": 800
+          "line": 795,
+          "end_line": 802
         }
       ],
       "pos": [

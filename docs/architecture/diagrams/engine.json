@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/cms-target/engine.html",
+    "output": ".local/architecture/site-core-review/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "cd065ae0da5b81c238b6d91c7f6b77a352f5cfc6",
+      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
       "provider": "github",
       "link_mode": "web"
     }
@@ -22,8 +22,8 @@
       "sources": [
         {
           "path": "apps/platform/src/draft-content.ts",
-          "line": 253,
-          "end_line": 261
+          "line": 254,
+          "end_line": 262
         },
         {
           "path": "packages/generator/src/normalize.ts",
@@ -49,8 +49,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 472,
-          "end_line": 495
+          "line": 474,
+          "end_line": 497
         },
         {
           "path": "apps/platform/migrations/007-server-drafts-preview.sql",
@@ -81,11 +81,11 @@
         },
         {
           "path": "packages/generator/scripts/library.mjs",
-          "line": 477,
-          "end_line": 486
+          "line": 463,
+          "end_line": 472
         },
         {
-          "path": "services/src/site/behavior-loader.ts",
+          "path": "packages/site-core/src/behavior-loader.ts",
           "line": 1,
           "end_line": 49
         }
@@ -140,8 +140,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 427,
-          "end_line": 450
+          "line": 429,
+          "end_line": 452
         },
         {
           "path": "packages/generator/src/storage.ts",
@@ -167,8 +167,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 606,
-          "end_line": 637
+          "line": 608,
+          "end_line": 639
         }
       ],
       "pos": [

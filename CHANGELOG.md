@@ -1,5 +1,17 @@
 # Changelog
 
+## 2026-10-12 — workspace PR review corrections
+
+- Fix PR #36's failing website freshness gate: regenerate architecture evidence
+  with site-core source paths, mapped line ranges and current root workspace
+  inputs. Preserve all six drawings' topology and geometry. Include matching
+  provenance in the owner-applied CI patch so applying its workflow changes
+  also passes the freshness gate.
+- Make the reusable fixture parity command check the existing boxed 2.1 golden
+  file directly, in addition to the five pre-refactor source/output digests.
+  Site contracts, policies, package bytes, migrations and generator version remain
+  unchanged. Verification is recorded with the [workspace evidence](docs/evidence/site-core-workspaces/README.md).
+
 ## 2026-10-12 — site-core and npm workspace graph
 
 - Move the website domain from the legacy email package into `@a2aviary/site-core`,

@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Governance & Ops",
-    "output": ".local/architecture/cms-target/ops.html",
+    "output": ".local/architecture/site-core-review/ops.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "cd065ae0da5b81c238b6d91c7f6b77a352f5cfc6",
+      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
       "provider": "github",
       "link_mode": "web"
     }
@@ -22,8 +22,8 @@
       "sources": [
         {
           "path": "AGENTS.md",
-          "line": 33,
-          "end_line": 37
+          "line": 35,
+          "end_line": 39
         }
       ],
       "pos": [
@@ -98,8 +98,8 @@
         },
         {
           "path": "AGENTS.md",
-          "line": 35,
-          "end_line": 39
+          "line": 37,
+          "end_line": 41
         }
       ],
       "pos": [
@@ -125,8 +125,8 @@
         },
         {
           "path": "AGENTS.md",
-          "line": 35,
-          "end_line": 39
+          "line": 37,
+          "end_line": 41
         }
       ],
       "pos": [
@@ -233,13 +233,13 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 47,
-          "end_line": 68
+          "line": 49,
+          "end_line": 70
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 853,
-          "end_line": 876
+          "line": 855,
+          "end_line": 878
         }
       ],
       "pos": [
@@ -265,8 +265,8 @@
         },
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 985,
-          "end_line": 1006
+          "line": 987,
+          "end_line": 1008
         },
         {
           "path": "apps/platform/src/site-administration.ts",
