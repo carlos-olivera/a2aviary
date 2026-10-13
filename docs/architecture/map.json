@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Architecture overview",
-    "output": ".local/architecture/site-core-review/overview.html",
+    "output": ".local/architecture/platform-refactor/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
+      "revision": "0de2602176610b2de230bcd19bf294622bf9a49a",
       "provider": "github",
       "link_mode": "web"
     }
@@ -51,9 +51,9 @@
       ],
       "sources": [
         {
-          "path": "apps/platform/src/auth.ts",
+          "path": "apps/platform/src/identity/auth.ts",
           "line": 10,
-          "end_line": 14
+          "end_line": 18
         }
       ],
       "tag": "Explore stage"
@@ -73,14 +73,14 @@
       ],
       "sources": [
         {
-          "path": "apps/platform/src/drafts.ts",
-          "line": 720,
-          "end_line": 751
+          "path": "apps/platform/src/sites/snapshots.ts",
+          "line": 19,
+          "end_line": 55
         },
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 474,
-          "end_line": 481
+          "path": "apps/platform/src/sites/worker.ts",
+          "line": 18,
+          "end_line": 25
         }
       ],
       "tag": "Explore stage"
@@ -105,9 +105,9 @@
           "end_line": 35
         },
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 179,
-          "end_line": 186
+          "path": "apps/platform/src/sites/deployments.ts",
+          "line": 177,
+          "end_line": 184
         }
       ],
       "tag": "Catalog implementation"
