@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-12 — platform tool registry and domain boundaries
+
+- Replace hand-maintained tool permissions, capability filtering, conditional registration and site-failure lists with one typed definition per tool. Preserve tool orders, schemas, annotations, role denial and the existing discovery-only library advertisement; retain a derived `TOOL_ROLES` compatibility export for unchanged tests.
+- Split identity, administration, drafts/uploads/snapshots/deployments, worker/recovery, cleanup, artifacts and existing billing/cost/report code into focused modules. Keep old import entry points and method facades; remove only the dead `Sites.change()` stub while `change.request` retains its current unavailable response.
+- Capture and commit full tool/capability snapshots before refactoring for four roles × eight flag/dependency combinations. Node.js 22.23.3 platform check/build and 74 tests pass; two existing opt-in tests remain skipped. All existing tests are unchanged. AST comparison preserves 70 retained method/constructor bodies, SQL and transaction boundaries; every platform source module is below 500 lines. See [module boundaries, sizes and evidence](docs/platform-modules.md).
+- Refresh moved-source architecture references and provenance. No new tools, starter/preview/live-edit behavior, migration, policy, production change, merge or deployment. Delivery stops at an Operator App PR for Carlos Olivera Terrazas's review.
+
 ## 2026-10-12 — workspace PR review corrections
 
 - Fix PR #36's failing website freshness gate: regenerate architecture evidence
