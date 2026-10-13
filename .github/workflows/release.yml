@@ -3,16 +3,20 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
   checks:
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}-checks
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: '22'
+          node-version: '22.23.3'
       - run: npm ci
         working-directory: website
       - run: npm run check && npm run build
@@ -28,6 +32,120 @@ jobs:
           name: website-${{ github.sha }}
           path: website/dist
           retention-days: 7
+  platform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}-platform
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    services:
+      postgres:
+        image: postgres:17.7-bookworm
+        env:
+          POSTGRES_DB: a2aviary_platform
+          POSTGRES_USER: platform
+          POSTGRES_PASSWORD: fictional-ci-only
+        ports:
+          - 127.0.0.1:5432:5432
+        options: >-
+          --health-cmd "pg_isready -U platform -d a2aviary_platform"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql://platform:fictional-ci-only@127.0.0.1:5432/a2aviary_platform
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.23.3'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run build -w @a2aviary/site-core
+      - run: npm run check:static -w @a2aviary/generator
+      - run: npm run build -w @a2aviary/generator
+      - run: npm run check -w a2aviary-platform
+      - run: npm run build -w a2aviary-platform
+      - run: npm test -w a2aviary-platform
+  generator:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}-generator
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.23.3'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run check -w @a2aviary/site-core
+      - run: npm run build -w @a2aviary/site-core
+      - run: npm test -w @a2aviary/site-core
+      - run: npm run check:static -w @a2aviary/generator
+      - run: npm run build -w @a2aviary/generator
+      - run: npx playwright install --with-deps chromium
+      # npm test also runs library:check; run its two gates once, explicitly.
+      - name: Generator unit tests
+        run: node --test test/*.test.mjs
+        working-directory: packages/generator
+      - name: Full library browser matrix
+        run: npm run library:check -w @a2aviary/generator
+  platform-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}-platform-image
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - run: docker build -f apps/platform/Dockerfile .
+  presentation-verify:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.run_id }}-presentation-verify
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.23.3'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run build -w @a2aviary/site-core
+      - run: npm run check:static -w @a2aviary/generator && npm run build -w @a2aviary/generator
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/presentation-verify.mjs
+        working-directory: packages/generator
+  cms:
+    name: cms (${{ matrix.command }})
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.run_id }}-${{ matrix.command }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        command: ['test:cms', 'test:cms:volume']
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22.23.3'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run build -w @a2aviary/site-core
+      - run: npm run check:static -w @a2aviary/generator && npm run build -w @a2aviary/generator
+      - run: npm run ${{ matrix.command }} -w @a2aviary/generator
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: checks
@@ -42,7 +160,7 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: '22'
+          node-version: '22.23.3'
       - run: npm ci --ignore-scripts
         working-directory: services
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0

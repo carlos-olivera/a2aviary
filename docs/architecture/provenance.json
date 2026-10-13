@@ -86,8 +86,8 @@
   },
   "sourceFingerprints": {
     ".env.local.example": "c6080915e3f100e1a4b1a5875bc91668966b8a1430d9be7ffaebdda6e4ab27b0",
-    ".github/workflows/local-integration.yml": "31b6ed6db728f65e48cce98ad2e57f6af07792e254fd4376524e59b3505bf63b",
-    ".github/workflows/release.yml": "0024b2d98690c8a4866a8854347e65a2cad3ad06ad6bc1232d007f02f06d20a6",
+    ".github/workflows/local-integration.yml": "bfa09584d9926c99799da546667d8bdf60558acf87ab3db3a245cab86525723d",
+    ".github/workflows/release.yml": "9caf1af1916eb149ec6ecc5979e35f2b2909953b06c5ecdbc2ca9e4580faf78d",
     "apps/platform/.env.example": "5deda24e18bb24abfa921b7d802a59a0051f6060ce2a5721bc2218e2b8d71535",
     "apps/platform/Dockerfile": "a9f00b5805b29db3c4b0fc2f469d2003b65ab35b2f41be0f5021397448227426",
     "apps/platform/README.md": "750e7f887eb6ace007ed3a16a903e8b8b61b9df33bd61d80da319281cda42e80",

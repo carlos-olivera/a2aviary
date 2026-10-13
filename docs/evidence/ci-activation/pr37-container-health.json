@@ -1,0 +1,38 @@
+{
+  "httpStatus": 200,
+  "body": {
+    "status": "ok",
+    "mandate": "discovery-only",
+    "migrations": [
+      {
+        "name": "001-better-auth.sql",
+        "sha256": "36924b090ecd4738f43230622fb8d9c55750bfaf9e052fbc8c94a120dbb69582"
+      },
+      {
+        "name": "002-platform.sql",
+        "sha256": "9720c8ed8da50f6ec6d3cccc98df623b099339fcd382c8405b94eedf15ac4442"
+      },
+      {
+        "name": "003-mcp-rate.sql",
+        "sha256": "7ae99c8e5e4f604cc85ae2ca00220abb87567e4dbedebc921423ba5bee6e1520"
+      },
+      {
+        "name": "004-sites.sql",
+        "sha256": "d3389296370f4ce07fab8175528fdb81180bef73af3aa9163e18a6a9ae163b97"
+      },
+      {
+        "name": "005-testers-admin.sql",
+        "sha256": "09598f82cba90db5bb0b3840890de450076f29afbba09ab31b2af38f97c0054e"
+      },
+      {
+        "name": "006-site-administration-billing.sql",
+        "sha256": "2ca2ad5cea47a74088281a8bd0229dda2afa5779b98f30ffa510b90279824031"
+      },
+      {
+        "name": "007-server-drafts-preview.sql",
+        "sha256": "435f9e12cec8818a85c1f438b5ef31c9c94be55a8cb477f51416c0fc71343df7"
+      }
+    ]
+  },
+  "image": "sha256:a44b7815d2a80cd8bcf7e24e316d6423a90085de55accfb811e4728e2636e52a"
+}
