@@ -14,12 +14,15 @@ jobs:
   local-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}-local-integration
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     continue-on-error: true
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: '22'
+          node-version: '22.23.3'
       - run: npm ci
         working-directory: infra
       - run: npm ci

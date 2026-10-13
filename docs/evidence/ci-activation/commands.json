@@ -1,0 +1,458 @@
+[
+  {
+    "scope": "Part B: platform",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 6.756,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: platform",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 2.535,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: platform",
+    "name": "generator-static",
+    "command": "npm run check:static -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 0.59,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: platform",
+    "name": "generator-build",
+    "command": "npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.98,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: platform",
+    "name": "platform-check",
+    "command": "npm run check -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 0.707,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: platform",
+    "name": "platform-build",
+    "command": "npm run build -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 0.529,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: platform",
+    "name": "platform-tests",
+    "command": "npm test -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 20.121,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 7.259,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "core-check",
+    "command": "npm run check -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 2.931,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 0.18,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "core-tests",
+    "command": "npm test -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 0.736,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "generator-static",
+    "command": "npm run check:static -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 0.639,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "generator-build",
+    "command": "npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 2.838,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "chromium",
+    "command": "npx playwright install --with-deps chromium",
+    "cwd": ".",
+    "seconds": 1.044,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "generator-unit",
+    "command": "node --test test/*.test.mjs",
+    "cwd": "packages/generator",
+    "seconds": 7.785,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: generator",
+    "name": "library-full",
+    "command": "npm run library:check -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 298.524,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: image",
+    "name": "image",
+    "command": "docker build -f apps/platform/Dockerfile .",
+    "cwd": ".",
+    "seconds": 1.267,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: existing",
+    "name": "website-install",
+    "command": "npm ci",
+    "cwd": "website",
+    "seconds": 1.052,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: existing",
+    "name": "website-check-build",
+    "command": "npm run check && npm run build",
+    "cwd": "website",
+    "seconds": 2.521,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: existing",
+    "name": "services",
+    "command": "npm ci && npm run check && npm run build && npm test",
+    "cwd": "services",
+    "seconds": 4.24,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: existing",
+    "name": "infra",
+    "command": "npm ci && npm run build && npm test",
+    "cwd": "infra",
+    "seconds": 7.261,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: local-integration",
+    "name": "infra-install",
+    "command": "npm ci",
+    "cwd": "infra",
+    "seconds": 3.2,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: local-integration",
+    "name": "services-install",
+    "command": "npm ci",
+    "cwd": "services",
+    "seconds": 3.389,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: local-integration",
+    "name": "website-install",
+    "command": "npm ci",
+    "cwd": "website",
+    "seconds": 1.174,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: local-integration",
+    "name": "local-up",
+    "command": "npm --prefix infra run local:up",
+    "cwd": ".",
+    "seconds": 14.402,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: local-integration",
+    "name": "local-deploy",
+    "command": "npm --prefix infra run local:deploy",
+    "cwd": ".",
+    "seconds": 81.046,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: local-integration",
+    "name": "local-test",
+    "command": "set -o pipefail; npm --prefix infra run local:test | tee local-test-summary.txt",
+    "cwd": ".",
+    "seconds": 156.886,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: local-integration",
+    "name": "local-down",
+    "command": "npm --prefix infra run local:down",
+    "cwd": ".",
+    "seconds": 7.302,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: presentation-verify",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 7.457,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: presentation-verify",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 1.562,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: presentation-verify",
+    "name": "generator-build",
+    "command": "npm run check:static -w @a2aviary/generator && npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.55,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: presentation-verify",
+    "name": "chromium",
+    "command": "npx playwright install --with-deps chromium",
+    "cwd": ".",
+    "seconds": 0.903,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: presentation-verify",
+    "name": "verify",
+    "command": "node scripts/presentation-verify.mjs",
+    "cwd": "packages/generator",
+    "seconds": 39.456,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: cms-test",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 5.809,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: cms-test",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 1.567,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: cms-test",
+    "name": "generator-build",
+    "command": "npm run check:static -w @a2aviary/generator && npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.232,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: cms-test",
+    "name": "test",
+    "command": "npm run test:cms -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 6.051,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: cms-volume",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 5.561,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: cms-volume",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 1.403,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: cms-volume",
+    "name": "generator-build",
+    "command": "npm run check:static -w @a2aviary/generator && npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.138,
+    "exit": 0
+  },
+  {
+    "scope": "Part B: cms-volume",
+    "name": "test",
+    "command": "npm run test:cms:volume -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.757,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 6.614,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 1.886,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "generator-static",
+    "command": "npm run check:static -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 0.598,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "generator-build",
+    "command": "npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 2.913,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "platform-check",
+    "command": "npm run check -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 0.628,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "platform-build",
+    "command": "npm run build -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 0.633,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "platform-tests",
+    "command": "npm test -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 21.304,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "chromium",
+    "command": "npx playwright install --with-deps chromium",
+    "cwd": ".",
+    "seconds": 1.043,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "generator-unit",
+    "command": "node --test test/*.test.mjs",
+    "cwd": "packages/generator",
+    "seconds": 7.785,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "library-full",
+    "command": "npm run library:check -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 301.707,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: PR #37",
+    "name": "image",
+    "command": "docker build -f apps/platform/Dockerfile .",
+    "cwd": ".",
+    "seconds": 22.613,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: container",
+    "name": "fresh-db",
+    "command": "docker exec a2aviary-pr37-verification-db createdb -U platform a2aviary_platform_container_pr37_v2",
+    "cwd": ".",
+    "seconds": 0.132,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: container",
+    "name": "migrate",
+    "command": "docker run --rm --network a2aviary-ci-activation-local <fictional environment> sha256:a44b7815d2a80cd8bcf7e24e316d6423a90085de55accfb811e4728e2636e52a node dist/migrate.js",
+    "cwd": ".",
+    "seconds": 0.453,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: container",
+    "name": "start",
+    "command": "docker run -d --name a2aviary-pr37-verification-platform --network a2aviary-ci-activation-local -p 127.0.0.1:55442:3000 <fictional environment> sha256:a44b7815d2a80cd8bcf7e24e316d6423a90085de55accfb811e4728e2636e52a",
+    "cwd": ".",
+    "seconds": 0.162,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: container",
+    "name": "health",
+    "command": "GET http://127.0.0.1:55442/healthz",
+    "cwd": ".",
+    "seconds": 1.07,
+    "exit": 0
+  },
+  {
+    "scope": "Part C: container",
+    "name": "cleanup-platform",
+    "command": "docker rm -f a2aviary-pr37-verification-platform",
+    "cwd": ".",
+    "seconds": 0.229,
+    "exit": 0
+  }
+]

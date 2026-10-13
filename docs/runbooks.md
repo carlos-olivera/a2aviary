@@ -345,3 +345,25 @@ holds only `apps/platform/railway.json`.
   passwords until they are delivered.
 - `BETTER_AUTH_SECRET` protects sessions, OAuth context and stored signing keys;
   plan its rotation as a maintenance event.
+
+## CI activation refresh — 2026-10-12
+
+[Current verification](evidence/ci-activation/README.md) records independent
+read-only health/deployment evidence after the site-core/workspace merge and
+fresh local suites for PR #37. The new prepared `codex/ci-activation` workflow
+uses root `npm ci`, builds site-core before generator/platform consumers, checks
+site-core contracts, and runs generator units plus full library/browser checks.
+Its complete workflow/provenance diff is the replacement for the old
+`.local/ci-workflow.patch`; publication is attempted with the Operator App only.
+A local pass does not activate GitHub jobs or Railway gating.
+
+If workflow publication is refused, no partial PR is opened. The owner may grant
+**Workflows: read and write** and accept the installation update, then request
+a re-run, or apply the full refreshed patch on a feature branch. A PR last pushed
+by the owner's account needs approval from another person under the current
+protection rule. No agent permission/protection workaround is authorized.
+After CI merges and runs on main, add `platform`, `generator` and
+`platform-image` as required checks, then enable **Wait for CI** under platform
+**Settings → Source**, and finally update PR #37 through the Operator App.
+The dashboard label and its off state were re-observed read-only at
+2026-10-12 21:47:08 UTC−04:00. No production variable, resource or setting changed.
