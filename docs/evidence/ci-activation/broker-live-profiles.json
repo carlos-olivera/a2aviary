@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-13T10:52:33.193Z",
+  "profiles": [
+    {
+      "profile": "development",
+      "permissions": {
+        "actions": "read",
+        "contents": "write",
+        "metadata": "read",
+        "pull_requests": "write"
+      },
+      "repositoryOnly": true,
+      "repositoryId": 1403745581,
+      "tokenRevoked": true
+    },
+    {
+      "profile": "development-workflows",
+      "permissions": {
+        "actions": "read",
+        "contents": "write",
+        "metadata": "read",
+        "pull_requests": "write",
+        "workflows": "write"
+      },
+      "repositoryOnly": true,
+      "repositoryId": 1403745581,
+      "tokenRevoked": true
+    }
+  ],
+  "unrelatedTaskRejected": true
+}

@@ -12,15 +12,28 @@ async function github(path:string,token:string,method='GET',body?:any) {
   if(!r.ok)throw Object.assign(new Error('github_request_failed'),{status:r.status});return r.status===204?{}:r.json();
 }
 export async function broker(event:any) {return mint('policy');}
-export async function developmentBroker(event:any) {const control=await get('CONTROL#flags');if(!control?.developmentEnabled)throw new Error('development_disabled');return mint('development');}
-async function mint(profile:'policy'|'development') {
+export async function developmentBroker(event:any) {
+  const control=await get('CONTROL#flags');
+  if(!control?.developmentEnabled)throw new Error('development_disabled');
+  const profile=event?.profile??'development';
+  if(profile!=='development' && profile!=='development-workflows')throw new Error('development_profile_invalid');
+  if(profile==='development-workflows') {
+    // Caller supplies the task's actual diff paths; scope is still repository-wide.
+    const paths=event?.changedPaths;
+    if(!Array.isArray(paths) || !paths.length || paths.length>10000 ||
+      !paths.every((path:unknown)=>typeof path==='string' && path.length<=4096 && !/[\\\x00-\x1f]/.test(path) && path.split('/').every(part=>part!=='' && part!=='.' && part!=='..')) ||
+      !paths.some((path:string)=>/^\.github\/workflows\/[^/]+\.ya?ml$/.test(path)))throw new Error('workflow_changes_required');
+  }
+  return mint(profile);
+}
+async function mint(profile:'policy'|'development'|'development-workflows') {
   const app=await secret(process.env.APP_KEY_SECRET!);
   if(!app.appId || !app.installationId)throw new Error('github_app_not_installed');
   const jwt=await new SignJWT({}).setProtectedHeader({alg:'RS256'}).setIssuedAt(now()-30).setExpirationTime(now()+300).setIssuer(String(app.appId)).sign(await importPKCS8(app.privateKey,'RS256'));
-  const permissions=profile==='policy'?{contents:'read',pull_requests:'read',checks:'write'}:{contents:'write',pull_requests:'write',actions:'read'};
+  const permissions=profile==='policy'?{contents:'read',pull_requests:'read',checks:'write'}:{contents:'write',pull_requests:'write',actions:'read',...(profile==='development-workflows'?{workflows:'write'}:{})};
   const token=await github(`/app/installations/${app.installationId}/access_tokens`,jwt,'POST',{repository_ids:[1403745581],permissions});
   await audit('github.token',{profile,installationId:app.installationId},'issued');
-  return {token:token.token,expiresAt:token.expires_at};
+  return {token:token.token,expiresAt:token.expires_at,permissions:token.permissions};
 }
 async function policyToken(){const r=await new LambdaClient(awsOptions()).send(new InvokeCommand({FunctionName:process.env.BROKER_FUNCTION!,Payload:Buffer.from(JSON.stringify({profile:'policy'}))}));const p=JSON.parse(Buffer.from(r.Payload!).toString());if(r.FunctionError || !p.token)throw new Error('broker_unavailable');return p.token;}
 async function paginate(path:string,token:string){const all=[];for(let page=1;page<=30;page++){const result=await github(path+`?per_page=100&page=${page}`,token);all.push(...result);if(result.length<100)return all;}throw new Error('github_pagination_limit');}

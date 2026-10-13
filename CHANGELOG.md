@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-13 — opt-in Operator workflow tokens
+
+- Add `development-workflows` only for explicitly selected tasks declaring workflow YAML changes; preserve default development and policy permissions, the enable switch and repository restriction. Reject invalid profiles/paths and audit the selected profile.
+- Deploy only the owner-authorized DevelopmentBroker bundle; verify both real token permission sets, single-repository access and rejection of unrelated task paths, then revoke verification tokens. Services check/build and 58 tests, infra build/nine tests pass. Confirm the exact main-only website OIDC trust from source without changing it; retain dated [deployment and verification evidence](docs/evidence/ci-activation/README.md#authorized-broker-deployment-and-ci-retry--2026-10-13).
+- Prepare CI publication through the opt-in profile with current main unchanged. Refresh broker source references through the official architecture pipeline. No PR #37, platform production, website deployment, main protection or auto-merge change.
+
 ## 2026-10-13 — CI activation publication retry
 
 - Fetch and rebase `codex/ci-activation` against unchanged main `27ebab35`; retain completed local job evidence and recheck workflow lint/whitespace.

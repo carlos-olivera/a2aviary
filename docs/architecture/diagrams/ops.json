@@ -45,7 +45,7 @@
         {
           "path": "services/src/operator.ts",
           "line": 15,
-          "end_line": 19
+          "end_line": 37
         }
       ],
       "pos": [
@@ -66,8 +66,8 @@
       "sources": [
         {
           "path": "services/src/operator.ts",
-          "line": 39,
-          "end_line": 43
+          "line": 52,
+          "end_line": 56
         },
         {
           "path": ".github/workflows/release.yml",

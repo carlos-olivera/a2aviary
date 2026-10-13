@@ -378,3 +378,31 @@ deployment are needed before this profile can publish workflow files. Do not
 bypass the broker or change production under the CI-only mandate. The latest
 complete branch push was refused, with no CI branch/PR published. See
 [retry evidence](evidence/ci-activation/README.md#part-b-retry--2026-10-13).
+
+### Authorized opt-in broker — 2026-10-13
+
+The installation permission acceptance and owner-authorized targeted broker
+update now supersede the refusal above. Default invocation `{}` keeps
+contents/pull_requests write and Actions read. Only an authorized task modifying
+workflow YAML should invoke:
+
+```json
+{"profile":"development-workflows","changedPaths":[".github/workflows/release.yml"]}
+```
+
+Supply the actual repository-relative diff paths, not an invented marker path.
+Missing/unrelated paths, traversal and unknown profiles reject. This adds only
+workflows write; the enabled switch, single-repository grant and audit remain.
+Paths are caller declarations, not GitHub path-scoped permissions. Do not print
+or persist the returned token; `permissions` exposes the granted scopes without
+credentials. Revoke the token after use. Current-head review and disabled
+auto-merge still apply. The policy broker and default token scope are unchanged.
+
+The owner authorized only the existing DevelopmentBroker's code update here;
+its archive retained all entries except the broker bundle/source map, and no
+function configuration, IAM, platform production or other worker was changed.
+Both live profiles and unrelated-path rejection were verified. The exact website
+OIDC `StringEquals` audience and immutable main-only subject were confirmed in
+source; see [deployment evidence](evidence/ci-activation/README.md#authorized-broker-deployment-and-ci-retry--2026-10-13).
+Review the CI PR first, then add required checks after main runs, enable Railway
+Wait for CI, and separately authorize any update to PR #37.

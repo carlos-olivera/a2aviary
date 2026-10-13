@@ -6,6 +6,76 @@ Prepared branch: `codex/ci-activation`, from main
 `d9137392bff7a4b588daa92e3979a7f22fa98fec` in a new clean managed worktree;
 its source and remote branch were not changed or pushed.
 
+## Authorized broker deployment and CI retry — 2026-10-13
+
+This supersedes the earlier permission blockers below. At **06:49:41 UTC−04:00**,
+live GitHub metadata confirms both App registration and installation 167790436
+include `workflows: write`; repository selection remains limited to a2aviary.
+The owner explicitly authorized the separate opt-in profile and broker-only
+deployment. No platform/Railway production service, other Lambda, IAM policy,
+branch protection, website deployment or PR #37 was changed.
+
+`development-workflows` adds only workflows write, requires explicit selection
+and actual task diff paths containing a workflow YAML file, and retains the
+existing enabled switch and repository ID restriction. `{}` still selects the
+unchanged default development permissions. Unknown profiles and missing,
+unrelated or malformed paths reject before issuance. GitHub token scope is
+repository-wide; declared paths describe the authorized task, not a path-scoped
+permission. The policy broker retains its original profile.
+
+Local services check/build and **58 tests** pass, including actual bundled broker
+calls against fictional loopback AWS/GitHub endpoints, JWT verification, exact
+permission requests, rejection paths, enabled-switch enforcement and audit
+profile separation. Infrastructure build and all **nine tests** pass, including
+the synthesized exact OIDC condition. Prior platform/generator/image/manual CI
+job results below still apply: main and those workflow/application bytes have
+not changed. Updated website/architecture checks and workflow lint pass.
+
+The targeted Lambda code update completed at **06:52:09 UTC−04:00**. Only the
+`operator.js` bundle and its source map were replaced in the existing
+DevelopmentBroker archive; every other entry was retained byte-for-byte.
+A dry run passed, the update used the existing RevisionId concurrency guard,
+and Active/Successful plus the resulting CodeSha256 were verified. Configuration,
+IAM, the policy broker and other runtime workers were not updated. This targeted
+code update precedes PR review under the owner's explicit authorization; the
+source is included here so future normal CDK deployment retains it. The existing
+CDK asset declaration is unchanged. [Deployment metadata](broker-deployment.json)
+records before/after hashes without credentials or function configuration.
+
+At **06:52:33 UTC−04:00**, real broker invocations verified GitHub's returned
+permissions for both profiles and independently listed the installation's single
+repository with each token. Default: contents/pull_requests write,
+actions/metadata read, **no workflows**. Opt-in: the same plus workflows write.
+An opt-in invocation for README.md alone rejected with
+`workflow_changes_required`. Both minted verification tokens were revoked.
+See [sanitized live profile evidence](broker-live-profiles.json).
+
+### Website OIDC source confirmation
+
+Read-only inspection of `infra/src/app.ts:68` and the existing synthesized
+security test confirms the website deployment role uses this exact condition:
+
+```json
+{
+  "StringEquals": {
+    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+    "token.actions.githubusercontent.com:sub": "repo:carlos-olivera@1182541/a2aviary@1403745581:ref:refs/heads/main"
+  }
+}
+```
+
+The subject is restricted to `refs/heads/main`, including the immutable owner
+and repository IDs. This is repository/infra-source and local synthesis evidence,
+not a new inspection of live IAM trust. The condition and role were not changed.
+The release workflow still limits website deployment to main pushes, with its
+existing OIDC permissions, dependency and non-cancelling concurrency.
+
+Publication uses the verified opt-in broker profile with paths from
+`git diff --name-only origin/main HEAD`; the final token is revoked after the
+push/PR attempt. Stop at the Operator-authored CI PR for owner review. New GitHub
+job results, required-check activation and Railway Wait for CI remain separate
+owner follow-up; no CI success or merge is inferred from opening a PR.
+
 ## Part B retry — 2026-10-13
 
 At **2026-10-13 06:43:35 UTC−04:00 (America/La_Paz)**, live GitHub metadata
@@ -179,12 +249,9 @@ environment>` denotes only local placeholders, not production credentials.
 
 ## Owner actions, in order
 
-1. Accept **Workflows: read and write** on the App installation (the registration
-   already includes it), then separately authorize the broker development-token
-   profile update/deployment before another Part B retry. Alternatively, apply
-   the refreshed `.local/ci-workflow.patch` yourself on a feature branch. A PR
-   pushed from your account needs approval from someone other than its last
-   pusher under current branch protection.
+1. Review the Operator-authored CI activation PR, including the explicitly
+   authorized broker code deployment above. Current-head approval remains
+   required; auto-merge stays disabled. Observe the new GitHub job results.
 2. After the CI PR merges and these jobs have run once on main, add **platform**,
    **generator** and **platform-image** as required checks, retaining existing
    checks/current-head policy review and disabled auto-merge. GitHub lists
@@ -193,6 +260,7 @@ environment>` denotes only local placeholders, not production credentials.
 4. Then update PR #37 onto the new main through the Operator App so its required
    checks run before any owner-authorized merge.
 
-No merge, production rollout, permission change or required-check mutation is
-part of this delivery. Health/deployment and local checks are observed; new CI
+Only the explicitly authorized development broker code was deployed. No merge,
+platform/website rollout, permission change or required-check mutation is part
+of this delivery. Health/deployment and local checks are observed; new CI
 execution, required checks and deployment gating are not yet observed.

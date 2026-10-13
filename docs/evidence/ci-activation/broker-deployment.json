@@ -1,0 +1,28 @@
+{
+  "preparedAt": "2026-10-13T10:51:27.802Z",
+  "before": {
+    "codeSha256": "F1wcJvZbFDx3q48UqQRbPihkoWhlYTLFszzT0fzgYog=",
+    "revision": "8bd80689-a542-49bd-b440-ca86ed04b9bf",
+    "handler": "operator.developmentBroker",
+    "runtime": "nodejs22.x",
+    "state": "Active",
+    "lastUpdateStatus": "Successful",
+    "lastModified": "2026-10-05T23:38:17.000+0000"
+  },
+  "expectedCodeSha256": "y7YFA4ynMqPkxD6Y7vsTG1L5wjTSzbl5vEVJjy3aLro=",
+  "changedEntries": [
+    "operator.js",
+    "operator.js.map"
+  ],
+  "dryRun": "passed",
+  "deployedAt": "2026-10-13T10:52:09.899Z",
+  "after": {
+    "codeSha256": "y7YFA4ynMqPkxD6Y7vsTG1L5wjTSzbl5vEVJjy3aLro=",
+    "revision": "ec4ee16a-15af-4857-a53b-65daf8587e1b",
+    "handler": "operator.developmentBroker",
+    "runtime": "nodejs22.x",
+    "state": "Active",
+    "lastUpdateStatus": "Successful",
+    "lastModified": "2026-10-13T10:52:06.000+0000"
+  }
+}

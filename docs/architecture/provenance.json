@@ -68,8 +68,8 @@
     },
     "ops": {
       "candidatePath": "docs/architecture/diagrams/ops.json",
-      "candidateSha256": "8c8313037c95753e2e4b0af2d30bc112af43b186bbc303aff21510f90d3f2dd8",
-      "rawArtifactSha256": "d9af0557d84c693e775e7b4a3d411bc526463733e25a02e99984daff313b00db",
+      "candidateSha256": "47b20d4aac737f8c27f644fd44198f43847bbe92f5140f093ac2a1d17e97fc87",
+      "rawArtifactSha256": "a25f0db1a3b941289b3f61f22c95fa7875c5384e47614c18e3722afde9eb6848",
       "generatedDrawingSha256": "94b08e2f7acc7f24ed24c1e0f134adf580ad90dbe8a2ff7a14df5b9e5cc6536a",
       "gates": {
         "validate": "pass",
@@ -79,7 +79,7 @@
       }
     }
   },
-  "integratedPageSha256": "c1c53cf5d2713914a37550e092f4786f775fbcf86ae886cfbe24c9e61c06b69c",
+  "integratedPageSha256": "398d6b30fc05e634b178fef20ea4fb88acd106ae15d55be2d12708c9bd7faf91",
   "assetSha256": {
     "architecture.css": "1ebd910731acf8fd4ed0a110d4086b1722fad07c82b7e815cd8832d528f8ddb4",
     "architecture.js": "f97addd4fdf06856b907aa6b459fc10f90be698a223f14a5e912731c1cb58a2c"
@@ -444,7 +444,7 @@
     "services/src/environment.ts": "7bf19c12608211f608652385b4993d348f69d0e3b9a05ae65afbd95dfd45ce93",
     "services/src/feedback.ts": "d1b1c38dbe7461ecadc5fdad185283c125e68f106f9261442bb63bb59349ce41",
     "services/src/intake.ts": "e24fbe3c33d4005be4d982951f1e16eaa040482c0ca61eeb27421e2fcdc7180c",
-    "services/src/operator.ts": "236c69c93961a8c56420a3b7723a9eef5e3c832a91bc695491c59e32b09e3d80",
+    "services/src/operator.ts": "df0eaf82a09706c27e072e8f5dcc041ec103a94115b2250b2d28655e100dce8a",
     "services/src/policy.ts": "8bacc63b576f6c1bbe32d5ae806f4617fd3798baccd4161ce2f258a538d8f605",
     "services/src/protocol.ts": "930e8c17abd61621ba76d4270067e047fd0399de2d564f9ce560021c4072d71c",
     "services/src/runtime.ts": "6c097780b48c80af95b3464b23b15705719c147ffb0533a7f303ae5096195ed5",
@@ -453,6 +453,7 @@
     "services/src/support.ts": "c6b5a740794a88411e3e8563206a8aa164de9293ae0b1d57cf0bb5089aa3e366",
     "services/src/watchdog.ts": "8badae842cf81916f5a7463a4b683ac5251adc452ec8f93aba09f096045b21d9",
     "services/test/local-environment.test.mjs": "f6e5696ac2c9407e265430fc8bb997b506486194692f9949b7852b98a4b574dc",
+    "services/test/operator-profiles.test.mjs": "d44d07ccf5cd6e3d47bddabf39fcd68dc953a226247b6401d604f3e8fc0aea07",
     "services/test/protocol.test.mjs": "ba256cf6ae00c8095ca208f58192b2c1eaf65fa28fdd0ccee0cbd3d83870cd49",
     "services/test/runtime-boundaries.test.mjs": "a5cea9ec178c32455869180409fa504f5627d6a5a7d6fd896c2ddd306f881b76",
     "services/test/site-policy-boundaries.test.mjs": "7c840053b70067ad5df7faa09715c3547d05d229865dd00f9912e1f1b0abef1b",
