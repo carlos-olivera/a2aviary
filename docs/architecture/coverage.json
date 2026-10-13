@@ -5,7 +5,7 @@
     "mode": "Separate local tooling"
   },
   "client-preview": {
-    "note": "Human and agent HTTP uploads share an expiring session. The agent probes first; unavailable networking falls back to the authenticated human link/QR. Only the secret-free child decodes images.",
+    "note": "Human and agent HTTP uploads share an expiring session. The agent probes first; unavailable networking falls back to the authenticated human link/QR. Only the secret-free child decodes images. site.preview.quick separately renders catalog HTML/CSS/fonts/normalized images in a bounded, secret-free lower-priority child. It returns verified:false and a script-free signed URL, with separate quotas and ephemeral memory only. It never writes a verified snapshot or permits approval; full site.preview remains required. Quick source and migration 009 await review and rollout.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },
