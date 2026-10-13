@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Auth & Mandate Gate",
-    "output": ".local/architecture/site-core-review/gate.html",
+    "output": ".local/architecture/platform-refactor/gate.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
+      "revision": "0de2602176610b2de230bcd19bf294622bf9a49a",
       "provider": "github",
       "link_mode": "web"
     }
@@ -21,9 +21,9 @@
       "sublabel": "Google / OAuth / consent",
       "sources": [
         {
-          "path": "apps/platform/src/auth.ts",
+          "path": "apps/platform/src/identity/auth.ts",
           "line": 10,
-          "end_line": 14
+          "end_line": 18
         }
       ],
       "pos": [
@@ -44,13 +44,13 @@
       "sources": [
         {
           "path": "apps/platform/src/app.ts",
-          "line": 50,
-          "end_line": 57
+          "line": 51,
+          "end_line": 58
         },
         {
           "path": "apps/platform/src/tools.ts",
-          "line": 20,
-          "end_line": 27
+          "line": 15,
+          "end_line": 22
         }
       ],
       "pos": [
@@ -70,14 +70,14 @@
       "sublabel": "Current scoped membership",
       "sources": [
         {
-          "path": "apps/platform/src/drafts.ts",
-          "line": 49,
-          "end_line": 70
+          "path": "apps/platform/src/sites/drafts.ts",
+          "line": 63,
+          "end_line": 84
         },
         {
-          "path": "apps/platform/src/store.ts",
-          "line": 345,
-          "end_line": 352
+          "path": "apps/platform/src/identity/store.ts",
+          "line": 184,
+          "end_line": 210
         }
       ],
       "pos": [
@@ -97,14 +97,14 @@
       "sublabel": "Browser CSRF / exact bytes",
       "sources": [
         {
-          "path": "apps/platform/src/drafts.ts",
-          "line": 902,
-          "end_line": 925
+          "path": "apps/platform/src/sites/snapshots.ts",
+          "line": 216,
+          "end_line": 240
         },
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 179,
-          "end_line": 210
+          "path": "apps/platform/src/sites/deployments.ts",
+          "line": 177,
+          "end_line": 208
         }
       ],
       "pos": [
@@ -124,9 +124,9 @@
       "sublabel": "Pinned policy / rolling quotas",
       "sources": [
         {
-          "path": "apps/platform/src/drafts.ts",
-          "line": 786,
-          "end_line": 801
+          "path": "apps/platform/src/sites/snapshots.ts",
+          "line": 90,
+          "end_line": 105
         },
         {
           "path": "packages/site-core/src/validator.ts",
@@ -156,9 +156,9 @@
       "sublabel": "Next: generation and checks",
       "sources": [
         {
-          "path": "apps/platform/src/drafts.ts",
-          "line": 720,
-          "end_line": 767
+          "path": "apps/platform/src/sites/snapshots.ts",
+          "line": 19,
+          "end_line": 71
         }
       ],
       "pos": [

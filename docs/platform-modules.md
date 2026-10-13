@@ -90,7 +90,7 @@ Three additional regressions cover inherited/unknown tool names, exact existing
 site-failure recording with sanitized identifiers, and role revocation between
 registration and handler execution.
 
-An AST comparison against the baseline matched all 70 retained constructor and
+An AST comparison against the baseline matched all 91 retained constructor and
 method bodies to their moved implementations, disregarding formatting and the
 audit registry identifier rename. SQL statements, statement order, locks,
 transaction calls, provider calls and limits are unchanged. Delegates preserve
@@ -117,7 +117,14 @@ goal is bounded responsibilities rather than fewer total lines.
 
 Every platform source module is below 500 lines; the largest is
 `sites/drafts.ts` at 457. Authentication/audit line growth is formatting only.
-Source-evidence links and architecture provenance are refreshed for the moved
-modules; topology, styling and activation claims remain unchanged. Owner
+The existing real local browser regression also passes: the stored seven-page
+checker report contains 52 passing checks and 14 screenshots; relative preview
+routes, CSS/fonts/images, browser approval POST, upload QR and direct-open
+response-header sandboxing are verified. Fictional verified sessions do not
+establish real Google authentication. All six architecture drawings pass their
+validation, delivery, provenance and browser gates; website check/build and
+changed-document relative links pass. The integrated SVG drawings are
+byte-identical to main. Source-evidence links and provenance are refreshed for
+the moved modules; topology, styling and activation claims remain unchanged. Owner
 review of the Operator-authored PR is the delivery boundary. Merge and
 production deployment require separate authorization.

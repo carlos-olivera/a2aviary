@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Governance & Ops",
-    "output": ".local/architecture/site-core-review/ops.html",
+    "output": ".local/architecture/platform-refactor/ops.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
+      "revision": "0de2602176610b2de230bcd19bf294622bf9a49a",
       "provider": "github",
       "link_mode": "web"
     }
@@ -232,14 +232,14 @@
       "sublabel": "Scoped approval / audited reset",
       "sources": [
         {
-          "path": "apps/platform/src/drafts.ts",
-          "line": 49,
-          "end_line": 70
+          "path": "apps/platform/src/sites/drafts.ts",
+          "line": 63,
+          "end_line": 84
         },
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 855,
-          "end_line": 878
+          "path": "apps/platform/src/admin/reset.ts",
+          "line": 7,
+          "end_line": 34
         }
       ],
       "pos": [
@@ -264,14 +264,14 @@
           "end_line": 57
         },
         {
-          "path": "apps/platform/src/drafts.ts",
-          "line": 987,
-          "end_line": 1008
+          "path": "apps/platform/src/sites/cleanup.ts",
+          "line": 3,
+          "end_line": 24
         },
         {
-          "path": "apps/platform/src/site-administration.ts",
-          "line": 376,
-          "end_line": 383
+          "path": "apps/platform/src/billing/costs.ts",
+          "line": 191,
+          "end_line": 198
         }
       ],
       "pos": [

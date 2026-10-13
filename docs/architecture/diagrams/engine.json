@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/site-core-review/engine.html",
+    "output": ".local/architecture/platform-refactor/engine.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
+      "revision": "0de2602176610b2de230bcd19bf294622bf9a49a",
       "provider": "github",
       "link_mode": "web"
     }
@@ -21,9 +21,9 @@
       "sublabel": "Atomic batches / decoder child",
       "sources": [
         {
-          "path": "apps/platform/src/draft-content.ts",
-          "line": 254,
-          "end_line": 262
+          "path": "apps/platform/src/sites/draft-content.ts",
+          "line": 255,
+          "end_line": 263
         },
         {
           "path": "packages/generator/src/normalize.ts",
@@ -48,9 +48,9 @@
       "sublabel": "Revisions / quota / reuse",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 474,
-          "end_line": 497
+          "path": "apps/platform/src/sites/worker.ts",
+          "line": 18,
+          "end_line": 42
         },
         {
           "path": "apps/platform/migrations/007-server-drafts-preview.sql",
@@ -139,9 +139,9 @@
       "sublabel": "Hashes / reports / screenshots",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 429,
-          "end_line": 452
+          "path": "apps/platform/src/sites/artifacts.ts",
+          "line": 40,
+          "end_line": 63
         },
         {
           "path": "packages/generator/src/storage.ts",
@@ -166,9 +166,9 @@
       "sublabel": "Next: exact bytes and CMS",
       "sources": [
         {
-          "path": "apps/platform/src/sites.ts",
-          "line": 608,
-          "end_line": 639
+          "path": "apps/platform/src/sites/worker.ts",
+          "line": 158,
+          "end_line": 189
         }
       ],
       "pos": [
