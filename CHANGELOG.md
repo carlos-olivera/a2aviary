@@ -4,6 +4,7 @@
 
 - Refresh the unpublished CI workflow for root npm workspaces/site-core, pinned Node 22.23.3, loopback Postgres, generator units/full browser checks and repository-root image builds. Keep presentation/CMS checks dispatch-only and website delivery unchanged except the Node pin; refresh only the two workflow provenance hashes.
 - Verify production health read-only at 21:38:15 UTC−04:00: HTTP 200, discovery-only and all seven migration names/hashes matching main `27ebab35`. Railway reports the exact successful active deployment; dashboard Wait for CI remains off. No production setting or resource changes.
+- Operator App publication was refused for missing `workflows` permission. Save the full refreshed `.local/ci-workflow.patch`; no partial PR, permission change or protection workaround.
 - Re-run exact local jobs and PR #37 head `d9137392`: 75 platform tests pass with two skips, all 79 generator units and full browser matrices pass; its built container applies seven migrations to a fresh local database and returns healthy discovery-only readiness. Record command durations, the corrected incomplete smoke harness failure and owner activation steps in [verification evidence](docs/evidence/ci-activation/README.md). Publication and GitHub-run evidence remain separate from local passes; no PR #37 push or merge.
 
 ## 2026-10-12 — platform tool registry and domain boundaries
