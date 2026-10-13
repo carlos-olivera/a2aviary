@@ -1,5 +1,18 @@
 # Changelog
 
+## 2026-10-13 — Unverified quick preview (prepared for review)
+
+- Add `site.preview.quick` using the trusted renderer directly, with explicit
+  unverified platform chrome, distinct signed URLs, ephemeral bounded retention,
+  and no hosted verification or model call. Blank and starter drafts share blockers.
+- Add migration 009 for a separate quick quota; isolate rendering in a bounded,
+  lower-priority child and preserve full verification, approval and deployment.
+- Keep scripts disabled after evaluating opaque-origin script sandbox navigation;
+  record local browser, rejection, quota and timing evidence in
+  [quick-preview evidence](docs/evidence/quick-preview/README.md).
+- Read-only preflight confirmed PR #40 main CI, Railway deployment, HTTP 200,
+  discovery-only, and eight source-matching migration hashes. No production change.
+
 
 ## 2026-10-13 — Data-only website starters
 

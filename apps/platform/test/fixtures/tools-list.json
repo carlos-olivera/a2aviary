@@ -222,6 +222,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -1972,7 +1973,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2204,6 +2235,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -3340,7 +3372,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -4192,7 +4254,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -5101,7 +5193,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",

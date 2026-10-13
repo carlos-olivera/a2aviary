@@ -13,6 +13,7 @@ await build({
   outfile: 'dist/index.js'
 });
 await cp('src/normalize-worker.mjs','dist/normalize-worker.mjs');
+await cp('src/quick-worker.mjs','dist/quick-worker.mjs');
 await rm('dist/resources', { recursive: true, force: true });
 await cp('template', 'dist/resources', { recursive: true });
 await mkdir('dist/plans', { recursive: true });

@@ -26,3 +26,4 @@ export {
 } from '@a2aviary/site-core';
 export { policyForVersion } from '@a2aviary/site-core';
 export { compactLibraryManifest, libraryDetail } from './library-manifest.ts';
+export { quickRender, renderQuickSite, QUICK_INPUT_BYTES, QUICK_OUTPUT_BYTES, QUICK_TIMEOUT_MS } from './quick.ts';

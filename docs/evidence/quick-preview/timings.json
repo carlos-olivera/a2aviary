@@ -1,0 +1,507 @@
+{
+  "node": "v22.23.3",
+  "platform": "darwin",
+  "quickSamplesPerComposition": 5,
+  "fullSamplesPerComposition": 3,
+  "method": "nearest-rank percentiles, wall milliseconds; normalized assets in memory; dependencies preinstalled; full includes source generation + real verify.mjs, excludes hosted upload/setup/AI/queue; quick includes child startup; fictional inputs only",
+  "compositions": [
+    {
+      "name": "dark-en",
+      "pages": 1,
+      "quick": {
+        "p50Ms": 265,
+        "p95Ms": 271,
+        "samplesMs": [
+          267,
+          243,
+          261,
+          271,
+          265
+        ]
+      },
+      "full": {
+        "p50Ms": 11848,
+        "p95Ms": 15315,
+        "samplesMs": [
+          15315,
+          11779,
+          11848
+        ]
+      },
+      "checks": [
+        {
+          "name": "catalog-syntax",
+          "passed": true
+        },
+        {
+          "name": "astro-build",
+          "passed": true
+        },
+        {
+          "name": "a11y:/",
+          "passed": true
+        },
+        {
+          "name": "links:/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:1280",
+          "passed": true
+        },
+        {
+          "name": "network:external",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "light-es",
+      "pages": 1,
+      "quick": {
+        "p50Ms": 242,
+        "p95Ms": 295,
+        "samplesMs": [
+          295,
+          242,
+          242,
+          245,
+          239
+        ]
+      },
+      "full": {
+        "p50Ms": 11764,
+        "p95Ms": 11815,
+        "samplesMs": [
+          11686,
+          11764,
+          11815
+        ]
+      },
+      "checks": [
+        {
+          "name": "catalog-syntax",
+          "passed": true
+        },
+        {
+          "name": "astro-build",
+          "passed": true
+        },
+        {
+          "name": "a11y:/",
+          "passed": true
+        },
+        {
+          "name": "links:/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:1280",
+          "passed": true
+        },
+        {
+          "name": "network:external",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "contrast-es",
+      "pages": 1,
+      "quick": {
+        "p50Ms": 239,
+        "p95Ms": 292,
+        "samplesMs": [
+          292,
+          238,
+          239,
+          238,
+          239
+        ]
+      },
+      "full": {
+        "p50Ms": 11813,
+        "p95Ms": 11831,
+        "samplesMs": [
+          11831,
+          11813,
+          11767
+        ]
+      },
+      "checks": [
+        {
+          "name": "catalog-syntax",
+          "passed": true
+        },
+        {
+          "name": "astro-build",
+          "passed": true
+        },
+        {
+          "name": "a11y:/",
+          "passed": true
+        },
+        {
+          "name": "links:/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:1280",
+          "passed": true
+        },
+        {
+          "name": "network:external",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "profile",
+      "pages": 1,
+      "quick": {
+        "p50Ms": 244,
+        "p95Ms": 294,
+        "samplesMs": [
+          294,
+          242,
+          244,
+          267,
+          244
+        ]
+      },
+      "full": {
+        "p50Ms": 11641,
+        "p95Ms": 11900,
+        "samplesMs": [
+          11900,
+          11641,
+          11571
+        ]
+      },
+      "checks": [
+        {
+          "name": "catalog-syntax",
+          "passed": true
+        },
+        {
+          "name": "astro-build",
+          "passed": true
+        },
+        {
+          "name": "a11y:/",
+          "passed": true
+        },
+        {
+          "name": "links:/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:1280",
+          "passed": true
+        },
+        {
+          "name": "network:external",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "catalog",
+      "pages": 7,
+      "quick": {
+        "p50Ms": 250,
+        "p95Ms": 300,
+        "samplesMs": [
+          300,
+          247,
+          250,
+          250,
+          251
+        ]
+      },
+      "full": {
+        "p50Ms": 60232,
+        "p95Ms": 61141,
+        "samplesMs": [
+          60232,
+          60097,
+          61141
+        ]
+      },
+      "checks": [
+        {
+          "name": "catalog-syntax",
+          "passed": true
+        },
+        {
+          "name": "astro-build",
+          "passed": true
+        },
+        {
+          "name": "a11y:/",
+          "passed": true
+        },
+        {
+          "name": "links:/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/:1280",
+          "passed": true
+        },
+        {
+          "name": "a11y:/about/",
+          "passed": true
+        },
+        {
+          "name": "links:/about/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/about/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/about/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/about/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/about/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/about/:1280",
+          "passed": true
+        },
+        {
+          "name": "a11y:/north/",
+          "passed": true
+        },
+        {
+          "name": "links:/north/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/north/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/north/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/north/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/north/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/north/:1280",
+          "passed": true
+        },
+        {
+          "name": "a11y:/south/",
+          "passed": true
+        },
+        {
+          "name": "links:/south/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/south/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/south/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/south/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/south/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/south/:1280",
+          "passed": true
+        },
+        {
+          "name": "a11y:/west/",
+          "passed": true
+        },
+        {
+          "name": "links:/west/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/west/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/west/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/west/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/west/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/west/:1280",
+          "passed": true
+        },
+        {
+          "name": "a11y:/privacy/",
+          "passed": true
+        },
+        {
+          "name": "links:/privacy/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/privacy/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/privacy/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/privacy/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/privacy/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/privacy/:1280",
+          "passed": true
+        },
+        {
+          "name": "a11y:/contact/",
+          "passed": true
+        },
+        {
+          "name": "links:/contact/",
+          "passed": true
+        },
+        {
+          "name": "lighthouse:/contact/",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/contact/:390",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/contact/:390",
+          "passed": true
+        },
+        {
+          "name": "motion:reduced:/contact/:1280",
+          "passed": true
+        },
+        {
+          "name": "screenshot:/contact/:1280",
+          "passed": true
+        },
+        {
+          "name": "network:external",
+          "passed": true
+        }
+      ]
+    }
+  ]
+}

@@ -151,7 +151,7 @@ export const workflowTools = [
   defineTool({
     name: 'site.preview',
     description:
-      'Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.',
+      'Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.',
     roles: ALL_ROLES,
     feature: 'siteWorkflow',
     readOnly: false,
@@ -160,6 +160,17 @@ export const workflowTools = [
     inputSchema: () => z.object({ draftId, expectedRevision }).strict(),
     handler: ({ principal, sites }, a) =>
       sites!.drafts.preview(principal.id, a.draftId, a.expectedRevision),
+  }),
+  defineTool({
+    name: 'site.preview.quick',
+    description: 'Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.',
+    roles: ALL_ROLES,
+    feature: 'siteWorkflow',
+    readOnly: false,
+    recordsSiteFailure: true,
+    order: 13.5,
+    inputSchema: () => z.object({ draftId, expectedRevision }).strict(),
+    handler: ({ principal, sites }, a) => sites!.drafts.quick.create(principal.id, a.draftId, a.expectedRevision),
   }),
   defineTool({
     name: 'site.status',

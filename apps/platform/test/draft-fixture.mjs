@@ -20,6 +20,7 @@ export async function prepare(
   viaMcp = false,
   onCreated = () => {},
   starter,
+  previewTool = 'site.preview',
 ) {
   input ??= await fixtureSubmission();
   const drafts = f.app.sites.drafts;
@@ -103,9 +104,9 @@ export async function prepare(
   );
   assert.deepEqual(updated.missing, []);
   const snapshot = await invoke(
-    'site.preview',
+    previewTool,
     { draftId: created.draftId, expectedRevision: updated.revision },
-    () => drafts.preview(user.id, created.draftId, updated.revision),
+    () => previewTool === 'site.preview.quick' ? drafts.quick.create(user.id, created.draftId, updated.revision) : drafts.preview(user.id, created.draftId, updated.revision),
   );
   return { ...created, ...updated, ...snapshot, opened };
 }

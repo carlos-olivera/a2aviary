@@ -263,6 +263,7 @@ export async function createApp(
         (url.pathname.startsWith('/api/site-uploads/') ||
           url.pathname.startsWith('/u/') ||
           url.pathname.startsWith('/p/') ||
+          url.pathname.startsWith('/q/') ||
           url.pathname.startsWith('/sites/approve/') ||
           ['/uploads.js', '/site-ui.css'].includes(url.pathname))
       ) {

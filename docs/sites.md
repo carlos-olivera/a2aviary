@@ -19,6 +19,7 @@ Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepte
 | `site.upload.open` | `draftId`, UUID `requestId` | Both channels, expiry, QR and selection rule |
 | `site.upload.status` | `sessionId`, optional `after` | Normalized metadata/progress, never capability secrets |
 | `site.upload.revoke` | `sessionId` | Terminate both channels |
+| `site.preview.quick` | `draftId`, `expectedRevision` | Direct unverified render for iteration; separate quota, never approvable |
 | `site.preview` | `draftId`, `expectedRevision` | Assemble complete immutable spec, deduplicate/queue verification |
 | `site.status` | `siteId` | Latest snapshots, approval/verification/deployment states and artifacts |
 | `site.deploy` | `siteId`, `specId`, `cmsPassword`, `confirmation`, optional initial `domain` | Deploy approved stored bytes |
@@ -47,7 +48,7 @@ Agents may remove all copied blocks, change variants/tokens and add unrelated
 components/pages within the shared catalog and plan. Suggestions and design
 intent never render as site copy or become blockers. Provenance is immutable;
 using a different starter, including adding one to a blank site, requires a new
-site. Quick preview, live edits and policy 2.3.0 remain separate work.
+site. Quick preview is described below. Live edits and policy 2.3.0 remain separate work.
 
 ## Shared upload session
 
@@ -61,6 +62,67 @@ Open returns a short `/u/<id>` human URL, same-origin PNG QR generated locally, 
 Raw JPEG/PNG/static WebP: at most 20 MiB, 40 MP and 12,000 px/side. Dedicated child process fully decodes, rejects animation/spoofed bytes, orients, preserves transparency/aspect ratio, strips metadata and discards originals. It inherits PATH only, uses one decoder, disables Sharp cache, bounds I/O and kills after 10 seconds. Fixed `1.0.0` ladder: edges 2560/2048/1536/1024, quality 80/70/60, first output within 2 MiB, never upscale. Metadata/hash derive from output only. Draft assets: 50 and 25 MiB normalized total.
 
 Sessions: one/draft, three/owner; 100 MiB raw and 100 attempts each. Rolling daily raw limits: 200 MiB/owner, 1 GiB service. Failed decodes consume admission. Drafts: three/owner, 50 service, seven idle days/30 absolute days.
+
+## Quick render preview
+
+`site.preview.quick` uses the same shared catalog/plan/completeness validation as
+`site.preview`, for blank and starter drafts. Missing required content blocks both;
+`blockers` and nonblocking `suggestions` retain the draft summary meaning. Only
+policy 2.2.0 is supported. The result includes `verified: false`, `quickPreviewId`,
+`draftId`, `revision`, `test`, `previewUrl`, `expiresAt`, `blockers` and `suggestions`.
+There is no `specId` or approval URL. Run the full `site.preview` when ready for
+browser approval; quick IDs cannot pass approval or deployment lookup.
+
+The trusted generator directly emits HTML and its CSS/fonts/normalized images.
+It performs no Astro build, hosted verifier or OpenAI call. Authored HTML comes
+from the same `renderPage`; public static resources come from `generateSite` after
+its usual validation. Compared with built output, quick HTML skips Astro's HTML
+serialization, omits script tags and JavaScript files, and has no generated 404
+page. Unknown paths return 404. CMS remains at the owner-supplied empty state;
+flip/tilt/copy behaviors are unavailable. CSS effects and native HTML controls
+retain their no-script behavior. This is rendering evidence, never accessibility,
+link, Lighthouse or screenshot verification. See [measurements and isolation
+evidence](evidence/quick-preview/README.md).
+
+A separate `/q/<token>` platform wrapper visibly labels the result **Unverified
+preview**, supplies page selection, and embeds `/q/<token>/files/<path>`. Both the
+iframe and file response CSP sandbox omit scripts and same-origin. Resources load
+only from that signed file prefix; connections, scripts, workers, forms, popups
+and top navigation are disabled. The handler ignores cookies, sets none, and
+returns no-store/no-referrer/nosniff/noindex. The wrapper restricts frames to the
+signed prefix and denies clipboard/device permissions. Direct file opening has
+the same response sandbox. Capability URLs are bearer-readable, like full-preview
+URLs; knowing a URL grants no platform membership or action authority. Tokens use
+a separate MAC purpose and are bound to the stored owner/test scope and current
+revision. Wrong-owner tool requests, stale revisions, discarded/expired drafts,
+archived sites and invalid/expired tokens fail closed.
+
+Proposed limits, subject to owner PR review: **60/owner and 300/service per rolling
+24 hours**, with **10/owner and 30/service per minute**. That permits short content
+iteration bursts while capping CPU and artifact traffic. Failed admitted attempts
+count. Migration **009** extends the quota-kind constraint with `quick`; it does
+not change the five daily full verifications, historical migration bytes, or any
+approval/snapshot schema. No production migration is applied by this delivery.
+
+Quick renders use a separate secret-free, lower-priority child (nice 10), a 192 MiB
+V8 heap limit, 36 MiB input and 40 MiB encoded output ceilings, and a ten-second
+budget across asset reads/rendering. There is one active quick request locally and
+one renderer admitted globally by a nonblocking Postgres advisory lock; busy
+requests fail without a render queue. No verification-worker slot or job lock is
+held. Asset reads are sequential and bounded by the existing 25 MiB normalized
+asset budget; the child is killed on timeout or output overflow. This bounds
+competition with the unchanged full worker, rather than guaranteeing provider
+latency or CPU reservation.
+
+Artifacts live only in process memory: one result per draft, at most 20 retained
+results and 64 MiB of encoded files, FIFO eviction, automatic ten-minute expiry.
+New renders replace old URLs. Restarts, another replica, or capacity eviction can
+make a URL unavailable earlier; regenerate it through the tool. This deliberately
+avoids bucket writes, persistent artifact cleanup, and verified-snapshot reuse.
+The current single-replica runtime is the intended target; multi-replica durable
+preview storage would need a separate reviewed change. Admission and completion
+are audited with immutable site test classification; a final transaction rechecks
+revision, ownership, policy and deployment freeze after rendering.
 
 ## Preview and browser approval
 
@@ -82,7 +144,7 @@ Cleanup tracks bucket prefix write intents before external writes, so rolled-bac
 
 ## Local checks and the one hosted fixture
 
-Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. `npm run test:fixture:cms --prefix apps/platform` exercises the hosted `light-es` input through MCP draft preparation and real local PocketBase/Caddy: a declared/bound announcements write succeeds, while a composition with no collections must reject an undeclared write with HTTP 404 and record `no collection to edit`. Hosted presentation variants add one fictional announcements block without changing the static presentation matrix. Platform tests use unique loopback Postgres schemas; migration inventory must match all eight filenames and hashes and health fails closed on alteration. Migrations 001–006 are unchanged. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](history/release-verification-2026-10.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); all seven migrations including 007 now match the observed production readiness inventory after PR #38 on 2026-10-13. Never rewrite inventory to bypass a mismatch.
+Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. `npm run test:fixture:cms --prefix apps/platform` exercises the hosted `light-es` input through MCP draft preparation and real local PocketBase/Caddy: a declared/bound announcements write succeeds, while a composition with no collections must reject an undeclared write with HTTP 404 and record `no collection to edit`. Hosted presentation variants add one fictional announcements block without changing the static presentation matrix. Platform tests use unique loopback Postgres schemas; migration inventory must match all nine filenames and hashes and health fails closed on alteration. Migrations 001–008 are unchanged by quick preview. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](history/release-verification-2026-10.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); all seven migrations including 007 now match the observed production readiness inventory after PR #38 on 2026-10-13. Never rewrite inventory to bypass a mismatch.
 
 The explicitly authorized hosted runner is `node apps/platform/scripts/run-hosted-fixture.mjs`. It reads only the approved credential variable names from production Railway configuration into memory, filters them into the test child environment, overrides fixture flags, creates a disposable local database, and rejects a second attempt through a local marker. Never use production DATABASE_URL. SDK/action retries are disabled; readiness polling is allowed. The flow stops at its first failed stage and performs teardown once. Its private evidence contains only fictional IDs, safe usage/stage/cleanup observations and variable **names**, never values. Fictional verified browser sessions do not establish real Google authentication. No production variables/services/deployments are changed.
 

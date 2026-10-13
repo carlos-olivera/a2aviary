@@ -222,6 +222,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -513,6 +514,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -748,6 +754,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -1168,6 +1175,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -1403,6 +1415,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -1694,6 +1707,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -1929,6 +1947,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -2349,6 +2368,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -2584,6 +2608,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -2875,6 +2900,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -3110,6 +3140,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -3530,6 +3561,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -4157,7 +4193,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -4389,6 +4455,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -4780,6 +4847,7 @@
         "site.upload.status",
         "site.upload.revoke",
         "site.preview",
+        "site.preview.quick",
         "site.status",
         "site.deploy",
         "change.request",
@@ -4799,6 +4867,11 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "previews": {
+        "available": true,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": true,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -5442,7 +5515,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -5674,6 +5777,7 @@
                   "site.upload.status",
                   "site.upload.revoke",
                   "site.preview",
+                  "site.preview.quick",
                   "site.status",
                   "site.deploy",
                   "change.request",
@@ -6218,6 +6322,7 @@
         "site.upload.status",
         "site.upload.revoke",
         "site.preview",
+        "site.preview.quick",
         "site.status",
         "site.deploy",
         "change.request",
@@ -6242,6 +6347,11 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "previews": {
+        "available": true,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": true,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -6516,6 +6626,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -6804,6 +6919,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -7062,6 +7182,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -7350,6 +7475,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -7608,6 +7738,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -7896,6 +8031,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -8523,7 +8663,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -8783,6 +8953,7 @@
         "site.upload.status",
         "site.upload.revoke",
         "site.preview",
+        "site.preview.quick",
         "site.status",
         "site.deploy",
         "change.request",
@@ -8792,6 +8963,11 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "previews": {
+        "available": true,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": true,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -9435,7 +9611,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -9752,6 +9958,7 @@
         "site.upload.status",
         "site.upload.revoke",
         "site.preview",
+        "site.preview.quick",
         "site.status",
         "site.deploy",
         "change.request",
@@ -9763,6 +9970,11 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "previews": {
+        "available": true,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": true,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -10037,6 +10249,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -10325,6 +10542,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -10583,6 +10805,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -10871,6 +11098,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -11129,6 +11361,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -11417,6 +11654,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -12044,7 +12286,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -12304,6 +12576,7 @@
         "site.upload.status",
         "site.upload.revoke",
         "site.preview",
+        "site.preview.quick",
         "site.status",
         "site.deploy",
         "change.request",
@@ -12313,6 +12586,11 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "previews": {
+        "available": true,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": true,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -12956,7 +13234,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -13273,6 +13581,7 @@
         "site.upload.status",
         "site.upload.revoke",
         "site.preview",
+        "site.preview.quick",
         "site.status",
         "site.deploy",
         "change.request",
@@ -13284,6 +13593,11 @@
       ],
       "websiteProduction": true,
       "payments": false,
+      "previews": {
+        "available": true,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": true,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -13563,6 +13877,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -13826,6 +14145,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -14089,6 +14413,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -14352,6 +14681,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -14615,6 +14949,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -14878,6 +15217,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": false,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": false,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -15505,7 +15849,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -15770,6 +16144,7 @@
         "site.upload.status",
         "site.upload.revoke",
         "site.preview",
+        "site.preview.quick",
         "site.status",
         "site.deploy",
         "change.request",
@@ -15779,6 +16154,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": true,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": true,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
@@ -16422,7 +16802,37 @@
         },
         {
           "name": "site.preview",
-          "description": "Queue server-made verification and screenshots of this complete revision. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "description": "Full verification: queue server-made build, checks and screenshots of this complete revision; required before browser approval. Use site.preview.quick for unverified design/content iteration. Deduplicates identical snapshots. Human approval uses the browser link; never MCP.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "draftId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "expectedRevision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "draftId",
+              "expectedRevision"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.preview.quick",
+          "description": "Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -16687,6 +17097,7 @@
         "site.upload.status",
         "site.upload.revoke",
         "site.preview",
+        "site.preview.quick",
         "site.status",
         "site.deploy",
         "change.request",
@@ -16696,6 +17107,11 @@
       ],
       "websiteProduction": false,
       "payments": false,
+      "previews": {
+        "available": true,
+        "quick": "site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.",
+        "full": "site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment."
+      },
       "starters": {
         "available": true,
         "description": "Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site."
