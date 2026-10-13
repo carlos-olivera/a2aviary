@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Architecture overview",
-    "output": ".local/architecture/platform-refactor/overview.html",
+    "output": ".local/architecture/runtime-cleanup/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "0de2602176610b2de230bcd19bf294622bf9a49a",
+      "revision": "ebe60fd082a73f80634103736c959f3389ed7632",
       "provider": "github",
       "link_mode": "web"
     }
@@ -74,8 +74,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites/snapshots.ts",
-          "line": 19,
-          "end_line": 55
+          "line": 20,
+          "end_line": 56
         },
         {
           "path": "apps/platform/src/sites/worker.ts",
@@ -101,8 +101,8 @@
       "sources": [
         {
           "path": "docs/release-verification.md",
-          "line": 28,
-          "end_line": 35
+          "line": 11,
+          "end_line": 24
         },
         {
           "path": "apps/platform/src/sites/deployments.ts",

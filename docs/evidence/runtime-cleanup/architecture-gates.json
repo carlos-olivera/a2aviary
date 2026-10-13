@@ -1,0 +1,62 @@
+{
+  "overview": {
+    "ok": true,
+    "gates": {
+      "validate": "pass",
+      "deliver": "pass",
+      "check": "pass",
+      "browser-check": "pass"
+    },
+    "visualReview": "not-requested"
+  },
+  "client": {
+    "ok": true,
+    "gates": {
+      "validate": "pass",
+      "deliver": "pass",
+      "check": "pass",
+      "browser-check": "pass"
+    },
+    "visualReview": "not-requested"
+  },
+  "gate": {
+    "ok": true,
+    "gates": {
+      "validate": "pass",
+      "deliver": "pass",
+      "check": "pass",
+      "browser-check": "pass"
+    },
+    "visualReview": "not-requested"
+  },
+  "engine": {
+    "ok": true,
+    "gates": {
+      "validate": "pass",
+      "deliver": "pass",
+      "check": "pass",
+      "browser-check": "pass"
+    },
+    "visualReview": "not-requested"
+  },
+  "hosting": {
+    "ok": true,
+    "gates": {
+      "validate": "pass",
+      "deliver": "pass",
+      "check": "pass",
+      "browser-check": "pass"
+    },
+    "visualReview": "not-requested"
+  },
+  "ops": {
+    "ok": true,
+    "gates": {
+      "validate": "pass",
+      "deliver": "pass",
+      "check": "pass",
+      "browser-check": "pass"
+    },
+    "visualReview": "not-requested"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "macroStages": 5,
+  "technicalNodes": 44,
+  "automaticOtherDomainRequests": 0,
+  "checks": [
+    "HTML MIME and production CSP",
+    "initial overview only",
+    "all tabs/macros and 44 technical nodes",
+    "exclusive evidence and reset",
+    "keyboard, announcements and focus",
+    "boundary links and local highlighting",
+    "collapsed local setup",
+    "desktop/mobile",
+    "JavaScript-free access",
+    "immutable source links"
+  ]
+}

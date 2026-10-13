@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Governance & Ops",
-    "output": ".local/architecture/platform-refactor/ops.html",
+    "output": ".local/architecture/runtime-cleanup/ops.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "0de2602176610b2de230bcd19bf294622bf9a49a",
+      "revision": "ebe60fd082a73f80634103736c959f3389ed7632",
       "provider": "github",
       "link_mode": "web"
     }
@@ -45,7 +45,7 @@
         {
           "path": "services/src/operator.ts",
           "line": 15,
-          "end_line": 37
+          "end_line": 50
         }
       ],
       "pos": [
@@ -66,13 +66,13 @@
       "sources": [
         {
           "path": "services/src/operator.ts",
-          "line": 52,
-          "end_line": 56
+          "line": 65,
+          "end_line": 69
         },
         {
           "path": ".github/workflows/release.yml",
-          "line": 9,
-          "end_line": 13
+          "line": 10,
+          "end_line": 17
         }
       ],
       "pos": [
@@ -120,8 +120,8 @@
       "sources": [
         {
           "path": ".github/workflows/release.yml",
-          "line": 31,
-          "end_line": 35
+          "line": 149,
+          "end_line": 153
         },
         {
           "path": "AGENTS.md",
@@ -233,8 +233,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites/drafts.ts",
-          "line": 63,
-          "end_line": 84
+          "line": 64,
+          "end_line": 85
         },
         {
           "path": "apps/platform/src/admin/reset.ts",

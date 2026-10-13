@@ -32,8 +32,11 @@ HTTP 200 with `discovery-only` and seven migration names/hashes matching main;
 the [redacted body](production-health.json) contains no client data. This verifies
 readiness only. Main's published protection requires `checks` (Actions App 15368)
 and `a2aviary-policy` (Operator App 5185075). `platform`, `generator` and
-`platform-image` are not required checks. Railway `source.checkSuites=true`
-confirms Wait for CI enabled. No setting was changed.
+`platform-image` were not required in that initial public read. A later
+Operator-authenticated read at 09:00 UTC−04:00 independently confirms all five
+are now required; repository auto-merge remains disabled. This task changed no
+check protection. Railway `source.checkSuites=true` confirms Wait for CI enabled.
+No setting was changed.
 
 ## Scope and behavioral differences
 
@@ -105,7 +108,21 @@ Observed local passes so far: root workspace build/check; 52 site-core tests;
 regressions; services check/build/58 tests and infra build/nine tests; the
 current-fixture byte parity gate; a Linux platform image build; and real local
 PocketBase/Caddy CMS login/editing, anonymous restrictions, compression and CSP.
-Final architecture/browser/image verification is recorded separately below. Detailed local
+Final local results: 80 platform passes with two hosted skips; 82 generator
+passes; 52 site-core passes; two architecture scope regressions; services 58 and
+infra nine passes. Six diagrams passed validation/delivery/provenance/browser
+([gates](architecture-gates.json)). The integrated page passed all five stages,
+44 technical nodes, keyboard/focus, desktop/mobile and JavaScript-free access
+under production CSP with zero automatic external requests
+([browser evidence](architecture-browser.json)); desktop/mobile and the advised
+hosting route were visually inspected. The platform browser exercised the
+actual seven-page checker: 52 passing checks and 14 captures
+([report counts](local-browser.json)). Its prior hardcoded summary count was
+corrected to report the observed count. Fictional sessions do not prove Google
+authentication. The final Linux image builds, then generates as UID 1000 with
+network disabled and matches the catalog digest while rejecting policy 2.1.0.
+Current byte parity, website release check/build, real local CMS tests and
+393 documentation links/anchors pass. Detailed logs remain private. Detailed local
 logs, captures and container diagnostics stay ignored under `.local/` or temporary
 log paths; no production credentials are used in these tests.
 

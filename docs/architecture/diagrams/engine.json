@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Validation & Build Engine",
-    "output": ".local/architecture/platform-refactor/engine.html",
+    "output": ".local/architecture/runtime-cleanup/engine-references.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "0de2602176610b2de230bcd19bf294622bf9a49a",
+      "revision": "ebe60fd082a73f80634103736c959f3389ed7632",
       "provider": "github",
       "link_mode": "web"
     }
@@ -77,17 +77,17 @@
         {
           "path": "packages/generator/src/render.ts",
           "line": 58,
-          "end_line": 104
+          "end_line": 194
         },
         {
           "path": "packages/generator/scripts/library.mjs",
-          "line": 463,
-          "end_line": 472
+          "line": 24,
+          "end_line": 74
         },
         {
-          "path": "packages/site-core/src/behavior-loader.ts",
+          "path": "packages/site-core/src/collections.ts",
           "line": 1,
-          "end_line": 49
+          "end_line": 38
         }
       ],
       "pos": [
@@ -108,7 +108,7 @@
       "sources": [
         {
           "path": "packages/generator/src/verification.ts",
-          "line": 59,
+          "line": 61,
           "end_line": 69
         },
         {
@@ -140,8 +140,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites/artifacts.ts",
-          "line": 40,
-          "end_line": 63
+          "line": 42,
+          "end_line": 65
         },
         {
           "path": "packages/generator/src/storage.ts",
