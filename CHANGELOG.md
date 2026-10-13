@@ -1,6 +1,30 @@
 # Changelog
 
 
+## 2026-10-13 — Data-only website starters
+
+- Implement ADR 015 starters with one experimental `profile` 1.0.0 data package,
+  strict schema/compiler and frozen-version snapshots. English agent guidance
+  never renders as site copy; no palette, font or language defaults are seeded.
+- Add migration 008 for immutable website kind and nullable starter provenance.
+  Copy starter structure once in the site/draft transaction; expose gated
+  `starters.list` / `starter.get` and optional draft-create selection.
+- Separate nonblocking starter suggestions from catalog/plan/completeness
+  blockers. Require explicit presentation inputs for starter-created sites even
+  after replacing every seed block; preserve blank-draft legacy behavior.
+- Mark ADR 015 accepted on the basis of owner merge of PR #34 on 2026-10-12;
+  clarify subsequent prompt numbering without changing its decisions.
+- Locally verified three fictional MCP compositions, free composition, variant/
+  token changes, tester gating, immutable SQL provenance and repeat migration.
+  52 site-core, 84 generator and 86 platform tests pass (two platform tests opt-in
+  and skipped); both existing byte-parity gates, browser matrices, Docker build
+  and website checks/build pass. The full local verifier reports no axe violations,
+  Lighthouse accessibility/best practices 1.00 and 390/1280 px screenshots.
+- [Evidence and measured resources](docs/evidence/starters/README.md) distinguish
+  local verification from production. Before publication, main `cf3f987` CI and
+  Railway deployment succeeded; health returned 200, seven matching migrations
+  and discovery-only. No production changes, merge or deployment of this work.
+
 ## 2026-10-13 — Runtime cleanup and collection data
 
 - After owner-authorized read-only production inventory returned zero in all

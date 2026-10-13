@@ -12,6 +12,7 @@ COPY apps/platform/src ./apps/platform/src
 COPY apps/platform/scripts ./apps/platform/scripts
 COPY library ./library
 COPY collections ./collections
+COPY starters ./starters
 COPY plans ./plans
 COPY contracts/site ./contracts/site
 COPY LICENSE ./

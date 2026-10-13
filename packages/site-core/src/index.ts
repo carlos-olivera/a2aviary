@@ -11,3 +11,5 @@ export { behaviorLoader } from './behavior-loader.ts';
 export type { Link, Asset, Block, Section, Seo, Page, Tokens, Navigation, ShellContent, SiteSpec, ValidationError, ValidationResult, ChangeAccounting, ChangeContext, LibraryContext } from './types.ts';
 export { collections, collectionIds, collectionDefinitions, collectionDefinition, boundCollectionIds } from './collections.ts';
 export type { CollectionDefinition } from './collections.ts';
+export { listStarters, getStarter, starterSuggestions, explicitPresentationErrors } from './starters.ts';
+export type { Starter } from './starters.ts';

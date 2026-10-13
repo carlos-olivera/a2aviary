@@ -1,0 +1,219 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "status": {
+      "enum": [
+        "experimental",
+        "stable",
+        "deprecated"
+      ]
+    },
+    "kind": {
+      "const": "website"
+    },
+    "seed": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]{0,63}$"
+              },
+              "sections": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                    },
+                    "effects": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                      },
+                      "maxItems": 12,
+                      "uniqueItems": true
+                    },
+                    "blocks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                          },
+                          "component": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                          },
+                          "variant": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                          },
+                          "effects": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                            },
+                            "maxItems": 12,
+                            "uniqueItems": true
+                          },
+                          "props": {
+                            "type": "object",
+                            "maxProperties": 0
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "component",
+                          "variant",
+                          "props"
+                        ]
+                      },
+                      "maxItems": 40
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "blocks"
+                  ]
+                },
+                "maxItems": 40
+              }
+            },
+            "required": [
+              "id",
+              "sections"
+            ]
+          },
+          "maxItems": 20
+        },
+        "tokenRequirements": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "colors",
+              "fonts",
+              "spacing",
+              "radius",
+              "layout",
+              "motion"
+            ]
+          },
+          "maxItems": 6
+        }
+      },
+      "required": [
+        "pages"
+      ]
+    },
+    "inputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "pointers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^(?:/(?:[^~/]|~[01])*)+$",
+              "maxLength": 250
+            },
+            "maxItems": 30
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "pointers"
+        ]
+      },
+      "maxItems": 40
+    },
+    "designIntent": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 8
+    },
+    "suggestions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "component": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "variant": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "placement": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "component",
+          "variant",
+          "placement",
+          "rationale"
+        ]
+      },
+      "maxItems": 8
+    }
+  },
+  "required": [
+    "id",
+    "version",
+    "status",
+    "kind",
+    "seed",
+    "inputs",
+    "designIntent"
+  ],
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

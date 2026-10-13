@@ -27,7 +27,7 @@ export async function preview(
     const { d, site } = await this.draft(c, actor, id, true);
     this.revision(d, revision);
     this.currentPolicy(site);
-    const missing = blockers(d.content, { test: site.test_mode });
+    const missing = blockers(d.content, { test: site.test_mode }, Boolean(site.starter_id));
     if (missing.length) throw new SiteError('draft_incomplete', missing);
     const spec = { ...identity(), ...d.content } as SiteSpec,
       assets = new Map<string, Uint8Array>();

@@ -6,6 +6,7 @@ export async function runtimeFixture(sourceRoot, libraryArtifacts) {
   const root = await mkdtemp(join(tmpdir(), 'a2aviary-library-'));
   try {
     await cp(join(sourceRoot, 'collections'), join(root, 'collections'), {recursive:true});
+    await cp(join(sourceRoot, 'starters'), join(root, 'starters'), {recursive:true});
     await cp(join(sourceRoot, 'library'), join(root, 'library'), {
       recursive: true,
     });

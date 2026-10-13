@@ -24,6 +24,7 @@ import { cleanup } from './cleanup.ts';
 import { randomUUID, createHmac } from 'node:crypto';
 import type { PoolClient } from 'pg';
 import {
+  getStarter,
   contentErrors,
   catalog,
   canonicalJson,
@@ -109,6 +110,9 @@ export class Drafts {
       )
         throw new SiteError('deployment_busy');
     }
+    d.kind = site.kind;
+    d.starter_id = site.starter_id;
+    d.starter_version = site.starter_version;
     d.test_mode = site.test_mode;
     d.policy_version = site.policy_version;
     return { d, site };
@@ -177,7 +181,7 @@ export class Drafts {
       [prefix],
     );
   }
-  async create(actor: string, slug: string, requestId: string) {
+  async create(actor: string, slug: string, requestId: string, starter?: { id: string; version?: string }) {
     return this.sites.store.siteAction(
       actor,
       'site.draft.create',
@@ -185,6 +189,7 @@ export class Drafts {
         const r = await this.receipt(c, actor, requestId, {
           op: 'create',
           slug,
+          ...(starter ? { starter } : {}),
         });
         if (r.response) {
           const d = (
@@ -197,6 +202,8 @@ export class Drafts {
           await this.access(c, actor, d.site_id);
           return r.response;
         }
+        const selected = starter ? getStarter(starter.id, starter.version, p.testMode) : undefined;
+        if (starter && !selected) throw new SiteError('starter_unavailable');
         if (!/^[a-z][a-z0-9-]{0,63}$/.test(slug))
           throw new SiteError('slug_required');
         await c.query("SELECT pg_advisory_xact_lock(hashtext('draft-count'))");
@@ -230,7 +237,7 @@ export class Drafts {
         const siteId = randomUUID(),
           id = randomUUID();
         await c.query(
-          'INSERT INTO platform_site(id,owner_id,slug,plan_id,policy_version,test_mode,first_client_pilot) VALUES($1,$2,$3,$4,$5,$6,$7)',
+          'INSERT INTO platform_site(id,owner_id,slug,plan_id,policy_version,test_mode,first_client_pilot,starter_id,starter_version) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)',
           [
             siteId,
             actor,
@@ -239,15 +246,17 @@ export class Drafts {
             defaultPolicy.version.value,
             p.testMode,
             pilot,
+            selected?.id ?? null,
+            selected?.version ?? null,
           ],
         );
         const d = (
           await c.query(
             'INSERT INTO platform_site_draft(id,site_id,content) VALUES($1,$2,$3) RETURNING *',
-            [id, siteId, JSON.stringify({ pages: [], assets: [] })],
+            [id, siteId, JSON.stringify({ pages: selected ? structuredClone(selected.seed.pages) : [], assets: [] })],
           )
         ).rows[0];
-        const result = this.summary(d);
+        const result = this.summary({ ...d, kind: 'website', test_mode: p.testMode, starter_id: selected?.id, starter_version: selected?.version });
         await this.saveReceipt(c, actor, requestId, id, r.hash, result);
         await this.event(c, actor, siteId, 'site.draft.create', 'created');
         return result;
@@ -302,6 +311,9 @@ export class Drafts {
           : await this.edit(c, d, content);
       const result = this.summary({
         ...updated,
+        kind: site.kind,
+        starter_id: site.starter_id,
+        starter_version: site.starter_version,
         test_mode: site.test_mode,
         policy_version: site.policy_version,
       });

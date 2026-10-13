@@ -326,3 +326,9 @@ this option does not authorize provider operations or a hosted run.
 
 [Collections](../collections/README.md) compile through `library:generate` and
 `library:check` into inert site-core data. They are not executable library packages.
+
+## Starter data
+
+[Starters](../starters/README.md) compile alongside collections into inert site-core
+data. They select existing packages and copy structure once; they add no executable
+package type, renderer branch, alternate plan or permanent composition requirement.

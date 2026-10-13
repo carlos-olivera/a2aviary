@@ -2,6 +2,7 @@ import { Ajv } from 'ajv';
 import { generateContracts } from '@a2aviary/site-core';
 
 import {
+  explicitPresentationErrors,
   canonicalJson,
   defaultPolicy,
   validateSiteSpec,
@@ -237,15 +238,17 @@ export function validateDraft(
     );
   return errors.filter((e) => e.rule !== 'content.required').slice(0, 20);
 }
-export function blockers(content: DraftContent, context: LibraryContext = {}) {
+export function blockers(content: DraftContent, context: LibraryContext = {}, explicit = false) {
   const r = validateSiteSpec(
     { ...identity(), ...content },
     defaultPolicy,
     context,
   );
+  const required = explicit ? explicitPresentationErrors(content) : [];
   return r.ok
-    ? []
+    ? required
     : [
+        ...required,
         ...contentErrors(content, context.catalog ?? catalog),
         ...r.errors.filter((e) => e.rule !== 'content.required'),
       ]

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getStarter, listStarters } from '@a2aviary/site-core';
 import { SiteError, libraryDetail } from '@a2aviary/generator';
 import { ALL_ROLES } from '../identity/types.ts';
 
@@ -14,6 +15,22 @@ import {
 
 export const workflowTools = [
   defineTool({
+    name: 'starters.list', description: 'List data-only starting points visible to this principal. Experimental starters require tester classification.',
+    roles: ALL_ROLES, feature: 'siteWorkflow', readOnly: true, recordsSiteFailure: false, order: 5.1,
+    inputSchema: () => z.object({}).strict(),
+    handler: ({ principal }) => ({ starters: listStarters(principal.testMode) }),
+  }),
+  defineTool({
+    name: 'starter.get', description: 'Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.',
+    roles: ALL_ROLES, feature: 'siteWorkflow', readOnly: true, recordsSiteFailure: false, order: 5.2,
+    inputSchema: () => z.object({ id: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), version: z.string().max(64).optional() }).strict(),
+    handler: ({ principal }, a) => {
+      const starter = getStarter(a.id, a.version, principal.testMode);
+      if (!starter) throw new SiteError('starter_unavailable');
+      return starter;
+    },
+  }),
+  defineTool({
     name: 'library.get',
     description:
       'Read one curated package, compatibility, status and fictional example props. Does not accept code.',
@@ -28,7 +45,7 @@ export const workflowTools = [
   defineTool({
     name: 'site.draft.create',
     description:
-      'Create an incomplete server draft for an initial catalog site.',
+      'Create an incomplete server draft, optionally seeded once from a starter. Starter provenance cannot change; all presentation and content values must be supplied.',
     roles: ALL_ROLES,
     feature: 'siteWorkflow',
     readOnly: false,
@@ -36,10 +53,10 @@ export const workflowTools = [
     order: 6,
     inputSchema: () =>
       z
-        .object({ slug: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), requestId })
+        .object({ slug: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), requestId, starter: z.object({ id: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), version: z.string().max(64).optional() }).strict().optional() })
         .strict(),
     handler: ({ principal, sites }, a) =>
-      sites!.drafts.create(principal.id, a.slug, a.requestId),
+      sites!.drafts.create(principal.id, a.slug, a.requestId, a.starter),
   }),
   defineTool({
     name: 'site.draft.apply',

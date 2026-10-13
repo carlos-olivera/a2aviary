@@ -4,7 +4,7 @@
 
 Read README.md, docs/vision.md, and docs/decisions/README.md before proposing architecture changes. The AWS foundation has deployment evidence and Railway deployment is owner-reported. Decision 013 reached main on 2026-10-08; public health returned HTTP 503 at 16:46:22 -0400, leaving current site-workflow activation unverified. Read docs/release-verification.md for actual configured, deployed, verified, and blocked status; do not present proposals, examples, or simulated services as implemented features.
 
-Read [ADR 015](docs/decisions/015-application-types-and-categories.md) before any work on categories, starters or plans; it records the owner's four-axis direction and remains proposed until owner merge.
+Read [ADR 015](docs/decisions/015-application-types-and-categories.md) before any work on categories, starters or plans; it records the owner's four-axis direction, accepted by owner merge of PR #34 on 2026-10-12.
 
 ## Language
 

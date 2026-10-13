@@ -1,8 +1,8 @@
 # 015 — Application types, categories and starters
 
 - Date: 2026-10-12
-- Status: proposed
-- Basis: Carlos Olivera Terrazas's explicit owner decisions of 2026-10-12; this docs-only record remains proposed until the owner merges it
+- Status: accepted
+- Basis: owner merge of PR #34 on 2026-10-12
 
 ## Context
 
@@ -203,7 +203,11 @@ editing reuses the verified snapshot and human approval boundary. Existing
 package status, immutable approved artifacts and historical evidence must be
 preserved during the subsequent work.
 
-### Implementation sequence (prompts 3–7)
+### Implementation sequence (original prompts 3–7)
+
+The original sequence below is historical. The subsequent owner requests number
+starters as prompt 6, quick preview as prompt 7 and live edits/default retirement
+(policy 2.3.0) as prompt 8. This numbering clarification changes no decision.
 
 Each step is a separate, independently reviewable PR with relevant checks and
 observed evidence. This sequence records future work, not implementation or
@@ -222,7 +226,7 @@ deployment authorization from this docs-only delivery.
 - Starter names beyond `profile`.
 - Whether blank start remains available to clients once starters are stable.
 
-This PR changes documentation only: no source, migration, policy, contract,
-provider configuration or operational status changes. Owner merge is required
-before the ADR status becomes accepted; subsequent implementation and deployment
-remain separately reviewable and authorized.
+The original ADR PR changed documentation only: no source, migration, policy,
+contract, provider configuration or operational status changes. The owner accepted
+the ADR by merging PR #34 on 2026-10-12; subsequent
+implementation and deployment remain separately reviewable and authorized.

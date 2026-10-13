@@ -10,7 +10,9 @@ Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepte
 
 | Tool | Arguments | Behavior |
 | --- | --- | --- |
-| `site.draft.create` | `slug`, UUID `requestId` | Create incomplete owned draft/site |
+| `starters.list` | None | List visible data-only starter versions; experimental entries require a tester |
+| `starter.get` | `id`, optional `version` | Read structure and English agent guidance |
+| `site.draft.create` | `slug`, UUID `requestId`, optional `starter: {id, version?}` | Create incomplete owned draft/site, optionally copying a starter once |
 | `site.draft.apply` | `draftId`, `expectedRevision`, UUID `requestId`, `operations` | Atomic validated batch; return new revision |
 | `site.draft.get` | `draftId`, optional `detail`, `after` | Compact summary; explicit `full`, page ID, or paginated `assets` |
 | `site.draft.discard` | `draftId`, `expectedRevision` | Supersede snapshots, revoke sessions, schedule cleanup |
@@ -22,6 +24,30 @@ Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepte
 | `site.deploy` | `siteId`, `specId`, `cmsPassword`, `confirmation`, optional initial `domain` | Deploy approved stored bytes |
 
 Operations: `settings` supplies language/tokens/navigation/CMS; `upsert-page`/`remove-page`; `upsert-section`/`remove-section`; `upsert-block`/`remove-block`; `asset-metadata` sets alt text on server assets; `remove-asset` removes metadata. IDs remain stable; insertion uses zero-based `index`; supplying it on an existing ID also reorders that entity. Upserts replace the selected entity, so retain desired fields/children in its payload. A parent must exist before inserting its child. Missing required content and forward references are allowed during drafting and reported as preview blockers. Supplied values and aggregate budgets are validated immediately. A failed batch writes nothing. At most 32 operations and 64 KiB per batch, 256 KiB complete JSON, 20 errors, 4 KiB default summaries. Errors identify operation index/path/rule/limit/actual and correction guidance. Request IDs are actor-scoped and bind the full request; conflicting reuse fails. Revisions prevent overwrite and increment only for actual content changes, including newly attached normalized assets.
+
+## Starters and free composition
+
+[Starters](../starters/README.md) implement ADR 015's copy-on-create semantics.
+Migration 008 adds immutable website kind and nullable starter ID/version; the
+existing checksum-pinned transactional migrator applies it once. Owner review
+and merge govern rollout; no production migration is applied during local work.
+The experimental `profile` 1.0.0 seed is tester-only. An omitted version chooses
+the latest visible version and stores that exact version in the same transaction
+as the site and draft. Retry receipts bind the original selection.
+
+Summaries separate `blockers` (shared catalog/plan/completeness requirements) from
+nonblocking `suggestions`. `missing` remains a bounded compatibility alias for
+`blockers`; `requiredInputs` lists all missing explicit presentation JSON Pointers.
+Missing language is `null` for a starter draft. Every starter draft requires
+language, all shell labels, colors, heading/body/mono fonts, spacing, radius,
+layout and motion, even after replacing its entire structure. No English shell
+or font/token defaults are supplied. Blank-draft legacy behavior is unchanged.
+
+Agents may remove all copied blocks, change variants/tokens and add unrelated
+components/pages within the shared catalog and plan. Suggestions and design
+intent never render as site copy or become blockers. Provenance is immutable;
+using a different starter, including adding one to a blank site, requires a new
+site. Quick preview, live edits and policy 2.3.0 remain separate work.
 
 ## Shared upload session
 
@@ -56,7 +82,7 @@ Cleanup tracks bucket prefix write intents before external writes, so rolled-bac
 
 ## Local checks and the one hosted fixture
 
-Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. `npm run test:fixture:cms --prefix apps/platform` exercises the hosted `light-es` input through MCP draft preparation and real local PocketBase/Caddy: a declared/bound announcements write succeeds, while a composition with no collections must reject an undeclared write with HTTP 404 and record `no collection to edit`. Hosted presentation variants add one fictional announcements block without changing the static presentation matrix. Platform tests use unique loopback Postgres schemas; migration inventory must match all seven filenames and hashes and health fails closed on alteration. Migrations 001–006 are unchanged. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](history/release-verification-2026-10.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); all seven migrations including 007 now match the observed production readiness inventory after PR #38 on 2026-10-13. Never rewrite inventory to bypass a mismatch.
+Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. `npm run test:fixture:cms --prefix apps/platform` exercises the hosted `light-es` input through MCP draft preparation and real local PocketBase/Caddy: a declared/bound announcements write succeeds, while a composition with no collections must reject an undeclared write with HTTP 404 and record `no collection to edit`. Hosted presentation variants add one fictional announcements block without changing the static presentation matrix. Platform tests use unique loopback Postgres schemas; migration inventory must match all eight filenames and hashes and health fails closed on alteration. Migrations 001–006 are unchanged. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](history/release-verification-2026-10.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); all seven migrations including 007 now match the observed production readiness inventory after PR #38 on 2026-10-13. Never rewrite inventory to bypass a mismatch.
 
 The explicitly authorized hosted runner is `node apps/platform/scripts/run-hosted-fixture.mjs`. It reads only the approved credential variable names from production Railway configuration into memory, filters them into the test child environment, overrides fixture flags, creates a disposable local database, and rejects a second attempt through a local marker. Never use production DATABASE_URL. SDK/action retries are disabled; readiness polling is allowed. The flow stops at its first failed stage and performs teardown once. Its private evidence contains only fictional IDs, safe usage/stage/cleanup observations and variable **names**, never values. Fictional verified browser sessions do not establish real Google authentication. No production variables/services/deployments are changed.
 
