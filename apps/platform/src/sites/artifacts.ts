@@ -1,6 +1,5 @@
+import { sha256, canonicalJson } from '@a2aviary/site-core';
 import {
-  sha256,
-  canonicalJson,
   assertVerified,
   SiteError,
   type VerifiedBuild,

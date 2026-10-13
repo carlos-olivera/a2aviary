@@ -3,7 +3,8 @@ import {
   contentErrors,
   catalog,
   canonicalJson,
-} from '@a2aviary/generator';
+} from '@a2aviary/site-core';
+
 import { blockers, identity } from './draft-content.ts';
 import type { Drafts } from './drafts.ts';
 export function summary(this: Drafts, d: any) {

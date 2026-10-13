@@ -1,11 +1,7 @@
 import QRCode from 'qrcode';
-import {
-  safePath,
-  SiteError,
-  sha256,
-  canonicalJson,
-  type VerifiedBuild,
-} from '@a2aviary/generator';
+import { sha256, canonicalJson } from '@a2aviary/site-core';
+import { safePath, SiteError, type VerifiedBuild } from '@a2aviary/generator';
+
 import type { Drafts } from './drafts.ts';
 import type { Auth } from '../identity/auth.ts';
 import { escapeHtml as e } from '../pages.ts';

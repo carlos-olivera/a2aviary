@@ -1,13 +1,15 @@
 import { randomUUID, randomBytes, timingSafeEqual } from 'node:crypto';
 import type { PoolClient } from 'pg';
 import {
-  generateSite,
   canonicalJson,
   sha256,
   defaultPolicy,
+  type SiteSpec,
+} from '@a2aviary/site-core';
+import {
+  generateSite,
   GENERATOR_VERSION,
   SiteError,
-  type SiteSpec,
 } from '@a2aviary/generator';
 
 import { blockers, identity } from './draft-content.ts';

@@ -1,10 +1,5 @@
-import {
-  sha256,
-  canonicalJson,
-  defaultPolicy,
-  SiteError,
-  type VerifiedBuild,
-} from '@a2aviary/generator';
+import { sha256, canonicalJson, defaultPolicy } from '@a2aviary/site-core';
+import { SiteError, type VerifiedBuild } from '@a2aviary/generator';
 
 import type { Sites } from './deployments.ts';
 

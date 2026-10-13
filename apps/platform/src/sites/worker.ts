@@ -1,13 +1,16 @@
 import {
-  generateSite,
   validateSiteSpec,
   policyForVersion,
   sha256,
   defaultPolicy,
+} from '@a2aviary/site-core';
+import {
+  generateSite,
   assertVerified,
   SiteError,
   VerificationFailure,
 } from '@a2aviary/generator';
+
 import { AccessError, requireRole } from '../identity/store.ts';
 
 import type { Sites } from './deployments.ts';

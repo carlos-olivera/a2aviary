@@ -15,14 +15,15 @@ import {
   createDecipheriv,
 } from 'node:crypto';
 import type { PoolClient } from 'pg';
+import { type SiteSpec } from '@a2aviary/site-core';
 import {
   SiteError,
-  type SiteSpec,
   type ObjectStore,
   type BuildVerifier,
   type SiteDeployer,
   type VerifiedBuild,
 } from '@a2aviary/generator';
+
 import {
   Store,
   requireConfirmation,

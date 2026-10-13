@@ -29,8 +29,9 @@ import {
   canonicalJson,
   sha256,
   defaultPolicy,
-  SiteError,
-} from '@a2aviary/generator';
+} from '@a2aviary/site-core';
+import { SiteError } from '@a2aviary/generator';
+
 import type { Sites } from './deployments.ts';
 import { siteAccess } from '../admin/site-administration.ts';
 import {
