@@ -2,7 +2,20 @@
 
 Production status was independently observed read-only on 2026-10-12 at 21:38:15 UTC−04:00: public health returned HTTP 200, discovery-only and all seven migration names/hashes matching main `27ebab35`; Railway reports its exact active deployment as successful. See [CI activation and PR #37 verification](evidence/ci-activation/README.md) for the redacted body, command timings and observed/not-observed boundaries. No production change or hosted fixture was performed. Earlier failed startups and local recovery records remain dated historical evidence. **Configured** means source/settings exist; **deployed** means the provider accepted resources; **verified** means the stated behavior was observed; **blocked** means a release gate remains unmet. Owner- and agent-reported observations remain distinct from independent proof.
 
-## CI publication retry — 2026-10-13
+## Authorized broker deployment — 2026-10-13
+
+The owner accepted workflows write on the installation and authorized the
+separate `development-workflows` profile and targeted DevelopmentBroker code
+deployment. Deployment succeeded; both live profiles were verified and their
+tokens revoked. Default development retains no workflow permission. Services
+58 tests and infra nine tests pass; main-only website OIDC trust was confirmed
+from source and local synthesis without changing it. This supersedes the earlier
+blockers below. See [current evidence](evidence/ci-activation/README.md#authorized-broker-deployment-and-ci-retry--2026-10-13).
+The CI branch is prepared for Operator publication and owner review; main CI
+activation, required checks and Railway gating remain pending. PR #37 and
+platform production were untouched.
+
+## CI publication retry — 2026-10-13 (historical refusal)
 
 The App registration now has workflows write, but its installation does not yet
 include the permission. The complete branch push through the existing development
