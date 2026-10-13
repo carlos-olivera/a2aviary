@@ -4,6 +4,7 @@ import {
   canonicalJson,
   sha256,
   defaultPolicy,
+  SUPPORTED_POLICY_VERSIONS,
   type SiteSpec,
 } from '@a2aviary/site-core';
 import {
@@ -179,6 +180,8 @@ export async function approvalAccess(
       specId,
     ])
   ).rows[0];
+  if (!SUPPORTED_POLICY_VERSIONS.includes(row.spec.policyVersion))
+    throw new SiteError('policy_version_unsupported');
   return row;
 }
 
@@ -300,5 +303,7 @@ export async function previewRow(this: Drafts, token: string) {
     new Date(row.expires_at).getTime() <= Date.now()
   )
     throw new SiteError('preview_access_expired');
+  if (!SUPPORTED_POLICY_VERSIONS.includes(row.spec.policyVersion))
+    throw new SiteError('policy_version_unsupported');
   return row;
 }

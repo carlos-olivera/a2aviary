@@ -10,7 +10,7 @@ in [release verification](release-verification.md).
 
 ## Tool definitions
 
-[The registry](../apps/platform/src/tool-registry.ts) collects one definition
+[The registry](../apps/platform/src/tools/tool-registry.ts) collects one definition
 per tool from the discovery, workflow and administration definition modules.
 Each definition contains its name, description, schema factory, roles, feature,
 read-only annotation, site-failure recording flag and typed handler.
@@ -28,24 +28,21 @@ tools with their existing superadmin restriction. The HTTP preflight still
 returns `forbidden` for a known role-restricted tool even when its feature is
 unavailable, before schema validation or registration lookup.
 
-Two compatibility details are explicit metadata:
-
-- Registration and capability arrays previously had different orders. Separate
-  order fields preserve both, including the order of `logs.query` schema values.
-- Discovery-only capabilities historically advertised `library.get` although
-  it was absent from `tools/list`. Its `advertiseWithoutFeature` flag preserves
-  that discrepancy. It does not register or authorize a disabled handler.
-
-The hand-maintained `TOOL_ROLES` map is removed. A derived compatibility export
-with that name remains for the unchanged existing tests and source consumers;
-production permission and visibility checks read definitions directly.
+The 2026-10-13 cleanup removes the PR #37 compatibility layer. A single `order`
+per definition preserves `tools/list` order and governs capabilities/consent.
+`capabilities.get` lists exactly the registered tools for that principal;
+`library.get` is no longer advertised in discovery-only mode. The `logs.query`
+tool-filter enum follows the same registry order without changing accepted values.
+`TOOL_ROLES`/`legacyToolRoles` and top-level re-export shims are removed; consumers
+import the domain modules. The deliberate snapshot changes are documented in
+[cleanup evidence](evidence/runtime-cleanup/README.md#scope-and-behavioral-differences).
 `change.request` retains its passthrough schema, annotations, wrapper audit and
 failure recording, and throws the same `change_requests_unavailable` SiteError
 in its handler. The dead `Sites.change()` method is removed.
 
 To extend tools in a later authorized delivery, add one `defineTool` declaration
 in its feature module, give it the required roles and behavior metadata, and
-assign its two order positions. The registry collector and wrapper need no new
+assign its single order position. The registry collector and wrapper need no new
 name lists or feature branches. Update behavioral snapshots deliberately when
 observable behavior is authorized to change.
 
@@ -64,12 +61,12 @@ observable behavior is authorized to change.
 `Drafts`, `Sites`, `Store` and `SiteAdministration` remain composition facades:
 method delegates invoke domain functions with the same receiver and existing
 method signatures. Shared context helpers are marked `@internal`; they are not
-new HTTP/MCP capabilities. Old top-level module paths are two-line re-exports,
-so existing tests and imports remain valid. Worker and artifact operations are
+new HTTP/MCP capabilities. Source and tests import their domain modules directly;
+old top-level compatibility entry points are deleted. Worker and artifact operations are
 separate because their lifecycle and storage integrity checks differ from
 request admission. Browser serving and draft content stay separate modules.
 
-## Verification and sizes
+## Historical PR #37 verification and sizes
 
 Baseline: `1a09f565a2c6b81b2c0334daf46a1965349fa1f8`. The baseline snapshots were
 written, run and committed in `e352ecc` (rebased as `3320272`) **before any source refactoring**.

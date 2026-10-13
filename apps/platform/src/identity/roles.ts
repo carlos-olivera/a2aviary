@@ -1,4 +1,4 @@
-import { toolIndex } from '../tool-registry.ts';
+import { toolIndex } from '../tools/tool-registry.ts';
 import { AccessError, type Principal } from './types.ts';
 export * from './types.ts';
 export function isAdminTool(tool: string) {

@@ -1,4 +1,4 @@
-import { catalog } from '@a2aviary/site-core';
+import { catalog, boundCollectionIds, collectionDefinitions, SUPPORTED_POLICY_VERSIONS } from '@a2aviary/site-core';
 import {
   selectedPackages,
   fontPackages,
@@ -68,6 +68,8 @@ export async function generateSite(
     };
   } = {},
 ): Promise<SourceBundle> {
+  if (!SUPPORTED_POLICY_VERSIONS.includes((input as SiteSpec)?.policyVersion))
+    throw new SiteError('policy_version_unsupported');
   const activeCatalog = options.fixtureLibrary?.catalog ?? catalog;
   const activePolicy = options.fixtureLibrary?.policy ?? defaultPolicy;
   const context: LibraryContext = {
@@ -195,19 +197,7 @@ export async function generateSite(
 }
 
 export function boundCollections(spec: SiteSpec): string[] {
-  return [
-    ...new Set(
-      spec.pages.flatMap((p) =>
-        p.sections.flatMap((s) =>
-          s.blocks
-            .filter((b) =>
-              ['catalog', 'blog', 'announcements'].includes(b.component),
-            )
-            .map((b) => String(b.props.collection)),
-        ),
-      ),
-    ),
-  ].sort();
+  return boundCollectionIds(spec).sort();
 }
 export function renderPage(
   spec: SiteSpec,
@@ -438,4 +428,10 @@ export function css(
     disable
   );
 }
-const cmsScript = `const cmsBase=new URL('./',document.currentScript.src);for(const target of document.querySelectorAll('[data-collection]')){const collection=target.dataset.collection;fetch(new URL('api/cms/api/collections/'+encodeURIComponent(collection)+'/records?filter=published%3Dtrue&sort=-created&perPage=${defaultPolicy.firstVersion.items.grid.value}',cmsBase),{credentials:'omit'}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{if(!data.items?.length)return;const list=document.createElement('ul');for(const item of data.items){const li=document.createElement('li'),heading=document.createElement('h3'),copy=document.createElement('p');heading.textContent=item.title;copy.textContent=item.body;li.append(heading,copy);list.append(li)}target.replaceChildren(list)}).catch(()=>{})}\n`;
+function collectionScript(): string {
+  const display=collectionDefinitions[0].publicDisplay;
+  const common=collectionDefinitions.every(d => JSON.stringify(d.publicDisplay) === JSON.stringify(display));
+  const fields=Object.fromEntries(collectionDefinitions.map(d => [d.id,d.publicDisplay]));
+  return `${common ? '' : 'const fields='+JSON.stringify(fields)+';'}const cmsBase=new URL('./',document.currentScript.src);for(const target of document.querySelectorAll('[data-collection]')){const collection=target.dataset.collection;fetch(new URL('api/cms/api/collections/'+encodeURIComponent(collection)+'/records?filter=published%3Dtrue&sort=-created&perPage=${defaultPolicy.firstVersion.items.grid.value}',cmsBase),{credentials:'omit'}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{if(!data.items?.length)return;const list=document.createElement('ul');for(const item of data.items){const li=document.createElement('li'),heading=document.createElement('h3'),copy=document.createElement('p');heading.textContent=${common ? 'item.'+display.headingField : 'item[fields[collection].headingField]'};copy.textContent=${common ? 'item.'+display.bodyField : 'item[fields[collection].bodyField]'};li.append(heading,copy);list.append(li)}target.replaceChildren(list)}).catch(()=>{})}\n`;
+}
+const cmsScript = collectionScript();

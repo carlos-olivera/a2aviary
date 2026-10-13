@@ -28,17 +28,7 @@ export function summary(this: Drafts, d: any) {
         ),
       ),
     ],
-    missing:
-      d.policy_version && d.policy_version !== defaultPolicy.version.value
-        ? [
-            {
-              path: '/policyVersion',
-              rule: 'policy.retired',
-              limit: defaultPolicy.version.value,
-              suggestion: 'Create a new 2.2 draft to edit or preview.',
-            },
-          ]
-        : blockers(d.content, { test: d.test_mode }),
+    missing: blockers(d.content, { test: d.test_mode }),
     missingLabels: Object.entries(
       contentErrors(d.content, catalog).reduce(
         (groups: Record<string, string[]>, e) => {

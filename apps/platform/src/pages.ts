@@ -1,9 +1,9 @@
 import { verifyOAuthQueryParams } from '@better-auth/oauth-provider';
-import type { Auth } from './auth.ts';
+import type { Auth } from './identity/auth.ts';
 import type { Config } from './config.ts';
 import type { Plans } from './plans.ts';
 import type { Store } from './identity/store.ts';
-import { availableTools } from './tool-registry.ts';
+import { availableTools } from './tools/tool-registry.ts';
 
 export const escapeHtml = (value: unknown) =>
   String(value).replace(
@@ -132,7 +132,6 @@ export async function page(
   const allowedTools = availableTools(
     principal.role,
     { sites, administration: true },
-    'capabilities',
   ).map((t) => t.name);
   return html(
     'Authorize connector',

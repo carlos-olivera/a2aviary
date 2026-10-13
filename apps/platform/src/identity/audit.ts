@@ -38,6 +38,7 @@ const results = new Set([
   'owned_site_required',
   'owned_spec_required',
   'invalid_spec',
+  'policy_version_unsupported',
   'invalid_assets',
   'invalid_change',
   'candidate_digest_mismatch',

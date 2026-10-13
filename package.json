@@ -20,6 +20,6 @@
     "library:check": "npm run library:check -w @a2aviary/generator",
     "library:check:static": "npm run library:check:static -w @a2aviary/generator",
     "test": "npm test -w @a2aviary/site-core && npm test -w @a2aviary/generator && npm test -w a2aviary-platform",
-    "test:parity": "node scripts/check-workspace-parity.mjs"
+    "test:parity": "node scripts/check-workspace-parity.mjs && node scripts/check-runtime-cleanup-parity.mjs"
   }
 }

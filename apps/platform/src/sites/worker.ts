@@ -1,6 +1,6 @@
 import {
   validateSiteSpec,
-  policyForVersion,
+  SUPPORTED_POLICY_VERSIONS,
   sha256,
   defaultPolicy,
 } from '@a2aviary/site-core';
@@ -87,9 +87,11 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
       return snapshot;
     });
     hash = row.spec_sha256;
+    if (!SUPPORTED_POLICY_VERSIONS.includes(row.spec.policyVersion))
+      throw new SiteError('policy_version_unsupported');
     const validated = validateSiteSpec(
       row.spec,
-      policyForVersion(row.spec.policyVersion),
+      defaultPolicy,
       { test: site.test_mode },
     );
     if (!validated.ok) throw new SiteError('invalid_spec', validated.errors);
@@ -100,8 +102,6 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
         await this.objects.get('specs/' + row.id + '/assets/' + a.id),
       );
     if (job.kind === 'build') {
-      if (row.spec.policyVersion !== defaultPolicy.version.value)
-        throw new SiteError('draft_policy_retired');
       if (new Date(row.expires_at).getTime() <= Date.now())
         throw new SiteError('snapshot_expired');
       if (row.state === 'superseded')

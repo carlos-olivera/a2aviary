@@ -10,7 +10,7 @@ import type { Plans } from './plans.ts';
 import type { Sites } from './sites/deployments.ts';
 import type { SiteAdministration } from './admin/site-administration.ts';
 import { SiteError } from '@a2aviary/generator';
-import { availableTools } from './tool-registry.ts';
+import { availableTools } from './tools/tool-registry.ts';
 
 export function createServer(
   principal: Principal,

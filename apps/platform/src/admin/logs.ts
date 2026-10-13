@@ -2,7 +2,7 @@ import { redactedAudit } from '../identity/audit.ts';
 
 import type { Store } from '../identity/store.ts';
 import { AccessError, requireConfirmation } from '../identity/roles.ts';
-import { toolIndex } from '../tool-registry.ts';
+import { toolIndex } from '../tools/tool-registry.ts';
 
 export async function adminResult(
   this: Store,

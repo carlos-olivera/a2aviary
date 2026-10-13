@@ -16,7 +16,7 @@ The current server-draft workflow uses [policy 2.2.0](../plans/versions/web-simp
 
 The example contains fictional copy and a generated WebP pixel. It contains no approval or preview declaration. Runtime derives asset IDs/hash/bytes/dimensions/format from normalized upload output; clients can set alt text. The complete canonical spec is hashed using sorted-key JSON with array order preserved. Approval is recorded separately through verified browser membership and a single-use CSRF token.
 
-Frozen [1.0.1 artifacts](../contracts/site/1.0.1/manifest.md), [1.0.0 artifacts](../contracts/site/v1/manifest.md) and policy snapshots remain historical references. They are not advertised or accepted as intake contracts, and the old submission route is removed. Do not regenerate frozen versions to apply current semantics. A same-version behavioral change must fail the immutable snapshot check; reviewed changes bump semver.
+Only 2.2.0 is supported by runtime. The 1.x, 2.0.0 and 2.1.0 policies/contracts were removed after a zero-use production inventory. Historical artifacts remain available at [pre-cleanup commit `27f642a`](https://github.com/carlos-olivera/a2aviary/tree/27f642acf462bb34afc7428cc5ca04852f205f96/contracts/site). The current 2.2.0 frozen snapshot still rejects same-version changes; reviewed changes bump semver.
 
 ## Catalog boundaries
 
@@ -30,4 +30,4 @@ The historical monthly-change limits remain in policy/accounting records for con
 
 Current-head owner approval is required for policy changes. Prepare contracts/decisions/check evidence in Git, publish through the a2aviary Operator App only, and stop at the PR for Carlos's review. No manifest, build or PR establishes production activation. Migrations 001–006 remain unchanged; production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported). Check relevant package behavior, deterministic generated artifacts, fictional-data boundaries and documentation links. Preserve Apache 2.0 and dependency licenses.
 
-Historical 2.0.0 and 2.1.0 drafts are read/discard only; stored snapshots retain frozen validation and exact-byte deployment. See the [library runtime amendment](sites.md#library-runtime-contract-22).
+Historical drafts and snapshots are unsupported, including read/discard, approval and deployment; runtime reports `policy_version_unsupported`. See the [library runtime amendment](sites.md#library-runtime-contract-22).

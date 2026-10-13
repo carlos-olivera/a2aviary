@@ -1,0 +1,198 @@
+{
+  "baselineCommit": "27f642acf462bb34afc7428cc5ca04852f205f96",
+  "deletedFiles": [
+    {
+      "path": "apps/platform/src/audit.ts",
+      "lines": 2
+    },
+    {
+      "path": "apps/platform/src/auth.ts",
+      "lines": 2
+    },
+    {
+      "path": "apps/platform/src/draft-content.ts",
+      "lines": 2
+    },
+    {
+      "path": "apps/platform/src/drafts.ts",
+      "lines": 2
+    },
+    {
+      "path": "apps/platform/src/site-administration.ts",
+      "lines": 2
+    },
+    {
+      "path": "apps/platform/src/site-pages.ts",
+      "lines": 2
+    },
+    {
+      "path": "apps/platform/src/sites.ts",
+      "lines": 2
+    },
+    {
+      "path": "apps/platform/src/store.ts",
+      "lines": 2
+    },
+    {
+      "path": "contracts/site/1.0.1/change-request.schema.json",
+      "lines": 1514
+    },
+    {
+      "path": "contracts/site/1.0.1/examples/change-request.json",
+      "lines": 34
+    },
+    {
+      "path": "contracts/site/1.0.1/examples/fictional-pixel.png",
+      "lines": 2
+    },
+    {
+      "path": "contracts/site/1.0.1/examples/site-spec.json",
+      "lines": 461
+    },
+    {
+      "path": "contracts/site/1.0.1/manifest.json",
+      "lines": 1113
+    },
+    {
+      "path": "contracts/site/1.0.1/manifest.md",
+      "lines": 622
+    },
+    {
+      "path": "contracts/site/1.0.1/site-spec.schema.json",
+      "lines": 1538
+    },
+    {
+      "path": "contracts/site/2.0.0/change-request.schema.json",
+      "lines": 1425
+    },
+    {
+      "path": "contracts/site/2.0.0/examples/change-request.json",
+      "lines": 4
+    },
+    {
+      "path": "contracts/site/2.0.0/examples/fictional-pixel.webp",
+      "lines": 0
+    },
+    {
+      "path": "contracts/site/2.0.0/examples/site-spec.json",
+      "lines": 456
+    },
+    {
+      "path": "contracts/site/2.0.0/manifest.json",
+      "lines": 1073
+    },
+    {
+      "path": "contracts/site/2.0.0/manifest.md",
+      "lines": 581
+    },
+    {
+      "path": "contracts/site/2.0.0/site-spec.schema.json",
+      "lines": 1485
+    },
+    {
+      "path": "contracts/site/2.1.0/change-request.schema.json",
+      "lines": 1462
+    },
+    {
+      "path": "contracts/site/2.1.0/examples/change-request.json",
+      "lines": 4
+    },
+    {
+      "path": "contracts/site/2.1.0/examples/fictional-pixel.webp",
+      "lines": 0
+    },
+    {
+      "path": "contracts/site/2.1.0/examples/site-spec.json",
+      "lines": 456
+    },
+    {
+      "path": "contracts/site/2.1.0/manifest.json",
+      "lines": 1164
+    },
+    {
+      "path": "contracts/site/2.1.0/manifest.md",
+      "lines": 600
+    },
+    {
+      "path": "contracts/site/2.1.0/site-spec.schema.json",
+      "lines": 1526
+    },
+    {
+      "path": "contracts/site/v1/change-request.schema.json",
+      "lines": 1514
+    },
+    {
+      "path": "contracts/site/v1/examples/change-request.json",
+      "lines": 34
+    },
+    {
+      "path": "contracts/site/v1/examples/fictional-pixel.png",
+      "lines": 2
+    },
+    {
+      "path": "contracts/site/v1/examples/site-spec.json",
+      "lines": 461
+    },
+    {
+      "path": "contracts/site/v1/manifest.json",
+      "lines": 1113
+    },
+    {
+      "path": "contracts/site/v1/manifest.md",
+      "lines": 622
+    },
+    {
+      "path": "contracts/site/v1/site-spec.schema.json",
+      "lines": 1538
+    },
+    {
+      "path": "plans/versions/web-simple/1.0.0.policy.json",
+      "lines": 609
+    },
+    {
+      "path": "plans/versions/web-simple/1.0.1.policy.json",
+      "lines": 609
+    },
+    {
+      "path": "plans/versions/web-simple/2.0.0.policy.json",
+      "lines": 607
+    },
+    {
+      "path": "plans/versions/web-simple/2.1.0.policy.json",
+      "lines": 698
+    }
+  ],
+  "deletedFileLines": 23343,
+  "movedFiles": [
+    {
+      "path": "apps/platform/src/tool-definition.ts",
+      "lines": 43,
+      "destination": "apps/platform/src/tools/tool-definition.ts"
+    },
+    {
+      "path": "apps/platform/src/tool-definitions-administration.ts",
+      "lines": 89,
+      "destination": "apps/platform/src/tools/tool-definitions-administration.ts"
+    },
+    {
+      "path": "apps/platform/src/tool-definitions-discovery.ts",
+      "lines": 343,
+      "destination": "apps/platform/src/tools/tool-definitions-discovery.ts"
+    },
+    {
+      "path": "apps/platform/src/tool-definitions-schemas.ts",
+      "lines": 97,
+      "destination": "apps/platform/src/tools/tool-definitions-schemas.ts"
+    },
+    {
+      "path": "apps/platform/src/tool-definitions-workflow.ts",
+      "lines": 283,
+      "destination": "apps/platform/src/tools/tool-definitions-workflow.ts"
+    },
+    {
+      "path": "apps/platform/src/tool-registry.ts",
+      "lines": 39,
+      "destination": "apps/platform/src/tools/tool-registry.ts"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import { createMcpHandler } from '@modelcontextprotocol/server';
 import { SiteError } from '@a2aviary/generator';
 import { createServer } from '../src/tools.ts';
 import { loadPlans } from '../src/plans.ts';
-import { requireRole } from '../src/store.ts';
+import { requireRole } from '../src/identity/store.ts';
 
 function rpc(handler, name, args = {}) {
   return handler

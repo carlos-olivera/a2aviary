@@ -174,18 +174,7 @@ test('effect targets decorate actual list items and action links only when selec
   assert(!html.includes('data-fx='));
   assert(!html.includes('class="grid-item"'));
 });
-test('historical policies stay frozen and English legacy generated site bytes remain exact', async () => {
-  for (const version of ['2.0.0', '2.1.0']) {
-    const old = JSON.parse(
-      await readFile(
-        new URL(
-          '../../../contracts/site/' + version + '/examples/site-spec.json',
-          import.meta.url,
-        ),
-      ),
-    );
-    assert(validateSiteSpec(old, policyForVersion(version)).ok);
-  }
+test('current English generated resources retain the original boxed bytes', async () => {
   const golden = JSON.parse(
     await readFile(new URL('./fixtures/boxed-2.1.json', import.meta.url)),
   );

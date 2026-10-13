@@ -4,14 +4,14 @@ Status (2026-10-08): decision 013 reached main at 15:49 -0400 in `b9bd1f8` and
 `6ff79db`. The single public health GET at 16:46:22 -0400 returned HTTP 503; the
 serving revision, migration inventory and workflow activation are unverified.
 Earlier catalog activation on `89b92fe` is agent-reported historical evidence. See the
-[current status](release-verification.md#current-status--2026-10-08).
+[current status](release-verification.md#current-status).
 Earlier record: Phase 2 source verified locally; Carlos reported Railway deployment on
 2026-10-06. Public health, OAuth discovery and login responses were observed.
 Chrome reproduced a native login form failure (`Origin: null`, HTTP 403); the
 repair was merged in PR #17. Following the corrected deployment, the live login
 response returned HTTP 200 with `Referrer-Policy: strict-origin`, and Carlos
 reported a successful retry. Authenticated ChatGPT/Claude admin tool calls have
-not been independently recorded; see [deployment evidence](release-verification.md#platform-origin-repair--2026-10-06-owner-reported-retry). The current initial-site workflow uses server drafts, normalized uploads, screenshot verification and browser approval behind both `SITE_WORKFLOW_ENABLED` and default-false `SITE_DRAFTS_ENABLED`. See [site operations](sites.md) for the new variables, ownership/confirmation gates, sandbox verification, DNS status, and separate fixture deployment. No payments are enabled; verified browser membership and a single-use CSRF token authorize immutable snapshot approval. The AWS signed-email v1 workers remain unchanged. Phase 4 adds [testers and chat-only superadmin](testers-and-admin.md), with separate staging-only sites and audited reset; deployment evidence remains separate.
+not been independently recorded; see [deployment evidence](history/release-verification-2026-10.md#platform-origin-repair--2026-10-06-owner-reported-retry). The current initial-site workflow uses server drafts, normalized uploads, screenshot verification and browser approval behind both `SITE_WORKFLOW_ENABLED` and default-false `SITE_DRAFTS_ENABLED`. See [site operations](sites.md) for the new variables, ownership/confirmation gates, sandbox verification, DNS status, and separate fixture deployment. No payments are enabled; verified browser membership and a single-use CSRF token authorize immutable snapshot approval. The AWS signed-email v1 workers remain unchanged. Phase 4 adds [testers and chat-only superadmin](testers-and-admin.md), with separate staging-only sites and audited reset; deployment evidence remains separate.
 
 ## Package and identity choices
 
@@ -259,7 +259,7 @@ transport and body limits. Google sessions are fictional fixtures; there is no
 live external sign-in or client connection claim.
 
 Phases 1 and 2 are merged; Railway deployment is owner-reported; activation status is recorded in
-[release verification](release-verification.md#current-status--2026-10-08).
+[release verification](release-verification.md#current-status).
 Source protection includes `apps/` and `.dockerignore`, including rename
 origins; the deployed AWS evaluator is unchanged. Server drafts and scoped browser
 snapshot approval are merged to main; successful production rollout remains

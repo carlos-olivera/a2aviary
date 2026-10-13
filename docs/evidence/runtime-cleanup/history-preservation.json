@@ -1,0 +1,6 @@
+{
+  "originalSha256": "c3687310aba5e20c0378dd84a1a632290a1e24dbfe444ce769221546520710b4",
+  "archivedSha256": "d1e07e45f643fd048c96221f759ade7901382a1ddef0703eefaa4f64b2960fcf",
+  "preservation": "All original prose, tables and dated sections retained unchanged. Only relative link destinations are frozen to their original repository revision; reversing that rewrite recovers the original bytes. One pre-existing broken internal current-status link now targets the original 2026-10-12 heading.",
+  "revision": "27f642acf462bb34afc7428cc5ca04852f205f96"
+}

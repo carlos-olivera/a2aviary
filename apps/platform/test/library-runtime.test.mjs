@@ -77,38 +77,20 @@ test('MCP 2.1 settings and effects remain atomic, compact and cannot supply trus
     (await listed.json()).result.tools.some((t) => t.name === 'library.get'),
   );
 });
-test('retired drafts remain readable and discardable but cannot mutate or preview', async (t) => {
-  const f = await fixture(testDependencies());
-  t.after(f.close);
-  const user = await f.user('retired@example.invalid'),
-    d = f.app.sites.drafts;
-  const created = await d.create(user.id, 'retired-draft', randomUUID());
-  await f.pool.query(
-    "UPDATE platform_site SET policy_version='2.0.0' WHERE id=$1",
-    [created.siteId],
-  );
-  const read = await d.get(user.id, created.draftId, 'full');
-  assert.equal(read.policyVersion, '2.0.0');
-  assert.equal(read.missing[0].rule, 'policy.retired');
-  await assert.rejects(
-    d.apply(user.id, {
-      draftId: created.draftId,
-      expectedRevision: 0,
-      requestId: randomUUID(),
-      operations: [{ op: 'settings', settings: { language: 'es' } }],
-    }),
-    /draft_policy_retired/,
-  );
-  await assert.rejects(
-    d.preview(user.id, created.draftId, 0),
-    /draft_policy_retired/,
-  );
-  await assert.rejects(
-    d.open(user.id, created.draftId, randomUUID()),
-    /draft_policy_retired/,
-  );
-  await d.discard(user.id, created.draftId, 0);
-});
+for (const version of ['1.0.0', '1.0.1', '2.0.0', '2.1.0', '9.0.0'])
+  test('unsupported policy ' + version + ' rejects draft reads, mutation, uploads, preview and discard', async (t) => {
+    const f = await fixture(testDependencies()); t.after(f.close);
+    const user = await f.user('unsupported@example.invalid'), d = f.app.sites.drafts;
+    const created = await d.create(user.id, 'unsupported-draft', randomUUID());
+    await f.pool.query('UPDATE platform_site SET policy_version=$2 WHERE id=$1', [created.siteId, version]);
+    for (const operation of [
+      () => d.get(user.id, created.draftId, 'full'),
+      () => d.apply(user.id, { draftId: created.draftId, expectedRevision: 0, requestId: randomUUID(), operations: [{ op: 'settings', settings: { language: 'es' } }] }),
+      () => d.preview(user.id, created.draftId, 0),
+      () => d.open(user.id, created.draftId, randomUUID()),
+      () => d.discard(user.id, created.draftId, 0),
+    ]) await assert.rejects(operation(), /policy_version_unsupported/);
+  });
 test('same revision cannot reuse a preview with stale source/checker/generator provenance', async (t) => {
   const dependencies = testDependencies(),
     f = await fixture(dependencies);
@@ -135,72 +117,23 @@ test('library.get follows site-tool visibility', async (t) => {
 });
 
 for (const historical of ['2.0.0', '2.1.0'])
-  test(
-    'a historical verified ' +
-      historical +
-      ' snapshot remains approvable and deploys its stored bytes',
-    async (t) => {
-      const deps = testDependencies(),
-        f = await fixture(deps);
-      t.after(f.close);
-      const user = await f.user('legacy-approved@example.invalid'),
-        sites = f.app.sites,
-        saved = await prepare(f, user);
-      await sites.processOne();
-      const row = (
-        await f.pool.query('SELECT * FROM platform_site_spec WHERE id=$1', [
-          saved.specId,
-        ])
-      ).rows[0];
-      const spec = {
-          ...row.spec,
-          contractVersion: historical.slice(0, 3),
-          policyVersion: historical,
-        },
-        digest = sha256(canonicalJson(spec));
-      const key = 'specs/' + saved.specId + '/build.json',
-        build = JSON.parse(Buffer.from(await deps.objects.get(key)).toString());
-      build.report.specSha256 = digest;
-      if (historical === '2.0.0')
-        build.report.checks = build.report.checks.filter(
-          (c) =>
-            !c.name.startsWith('motion:reduced') &&
-            c.name !== 'network:external',
-        );
-      if (build.artifactHashes['report.json']) {
-        const bytes = Buffer.from(JSON.stringify(build.report));
-        await deps.objects.put(
-          'specs/' + saved.specId + '/artifacts/report.json',
-          bytes,
-        );
-        build.artifactHashes['report.json'] = sha256(bytes);
-      }
-      await deps.objects.put(key, Buffer.from(canonicalJson(build)));
-      await f.pool.query(
-        'UPDATE platform_site SET policy_version=$2 WHERE id=$1',
-        [saved.siteId, historical],
-      );
-      await f.pool.query(
-        'UPDATE platform_site_spec SET spec=$2,spec_sha256=$3,generator_version=$5,artifact_hashes=$4 WHERE id=$1',
-        [
-          saved.specId,
-          JSON.stringify(spec),
-          digest,
-          JSON.stringify(build.artifactHashes),
-          historical === '2.0.0' ? '2.1.0' : '2.2.0',
-        ],
-      );
-      await approve(f, user, saved.specId);
-      await sites.deploy(
-        user.id,
-        saved.siteId,
-        saved.specId,
-        'fictional-password-12345',
-        'DEPLOY_SITE:' + saved.siteId,
-      );
-      await sites.processOne();
-      assert.equal(deps.counts.verifies, 1);
-      assert.equal(deps.counts.deploys, 1);
-      assert.deepEqual(deps.inputs[0].build.files, build.files);
-    },
-  );
+  test('historical snapshot ' + historical + ' cannot be approved or deployed', async (t) => {
+    const deps = testDependencies(), f = await fixture(deps); t.after(f.close);
+    const user = await f.user('unsupported-snapshot@example.invalid');
+    const saved = await prepare(f, user); await f.app.sites.processOne();
+    await f.pool.query('UPDATE platform_site SET policy_version=$2 WHERE id=$1', [saved.siteId,historical]);
+    await assert.rejects(f.app.sites.drafts.approve(user.id, 'fictional-session', saved.specId, 'fictional-token'), /policy_version_unsupported/);
+    await assert.rejects(f.app.sites.deploy(user.id,saved.siteId,saved.specId,'fictional-password-12345','DEPLOY_SITE:'+saved.siteId), /policy_version_unsupported/);
+    assert.equal(deps.counts.deploys,0);
+  });
+
+for (const version of ['2.0.0','2.1.0'])
+  test('unsupported snapshot policy is rejected even on a current-version site', async t => {
+    const deps=testDependencies(),f=await fixture(deps);t.after(f.close);
+    const user=await f.user('snapshot-policy@example.invalid'),saved=await prepare(f,user);
+    await f.app.sites.processOne();
+    await f.pool.query("UPDATE platform_site_spec SET spec=jsonb_set(spec,'{policyVersion}',to_jsonb($2::text)) WHERE id=$1",[saved.specId,version]);
+    await assert.rejects(f.app.sites.drafts.approve(user.id,'fictional-session',saved.specId,'fictional-token'), /policy_version_unsupported/);
+    await assert.rejects(f.app.sites.drafts.previewRow(f.app.sites.drafts.signPreview(saved.specId)), /policy_version_unsupported/);
+    assert.equal(deps.counts.deploys,0);
+  });

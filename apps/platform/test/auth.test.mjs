@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {decodeJwt, generateKeyPair, SignJWT, exportJWK, calculateJwkThumbprint} from 'jose';
 import {createHash,randomUUID} from 'node:crypto';
 import {getMigrations} from 'better-auth/db/migration';
-import {createAuth} from '../src/auth.ts';
+import {createAuth} from '../src/identity/auth.ts';
 import {createApp} from '../src/app.ts';
 import {readConfig} from '../src/config.ts';
 import {fixture,env} from './helpers.mjs';

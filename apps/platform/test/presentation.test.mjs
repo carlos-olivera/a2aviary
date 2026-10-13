@@ -115,36 +115,6 @@ test('incomplete labels survive incremental apply, are reported immediately, and
   assert.equal(preview.isError, true);
   assert(JSON.stringify(preview).includes('/shell/notFoundText'));
 });
-test('2.1 drafts remain readable and discardable but edits and previews are retired', async (t) => {
-  const f = await fixture(testDependencies());
-  t.after(f.close);
-  const user = await f.user('history@example.invalid');
-  const d = f.app.sites.drafts;
-  const created = await d.create(user.id, 'fictional-history', randomUUID());
-  await f.pool.query(
-    "UPDATE platform_site SET policy_version='2.1.0' WHERE id=$1",
-    [created.siteId],
-  );
-  assert.equal(
-    (await d.get(user.id, created.draftId)).missing[0].rule,
-    'policy.retired',
-  );
-  await assert.rejects(
-    d.apply(user.id, {
-      draftId: created.draftId,
-      expectedRevision: 0,
-      requestId: randomUUID(),
-      operations: [{ op: 'settings', settings: { language: 'en' } }],
-    }),
-    /draft_policy_retired/,
-  );
-  await assert.rejects(
-    d.preview(user.id, created.draftId, 0),
-    /draft_policy_retired/,
-  );
-  await d.discard(user.id, created.draftId, 0);
-});
-
 test('hosted alternative input parsing is allowlisted and independently testable without providers', () => {
   assert.equal(fixtureSelection([]), undefined);
   assert.equal(fixtureSelection(['--composition', 'dark-en']), 'dark-en');

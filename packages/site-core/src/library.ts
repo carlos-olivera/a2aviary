@@ -1,6 +1,6 @@
 import { behaviorLoader } from './behavior-loader.ts';
 import { gzipSync } from 'node:zlib';
-import type { Policy } from './policy.ts';
+import { assertSupportedPolicyVersion, type Policy } from './policy.ts';
 import type { LibraryContext, ValidationError } from './types.ts';
 export interface LibraryPackage {
   id: string;
@@ -130,9 +130,8 @@ export function validateLibrarySelection(
   catalog: LibraryCatalog,
   context: LibraryContext = {},
 ): ValidationError[] {
-  if (policy.version.value === '2.0.0') return [];
-  const errors: ValidationError[] =
-    policy.version.value === '2.1.0' ? [] : contentErrors(spec, catalog);
+  assertSupportedPolicyVersion(policy.version.value);
+  const errors: ValidationError[] = contentErrors(spec, catalog);
   const rules = policy.firstVersion.library,
     budget = rules.budgets;
   const add = (

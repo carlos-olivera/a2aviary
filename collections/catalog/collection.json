@@ -1,0 +1,48 @@
+{
+  "id": "catalog",
+  "order": 0,
+  "fields": [
+    {
+      "name": "title",
+      "type": "text",
+      "required": true,
+      "max": 120,
+      "editor": {
+        "label": "Title",
+        "control": "input"
+      }
+    },
+    {
+      "name": "body",
+      "type": "text",
+      "required": true,
+      "max": 2000,
+      "editor": {
+        "label": "Body",
+        "control": "textarea"
+      }
+    },
+    {
+      "name": "published",
+      "type": "bool",
+      "editor": {
+        "label": "Published",
+        "control": "checkbox"
+      }
+    }
+  ],
+  "publicReadRules": {
+    "list": "published = true",
+    "view": "published = true"
+  },
+  "editorRules": {
+    "create": "@request.auth.collectionName = 'editors'",
+    "update": "@request.auth.collectionName = 'editors'",
+    "delete": "@request.auth.collectionName = 'editors'"
+  },
+  "editorRecordLabel": "title",
+  "publicDisplay": {
+    "headingField": "title",
+    "bodyField": "body"
+  }
+}

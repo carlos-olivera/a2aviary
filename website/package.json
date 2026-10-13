@@ -9,7 +9,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "check": "node scripts/check-assets.mjs"
+    "check": "node --test test/*.test.mjs && node scripts/check-assets.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "5.3.0",

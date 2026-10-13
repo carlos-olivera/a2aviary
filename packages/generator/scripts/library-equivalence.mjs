@@ -15,16 +15,16 @@ const renderer = await import(pathToFileURL(resolve(modulePath)));
 const root = new URL('../../../', import.meta.url),
   output = resolve(outputPath);
 const manifest = JSON.parse(
-  await readFile(new URL('contracts/site/2.0.0/manifest.json', root), 'utf8'),
+  await readFile(new URL('contracts/site/2.2.0/manifest.json', root), 'utf8'),
 );
 const fixture = JSON.parse(
   await readFile(
-    new URL('contracts/site/2.0.0/examples/site-spec.json', root),
+    new URL('contracts/site/2.2.0/examples/site-spec.json', root),
     'utf8',
   ),
 );
 const pixel = await readFile(
-  new URL('contracts/site/2.0.0/examples/fictional-pixel.webp', root),
+  new URL('contracts/site/2.2.0/examples/fictional-pixel.webp', root),
 );
 const specs = { manifest: manifest.examples.spec, fixture };
 const records = [],

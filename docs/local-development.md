@@ -4,7 +4,7 @@ The local environment deploys the shared CDK constructs and runs the production
 Node.js workers against disposable LocalStack resources. OpenAI and GitHub are
 safe stand-ins. This verifies the application path, not AWS production delivery,
 IAM enforcement, billing, or hosted catalog sites. Hosted status is recorded in
-[release verification](release-verification.md#current-status--2026-10-08).
+[release verification](release-verification.md#current-status).
 
 ## Prerequisites and quickstart
 
@@ -84,9 +84,9 @@ prints a sanitized error and leaves private diagnostics available locally.
 
 The PR integration workflow is **advisory/non-blocking initially**, with a
 bounded timeout and unconditional cleanup. Existing required checks and branch
-protection are unchanged. Authors must still pass `local:test` and regenerate
-architecture for infrastructure/service changes. The required source-fingerprint
-check rejects a stale map without downloading Archify in CI.
+protection are unchanged. Authors must still pass `local:test` for infrastructure/service behavior changes.
+Architecture-relevant changes require fresh provenance; unrelated PRs receive
+a stale-fingerprint warning without downloading Archify in CI.
 
 ## Architecture regeneration
 
@@ -145,3 +145,28 @@ installing Archify in CI.
 - **Missing architecture in an old build:** rebuild/deploy the current checkout.
 - **Unsupported provider behavior:** keep the named cloud-only/adapted boundary
   explicit. A passing local test is not production release verification.
+
+### Exact architecture freshness rule
+
+`website/scripts/architecture-scope.mjs` is the executable path rule. Freshness
+is required when the diff contains runtime source (`infra/src`, `services/src`,
+platform/site-core/generator `src`), local adapters, platform migrations/Dockerfile,
+generator templates and library/collections/build compilers, policies, contracts,
+library or collections, architecture diagrams/assets/integration/checker sources,
+AGENTS.md, runtime package manifests/root lockfile, Compose or local configuration.
+Tests, general prose, dated evidence and `.github/workflows` orchestration alone
+are unrelated. Their stale source fingerprint emits a warning. Page/asset hashes,
+diagram membership, receipts, recorded source ranges and CSP checks always remain
+blocking; ranges are verified against the recorded source revision.
+
+GitHub checks use the PR event base SHA or push event before SHA, fetching only
+that immutable public base when the checkout is shallow. Fallback/local checks
+use the merge-base with `origin/$GITHUB_BASE_REF` or `origin/main`. Fetch the base or supply
+`ARCHITECTURE_BASE_REVISION`. Release verification must run:
+
+```sh
+ARCHITECTURE_RELEASE=1 npm --prefix website run check
+```
+
+A relevant change or release must refresh provenance even if the drawings retain
+their layout. A warning on an unrelated PR never establishes current provenance.

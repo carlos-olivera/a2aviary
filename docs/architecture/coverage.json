@@ -51,7 +51,7 @@
     "mode": "Separate local tooling"
   },
   "gate-policy": {
-    "note": "Policy 2.2.0 / contract 2.2 enforce owner shell/control labels, immutable tester-only package classification and unchanged budgets. Incomplete drafts report missing labels; preview/build require them. Retired 2.0/2.1 drafts are read/discard only; historical stored approvals retain their original profile.",
+    "note": "Policy 2.2.0 / contract 2.2 enforce owner shell/control labels, immutable tester-only package classification and unchanged budgets. Incomplete drafts report missing labels; preview/build require them. Only policy 2.2.0 is supported; all historical versions fail with policy_version_unsupported after a verified zero-use production inventory.",
     "status": "Implemented",
     "mode": "Separate local tooling"
   },

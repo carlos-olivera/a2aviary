@@ -15,7 +15,7 @@
     "name": "wrong pinned policy",
     "path": "/policyVersion",
     "value": "1.1.0",
-    "rule": "schema.const"
+    "rule": "policy_version_unsupported"
   },
   {
     "name": "unsafe ID",

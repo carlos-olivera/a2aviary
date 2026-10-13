@@ -204,7 +204,7 @@ test('extended CSS values, scoped pseudos, media/supports/keyframes and properti
     /reduced-motion/,
   );
 });
-test('2.1 optional defaults, language subset, literal code and historical validation', () => {
+test('current optional defaults, language subset, literal code and unsupported policy rejection', () => {
   assert(validateSiteSpec(baseline).ok);
   for (const language of ['en', 'es', 'es-BO', 'zh-Hant-TW', 'es-419'])
     assert(
@@ -225,14 +225,7 @@ test('2.1 optional defaults, language subset, literal code and historical valida
       language,
     );
   assert.equal(validateSiteSpec({ ...baseline, test: true }).ok, false);
-  const old = JSON.parse(JSON.stringify(baseline));
-  old.policyVersion = '2.0.0';
-  old.contractVersion = '2.0';
-  assert(validateSiteSpec(old, policyForVersion('2.0.0')).ok);
-  assert.equal(
-    validateSiteSpec({ ...old, language: 'es' }, policyForVersion('2.0.0')).ok,
-    false,
-  );
+  assert.throws(() => policyForVersion('2.0.0'), /policy_version_unsupported/);
   assert.equal(
     validateSiteSpec({
       ...baseline,

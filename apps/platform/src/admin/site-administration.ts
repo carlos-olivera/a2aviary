@@ -8,7 +8,7 @@ import {
 import { report, csv } from '../billing/reports.ts';
 
 import type { PoolClient } from 'pg';
-import { defaultPolicy } from '@a2aviary/site-core';
+import { SUPPORTED_POLICY_VERSIONS } from '@a2aviary/site-core';
 import {
   SiteError,
   type SiteResources,
@@ -50,11 +50,11 @@ export async function siteAccess(
   if (p.testMode !== site.test_mode && !(p.role === 'superadmin' && history))
     throw new SiteError('site_mode_mismatch');
   if (
-    ![defaultPolicy.version.value, '2.1.0', '2.0.0'].includes(
+    !SUPPORTED_POLICY_VERSIONS.includes(
       site.policy_version,
     )
   )
-    throw new SiteError('unsupported_pinned_policy');
+    throw new SiteError('policy_version_unsupported');
   return site;
 }
 export class SiteAdministration {

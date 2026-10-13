@@ -1,6 +1,6 @@
 # Initial operating foundation
 
-Status: legacy signed-email path, supported without extension. The primary product path is the MCP platform; see [platform](platform.md) and [site operations](sites.md).
+Status: **legacy, maintenance only**. This covers the `services` email runtime, `infra`, `local/`, and `contracts/request.schema.json` transport family. Existing resources and signed-email behavior are retained; the landing delivery stays on AWS. The primary product path is the MCP platform; see [platform](platform.md) and [site operations](sites.md).
 
 The first implemented capability is `website.brief.analyze`: structured goals, audience, proposed pages, missing inputs, assumptions, acceptance criteria, and research citations. Catalog website generation has separate implementation and verification evidence in [site operations](sites.md). Autonomous repository engineering and external A2A compliance remain future work. Deployment and verification status are recorded separately in [release verification](release-verification.md).
 

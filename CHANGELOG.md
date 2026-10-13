@@ -1,5 +1,32 @@
 # Changelog
 
+
+## 2026-10-13 — Runtime cleanup and collection data
+
+- After owner-authorized read-only production inventory returned zero in all
+  three precondition counts, retire policy 1.x/2.0/2.1 loaders/artifacts and the
+  historical read/discard/deploy paths. Only 2.2.0 is supported; other versions
+  report `policy_version_unsupported`. Current frozen contracts/policy, generator
+  2.3.0 and output digests remain unchanged.
+- Compile schema-validated CMS collections to inert data with the library
+  tooling; renderer/validator, Caddy, PocketBase and editor consume their fields,
+  bounds and rules. Current HTML/CSS/JS, Caddy/migration/editor bytes match the
+  pre-cleanup baseline across all four current fixtures.
+- Remove eight platform compatibility entry points and TOOL_ROLES exports; move
+  six tool modules under `src/tools`. Capabilities exactly match registration in
+  the same order; visibility snapshots deliberately remove 24 disabled library
+  advertisements and reorder eight active tool lists/eight log-filter enums.
+- Keep a short release-status table/open gates; archive prior prose/evidence
+  unchanged, with relative references frozen to their original revision. Mark
+  the AWS signed-email foundation legacy, maintenance only; AWS landing remains.
+- Require fresh architecture provenance for architecture-relevant changes and
+  release checks; warn on unrelated PRs with stale source fingerprints. Preserve
+  structural, recorded-source and CSP gates.
+- Observed local checks and byte hashes, removal line counts, deliberate snapshot
+  differences and owner actions are in [cleanup evidence](docs/evidence/runtime-cleanup/README.md).
+  No migration, production data change, tag, merge or deployment. The owner may
+  tag pre-cleanup commit `27f642a` and must confirm the point-in-time inventory.
+
 ## 2026-10-13 — CI rebase and regenerated architecture evidence
 
 - Rebase CI activation onto main `b58862c`, retaining merged platform source references and regenerating all six architecture artifacts plus official provenance from the resolved tree. Preserve drawing geometry; do not select either conflicted hash.
@@ -101,7 +128,7 @@
 - Require owner-language shell/control labels declaratively, including transitive dependencies. Save incomplete/blank-label drafts with exact missing paths; reject incomplete preview/build. Keep escaped 404 copy as data, confined numeric pointer/style/clipboard capabilities, selected manual-copy fallback, stale-result suppression and readable no-JS/initializer-failure behavior. Freeze 2.1 artifacts and preserve legacy bytes and historical stored-snapshot deployment.
 - Add three equal-status fictional compositions, original generated sculpture provenance, 148 library captures and 168 presentation matrix cases covering fonts/system controls, content boundaries, optional image/contact, widths, motion and card states. Native clipboard, denied/unavailable access, newer-interaction/blur races, pointer changes, keyboard, no-JS and unsupported scroll fallbacks are verified. Three real local Astro verifiers pass all ten configured checks with Lighthouse accessibility/best-practices 100/100, zero axe violations and no external requests; record measured package/output sizes and sanitized captures in [local evidence](docs/evidence/presentation/README.md).
 - Node.js 22.23.3: 78 generator, 104 service, 68 platform and nine infrastructure tests pass; one hosted platform test stays skipped. Local foundation integration, six architecture artifacts with all four gates, website checks/build and integrated desktop/mobile/keyboard/no-JS verification pass. Regenerate contracts, catalog, notices and committed-source provenance; extend the hosted runner with a locally tested allowlisted composition selector.
-- No migrations, infrastructure additions, production changes, hosted runs, merge or production deployment. Preserve the original checkout's verifier edit. Operator App publication stops for owner review; review, merge timing and a separately authorized hosted run remain owner actions. See [release verification](docs/release-verification.md#presentation-batch--2026-10-12-local-implementation) for implemented/verified/not-verified distinctions and test-double boundaries.
+- No migrations, infrastructure additions, production changes, hosted runs, merge or production deployment. Preserve the original checkout's verifier edit. Operator App publication stops for owner review; review, merge timing and a separately authorized hosted run remain owner actions. See [release verification](docs/history/release-verification-2026-10.md#presentation-batch--2026-10-12-local-implementation) for implemented/verified/not-verified distinctions and test-double boundaries.
 
 ## 2026-10-11 — web-simple 2.1 library runtime
 
@@ -109,7 +136,7 @@
 - Extend the curated compiler to five strict package types with dependency/status/compatibility checks, deterministic gzip budgets, duplicate signatures and overlap warnings. Package the pinned Latin Inter/EB Garamond bytes with OFL licenses. Restricted templates, CSS and Acorn-validated behaviors compile to inert data; conditional external JavaScript supports native/no-JS content, keyboard interaction and initializer failure isolation. Fictional effects/behaviors/variants remain isolated test fixtures.
 - Apply immutable server-owned test audience to draft/preview/worker admission, retain atomic revisions/idempotency, expose a 24 KiB compact manifest and gated read-only `library.get`, and bind preview reuse to policy/generator/checker/package provenance. Require full-route reduced-motion and browser-wide external-request checks, including Lighthouse. Add Caddy zstd/gzip negotiation with byte/CSP regression coverage.
 - Node.js 22.23.3: 65 generator, 104 services, 63 platform and nine infrastructure tests passed; one hosted platform test was skipped. The library browser matrix passed 76 cases and the real Astro verifier passed 52 checks. Local Caddy/CMS compression and both volume cases passed; the rebuilt non-root container generated seven pages with networking disabled. Regenerated six architecture drawings against committed source and passed website checks/build plus integrated keyboard/mobile/no-JS browser verification.
-- Record local checks and rejection-rule coverage in [release evidence](docs/release-verification.md#web-simple-21--2026-10-11-local-implementation). Services CI and Docker retain explicit static library checks; generator check/test run the full local browser matrix. Workflows, migrations, hosted fixtures and production configuration are unchanged. The recorded production HTTP 503 remains unresolved; delivery stops at an Operator App PR for owner review.
+- Record local checks and rejection-rule coverage in [release evidence](docs/history/release-verification-2026-10.md#web-simple-21--2026-10-11-local-implementation). Services CI and Docker retain explicit static library checks; generator check/test run the full local browser matrix. Workflows, migrations, hosted fixtures and production configuration are unchanged. The recorded production HTTP 503 remains unresolved; delivery stops at an Operator App PR for owner review.
 
 ## 2026-10-11 — component library foundation
 
@@ -127,12 +154,12 @@
 - Add generator flag-matrix and default platform startup/health regressions. Both reproduced `Invalid SITE_WORKFLOW_ENABLED` before the fix. Local health now returns discovery-only HTTP 200 against all seven migrations without creating a site; hosted fixtures remain disabled.
 - Node.js 22.23.3 generator and platform checks/builds passed, with 46 generator tests and 58 platform tests passing; one opt-in hosted test was skipped.
 - Regenerate all six architecture drawings against the committed fix; all four gates passed for each. Website checks/build and the integrated browser suite passed five stages/44 nodes, desktop/mobile, keyboard/focus and JavaScript-free access under production CSP. Desktop/mobile and the flagged hosting readiness route were visually inspected.
-- Record the inspected Railway startup failures and the inferred six-/seven-migration readiness mismatch in [release verification](docs/release-verification.md#read-only-diagnosis-and-prepared-recovery--2026-10-08). Production last returned HTTP 503; this delivery does not merge, deploy, restart, roll back or change production variables, database or bucket.
+- Record the inspected Railway startup failures and the inferred six-/seven-migration readiness mismatch in [release verification](docs/history/release-verification-2026-10.md#read-only-diagnosis-and-prepared-recovery--2026-10-08). Production last returned HTTP 503; this delivery does not merge, deploy, restart, roll back or change production variables, database or bucket.
 
 
 ## 2026-10-08 — documentation synchronized with production state
 
-- Added a current status table, the open gates before the first client site, and an owner- and agent-reported record of the 2026-10-07 schema reconciliation, site configuration, four hosted fixture attempts and workflow activation on main `89b92fe` to [release verification](docs/release-verification.md#current-status--2026-10-08). Decision 013 reached main at 2026-10-08 15:49 -0400 in `b9bd1f8` and `6ff79db`. The single public health GET at 16:46:22 -0400 returned HTTP 503; current rollout, mandate and migration inventory are unverified, and readiness is the first open gate.
+- Added a current status table, the open gates before the first client site, and an owner- and agent-reported record of the 2026-10-07 schema reconciliation, site configuration, four hosted fixture attempts and workflow activation on main `89b92fe` to [release verification](docs/release-verification.md#current-status). Decision 013 reached main at 2026-10-08 15:49 -0400 in `b9bd1f8` and `6ff79db`. The single public health GET at 16:46:22 -0400 returned HTTP 503; current rollout, mandate and migration inventory are unverified, and readiness is the first open gate.
 - Corrected the server-draft records that still described production migration 006 as unreconciled (decision 013, site operations, plans, release evidence, vision and README); the earlier `/healthz` response on main `89b92fe` reported all six migrations with matching hashes (agent-reported historical evidence).
 - Restored a site [configuration table](docs/sites.md#configuration) for both workflow flags and added a [production test procedure](docs/sites.md#production-test-procedure) for drafts (tester identity, `SITE_DEPLOY_ENVIRONMENT`, `first_client_pilot` at draft creation, browser approval, prefix cleanup). Documented the upload, preview and approval endpoints and `/healthz` fields in [platform](docs/platform.md), and added a minimum [Railway platform runbook](docs/runbooks.md#railway-platform).
 - Corrected outdated or contradictory statements: deployment status in README, vision, roadmap, AGENTS, SECURITY, GOVERNANCE, CONTRIBUTING and decisions 007, 008 and 012; migration readiness; CI coverage (platform and generator are not built in CI); `seed` and `switches` effects; DMARC enforcement; the alarm count (ten alarms, 19 metrics); the watchdog cadence; the scope of the $25 target and $10 model cap; and the missing Railway, bucket and sandbox cost lines. Marked the signed-email foundation as legacy and removed delivery-specific instructions from the runbooks.
@@ -144,7 +171,7 @@
 - Publish policy 2.0.0/site contract 2.0; preserve frozen historical artifacts and migrations 001–006. Append migration 007 for revisioned drafts, retry receipts, shared upload sessions, rolling quotas, snapshot provenance and immutable approvals. Both workflow flags are required; drafts default off. Remove legacy intake, client approval/preview fields, `site.build` and visual parity dependencies; disable change requests pending redesign.
 - Add atomic catalog mutations, secret-free bounded image normalization, authenticated human uploads and scoped agent capabilities. Generate server snapshots with required page screenshots; reuse verified bytes without reusing approval. Browser approval requires current scoped membership, exact Origin and single-use CSRF. Signed previews have iframe and response-header sandboxing; deployment rechecks immutable approval and deploys stored bytes exactly. Durable cleanup covers staging and expired unreferenced artifacts while retaining audit history.
 - Node.js 22.23.3 checks/builds and tests passed: 104 services, 43 generator, 57 platform (one hosted test skipped locally) and nine infrastructure. The real browser workflow passed 37 checks with 14 screenshots; local PocketBase/Caddy integration and both volume ownership cases passed. Seven migrations applied twice and inventory/hash tampering failed readiness. Refreshed six Archify drawings and current workflow/ADR/threat-model documentation. Website checks/build and five browser suites passed; the existing homepage animation diagnostic remained limited by a preference-change timeout and headless GPU-driver warnings.
-- Exactly one hosted tester fixture passed the agent probe, then stopped at its first upload with HTTP 503 before verification or provisioning. One teardown attempt failed; read-only bucket inventory returned AccessDenied HTTP 403. The fictional draft prefix remains unverified, with no confirmed bucket deletion. No OpenAI session or Railway fixture project was created; billed amounts remain unavailable. See [release evidence](docs/release-verification.md#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed).
+- Exactly one hosted tester fixture passed the agent probe, then stopped at its first upload with HTTP 503 before verification or provisioning. One teardown attempt failed; read-only bucket inventory returned AccessDenied HTTP 403. The fictional draft prefix remains unverified, with no confirmed bucket deletion. No OpenAI session or Railway fixture project was created; billed amounts remain unavailable. See [release evidence](docs/history/release-verification-2026-10.md#server-drafts-and-previews--2026-10-08-local-implementation-hosted-fixture-failed).
 - Production migration 006 reconciliation was subsequently owner-reported complete; artifact permissions/cleanup, hosted end-to-end proof and real Google authentication remain unresolved gates. Decision 013 subsequently reached main at 15:49 -0400; current readiness and migration 007 remain unverified after HTTP 503. No production activation, variable/DNS/payment changes, merge or deployment occurred.
 
 ## 2026-10-08 — architecture freshness restored for verifier delivery
@@ -162,7 +189,7 @@
 
 - Create the credential-free, tool-free verifier session without initial input; wait for connected setup and required live output files before submitting the original acknowledgement. Collect only its completed turn's artifacts and retain existing report/hash checks and size limits.
 - Distinguish session creation, setup failure/timeout, missing outputs, failed/incomplete turns, unpublished artifacts, download failure and malformed reports. Actual checker failures remain `verification_failed`; session cleanup reports a separate safe code without masking the outcome.
-- Node.js 22.23.3 generator check/build and all 40 tests passed; platform check (including contracts) and 55 tests passed, with the opt-in cloud fixture skipped locally. Mocked tests cover ordering, error codes, filtering, failing checks, deletion and private-error redaction. The hosted fixture runs of 2026-10-08 are recorded in [release verification](docs/release-verification.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported).
+- Node.js 22.23.3 generator check/build and all 40 tests passed; platform check (including contracts) and 55 tests passed, with the opt-in cloud fixture skipped locally. Mocked tests cover ordering, error codes, filtering, failing checks, deletion and private-error redaction. The hosted fixture runs of 2026-10-08 are recorded in [release verification](docs/history/release-verification-2026-10.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported).
 
 ## 2026-10-08 — hosted verifier network allowlist
 
@@ -187,7 +214,7 @@
 
 - Added a source-backed Archify 3.0.1 interactive architecture map with editable metadata, pinned source provenance, same-origin assets, local coverage and explicit planned capabilities. Integrated `/architecture`, navigation, sitemap and HTML MIME without changing CSP; no external resources load automatically.
 - Added an isolated CDK local target, pinned token-free Community 4.12.0 Compose environment, production workers, safe OpenAI/GitHub stand-ins and explicit SES adapters. Node.js 22.23.3 clean-checkout quickstart/deploy/test/down passed, exercising queued processing, storage, cleanup, signed replies, rejection, broker recording and scheduled controls. Cloud-only boundaries and legacy image maintenance are documented.
-- Added a read-only advisory integration workflow, source-fingerprint freshness gate and contribution guidance. Website checks/build, service checks/build and 49 tests, infrastructure build and nine tests pass; all five production templates match remote main when synthesized with the same worker artifact. Browser checks under production CSP cover desktop/mobile, keyboard controls and zero other-domain requests. See [release evidence](docs/release-verification.md#architecture-and-local-environment--2026-10-06-prepared).
+- Added a read-only advisory integration workflow, source-fingerprint freshness gate and contribution guidance. Website checks/build, service checks/build and 49 tests, infrastructure build and nine tests pass; all five production templates match remote main when synthesized with the same worker artifact. Browser checks under production CSP cover desktop/mobile, keyboard controls and zero other-domain requests. See [release evidence](docs/history/release-verification-2026-10.md#architecture-and-local-environment--2026-10-06-prepared).
 - Operator App publication was attempted after verification. GitHub refused the new CI workflow under its existing permission grant; no branch/PR was published and the token was revoked. The owner must supply that workflow through an authorized route before App publication can continue.
 - This is prepared source and local verification. Owner review/approval, approved merge, website release and public route verification remain separate gates; no production infrastructure was deployed.
 
@@ -246,18 +273,18 @@
 ## 2026-10-05 — support permission repair activated and receipts recovered
 
 - After the owner merged PR #12 and authorized activation/recovery, inspected and executed the runtime change set; UPDATE_COMPLETE confirms deployment. Added only the approved raw-send permission under unchanged sender/recipient/identity restrictions and shared worker-code updates, with no resources added or removed.
-- Conditionally released only the two prior-denial receipts for processing of their original notifications, preserving receipt IDs/timestamps and duplicate protection. Actual SES acceptance is recorded in [activation evidence](docs/release-verification.md#human-support-permission-repair--2026-10-05-activated); inbox, original attachment and reply delivery remain owner verification steps.
+- Conditionally released only the two prior-denial receipts for processing of their original notifications, preserving receipt IDs/timestamps and duplicate protection. Actual SES acceptance is recorded in [activation evidence](docs/history/release-verification-2026-10.md#human-support-permission-repair--2026-10-05-activated); inbox, original attachment and reply delivery remain owner verification steps.
 
 ## 2026-10-05 — raw support-send permission repair prepared
 
 - Traced two missing support messages to successful SES receipt/storage and held forwarding records. The worker lacked ses:SendRawEmail; a same-restriction live diagnostic reproduced a 403 denial naming that action. Prepared the missing raw-send permission without broadening sender, identity or recipient restrictions, plus definite access-denial handling and redacted send-error logging.
 - A second empty-MIME diagnostic under corrected temporary permissions was unexpectedly accepted; the owner may receive a blank test email. The no-delivery assumption was wrong, the SES ID was not captured, and neither original receipt was replayed. Real inbox/reply delivery remains unverified; diagnostic credentials were removed.
-- Service check/build and all 48 tests, infrastructure build/synthesis and all seven tests passed. Permission repair and bounded held-message recovery await owner review and separate activation; see [incident evidence](docs/release-verification.md#human-support-send-refusal--2026-10-05-repair-prepared).
+- Service check/build and all 48 tests, infrastructure build/synthesis and all seven tests passed. Permission repair and bounded held-message recovery await owner review and separate activation; see [incident evidence](docs/history/release-verification-2026-10.md#human-support-send-refusal--2026-10-05-repair-prepared).
 
 ## 2026-10-05 — human-support forwarding activated
 
 - After owner approval/merge of PR #10 and separate deployment authorization, inspected and executed the email/runtime/controls change sets; all three stacks reached UPDATE_COMPLETE. Existing owner-attribution tags and shared worker assets were updated; no existing resources were removed, definitely replaced, or given DNS template changes.
-- Verified active hello@ receipt routing, preserved agent/test rules, the Active Node.js 22 forwarding worker, Enabled SQS trigger, fixed private destination, support retention/TTL, and empty support queue/DLQ. SES sending identity/DKIM/MAIL FROM and production sending are enabled; owner-alert subscription is confirmed and support alarms are connected. See [deployment evidence](docs/release-verification.md#human-support-forwarding--2026-10-05-deployed).
+- Verified active hello@ receipt routing, preserved agent/test rules, the Active Node.js 22 forwarding worker, Enabled SQS trigger, fixed private destination, support retention/TTL, and empty support queue/DLQ. SES sending identity/DKIM/MAIL FROM and production sending are enabled; owner-alert subscription is confirmed and support alarms are connected. See [deployment evidence](docs/history/release-verification-2026-10.md#human-support-forwarding--2026-10-05-deployed).
 - No external test message was sent; actual inbox arrival, received attachment bytes, reply delivery and real alert receipt remain unverified. Basic checkout and site production/hosting are unaffected.
 
 ## 2026-10-05 — launch copy and human-support forwarding prepared
