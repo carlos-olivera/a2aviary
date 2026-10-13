@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-13 — CI rebase and regenerated architecture evidence
+
+- Rebase CI activation onto main `b58862c`, retaining merged platform source references and regenerating all six architecture artifacts plus official provenance from the resolved tree. Preserve drawing geometry; do not select either conflicted hash.
+- Correct inherited author/committer identity on the branch commits to the Operator and rerun every local CI check job, including full browser, Docker, dispatch-only presentation/CMS and advisory LocalStack checks. Website freshness, actionlint and whitespace checks pass; retain [commands, durations and generated evidence](docs/evidence/ci-activation/rebase-2026-10-13.md). Publish only through the Operator with an explicit force-with-lease; no merge or production action.
+
 ## 2026-10-13 — opt-in Operator workflow tokens
 
 - Add `development-workflows` only for explicitly selected tasks declaring workflow YAML changes; preserve default development and policy permissions, the enable switch and repository restriction. Reject invalid profiles/paths and audit the selected profile.

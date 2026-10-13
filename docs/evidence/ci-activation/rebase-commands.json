@@ -1,0 +1,330 @@
+[
+  {
+    "job": "existing",
+    "name": "website-install",
+    "command": "npm ci",
+    "cwd": "website",
+    "seconds": 1.285,
+    "exit": 0
+  },
+  {
+    "job": "existing",
+    "name": "website-check-build",
+    "command": "npm run check && npm run build",
+    "cwd": "website",
+    "seconds": 2.706,
+    "exit": 0
+  },
+  {
+    "job": "existing",
+    "name": "services",
+    "command": "npm ci && npm run check && npm run build && npm test",
+    "cwd": "services",
+    "seconds": 6.031,
+    "exit": 0
+  },
+  {
+    "job": "existing",
+    "name": "infra",
+    "command": "npm ci && npm run build && npm test",
+    "cwd": "infra",
+    "seconds": 6.517,
+    "exit": 0
+  },
+  {
+    "job": "platform",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 6.479,
+    "exit": 0
+  },
+  {
+    "job": "platform",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 1.965,
+    "exit": 0
+  },
+  {
+    "job": "platform",
+    "name": "generator-static",
+    "command": "npm run check:static -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 0.652,
+    "exit": 0
+  },
+  {
+    "job": "platform",
+    "name": "generator-build",
+    "command": "npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.424,
+    "exit": 0
+  },
+  {
+    "job": "platform",
+    "name": "platform-check",
+    "command": "npm run check -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 0.632,
+    "exit": 0
+  },
+  {
+    "job": "platform",
+    "name": "platform-build",
+    "command": "npm run build -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 0.549,
+    "exit": 0
+  },
+  {
+    "job": "platform",
+    "name": "platform-tests",
+    "command": "npm test -w a2aviary-platform",
+    "cwd": ".",
+    "seconds": 20.17,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 7.502,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "core-check",
+    "command": "npm run check -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 3.344,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 0.181,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "core-tests",
+    "command": "npm test -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 0.694,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "generator-static",
+    "command": "npm run check:static -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 0.539,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "generator-build",
+    "command": "npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 2.778,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "chromium",
+    "command": "npx playwright install --with-deps chromium",
+    "cwd": ".",
+    "seconds": 0.95,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "generator-unit",
+    "command": "node --test test/*.test.mjs",
+    "cwd": "packages/generator",
+    "seconds": 7.696,
+    "exit": 0
+  },
+  {
+    "job": "generator",
+    "name": "library-full",
+    "command": "npm run library:check -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 288.833,
+    "exit": 0
+  },
+  {
+    "job": "image",
+    "name": "image",
+    "command": "docker build -f apps/platform/Dockerfile .",
+    "cwd": ".",
+    "seconds": 1.634,
+    "exit": 0
+  },
+  {
+    "job": "presentation-verify",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 6.367,
+    "exit": 0
+  },
+  {
+    "job": "presentation-verify",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 1.434,
+    "exit": 0
+  },
+  {
+    "job": "presentation-verify",
+    "name": "generator-build",
+    "command": "npm run check:static -w @a2aviary/generator && npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.44,
+    "exit": 0
+  },
+  {
+    "job": "presentation-verify",
+    "name": "chromium",
+    "command": "npx playwright install --with-deps chromium",
+    "cwd": ".",
+    "seconds": 0.956,
+    "exit": 0
+  },
+  {
+    "job": "presentation-verify",
+    "name": "verify",
+    "command": "node scripts/presentation-verify.mjs",
+    "cwd": "packages/generator",
+    "seconds": 38.801,
+    "exit": 0
+  },
+  {
+    "job": "cms-test",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 5.667,
+    "exit": 0
+  },
+  {
+    "job": "cms-test",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 1.429,
+    "exit": 0
+  },
+  {
+    "job": "cms-test",
+    "name": "generator-build",
+    "command": "npm run check:static -w @a2aviary/generator && npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.143,
+    "exit": 0
+  },
+  {
+    "job": "cms-test",
+    "name": "test",
+    "command": "npm run test:cms -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 5.874,
+    "exit": 0
+  },
+  {
+    "job": "cms-volume",
+    "name": "install",
+    "command": "npm ci",
+    "cwd": ".",
+    "seconds": 5.501,
+    "exit": 0
+  },
+  {
+    "job": "cms-volume",
+    "name": "core-build",
+    "command": "npm run build -w @a2aviary/site-core",
+    "cwd": ".",
+    "seconds": 1.422,
+    "exit": 0
+  },
+  {
+    "job": "cms-volume",
+    "name": "generator-build",
+    "command": "npm run check:static -w @a2aviary/generator && npm run build -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.069,
+    "exit": 0
+  },
+  {
+    "job": "cms-volume",
+    "name": "test",
+    "command": "npm run test:cms:volume -w @a2aviary/generator",
+    "cwd": ".",
+    "seconds": 3.597,
+    "exit": 0
+  },
+  {
+    "job": "local-integration",
+    "name": "infra-install",
+    "command": "npm ci",
+    "cwd": "infra",
+    "seconds": 4.325,
+    "exit": 0
+  },
+  {
+    "job": "local-integration",
+    "name": "services-install",
+    "command": "npm ci",
+    "cwd": "services",
+    "seconds": 3.638,
+    "exit": 0
+  },
+  {
+    "job": "local-integration",
+    "name": "website-install",
+    "command": "npm ci",
+    "cwd": "website",
+    "seconds": 0.865,
+    "exit": 0
+  },
+  {
+    "job": "local-integration",
+    "name": "local-up",
+    "command": "npm --prefix infra run local:up",
+    "cwd": ".",
+    "seconds": 5.95,
+    "exit": 0
+  },
+  {
+    "job": "local-integration",
+    "name": "local-deploy",
+    "command": "npm --prefix infra run local:deploy",
+    "cwd": ".",
+    "seconds": 72.351,
+    "exit": 0
+  },
+  {
+    "job": "local-integration",
+    "name": "local-test",
+    "command": "set -o pipefail; npm --prefix infra run local:test | tee local-test-summary.txt",
+    "cwd": ".",
+    "seconds": 126.538,
+    "exit": 0
+  },
+  {
+    "job": "local-integration",
+    "name": "local-down",
+    "command": "npm --prefix infra run local:down",
+    "cwd": ".",
+    "seconds": 7.181,
+    "exit": 0
+  }
+]
