@@ -72,7 +72,7 @@ request admission. Browser serving and draft content stay separate modules.
 ## Verification and sizes
 
 Baseline: `1a09f565a2c6b81b2c0334daf46a1965349fa1f8`. The baseline snapshots were
-written, run and committed in `e352ecc` **before any source refactoring**.
+written, run and committed in `e352ecc` (rebased as `3320272`) **before any source refactoring**.
 [The snapshot test](../apps/platform/test/tool-visibility.test.mjs) exercises
 four SQL-resolved roles × eight workflow/draft/administration combinations:
 full `tools/list` schemas, descriptions, annotations, order and server metadata;
@@ -83,7 +83,9 @@ provider requests. The fixture is retained unchanged after the refactor.
 The existing platform tests remain unchanged. Local Node.js 22.23.3 checks,
 build and the full suite pass against disposable schemas in the dedicated
 loopback Postgres database. Baseline suite: 71 passed, two opt-in tests skipped
-(including the new snapshot test); final suite: 74 passed, the same two skipped.
+(including the new snapshot test); final suite after rebasing onto `27ebab3`: 75 passed, the same two skipped.
+The rebase includes mainline site-core/workspace boundaries and its independent
+tool-list snapshot without changing the captured tool/capability fixture.
 Three additional regressions cover inherited/unknown tool names, exact existing
 site-failure recording with sanitized identifiers, and role revocation between
 registration and handler execution.
@@ -103,18 +105,18 @@ goal is bounded responsibilities rather than fewer total lines.
 
 | Previous module | Before | Resulting implementation modules (lines) |
 | --- | ---: | --- |
-| `drafts.ts` | 1,099 | `sites/drafts.ts` 456; `uploads.ts` 327; `snapshots.ts` 302; `cleanup.ts` 116; `draft-summary.ts` 69 |
-| `sites.ts` | 1,084 | `sites/deployments.ts` 297; `worker.ts` 391; `artifacts.ts` 90; `status.ts` 168; `admin/inventory.ts` 100; `reset.ts` 156 |
+| `drafts.ts` | 1,099 | `sites/drafts.ts` 457; `uploads.ts` 328; `snapshots.ts` 304; `cleanup.ts` 116; `draft-summary.ts` 70 |
+| `sites.ts` | 1,084 | `sites/deployments.ts` 298; `worker.ts` 394; `artifacts.ts` 89; `status.ts` 163; `admin/inventory.ts` 100; `reset.ts` 156 |
 | `store.ts` | 506 | `identity/store.ts` 303; `agent-keys.ts` 114; `roles.ts` 19; `types.ts` 19; `admin/testers.ts` 80; `administrators.ts` 97; `logs.ts` 118 |
-| `site-administration.ts` | 653 | `admin/site-administration.ts` 210; `billing/eligibility.ts` 70; `costs.ts` 213; `reports.ts` 268 |
+| `site-administration.ts` | 653 | `admin/site-administration.ts` 211; `billing/eligibility.ts` 70; `costs.ts` 213; `reports.ts` 268 |
 | `tools.ts` | 652 | wrapper 110; registry 39; definition types 43; discovery definitions 343; workflow definitions 283; administration definitions 89; shared schemas 97 |
-| `draft-content.ts` | 366 | `sites/draft-content.ts` 366 |
-| `site-pages.ts` | 297 | `sites/pages.ts` 297 |
+| `draft-content.ts` | 366 | `sites/draft-content.ts` 368 |
+| `site-pages.ts` | 297 | `sites/pages.ts` 293 |
 | `auth.ts` | 35 | `identity/auth.ts` 66 |
 | `audit.ts` | 95 | `identity/audit.ts` 97 |
 
 Every platform source module is below 500 lines; the largest is
-`sites/drafts.ts` at 456. Authentication/audit line growth is formatting only.
+`sites/drafts.ts` at 457. Authentication/audit line growth is formatting only.
 Source-evidence links and architecture provenance are refreshed for the moved
 modules; topology, styling and activation claims remain unchanged. Owner
 review of the Operator-authored PR is the delivery boundary. Merge and

@@ -8,12 +8,13 @@ import {
 import { report, csv } from '../billing/reports.ts';
 
 import type { PoolClient } from 'pg';
+import { defaultPolicy } from '@a2aviary/site-core';
 import {
   SiteError,
-  defaultPolicy,
   type SiteResources,
   type SiteDeployer,
 } from '@a2aviary/generator';
+
 import { Store, type Principal } from '../identity/store.ts';
 
 export interface CatalogSite {

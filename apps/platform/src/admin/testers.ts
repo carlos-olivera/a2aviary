@@ -1,4 +1,4 @@
-import { defaultPolicy } from '@a2aviary/generator';
+import { defaultPolicy } from '@a2aviary/site-core';
 
 import type { Store } from '../identity/store.ts';
 import { AccessError } from '../identity/roles.ts';
