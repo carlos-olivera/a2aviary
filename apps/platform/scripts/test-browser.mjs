@@ -161,7 +161,7 @@ try {
   console.log(
     JSON.stringify({
       passed: true,
-      checkerChecks: 37,
+      checkerChecks: JSON.parse(await readFile(new URL('outputs/report.json', directory))).checks.length,
       screenshots: 14,
       realBrowser: true,
       googleAuthentication: false,
