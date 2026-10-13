@@ -1,5 +1,10 @@
 # CI activation and PR #37 verification — 2026-10-12
 
+Current PR #38 verification: [2026-10-13 rebase onto main b58862c](rebase-2026-10-13.md).
+All six architecture artifacts were regenerated from the merged candidates and
+the full local CI commands rerun. Earlier production observations and broker
+deployment below are dated evidence; neither was repeated by this rebase task.
+
 Owner: Carlos Olivera Terrazas. Repository: `carlos-olivera/a2aviary`.
 Prepared branch: `codex/ci-activation`, from main
 `27ebab35ddd46c3686e6ec5bd88be323b429790b`. PR #37 was checked at exactly

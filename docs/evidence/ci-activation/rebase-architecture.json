@@ -1,0 +1,76 @@
+{
+  "base": "b58862cb7b408548dec0a8bd4093c9cf29f88acb",
+  "inputTreeCommit": "14e0d33",
+  "previousRemoteHead": "31693b58086b4a00ec01e092a2930ba322341829",
+  "generation": "Archify 3.0.1 finalize all six merged candidates, then website/scripts/integrate-architecture.mjs",
+  "diagrams": {
+    "overview": {
+      "candidateSha256": "6af943e45c144a1323c2d8b91f6412c8117cad3c287da556f5c1b4422ddfa96e",
+      "rawArtifactSha256": "d78f07fdc7b0756c9b5bc71b06f0975ad78dec1a99efce6ecfc0c879b1fe07b7",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "generatedDrawingSha256": "9169d487381c830729a530fb1ad0c95ec9a3479fca5ed5e8ca6587d9ea74b860"
+    },
+    "client": {
+      "candidateSha256": "a80c6c8a368d4bd88faddb0964125041d2f75cadedb49c9f067debb880723e9e",
+      "rawArtifactSha256": "a23fd6094f23fa33fc3e141ae4175d825e1b84ae96642562d9aef1b24ce9a7c4",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "generatedDrawingSha256": "45d4290ff179cc89293945cb850f73af6ff9babad8ed4b0425cef3dab7c494cf"
+    },
+    "gate": {
+      "candidateSha256": "4fb1d0c913c259150442fffd8e2ad919859f12f29185d2bdb3b867fa6df9548c",
+      "rawArtifactSha256": "e3c4b5010244f8e83027b7f3acadbfacce5516bb1f3ee4fa7abb298eff4a236d",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "generatedDrawingSha256": "944eafd01e7bb7ed5863d6b5c5be20375463ffe40573e6785cac3869657df791"
+    },
+    "engine": {
+      "candidateSha256": "de0e933bb01354c6a61849f15531e137beef8bbebc0faa2c5bd6a7b6a36e3f28",
+      "rawArtifactSha256": "09423f25ff10a1ecfe5490c4df2b24e61eea02b0a912b0dd63907c8e6ef0ed3a",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "generatedDrawingSha256": "62bd6aec7e48dd3e53ae24f59208bf8d75f6c56f4bf1100359e08b4b10b1c179"
+    },
+    "hosting": {
+      "candidateSha256": "fb02c250e48e84efa12f2098b53c0c719ea4e259435655d0a415d6f0342c871a",
+      "rawArtifactSha256": "04263861dd0ca69d15dfa61b74abdd1481e5516040504186d6cb628d35d80f03",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "generatedDrawingSha256": "821e9bcd3a7b30622e0514451907502fd1d42fc90eab47883e005a0eee311b51"
+    },
+    "ops": {
+      "candidateSha256": "47b20d4aac737f8c27f644fd44198f43847bbe92f5140f093ac2a1d17e97fc87",
+      "rawArtifactSha256": "a25f0db1a3b941289b3f61f22c95fa7875c5384e47614c18e3722afde9eb6848",
+      "gates": {
+        "validate": "pass",
+        "deliver": "pass",
+        "check": "pass",
+        "browser-check": "pass"
+      },
+      "generatedDrawingSha256": "94b08e2f7acc7f24ed24c1e0f134adf580ad90dbe8a2ff7a14df5b9e5cc6536a"
+    }
+  },
+  "integratedPageSha256": "398d6b30fc05e634b178fef20ea4fb88acd106ae15d55be2d12708c9bd7faf91",
+  "geometryMatchesMain": true
+}
