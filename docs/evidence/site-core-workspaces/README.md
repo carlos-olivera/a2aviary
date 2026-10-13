@@ -35,9 +35,9 @@ existing pinned versions. No dependency was upgraded.
 ADR 014's reviewed data/runtime boundary is preserved. ADR 015 exists on main but
 still labels itself proposed; this change preserves its four-axis direction
 without introducing starters, category behavior or policy separation. That status
-label is not changed here. Historical architecture fingerprints continue to
-identify their recorded revisions; the moved domain paths map from
-`services/src/site/*` to `packages/site-core/src/*`.
+label is not changed here. Architecture source links/ranges and fingerprints are regenerated for this
+refactor, including `packages/site-core/`, root manifests/lockfile and the parity
+runner. The six drawings retain their topology and geometry.
 
 ## Behavioral proof
 
@@ -48,7 +48,8 @@ identify their recorded revisions; the moved domain paths map from
   compare exactly after it: spec digest, source digest, every source file/binary
   byte, and every actual Astro-built output byte. Includes catalog, boxed policy
   2.1 and all three presentation compositions. `npm run test:parity` rebuilds all
-  five and asserts those golden hashes. `GENERATOR_VERSION` remains `2.3.0`.
+  five and asserts those golden hashes, plus every existing `boxed-2.1.json` file digest.
+  `GENERATOR_VERSION` remains `2.3.0`.
 - Both generated library data files and registry match baseline bytes. Compiler
   stale-artifact rejection tests pass; neither checking command regenerates data.
 - Full `library:check` passes: 148 library captures and 168 presentation cases,
@@ -76,7 +77,8 @@ Prompt 1's earlier workflow patch was still unapplied on main. Its jobs are upda
 for the root lockfile, site-core build/check/tests, generator/platform dependency
 order, fixture parity and repository-root image build. Existing website deployment
 remains main-only; no production platform deployment or permission expansion is
-added. The patch passes `git apply --check` against this revision.
+added. The patch includes matching generated architecture provenance and passes
+`git apply --check` and website check/build with all three patch files applied.
 
 Live Operator preflight confirms App 5185075 (`a2aviary-operator`), installation
 167790436 scoped only to this repository, enabled development broker, protected
@@ -84,4 +86,27 @@ main and **auto-merge disabled**. Its current grant lacks workflow-write permiss
 Accordingly `.local/ci-workflow.patch` is prepared in the excluded worktree for the
 owner to apply through an authorized route **before merging**. No personal GitHub
 publishing fallback is used. The workflow files remain untouched in the App PR;
-CI execution on a GitHub runner is not claimed.
+The initial GitHub `checks` job failed on stale architecture fingerprints; the
+review fix regenerates source evidence and reruns the same website gate locally.
+New workspace-job execution on a GitHub runner remains unverified.
+
+
+## Review corrections
+
+The first PR revision failed the existing required website check because its
+source fingerprints still described the pre-refactor tree. The review maps all
+architecture source links/ranges to the actual package owners, adds site-core,
+root manifests/lockfile and the parity runner to freshness coverage, and
+regenerates all six finalized records through Archify 3.0.1 and the repository's
+integration tool. Every integrated SVG hash remains identical; only source
+references/revision and generated evidence change. No status or topology changes.
+
+Website check/build passes with the PR workflows and with the owner patch applied.
+The patch contains both workflow files plus the matching generated provenance;
+only those two workflow fingerprints differ from the PR's provenance, and the
+emitted page is identical in both cases. Actual mutation checks prove that edits
+to site-core policy source or the root lockfile fail freshness, then pass again
+when restored. Infrastructure build and all nine security/local-target tests pass.
+The five parity fixtures retain their committed digests, and the runner now also
+asserts every historical `boxed-2.1.json` file hash directly. No hosted fixture,
+production merge or deployment occurred during review.

@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Architecture overview",
-    "output": ".local/architecture/cms-target/overview.html",
+    "output": ".local/architecture/site-core-review/overview.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "cd065ae0da5b81c238b6d91c7f6b77a352f5cfc6",
+      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
       "provider": "github",
       "link_mode": "web"
     }
@@ -74,13 +74,13 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 718,
-          "end_line": 749
+          "line": 720,
+          "end_line": 751
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 472,
-          "end_line": 479
+          "line": 474,
+          "end_line": 481
         }
       ],
       "tag": "Explore stage"
@@ -101,13 +101,13 @@
       "sources": [
         {
           "path": "docs/release-verification.md",
-          "line": 5,
-          "end_line": 12
+          "line": 28,
+          "end_line": 35
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 177,
-          "end_line": 184
+          "line": 179,
+          "end_line": 186
         }
       ],
       "tag": "Catalog implementation"
@@ -128,8 +128,8 @@
       "sources": [
         {
           "path": "AGENTS.md",
-          "line": 33,
-          "end_line": 37
+          "line": 35,
+          "end_line": 39
         }
       ],
       "tag": "Explore stage"

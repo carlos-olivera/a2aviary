@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Auth & Mandate Gate",
-    "output": ".local/architecture/cms-target/gate.html",
+    "output": ".local/architecture/site-core-review/gate.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "cd065ae0da5b81c238b6d91c7f6b77a352f5cfc6",
+      "revision": "7daf30a0461edc96ef887cd73bc1e2c2920d3e84",
       "provider": "github",
       "link_mode": "web"
     }
@@ -49,8 +49,8 @@
         },
         {
           "path": "apps/platform/src/tools.ts",
-          "line": 24,
-          "end_line": 31
+          "line": 20,
+          "end_line": 27
         }
       ],
       "pos": [
@@ -71,13 +71,13 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 47,
-          "end_line": 68
+          "line": 49,
+          "end_line": 70
         },
         {
           "path": "apps/platform/src/store.ts",
-          "line": 344,
-          "end_line": 351
+          "line": 345,
+          "end_line": 352
         }
       ],
       "pos": [
@@ -98,13 +98,13 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 900,
-          "end_line": 923
+          "line": 902,
+          "end_line": 925
         },
         {
           "path": "apps/platform/src/sites.ts",
-          "line": 177,
-          "end_line": 208
+          "line": 179,
+          "end_line": 210
         }
       ],
       "pos": [
@@ -125,16 +125,16 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 784,
-          "end_line": 799
+          "line": 786,
+          "end_line": 801
         },
         {
-          "path": "services/src/site/validator.ts",
+          "path": "packages/site-core/src/validator.ts",
           "line": 66,
           "end_line": 73
         },
         {
-          "path": "services/src/site/library.ts",
+          "path": "packages/site-core/src/library.ts",
           "line": 304,
           "end_line": 357
         }
@@ -157,8 +157,8 @@
       "sources": [
         {
           "path": "apps/platform/src/drafts.ts",
-          "line": 718,
-          "end_line": 765
+          "line": 720,
+          "end_line": 767
         }
       ],
       "pos": [

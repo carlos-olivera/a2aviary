@@ -48,18 +48,23 @@ and existing AWS OIDC permissions; it still depends only on `checks`.
 GitHub refused the Operator App push on 2026-10-12 because it lacks `workflows`
 permission. The complete workflow and matching provenance diff is saved in ignored
 `.local/ci-workflow.patch`; no App permission was requested, changed or bypassed.
-This documentation-only PR does not activate these jobs. Workflow publication,
+The App-authored PR does not publish these workflow files or activate these jobs. Workflow publication,
 new-job run links/durations and main deployment gating remain unverified.
 
-The existing website check fingerprints workflow bytes. With the owner's narrow
-exception, the official `website/scripts/integrate-architecture.mjs` regenerated
-`docs/architecture/provenance.json` from the existing six matching finalized
-artifacts/receipts. Only the two workflow hashes changed; the emitted architecture
-HTML is byte-for-byte unchanged. Website check/build passes with the full patch.
-The matching provenance remains in the owner patch with both workflow files;
-publishing it alone would fail the current check. No other generated artifact
-changed. This workflow/provenance coupling is expected to be relaxed in a later
-cleanup PR.
+The existing website check fingerprints workflow bytes and represented source.
+PR #36 moves the site domain to `packages/site-core`, with one root lockfile for
+site-core, generator and platform. Its review refreshes architecture source
+paths/ranges and fingerprint coverage through the existing Archify 3.0.1 and
+integration pipeline. All six integrated SVG hashes remain identical. Root
+`npm ci` and a site-core build now precede relocated contract/library gates and
+generator/platform checks in the updated owner patch.
+
+The matching workflow provenance stays in the owner patch with both workflow
+files. Applying just the workflow files would fail freshness. The patch is checked
+against PR #36, not the earlier standalone-generator tree, and website check/build
+passes with it applied. Source-freshness guards remain enabled; no public status
+or architecture topology is changed. This workflow/provenance coupling is expected
+to be relaxed in a later cleanup PR.
 
 Before activating the prepared jobs, Carlos Olivera Terrazas must apply all three
 patch files together through an authorized owner route and obtain successful

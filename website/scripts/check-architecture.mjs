@@ -12,6 +12,9 @@ assert.equal(provenance.integratedPageSha256,digest(html),'Page differs from gen
 assert.equal(provenance.manifestSha256,digest(await read('docs/architecture/stages.json')),'Stage membership changed: regenerate');
 assert.equal(provenance.coverageSha256,digest(await read('docs/architecture/coverage.json')),'Coverage/status changed: regenerate');
 assert.deepEqual(await sourceFingerprints(),provenance.sourceFingerprints,'Represented source changed: regenerate architecture');
+for (const path of ['package.json', 'package-lock.json', 'packages/site-core/src/index.ts', 'packages/site-core/src/policy.ts', 'packages/site-core/src/validator.ts', 'scripts/check-workspace-parity.mjs']) {
+  assert(Object.hasOwn(provenance.sourceFingerprints, path), 'Workspace/domain source must be fingerprinted: ' + path);
+}
 assert.equal(manifest.stages.length,5);
 assert.equal(provenance.sourceRevision,manifest.sourceRevision);
 assert.equal(new Set(manifest.stages.map(stage=>stage.id)).size,5);
