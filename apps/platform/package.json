@@ -12,6 +12,7 @@
     "start": "node dist/main.js",
     "build": "tsc && node scripts/licenses.mjs",
     "check": "tsc --noEmit && npm run contracts:check",
+    "pretest": "playwright install --with-deps chromium",
     "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "migrate": "node --env-file-if-exists=.env src/migrate.ts",
     "contracts:check": "node scripts/check-contracts.mjs",

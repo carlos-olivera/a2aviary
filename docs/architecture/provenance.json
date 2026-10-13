@@ -103,7 +103,7 @@
     "apps/platform/migrations/007-server-drafts-preview.sql": "435f9e12cec8818a85c1f438b5ef31c9c94be55a8cb477f51416c0fc71343df7",
     "apps/platform/migrations/008-site-starters.sql": "495bbf08b914f085a800a4b8a1e0fd50f599abcb36d1ea28eb14e46a504ee507",
     "apps/platform/migrations/009-quick-preview-quota.sql": "3a417c5d3771bad7951161806e272878c103315914dbd10bbcb2646a97be4126",
-    "apps/platform/package.json": "3998c4a6aee450b2cae9a6c39e15eecc90fbc8c68698834a7def3e196af16acf",
+    "apps/platform/package.json": "2dc4b2cfe5a135d689bbd912c63b11b23c879cba27440be575d6ce63a466c5f2",
     "apps/platform/railway.json": "d53ed476b291218b202b81695398568dd92f47483f261c5b1e9e6640bebb14a4",
     "apps/platform/scripts/check-contracts.mjs": "79816d0c796bfede34f1b2e70c8eb7ca12cfa46946f06aeaae63363cc933143f",
     "apps/platform/scripts/fixture-selection.mjs": "9748abadc24fc60c736ccad06d2dd2bbbb4d70872cb22909ed1f8fdf822ff961",
