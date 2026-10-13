@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-10-13 — CI activation publication retry
+
+- Fetch and rebase `codex/ci-activation` against unchanged main `27ebab35`; retain completed local job evidence and recheck workflow lint/whitespace.
+- Verify the Operator App registration now grants workflows write, while its installation still omits it. The broker-issued token push is refused again; no remote branch or PR is created. Record the installation approval and separately authorized broker profile/deployment prerequisites in [CI evidence](docs/evidence/ci-activation/README.md#part-b-retry--2026-10-13). Refresh the complete local patch; leave PR #37 and production untouched.
+
 ## 2026-10-12 — CI activation refresh and read-only production verification
 
 - Refresh the unpublished CI workflow for root npm workspaces/site-core, pinned Node 22.23.3, loopback Postgres, generator units/full browser checks and repository-root image builds. Keep presentation/CMS checks dispatch-only and website delivery unchanged except the Node pin; refresh only the two workflow provenance hashes.

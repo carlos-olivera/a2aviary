@@ -6,6 +6,34 @@ Prepared branch: `codex/ci-activation`, from main
 `d9137392bff7a4b588daa92e3979a7f22fa98fec` in a new clean managed worktree;
 its source and remote branch were not changed or pushed.
 
+## Part B retry — 2026-10-13
+
+At **2026-10-13 06:43:35 UTC−04:00 (America/La_Paz)**, live GitHub metadata
+confirms the App registration includes `workflows: write`, but installation
+167790436 still omits it. The installation remains selected-repository-only.
+The owner must accept the permission update for that installation.
+
+Fetched `origin/main` remains `27ebab35ddd46c3686e6ec5bd88be323b429790b`;
+`git rebase origin/main` reports the branch is up to date. Application and
+workflow bytes are unchanged from the completed local verification below.
+`actionlint .github/workflows/*.yml` and `git diff --check` pass again.
+The existing Operator development broker issued the publication token; GitHub
+again refused the complete branch push for missing `workflows` permission.
+No remote CI branch or PR was created. The token was revoked, auto-merge remains
+disabled, and main remains protected with App-bound `checks` and `a2aviary-policy`.
+
+There is a second prerequisite: `services/src/operator.ts` explicitly requests
+only `contents: write`, `pull_requests: write` and `actions: read` for development
+tokens. Accepting the installation update alone does not add workflows to that
+profile. Updating/deploying the broker requires separate owner authorization;
+this retry neither modifies it nor mints a broader token outside the broker.
+No permission/protection workaround or production change was performed.
+
+The refreshed complete patch remains in ignored `.local/ci-workflow.patch`,
+with a copy in the original checkout. PR #37 was not inspected, changed,
+rebased, tested or pushed during this retry. Its results below are prior dated
+evidence. New CI runner execution and Railway gating remain unobserved.
+
 ## Part A: observed production state, read-only
 
 GET `https://platform-production-d84c.up.railway.app/healthz` at
@@ -151,11 +179,12 @@ environment>` denotes only local placeholders, not production credentials.
 
 ## Owner actions, in order
 
-1. If publication is refused, either grant the Operator App repository permission
-   **Workflows: read and write**, accept it on the installation, and request a
-   re-run of Part B; or apply the refreshed `.local/ci-workflow.patch` yourself
-   on a feature branch. A PR pushed from your account needs approval from
-   someone other than its last pusher under current branch protection.
+1. Accept **Workflows: read and write** on the App installation (the registration
+   already includes it), then separately authorize the broker development-token
+   profile update/deployment before another Part B retry. Alternatively, apply
+   the refreshed `.local/ci-workflow.patch` yourself on a feature branch. A PR
+   pushed from your account needs approval from someone other than its last
+   pusher under current branch protection.
 2. After the CI PR merges and these jobs have run once on main, add **platform**,
    **generator** and **platform-image** as required checks, retaining existing
    checks/current-head policy review and disabled auto-merge. GitHub lists
