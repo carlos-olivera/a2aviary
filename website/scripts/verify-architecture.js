@@ -33,7 +33,8 @@ async (page) => {
       assert(nodes.length === counts[index] && JSON.stringify(nodes) === JSON.stringify(evidence), 'Only matching technical evidence');
       assert(nodes.every(id => id.startsWith(stage + '-')), 'Evidence belongs to selected stage');
       const links = await page.locator('.node-list details').evaluateAll(details => details.map(detail => [...detail.querySelectorAll('a')].map(a => a.href)));
-      assert(links.every(group => group.length > 0 && group.every(url => url.startsWith('https://github.com/carlos-olivera/a2aviary/blob/main/'))), 'Every technical node links to main sources');
+      const sourceRevision = (await page.locator('.map-credit a[href*="/tree/"]').getAttribute('href')).split('/').pop();
+      assert(links.every(group => group.length > 0 && group.every(url => url.startsWith('https://github.com/carlos-olivera/a2aviary/blob/'+sourceRevision+'/'))), 'Every technical node links to its recorded immutable sources');
       sourceCount += nodes.length;
       for (const id of nodes) {
         await page.locator(`#stage-body [data-node-id="${id}"]`).focus();
@@ -104,6 +105,6 @@ async (page) => {
     } finally { await context.close(); }
     assert(requests.every(url => new URL(url).origin === origin), 'No automatic cross-domain requests in either JavaScript mode');
     assert(errors.length === 0, 'No browser diagnostics in either JavaScript mode');
-    return { result: 'PASS', macroStages: 5, technicalNodes: sourceCount, automaticOtherDomainRequests: 0, checks: ['HTML MIME and production CSP', 'initial overview only', 'all tabs/macros and 44 technical nodes', 'exclusive evidence and reset', 'keyboard, announcements and focus', 'boundary links and local highlighting', 'collapsed local setup', 'desktop/mobile', 'JavaScript-free access', 'main source links'] };
+    return { result: 'PASS', macroStages: 5, technicalNodes: sourceCount, automaticOtherDomainRequests: 0, checks: ['HTML MIME and production CSP', 'initial overview only', 'all tabs/macros and 44 technical nodes', 'exclusive evidence and reset', 'keyboard, announcements and focus', 'boundary links and local highlighting', 'collapsed local setup', 'desktop/mobile', 'JavaScript-free access', 'immutable source links'] };
   } finally { page.off('request', record); page.off('console', diagnostic); }
 }

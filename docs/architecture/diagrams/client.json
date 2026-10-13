@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Client & Local Agent",
-    "output": ".local/architecture/platform-refactor/client.html",
+    "output": ".local/architecture/runtime-cleanup/client.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "0de2602176610b2de230bcd19bf294622bf9a49a",
+      "revision": "ebe60fd082a73f80634103736c959f3389ed7632",
       "provider": "github",
       "link_mode": "web"
     }
@@ -21,9 +21,9 @@
       "sublabel": "Incremental content / stable IDs",
       "sources": [
         {
-          "path": "apps/platform/src/tool-definitions-workflow.ts",
-          "line": 48,
-          "end_line": 65
+          "path": "apps/platform/src/tools/tool-definitions-workflow.ts",
+          "line": 45,
+          "end_line": 61
         },
         {
           "path": "apps/platform/src/sites/draft-content.ts",
@@ -76,8 +76,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites/snapshots.ts",
-          "line": 216,
-          "end_line": 240
+          "line": 219,
+          "end_line": 243
         },
         {
           "path": "apps/platform/src/sites/pages.ts",
