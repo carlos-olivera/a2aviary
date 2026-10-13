@@ -1,0 +1,6 @@
+{
+  "unrelatedStaleFingerprint": "warning and exit 0",
+  "releaseStaleFingerprint": "fails as required",
+  "markerRemoved": true,
+  "finalRealBranchCheck": "current and exit 0"
+}

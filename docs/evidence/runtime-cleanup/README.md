@@ -122,7 +122,7 @@ corrected to report the observed count. Fictional sessions do not prove Google
 authentication. The final Linux image builds, then generates as UID 1000 with
 network disabled and matches the catalog digest while rejecting policy 2.1.0.
 Current byte parity, website release check/build, real local CMS tests and
-393 documentation links/anchors pass. Detailed logs remain private. Detailed local
+396 documentation links/anchors pass. Detailed logs remain private. Detailed local
 logs, captures and container diagnostics stay ignored under `.local/` or temporary
 log paths; no production credentials are used in these tests.
 
@@ -133,3 +133,7 @@ tag pre-cleanup commit `27f642acf462bb34afc7428cc5ca04852f205f96`, the last comm
 containing the removed historical policies/contracts. No tag is created here.
 Main check protection, merge, activation, deployment and remaining release gates
 require separate owner action. Repository auto-merge must stay disabled.
+
+The [freshness regression](architecture-freshness-regression.json) introduces a
+temporary unrelated test file: stale provenance warns and passes, release mode
+fails, and the real branch check passes after the marker is removed.
