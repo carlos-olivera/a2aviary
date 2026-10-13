@@ -3,7 +3,7 @@ import { requireMcpAuth } from '@better-auth/mcp';
 import { createPool } from './database.ts';
 import { createAuth } from './identity/auth.ts';
 import { AccessError, Store, isAdminTool } from './identity/store.ts';
-import { toolIndex } from './tool-registry.ts';
+import { toolIndex } from './tools/tool-registry.ts';
 import { createServer } from './tools.ts';
 import { loadPlans } from './plans.ts';
 import { page } from './pages.ts';

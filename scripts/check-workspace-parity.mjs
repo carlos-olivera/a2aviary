@@ -17,25 +17,15 @@ import {
 const root = fileURLToPath(new URL('../', import.meta.url));
 process.chdir(root);
 const catalogInput = await fixtureSubmission();
-const boxedInput = {
-  spec: JSON.parse(await readFile('contracts/site/2.1.0/examples/site-spec.json')),
-  assets: catalogInput.assets,
-};
-const inputs = [
-  ['catalog', catalogInput],
-  ['boxed-2.1', boxedInput],
-  ...await Promise.all(compositionNames.map(async name => [name, await composition(name)])),
-];
+const inputs = [['catalog', catalogInput], ...await Promise.all(compositionNames.map(async name => [name, await composition(name)]))];
 const boxedGolden = JSON.parse(await readFile('packages/generator/test/fixtures/boxed-2.1.json', 'utf8'));
 const results = {};
 for (const [name, input] of inputs) {
   const options = { test: true };
-  if (name === 'boxed-2.1') {
-    options.fixtureLibrary = { policy: policyForVersion('2.1.0'), catalog, variants: library };
-  }
+
   const assets = new Map(Object.entries(input.assets).map(([id, b64]) => [id, Buffer.from(b64, 'base64')]));
   const source = await generateSite(input.spec, assets, options);
-  if (name === 'catalog' || name === 'boxed-2.1') {
+  if (name === 'catalog') {
     for (const [path, expectedHash] of Object.entries(boxedGolden.hashes)) {
       const bytes = path in source.binaryFiles
         ? Buffer.from(source.binaryFiles[path], 'base64')
@@ -71,5 +61,6 @@ for (const [name, input] of inputs) {
   };
 }
 const expected = JSON.parse(await readFile('docs/evidence/site-core-workspaces/generator-hashes.json', 'utf8'));
+delete expected['boxed-2.1']; // Historical capture remains evidence, not a supported runtime input.
 assert.deepEqual(results, expected);
-console.log('All five fixture spec, source, source-file and built-output hashes match the pre-refactor baseline.');
+console.log('All four current fixture spec, source, source-file and built-output hashes match the pre-refactor baseline.');

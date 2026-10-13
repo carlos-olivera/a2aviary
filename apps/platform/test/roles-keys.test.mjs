@@ -1,7 +1,8 @@
+import { toolIndex } from '../src/tools/tool-registry.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPair, exportJWK} from 'jose';
-import {Store, TOOL_ROLES, ALL_ROLES, requireRole, validatePublicKey} from '../src/store.ts';
+import {Store, ALL_ROLES, requireRole, validatePublicKey} from '../src/identity/store.ts';
 import { compactLibraryManifest } from '@a2aviary/generator';
 import {fixture} from './helpers.mjs';
 
@@ -13,7 +14,7 @@ const expectedTools = {client: [...discoveryAndOwnKeys,'site.report'], tester: d
   superadmin: [...discoveryAndOwnKeys,'admin.audit.list','admin.invite','admin.revoke','testers.add','testers.remove','testers.list','logs.query','site.admin.assign','site.admin.remove','site.admin.list','site.report']};
 
 test('all role/tool permission combinations',()=>{
-  for(const role of ALL_ROLES) for(const tool of new Set([...Object.keys(TOOL_ROLES),...expectedTools.superadmin])) {
+  for(const role of ALL_ROLES) for(const tool of new Set([...Object.keys(toolIndex),...expectedTools.superadmin])) {
     if((role==='superadmin'&&['sites.list','site.inspect','tester.reset'].includes(tool))||expectedTools[role].includes(tool)||(['library.get','site.draft.create','site.draft.apply','site.draft.get','site.draft.discard','site.upload.open','site.upload.status','site.upload.revoke','site.preview','site.status','site.deploy','change.request'].includes(tool))||(['site.report','site.costs.refresh'].includes(tool)&&role!=='tester')||(role==='superadmin'&&['site.admin.assign','site.admin.remove','site.admin.list'].includes(tool))) assert.doesNotThrow(()=>requireRole({id:'fictional',role,testMode:role==='tester'},tool));
     else assert.throws(()=>requireRole({id:'fictional',role,testMode:false},tool),/forbidden/);
   }

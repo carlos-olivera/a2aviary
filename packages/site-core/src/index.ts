@@ -1,4 +1,4 @@
-export { defaultPolicy, policyForVersion, assertPolicy, canonicalJson, sha256, specDigest } from './policy.ts';
+export { SUPPORTED_POLICY_VERSIONS, assertSupportedPolicyVersion, defaultPolicy, policyForVersion, assertPolicy, canonicalJson, sha256, specDigest } from './policy.ts';
 export type { Policy } from './policy.ts';
 export { validateSiteSpec, validateAssets, validateChangeRequest } from './validator.ts';
 export { artifactDirectory, assertPolicySnapshot, flattenRules, generateContracts } from './generator.ts';
@@ -9,3 +9,5 @@ export { gzipBytes, behaviorBundle, selectedPackages, fontPackages, validateLibr
 export type { LibraryPackage, LibraryCatalog } from './library.ts';
 export { behaviorLoader } from './behavior-loader.ts';
 export type { Link, Asset, Block, Section, Seo, Page, Tokens, Navigation, ShellContent, SiteSpec, ValidationError, ValidationResult, ChangeAccounting, ChangeContext, LibraryContext } from './types.ts';
+export { collections, collectionIds, collectionDefinitions, collectionDefinition, boundCollectionIds } from './collections.ts';
+export type { CollectionDefinition } from './collections.ts';

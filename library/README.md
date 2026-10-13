@@ -4,8 +4,8 @@ Current source implements the [contract 2.2 amendment](#contract-22-amendment).
 The following foundation section preserves the PR #29 model and is extended below.
 
 The library is repository-authored data consumed by the trusted generator. The
-[policy 2.0.0](../plans/versions/web-simple/2.0.0.policy.json) remains the content
-contract. This foundation has twelve components and one `standard` variant each;
+[policy 2.2.0](../plans/versions/web-simple/2.2.0.policy.json) is the current content
+contract; the following foundation narrative describes the original PR #29 model. This foundation has twelve components and one `standard` variant each;
 it does not add client CSS, JavaScript, HTML or a public contribution workflow.
 See [decision 014](../docs/decisions/014-component-library.md).
 
@@ -245,11 +245,10 @@ accessible controls and fallback messages must come from typed content.
 Incomplete drafts can be saved. Every apply/get summary includes compact
 `missingLabels` groups with an exact JSON Pointer parent and missing field names;
 combine them to locate each field. Preview/build reject missing or blank required
-labels. The compact summary does not return supplied private copy. Historical
-2.1 (and 2.0) drafts remain readable/discardable, but edits and previews return an
-actionable retired-policy error. There is no upgrade path or database migration.
-Previously approved snapshots keep deploying their stored bytes under their
-original validation/checker profile.
+labels. The compact summary does not return supplied private copy. Historical 2.1 and 2.0 drafts and snapshots are now unsupported and return
+`policy_version_unsupported`, including reads, discard, approval and deployment.
+No upgrade path or database migration is introduced. Historical records survive
+in Git at the pre-cleanup revision; current 2.2.0 artifacts remain frozen.
 
 ### Targets and confined runtime capabilities
 
@@ -322,3 +321,8 @@ exercise real MCP draft tools, normal uploads, preview/build and server gating.
 The hosted fixture runner accepts only `--composition dark-en|light-es|contrast-es`;
 its existing authorization gates remain intact. Pure selection is tested locally;
 this option does not authorize provider operations or a hosted run.
+
+## CMS collection data
+
+[Collections](../collections/README.md) compile through `library:generate` and
+`library:check` into inert site-core data. They are not executable library packages.

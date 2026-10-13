@@ -4,8 +4,8 @@ import assert from 'node:assert/strict';
 import { fixture } from './helpers.mjs';
 import { testDependencies } from './site-dependencies.mjs';
 import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
-import { TOOL_ROLES } from '../src/store.ts';
-import { redactedAudit } from '../src/audit.ts';
+import { toolIndex } from '../src/tools/tool-registry.ts';
+import { redactedAudit } from '../src/identity/audit.ts';
 
 test('audit detail allowlist excludes secret-like result strings and unknown nested fields', () => {
   const row = redactedAudit(
@@ -19,7 +19,7 @@ test('audit detail allowlist excludes secret-like result strings and unknown nes
       },
       testMode: true
     },
-    TOOL_ROLES
+    toolIndex
   );
   assert.deepEqual(row.details, { test: true });
   assert.equal(row.test, true);

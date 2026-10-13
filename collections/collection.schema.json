@@ -1,0 +1,185 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "order",
+    "fields",
+    "publicReadRules",
+    "editorRules",
+    "editorRecordLabel",
+    "publicDisplay"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "maxLength": 64
+    },
+    "order": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 99
+    },
+    "fields": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "type",
+          "editor"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-zA-Z0-9]*$",
+            "maxLength": 64
+          },
+          "type": {
+            "enum": [
+              "text",
+              "bool"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "max": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 262144
+          },
+          "editor": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "label",
+              "control"
+            ],
+            "properties": {
+              "label": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z ]{0,79}$"
+              },
+              "control": {
+                "enum": [
+                  "input",
+                  "textarea",
+                  "checkbox"
+                ]
+              }
+            }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "type": {
+                  "const": "text"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "max",
+                "required"
+              ],
+              "properties": {
+                "editor": {
+                  "properties": {
+                    "control": {
+                      "enum": [
+                        "input",
+                        "textarea"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "max": false,
+                "required": false,
+                "editor": {
+                  "properties": {
+                    "control": {
+                      "const": "checkbox"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "publicReadRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "list",
+        "view"
+      ],
+      "properties": {
+        "list": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]* = true$"
+        },
+        "view": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]* = true$"
+        }
+      }
+    },
+    "editorRules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "create",
+        "update",
+        "delete"
+      ],
+      "properties": {
+        "create": {
+          "const": "@request.auth.collectionName = 'editors'"
+        },
+        "update": {
+          "const": "@request.auth.collectionName = 'editors'"
+        },
+        "delete": {
+          "const": "@request.auth.collectionName = 'editors'"
+        }
+      }
+    },
+    "editorRecordLabel": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "maxLength": 64
+    },
+    "publicDisplay": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "headingField",
+        "bodyField"
+      ],
+      "properties": {
+        "headingField": {
+          "type": "string",
+          "pattern": "^[a-z][a-zA-Z0-9]*$"
+        },
+        "bodyField": {
+          "type": "string",
+          "pattern": "^[a-z][a-zA-Z0-9]*$"
+        }
+      }
+    }
+  }
+}

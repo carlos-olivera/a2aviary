@@ -29,6 +29,7 @@ import {
   canonicalJson,
   sha256,
   defaultPolicy,
+  SUPPORTED_POLICY_VERSIONS,
 } from '@a2aviary/site-core';
 import { SiteError } from '@a2aviary/generator';
 
@@ -127,17 +128,8 @@ export class Drafts {
   }
   /** @internal Shared by domain operations. */
   currentPolicy(site: any) {
-    if (site.policy_version !== defaultPolicy.version.value)
-      throw new SiteError('draft_policy_retired', [
-        {
-          path: '/policyVersion',
-          rule: 'policy.retired',
-          limit: defaultPolicy.version.value,
-          actual: site.policy_version,
-          suggestion:
-            'Read or discard this historical draft; create a new 2.2 draft to edit or preview.',
-        },
-      ]);
+    if (!SUPPORTED_POLICY_VERSIONS.includes(site.policy_version))
+      throw new SiteError('policy_version_unsupported');
   }
   /** @internal Shared by domain operations. */
   summary(d: any) {

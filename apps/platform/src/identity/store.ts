@@ -20,7 +20,6 @@ import {
 export * from './roles.ts';
 export { validatePublicKey } from './agent-keys.ts';
 // Compatibility only: existing test/consumer imports; never a permission source.
-export { legacyToolRoles as TOOL_ROLES } from '../tool-registry.ts';
 export class Store {
   readonly pool: Pool;
   /** @internal Used by identity and administration operations. */

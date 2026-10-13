@@ -1,16 +1,15 @@
+import { collectionIds } from './collections.ts';
 import { assertPolicy, canonicalJson, sha256, type Policy } from './policy.ts';
 
 export type Schema = Record<string, any>;
 const ptr = (path: string) => path.split('/').map(s => s.replaceAll('~', '~0').replaceAll('/', '~1')).join('/');
-export const artifactDirectory = (policy: Policy): string => policy.version.value === '1.0.0' ? 'v1' : policy.version.value;
+export const artifactDirectory = (policy: Policy): string => policy.version.value;
 export function assertPolicySnapshot(policy: Policy, snapshot: unknown): void {
   if (canonicalJson(snapshot) !== canonicalJson(policy)) throw new Error('Policy version already has a different immutable snapshot; bump semver.');
 }
 export function generateContracts(policy: Policy) {
   assertPolicy(policy);
   const f = policy.firstVersion, s = f.structure, c = f.copy;
-  const modern = policy.version.value !== '2.0.0';
-  const presentation = !['2.0.0','2.1.0'].includes(policy.version.value);
   const tag = (schema: Schema, policyPath: string): Schema => ({ ...schema, 'x-policyPath': policyPath });
   const obj = (properties: Schema, required = Object.keys(properties)): Schema => ({ type: 'object', additionalProperties: false, required, properties });
   const ref = (name: string): Schema => ({ $ref: '#/definitions/' + name });
@@ -33,30 +32,30 @@ export function generateContracts(policy: Policy) {
     if (kind === 'imageItems') return arr(id, f.items.grid.value, '/firstVersion/items/grid', 1);
     if (kind === 'faqItems') return arr(obj({ question: copy('heading'), answer: copy('paragraph') }), f.items.faq.value, '/firstVersion/items/faq', 1);
     if (kind === 'links') return arr(ref('link'), f.items.grid.value, '/firstVersion/items/grid', 1);
-    if (kind.endsWith('Collection')) return tag({ const: kind.slice(0, -10) }, '/includes/cmsCollections');
+    if (kind.endsWith('Collection') && collectionIds.includes(kind.slice(0, -10))) return tag({ const: kind.slice(0, -10) }, '/includes/cmsCollections');
     throw new Error('Unsupported component field kind: ' + kind);
   };
   const components = Object.entries(f.components);
-  const effects = { type: 'array', uniqueItems: true, maxItems: modern ? f.library.budgets.effects.value : 0, items: modern && f.library.effects.value.length ? {enum: f.library.effects.value} : false };
+  const effects = { type: 'array', uniqueItems: true, maxItems: f.library.budgets.effects.value, items: f.library.effects.value.length ? {enum: f.library.effects.value} : false };
   defs.block = {
-    ...obj({ id, component: tag({ enum: components.map(([name]) => name) }, '/firstVersion/components'), variant: { type: 'string' }, props: { type: 'object' }, ...(modern ? {effects} : {}) }, ['id','component','variant','props']),
+    ...obj({ id, component: tag({ enum: components.map(([name]) => name) }, '/firstVersion/components'), variant: { type: 'string' }, props: { type: 'object' }, effects }, ['id','component','variant','props']),
     allOf: components.map(([name, component]) => ({
       if: { properties: { component: { const: name } }, required: ['component'] },
       then: { properties: {
         variant: tag({ enum: component.variants.value }, '/firstVersion/components/' + ptr(name) + '/variants'),
-        props: tag(obj(Object.fromEntries(Object.entries(component.fields).map(([key, field]) => [key, presentation && !field.required && ['heading','shortCopy'].includes(field.kind) ? {anyOf:[fieldSchema(field.kind),{const:''}]} : fieldSchema(field.kind)])), Object.entries(component.fields).filter(([, field]) => field.required).map(([key]) => key)), '/firstVersion/components/' + ptr(name) + '/fields')
+        props: tag(obj(Object.fromEntries(Object.entries(component.fields).map(([key, field]) => [key, !field.required && ['heading','shortCopy'].includes(field.kind) ? {anyOf:[fieldSchema(field.kind),{const:''}]} : fieldSchema(field.kind)])), Object.entries(component.fields).filter(([, field]) => field.required).map(([key]) => key)), '/firstVersion/components/' + ptr(name) + '/fields')
       } }
     }))
   };
-  defs.section = obj({ id, blocks: arr(ref('block'), s.maxBlocksPerSection.value, '/firstVersion/structure/maxBlocksPerSection', 1), ...(modern ? {effects} : {}) }, ['id','blocks']);
+  defs.section = obj({ id, blocks: arr(ref('block'), s.maxBlocksPerSection.value, '/firstVersion/structure/maxBlocksPerSection', 1), effects }, ['id','blocks']);
   defs.seo = obj({ title: copy('seoTitle'), description: copy('seoDescription'), socialImage: id }, ['title', 'description']);
   defs.page = obj({ id, path: tag({ type: 'string', pattern: s.pagePathPattern.value }, '/firstVersion/structure/pagePathPattern'), seo: ref('seo'), sections: arr(ref('section'), s.maxSectionsPerPage.value, '/firstVersion/structure/maxSectionsPerPage', 1) });
-  if (presentation) defs.shell = obj({skipLink: copy('label'), primaryNavigationLabel: copy('label'), footerNavigationLabel: copy('label'), notFoundTitle: copy('heading'), notFoundText: copy('shortCopy'), notFoundHomeLabel: copy('label')}, []);
+  defs.shell = obj({skipLink: copy('label'), primaryNavigationLabel: copy('label'), footerNavigationLabel: copy('label'), notFoundTitle: copy('heading'), notFoundText: copy('shortCopy'), notFoundHomeLabel: copy('label')}, []);
   defs.tokens = obj({
     colors: tag(obj(Object.fromEntries(f.designTokens.colorSlots.value.map(slot => [slot, tag({ type: 'string', pattern: f.designTokens.colorPattern.value }, '/firstVersion/designTokens/colorPattern')]))), '/firstVersion/designTokens/colorSlots'),
-    fonts: obj({ heading: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), body: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), ...(modern ? {mono: tag({enum: f.designTokens.fonts.value}, '/firstVersion/designTokens/fonts')} : {}) }, ['heading','body']),
+    fonts: obj({ heading: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), body: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), mono: tag({enum: f.designTokens.fonts.value}, '/firstVersion/designTokens/fonts') }, ['heading','body']),
     spacing: tag({ enum: f.designTokens.spacing.value }, '/firstVersion/designTokens/spacing'), radius: tag({ enum: f.designTokens.radius.value }, '/firstVersion/designTokens/radius'),
-    ...(modern ? {motion: {enum:f.designTokens.motion.value}, layout: {enum:f.designTokens.layout.value}} : {})
+    motion: {enum:f.designTokens.motion.value}, layout: {enum:f.designTokens.layout.value}
   }, ['colors','fonts','spacing','radius']);
   defs.navigation = obj({ primary: arr(ref('link'), f.navigation.maxPrimary.value, '/firstVersion/navigation/maxPrimary'), footer: arr(ref('link'), f.navigation.maxFooter.value, '/firstVersion/navigation/maxFooter') });
   defs.asset = obj({ id, format: tag({ enum: f.images.formats.value }, '/firstVersion/images/formats'), bytes: tag({ type: 'integer', minimum: 1, maximum: f.images.maxBytes.value }, '/firstVersion/images/maxBytes'), width: tag({ type: 'integer', minimum: 1, maximum: f.images.maxWidth.value }, '/firstVersion/images/maxWidth'), height: tag({ type: 'integer', minimum: 1, maximum: f.images.maxHeight.value }, '/firstVersion/images/maxHeight'), alt: copy('alt'), sha256: hash });
@@ -65,7 +64,7 @@ export function generateContracts(policy: Policy) {
   const identity = { contractVersion: { const: f.contractVersion.value }, planId: { const: policy.planId.value }, policyVersion: { const: policy.version.value } };
   const provenance = { policyVersion: policy.version.value, policySha256: sha256(canonicalJson(policy)) };
   const schema = (name: string, body: Schema): Schema => ({ $schema: 'http://json-schema.org/draft-07/schema#', $id: `https://a2aviary.io/contracts/site/${policy.version.value}/${name}`, ...body, definitions: defs, 'x-provenance': provenance });
-  const siteSchema = schema('site-spec-v1', obj({ ...identity, ...(presentation ? {shell:ref('shell')} : {}), ...(modern ? {language: {type:'string', pattern:f.language.value}} : {}), pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms']));
+  const siteSchema = schema('site-spec-v1', obj({ ...identity, shell:ref('shell'), language: {type:'string', pattern:f.language.value}, pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms']));
   const operationShapes: Record<string, Schema> = {
     'add-block': { pageId: id, sectionId: id, index: { type: 'integer', minimum: 0, maximum: s.maxBlocksPerSection.value }, block: ref('block') },
     'update-block': { pageId: id, sectionId: id, blockId: id, block: ref('block') },

@@ -3,7 +3,7 @@
 Status: source-backed catalog implementation; decision 013 is merged to main,
 but current production health and workflow activation are unverified after HTTP 503.
 No client sites were recorded in the last inventory (2026-10-07, see
-[current status](../release-verification.md#current-status--2026-10-08)).
+[current status](../release-verification.md#current-status)).
 
 The [interactive architecture map](https://a2aviary.io/architecture) is prepared for
 owner review and release. It distinguishes the project landing and signed-email

@@ -157,7 +157,7 @@ rule set. SES production sending was enabled. Neither observation establishes
 hello@ delivery. After separate owner authorization, the email, runtime and
 controls stacks were deployed on 2026-10-05. The support rule and worker trigger
 are active; actual inbox/reply delivery remains unverified. See the
-[deployment evidence](release-verification.md#human-support-forwarding--2026-10-05-deployed).
+[deployment evidence](history/release-verification-2026-10.md#human-support-forwarding--2026-10-05-deployed).
 
 ### Prepared forwarding behavior
 
@@ -264,7 +264,7 @@ and “Launching soon. Checkout opens when payments are enabled.” Credit amoun
 and subscription policies will be published before checkout opens. This pricing
 copy predates decision 007 and is superseded; correcting it is a separate website
 change. Earlier catalog activation is agent-reported; current production
-health and activation are unverified (see [release verification](release-verification.md#public-health-observation--2026-10-08)).
+health and activation are unverified (see [release verification](history/release-verification-2026-10.md#public-health-observation--2026-10-08)).
 After an authorized website release, verify public route/MIME/cache behavior,
 copy, metadata, navigation, contact, and sitemap. Payment activation remains a
 separate owner action; no payment integration is included here.

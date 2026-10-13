@@ -50,8 +50,10 @@ Approved stored snapshots are still deployed without rebuilding.
 
 ### Equivalence procedure
 
-Before editing, build the pinned baseline (`02b811595d59cfe7ff904ae8ef3d5fa521dc7b63`,
-generator `2.0.0`) and retain its `dist` and access to the same locked dependencies.
+For a current comparison, build pre-cleanup baseline `27f642a` (policy 2.2.0,
+generator 2.3.0) and retain its `dist` and access to the same locked dependencies.
+The original PR #29 procedure and historical policies remain available in Git;
+the current runtime rejects all policy versions other than 2.2.0.
 The runner accepts the baseline/candidate module explicitly and serves only on
 loopback with self-only script/style CSP and controlled fictional CMS responses:
 
@@ -109,7 +111,7 @@ After building, run `node scripts/presentation-verify.mjs` from this directory f
 all three real local Astro verifier runs. Evidence (including resource sizes,
 Lighthouse scores, axe, reduced motion, network guards and screenshots) remains
 in ignored `.local/presentation-verifier/` at the repository root. See
-[dated release evidence](../../docs/release-verification.md#presentation-batch--2026-10-12-local-implementation).
+[dated release evidence](../../docs/history/release-verification-2026-10.md#presentation-batch--2026-10-12-local-implementation).
 No runtime dependency, infrastructure, migration or provider integration was
 added. Generated selected fonts carry original OFL licenses and registry hashes.
 
@@ -128,3 +130,11 @@ The compiler retains presentation AST/CSS in `src/library-data.ts` and writes
 catalog metadata to `packages/site-core/src/library-data.ts`. Both remain
 byte-identical to the pre-move artifacts. Package files, template lockfile and
 `GENERATOR_VERSION` are unchanged. See [refactor evidence](../../docs/evidence/site-core-workspaces/README.md).
+
+## Runtime cleanup parity
+
+`npm run test:parity` compares the four current compositions against their
+pre-refactor digests and the pre-cleanup exact resource baseline, including Caddy,
+PocketBase migration, CMS editor, built HTML/CSS/JS and contract hashes. The
+historical boxed 2.1 capture remains evidence, but is no longer a runtime input.
+See [cleanup evidence](../../docs/evidence/runtime-cleanup/README.md).

@@ -1,0 +1,50 @@
+{
+  "contexts": 32,
+  "removedDiscoveryAdvertisements": [
+    "superadmin/workflow=false/drafts=false/administration=false",
+    "superadmin/workflow=false/drafts=false/administration=true",
+    "superadmin/workflow=false/drafts=true/administration=false",
+    "superadmin/workflow=false/drafts=true/administration=true",
+    "superadmin/workflow=true/drafts=false/administration=false",
+    "superadmin/workflow=true/drafts=false/administration=true",
+    "admin/workflow=false/drafts=false/administration=false",
+    "admin/workflow=false/drafts=false/administration=true",
+    "admin/workflow=false/drafts=true/administration=false",
+    "admin/workflow=false/drafts=true/administration=true",
+    "admin/workflow=true/drafts=false/administration=false",
+    "admin/workflow=true/drafts=false/administration=true",
+    "client/workflow=false/drafts=false/administration=false",
+    "client/workflow=false/drafts=false/administration=true",
+    "client/workflow=false/drafts=true/administration=false",
+    "client/workflow=false/drafts=true/administration=true",
+    "client/workflow=true/drafts=false/administration=false",
+    "client/workflow=true/drafts=false/administration=true",
+    "tester/workflow=false/drafts=false/administration=false",
+    "tester/workflow=false/drafts=false/administration=true",
+    "tester/workflow=false/drafts=true/administration=false",
+    "tester/workflow=false/drafts=true/administration=true",
+    "tester/workflow=true/drafts=false/administration=false",
+    "tester/workflow=true/drafts=false/administration=true"
+  ],
+  "reorderedActiveCapabilities": [
+    "superadmin/workflow=true/drafts=true/administration=false",
+    "superadmin/workflow=true/drafts=true/administration=true",
+    "admin/workflow=true/drafts=true/administration=false",
+    "admin/workflow=true/drafts=true/administration=true",
+    "client/workflow=true/drafts=true/administration=false",
+    "client/workflow=true/drafts=true/administration=true",
+    "tester/workflow=true/drafts=true/administration=false",
+    "tester/workflow=true/drafts=true/administration=true"
+  ],
+  "reorderedLogToolEnums": [
+    "superadmin/workflow=false/drafts=false/administration=false",
+    "superadmin/workflow=false/drafts=false/administration=true",
+    "superadmin/workflow=false/drafts=true/administration=false",
+    "superadmin/workflow=false/drafts=true/administration=true",
+    "superadmin/workflow=true/drafts=false/administration=false",
+    "superadmin/workflow=true/drafts=false/administration=true",
+    "superadmin/workflow=true/drafts=true/administration=false",
+    "superadmin/workflow=true/drafts=true/administration=true"
+  ],
+  "toolsListOrderChanged": []
+}

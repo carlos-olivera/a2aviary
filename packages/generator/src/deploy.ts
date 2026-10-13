@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { SiteError } from './render.ts';
-import { sha256 } from '@a2aviary/site-core';
+import { sha256, boundCollectionIds } from '@a2aviary/site-core';
 import { safePath, type VerifiedBuild } from './verification.ts';
 import {
   pocketBaseMigration,
@@ -538,18 +538,6 @@ export const railwayConfig = (healthcheckPath: string) =>
     2
   ) + '\n';
 export function caddyfile(spec: SiteSpec): string {
-  const collections = [
-    ...new Set(
-      spec.pages.flatMap((p) =>
-        p.sections.flatMap((s) =>
-          s.blocks
-            .filter((b) =>
-              ['catalog', 'blog', 'announcements'].includes(b.component)
-            )
-            .map((b) => String(b.props.collection))
-        )
-      )
-    )
-  ];
+  const collections = boundCollectionIds(spec);
   return `{ admin off\n auto_https off\n}\n:{$PORT:8080} {\n root * /srv\n header {\n X-Content-Type-Options nosniff\n Referrer-Policy no-referrer\n Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"\n Strict-Transport-Security "max-age=31536000"\n }\n handle /healthz {\n respond 200\n }\n @cms path /api/cms/editor.html /api/cms/editor.js /api/cms/api/collections/editors/auth-with-password ${collections.map((c) => '/api/cms/api/collections/' + c + '/records*').join(' ')}\n handle @cms {\n uri strip_prefix /api/cms\n reverse_proxy {$CMS_UPSTREAM}\n }\n handle /api/* {\n respond 404\n }\n handle {\n encode zstd gzip\n try_files {path} {path}/index.html =404\n file_server\n }\n handle_errors {\n encode zstd gzip\n rewrite * /404.html\n file_server\n }\n}\n`;
 }

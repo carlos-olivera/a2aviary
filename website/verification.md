@@ -160,7 +160,7 @@ The existing proposed Basic plan/legal/contact content remains valid: future
 licensed platform access, one curated-kit marketing site, monthly token/bandwidth
 credits with no specified allowance, proposed prices, no sales or active payment
 operation, and no analytics. Public delivery, mailbox delivery, and payment
-readiness remain separate gates. See [release evidence](../docs/release-verification.md#agent-control-positioning--2026-10-05-local-verification).
+readiness remain separate gates. See [release evidence](../docs/history/release-verification-2026-10.md#agent-control-positioning--2026-10-05-local-verification).
 
 ## Software platform and proposed Basic — 2026-10-05, local verification
 
@@ -204,7 +204,7 @@ does not establish S3/CloudFront delivery or missing-path status. The public
 release manifest reports the earlier public-page commit
 `7b7baf363ff4e9ab5f004c02ba1051a441c8ed1c`; the new copy awaits owner review and
 a separately authorized release. Human mailbox delivery and payment readiness
-remain unverified. See [release evidence](../docs/release-verification.md#software-platform-and-proposed-basic--2026-10-05-local-verification)
+remain unverified. See [release evidence](../docs/history/release-verification-2026-10.md#software-platform-and-proposed-basic--2026-10-05-local-verification)
 for Operator access and approval gates. Earlier dated results below are retained
 as historical observations.
 

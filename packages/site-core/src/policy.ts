@@ -1,10 +1,14 @@
-import frozen21 from '../../../plans/versions/web-simple/2.1.0.policy.json' with { type: 'json' };
-import frozen20 from '../../../plans/versions/web-simple/2.0.0.policy.json' with { type: 'json' };
+import { collectionIds } from './collections.ts';
 import { createHash } from 'node:crypto';
 import source from '../../../plans/web-simple.policy.json' with { type: 'json' };
 
 export type Policy = typeof source;
 export const defaultPolicy: Policy = source;
+export const SUPPORTED_POLICY_VERSIONS: readonly string[] = Object.freeze(['2.2.0']);
+export function assertSupportedPolicyVersion(version: unknown): void {
+  if (typeof version !== 'string' || !SUPPORTED_POLICY_VERSIONS.includes(version))
+    throw new Error('policy_version_unsupported');
+}
 export function canonicalJson(value: unknown): string {
   if (typeof value === 'number' && !Number.isFinite(value)) throw new Error('Not a finite JSON number');
   if (Array.isArray(value)) return '[' + value.map(canonicalJson).join(',') + ']';
@@ -20,7 +24,7 @@ export function specDigest(spec: object): string {
   return sha256(canonicalJson(spec));
 }
 
-const kinds = new Set(['heading', 'shortCopy', 'image', 'link', 'richText', 'textItems', 'linkItems', 'imageItems', 'faqItems', 'links', 'catalogCollection', 'blogCollection', 'announcementsCollection']);
+const kinds = new Set(['heading', 'shortCopy', 'image', 'link', 'richText', 'textItems', 'linkItems', 'imageItems', 'faqItems', 'links', ...collectionIds.map(id => id + 'Collection')]);
 // Engine shape/capabilities are independent of the editable policy. Numeric limits
 // remain exclusively in policy; unknown new rules cannot silently be ignored.
 const rule = (kind: string) => ({ value: kind === 'number' ? 1 : kind === 'boolean' ? true : kind === 'strings' ? ['string'] : kind === 'numbers' ? [1] : 'string', rationale: 'shape' });
@@ -47,7 +51,7 @@ const fixedProfile: Record<string, unknown> = {
   'includes.capabilities': ['static-astro', 'pocketbase-cms'], 'includes.system404Counts': false,
   'includes.ssl': true, 'includes.domain': 'client-supplied',
   'includes.excludes': ['custom-backend', 'end-user-auth', 'checkout', 'research', 'ocr', 'image-editing', 'custom-script', 'custom-style', 'raw-html', 'arbitrary-component', 'uploaded-svg'],
-  'includes.cmsCollections': ['catalog', 'blog', 'announcements'],
+  'includes.cmsCollections': collectionIds,
   'firstVersion.navigation.externalSchemes': ['https:', 'mailto:', 'tel:'], 'firstVersion.images.formats': ['webp'],
   'firstVersion.images.animated': false, 'firstVersion.images.altRequired': true, 'firstVersion.images.hash': 'sha256',
   'firstVersion.approval.required': true, 'firstVersion.approval.digest': 'sha256-sorted-json', 'firstVersion.approval.previewRequired': true,
@@ -85,17 +89,15 @@ export function assertPolicy(input: unknown): asserts input is Policy {
     }
     for (const key of Object.keys(t)) visit(a[key], t[key], path + '/' + key);
   };
-  const legacy = (input as any)?.version?.value === '2.0.0';
-  const selectedShape = structuredClone(shape) as any;
-  if (legacy) { delete selectedShape.firstVersion.language; delete selectedShape.firstVersion.library; delete selectedShape.firstVersion.designTokens.motion; delete selectedShape.firstVersion.designTokens.layout; }
-  visit(input, selectedShape, '');
+  assertSupportedPolicyVersion((input as Policy)?.version?.value);
+  visit(input, shape, '');
   const p = input as Policy;
-  if (!legacy && p.firstVersion.library.budgets.gzipLevel.value !== 9) fail('/firstVersion/library/budgets/gzipLevel');
+  if (p.firstVersion.library.budgets.gzipLevel.value !== 9) fail('/firstVersion/library/budgets/gzipLevel');
   if (!/^\d+\.\d+\.\d+$/.test(p.version.value) || !/^\d{4}-\d{2}-\d{2}$/.test(p.effectiveDate.value) || new Date(p.effectiveDate.value).toISOString().slice(0, 10) !== p.effectiveDate.value) fail('/version-or-effectiveDate');
   // The engine cannot advertise behavior it does not implement.
   for (const [path, supported] of Object.entries(fixedProfile)) {
     const lookup = (v: unknown) => path.split('.').reduce((o, k) => (o as Record<string, unknown>)[k], v) as { value: unknown };
-    if (canonicalJson(lookup(p).value) !== canonicalJson(path === 'firstVersion.contractVersion' ? (legacy ? '2.0' : p.version.value === '2.1.0' ? '2.1' : '2.2') : supported)) fail('/' + path.replaceAll('.', '/'));
+    if (canonicalJson(lookup(p).value) !== canonicalJson(supported)) fail('/' + path.replaceAll('.', '/'));
   }
   for (const pattern of [p.firstVersion.structure.idPattern.value, p.firstVersion.structure.pagePathPattern.value, p.firstVersion.designTokens.colorPattern.value]) {
     if (!pattern.startsWith('^') || !pattern.endsWith('$')) fail('/patterns');
@@ -105,8 +107,6 @@ export function assertPolicy(input: unknown): asserts input is Policy {
 
 /** Select only repository-pinned policies, never a client policy document. */
 export function policyForVersion(version: string): Policy {
-  if (version === defaultPolicy.version.value) return defaultPolicy;
-  if (version === '2.1.0') return frozen21 as unknown as Policy;
-  if (version === '2.0.0') return frozen20 as unknown as Policy;
-  throw new Error('Unsupported policy version');
+  assertSupportedPolicyVersion(version);
+  return defaultPolicy;
 }

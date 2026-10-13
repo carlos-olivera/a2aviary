@@ -36,7 +36,7 @@ async function drawing(model, candidatePath, namespace, macro = false) {
   records[namespace] = { candidatePath, candidateSha256, rawArtifactSha256: digest(raw), generatedDrawingSha256: digest(svg), gates: receipt.gates };
   return svg;
 }
-const sourceLinks = node => node.sources.map(source => `<a href="https://github.com/carlos-olivera/a2aviary/blob/main/${escape(source.path)}${source.line?'#L'+source.line:''}">${escape(source.path)}</a>`).join(' · ');
+const sourceLinks = node => node.sources.map(source => `<a href="https://github.com/carlos-olivera/a2aviary/blob/${manifest.sourceRevision}/${escape(source.path)}${source.line?'#L'+source.line:''}">${escape(source.path)}</a>`).join(' · ');
 const overviewSvg = await drawing(overview, 'docs/architecture/map.json', 'overview', true);
 const panels = [];
 for (const stage of manifest.stages) {

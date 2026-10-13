@@ -47,6 +47,7 @@ Confirmed by the owner on 2026-10-05; apply to future work in this project unles
 - Once code exists, use checks relevant to the modified behavior and record how it was verified.
 - Do not create tests that merely repeat documentation text.
 - Update the changelog with concrete changes and evidence; do not invent metrics.
+- Regenerate architecture provenance for changes matched by `website/scripts/architecture-scope.mjs`, or at release time (`ARCHITECTURE_RELEASE=1`). Relevant paths are runtime sources, infrastructure/local adapters, migrations, generator templates/library/collection/build compilers, policies/contracts/library/collections, architecture artifacts/checkers, AGENTS.md and runtime package/dependency/Compose configuration. Tests, dated evidence, general prose and workflow orchestration alone do not require regeneration; stale source fingerprints on those unrelated PRs emit a warning. Structural diagram/CSP/asset checks always fail on invalid artifacts. GitHub PR checks use the event base SHA and push checks use the event before SHA (fetching that immutable base if the checkout is shallow); fallback/local checks use the merge-base with `origin/$GITHUB_BASE_REF` or `origin/main`. Fetch the base or set `ARCHITECTURE_BASE_REVISION` explicitly. See docs/local-development.md.
 
 ## Local context
 

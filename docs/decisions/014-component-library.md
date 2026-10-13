@@ -104,9 +104,11 @@ output retains PR #29 bytes; flush moves the 1120px content constraint into each
 section's core-owned wrapper, allowing full-width decoration. HTML language is
 validated, not translated. Package status is enforced using immutable site test
 classification through drafts, preview and build jobs. No schema migration is
-needed. Existing 2.0 drafts are readable/discardable but cannot be edited or newly
-previewed; stored historical snapshots retain their frozen validator/checker and
-exact approved-byte deployment path.
+needed. The 2.1 release originally kept 2.0 drafts readable/discardable and
+historical stored snapshots deployable. The owner-authorized 2026-10-13 cleanup
+retires that compatibility after a zero-use production inventory: only 2.2.0 is
+supported, with `policy_version_unsupported` for all other versions. Historical
+artifacts remain in Git at pre-cleanup commit `27f642a`.
 
 Use a closed Acorn AST language for confined behavior references, a balanced
 extension of the existing CSS allowlist, and core-owned interaction attributes.

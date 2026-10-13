@@ -1,9 +1,10 @@
+import { collectionIds } from './collections.ts';
 import { catalog } from './library-data.ts';
 import { validateLibrarySelection } from './library.ts';
 import type { LibraryContext } from './types.ts';
 import { Ajv, type ErrorObject } from 'ajv';
 import type { Policy } from './policy.ts';
-import { canonicalJson, defaultPolicy, sha256, specDigest } from './policy.ts';
+import { SUPPORTED_POLICY_VERSIONS, canonicalJson, defaultPolicy, sha256, specDigest } from './policy.ts';
 import { generateContracts, type Schema } from './generator.ts';
 import type { Asset, ChangeAccounting, Link, SiteSpec, ValidationError, ValidationResult } from './types.ts';
 export type * from './types.ts';
@@ -66,6 +67,9 @@ function jsonBound(value: unknown, policy: Policy): ValidationError[] {
 export function validateSiteSpec(input: unknown, policy: Policy = defaultPolicy, context: LibraryContext = {}): ValidationResult<SiteSpec> {
   const bounded = jsonBound(input, policy);
   if (bounded.length) return failed(bounded);
+  const version = (input as SiteSpec)?.policyVersion;
+  if (!SUPPORTED_POLICY_VERSIONS.includes(version) || !SUPPORTED_POLICY_VERSIONS.includes(policy.version.value))
+    return failed([failure('/policyVersion', 'policy_version_unsupported', SUPPORTED_POLICY_VERSIONS, 'Use the supported policy version 2.2.0.', '/version')]);
   const validators = compiled(policy);
   if (!validators.site(input)) return failed(schemaErrors(validators.site.errors!, validators.siteSchema));
   const spec = input as SiteSpec, errors: ValidationError[] = validateLibrarySelection(input, policy, context.catalog ?? catalog, context);
@@ -105,7 +109,7 @@ export function validateSiteSpec(input: unknown, policy: Policy = defaultPolicy,
         if (field.kind === 'link') link(value as Link, at);
         if (field.kind === 'links') (value as Link[]).forEach((v, i) => link(v, at + '/' + i));
         if (field.kind === 'linkItems') (value as { link: Link }[]).forEach((v, i) => link(v.link, at + '/' + i + '/link'));
-        if (field.kind.endsWith('Collection') && !spec.cms.collections.includes(value as string)) add(at, 'cms.binding', spec.cms.collections, 'Enable this allowed collection in cms.collections.', '/includes/cmsCollections');
+        if (field.kind.endsWith('Collection') && (!collectionIds.includes(value as string) || !spec.cms.collections.includes(value as string))) add(at, 'cms.binding', spec.cms.collections, 'Enable this allowed collection in cms.collections.', '/includes/cmsCollections');
         if (field.kind === 'richText') {
           const nodes = value as { text?: string; items?: string[] }[];
           const length = nodes.reduce((total, n) => total + [...(n.text ?? '')].length + (n.items ?? []).reduce((sum, t) => sum + [...t].length, 0), 0);

@@ -108,6 +108,7 @@ test('tool schemas, annotations, ordering and capabilities: four roles × eight 
             name: 'capabilities.get',
             arguments: {},
           });
+          assert.deepEqual(JSON.parse(capabilities.content[0].text).tools, list.tools.map(tool => tool.name), 'capabilities must equal registered tools in the same order');
           actual[
             `${role}/workflow=${workflow}/drafts=${drafts}/administration=${admin}`
           ] = {

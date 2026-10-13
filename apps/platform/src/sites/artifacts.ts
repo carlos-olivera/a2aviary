@@ -1,4 +1,4 @@
-import { sha256, canonicalJson } from '@a2aviary/site-core';
+import { sha256, canonicalJson, SUPPORTED_POLICY_VERSIONS } from '@a2aviary/site-core';
 import {
   assertVerified,
   SiteError,
@@ -9,6 +9,8 @@ import type { SpecRow } from './deployments.ts';
 import type { Sites } from './deployments.ts';
 
 export async function readVerifiedBuild(this: Sites, row: SpecRow) {
+  if (!SUPPORTED_POLICY_VERSIONS.includes(row.spec.policyVersion))
+    throw new SiteError('policy_version_unsupported');
   const build = JSON.parse(
     Buffer.from(
       await this.objects.get('specs/' + row.id + '/build.json'),
