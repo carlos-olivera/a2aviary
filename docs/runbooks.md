@@ -367,3 +367,14 @@ After CI merges and runs on main, add `platform`, `generator` and
 **Settings → Source**, and finally update PR #37 through the Operator App.
 The dashboard label and its off state were re-observed read-only at
 2026-10-12 21:47:08 UTC−04:00. No production variable, resource or setting changed.
+
+### CI publication retry — 2026-10-13
+
+Live metadata confirms workflows write on the App registration, but not on
+installation 167790436. Accept that installation permission update first.
+The development broker also requests a restricted token profile without
+workflows (`services/src/operator.ts`); an owner-authorized broker change and
+deployment are needed before this profile can publish workflow files. Do not
+bypass the broker or change production under the CI-only mandate. The latest
+complete branch push was refused, with no CI branch/PR published. See
+[retry evidence](evidence/ci-activation/README.md#part-b-retry--2026-10-13).
