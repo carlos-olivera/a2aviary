@@ -72,10 +72,26 @@ This machine runs macOS with Linux containers; Ubuntu-only browser dependency
 installation and actual GitHub runner execution remain unobserved. Browser
 install commands exited 0 here. Local caches affect the measured times.
 
-Publication is attempted only through the existing a2aviary Operator App after
-all checks. No permissions, protection, auto-merge or broker setting is changed.
-The publication outcome is reported to the owner and retained in local evidence;
-this prepared record does not itself establish GitHub CI activation.
+The complete branch publication was attempted through the existing
+repository-only a2aviary Operator App after all checks, at 2026-10-12
+22:00:42 UTC−04:00. GitHub refused the push:
+
+```text
+refusing to allow a GitHub App to create or update workflow `.github/workflows/local-integration.yml` without `workflows` permission
+```
+
+No CI branch or partial PR was published. The existing installation grant has
+checks/contents/pull_requests write and actions/metadata read, with no workflows
+permission. Main remains protected with App-bound `checks` and
+`a2aviary-policy`, auto-merge disabled and the existing development broker
+enabled. Detailed branch-protection inspection returns HTTP 403 under that
+unchanged grant; no permission, protection or broker setting was altered.
+The publication token was revoked. The complete refreshed patch (workflows,
+matching provenance and this evidence) is saved in ignored
+`.local/ci-workflow.patch`, including a copy in the original repository's
+`.local/` directory. No documentation-only fallback PR is opened. The patch
+applies cleanly to main `27ebab35`; recheck against any later main before owner
+publication.
 
 ## Part C: PR #37 results
 
