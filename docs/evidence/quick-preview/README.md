@@ -85,3 +85,53 @@ billing or promise production response times. The final catalog sample overlappe
 other local checks; the samples describe this development machine, not an isolated
 performance laboratory.
 
+
+## Completed local verification
+
+- Workspace check/build: passed on Node 22.23.3. Site-core 52/52 tests;
+  generator 85/85 tests, including the library's 148-capture browser matrix and
+  presentation behavior/boundary checks. Existing four-fixture byte-parity checks
+  pass; full generated/built artifacts, checker and generator version are unchanged.
+- Platform: 96 passed, two explicitly opt-in cloud tests skipped, zero failures.
+  The ten quick-specific tests cover five compositions (including catalog and
+  profile starter), both widths, actual CSS/font/image loading, the shared blockers
+  and suggestions, wrong ownership, revisions/discard, expiry, token purpose,
+  daily/burst/service quotas, counted failures, global concurrency admission,
+  approval GET/POST and deployment rejection. A paused quick render leaves full
+  verification available and a concurrent edit prevents returning its stale URL.
+- Isolated-renderer tests cover input/output overflow, kill deadline, process
+  failure, rejection of a verified result and secret-free environment inheritance.
+  Browser isolation checks and the rejected script-enabled candidate pass.
+- Service check/build and 58 tests; infrastructure build and nine tests; website
+  check/build and two tests; all passed. Relative links in changed Markdown pass.
+- Platform image build passed. The packaged renderer ran with Node 22.23.3 as
+  UID 1000 under `docker run --network none`, producing nine files and
+  `verified: false` from a fictional composition. No runtime credentials supplied.
+- Architecture regenerated with the existing **Archify 3.0.1** format, pinned to
+  source commit `4939829`. All four gates passed for all six drawings. Desktop and
+  mobile captures were inspected; the production-CSP browser procedure passed
+  five stages, 44 technical nodes, keyboard and JavaScript-free access, and zero
+  automatic cross-domain requests. The current 3.1 emitter adds inline SVG CSS
+  incompatible with this repository's existing CSP integration; the existing
+  version was used without weakening CSP or changing the diagram integration.
+
+The first aggregate platform run caught two stale test expectations (eight
+migrations and the role/tool allowlist); those were updated and the complete
+platform suite reran green. An overlapping ad hoc run correctly hit the global
+quick lock; the sequential ten-test run passed. These were local test iterations,
+not production failures or bypassed checks.
+
+## Publication gate and remaining owner actions
+
+Read-only checks repeated at **2026-10-13 14:25:15 America/La_Paz (18:25:15 UTC)**:
+the same PR #40 merge remains main, its CI is green, Railway's matching deployment
+is SUCCESS, and health is HTTP 200 with discovery-only and eight matching hashes.
+Operator broker access is live and repository-only; main retains required
+`checks`, App-bound `a2aviary-policy`, `platform`, `generator`, and `platform-image`.
+Repository auto-merge is disabled. No settings or permissions were expanded.
+
+Owner review must decide the proposed limits, process-local ephemeral retention,
+script-off isolation and additive migration 009. The PR is not a deployment or
+production verification. Merge, production backup/restore, migration/rollout and
+workflow activation remain separately authorized owner actions. Nothing is for
+sale; no live checkout or active Paddle merchant of record exists.

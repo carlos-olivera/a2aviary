@@ -3,12 +3,12 @@
   "diagram_type": "architecture",
   "meta": {
     "title": "Governance & Ops",
-    "output": ".local/architecture/runtime-cleanup/ops.html",
+    "output": ".local/architecture/quick-preview-pinned/ops.html",
     "locale": "en",
     "quality_profile": "showcase",
     "repository": {
       "url": "https://github.com/carlos-olivera/a2aviary.git",
-      "revision": "ebe60fd082a73f80634103736c959f3389ed7632",
+      "revision": "49398291227d335249ee876ec7079aa1be4089a6",
       "provider": "github",
       "link_mode": "web"
     }
@@ -233,8 +233,8 @@
       "sources": [
         {
           "path": "apps/platform/src/sites/drafts.ts",
-          "line": 64,
-          "end_line": 85
+          "line": 67,
+          "end_line": 88
         },
         {
           "path": "apps/platform/src/admin/reset.ts",
