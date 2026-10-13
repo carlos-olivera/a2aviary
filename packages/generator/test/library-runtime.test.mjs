@@ -27,7 +27,7 @@ import {
 } from '../src/library-manifest.ts';
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const baseline = JSON.parse(
-  await readFile(join(root, 'contracts/site/2.2.0/examples/site-spec.json')),
+  await readFile(join(root, 'contracts/site/2.3.0/examples/site-spec.json')),
 );
 const withFixture = async (fn) => {
   const f = await runtimeFixture(root, libraryArtifacts);
@@ -332,7 +332,7 @@ test('package and aggregate budgets include shared bundles, loader, font bytes a
     }
     const paths = [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.2.0.policy.json',
+      'plans/versions/web-simple/2.3.0.policy.json',
     ];
     for (const key of [
       'components',
@@ -406,13 +406,13 @@ test('schemas, policy agreement, duplicate signatures and font provenance reject
     q.firstVersion.library.effects.value = [];
     for (const p of [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.2.0.policy.json',
+      'plans/versions/web-simple/2.3.0.policy.json',
     ])
       await writeFile(join(f.root, p), JSON.stringify(q));
     await assert.rejects(libraryArtifacts(f.root), /registry\/policy/);
     for (const p of [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.2.0.policy.json',
+      'plans/versions/web-simple/2.3.0.policy.json',
     ])
       await writeFile(join(f.root, p), JSON.stringify(f.policy));
     await cp(join(f.root, 'library/steps'), join(f.root, 'library/duplicate'), {
@@ -468,7 +468,7 @@ test('schemas, policy agreement, duplicate signatures and font provenance reject
     p.firstVersion.components.duplicate.variants.value = ['standard'];
     for (const path of [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.2.0.policy.json',
+      'plans/versions/web-simple/2.3.0.policy.json',
     ])
       await writeFile(join(f.root, path), JSON.stringify(p));
     await assert.rejects(
@@ -491,7 +491,7 @@ test('full generator emits only trusted behavior code and binds package metadata
     const { generateSite } = await import('../dist/index.js');
     const spec = specimen(f),
       pixel = await readFile(
-        join(root, 'contracts/site/2.2.0/examples/fictional-pixel.webp'),
+        join(root, 'contracts/site/2.3.0/examples/fictional-pixel.webp'),
       ),
       assets = new Map([[spec.assets[0].id, pixel]]);
     spec.pages[0].sections[0].effects = ['fixture-glow'];

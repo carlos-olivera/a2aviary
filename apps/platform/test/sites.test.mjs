@@ -103,14 +103,10 @@ test('revisioned MCP drafts validate partial content, atomicity, conflicts, miss
     (await f.request('/api/site-specs', { method: 'POST', body: '{}' })).status,
     404,
   );
-  assert.equal(
-    (await call(f, user, 'change.request')).error,
-    'change_requests_unavailable',
-  );
   const list = await (await f.rpc(await f.token(user))).json();
   assert.ok(
     !list.result.tools.some(
-      (x) => x.name === 'site.build' || x.name === 'site.approve',
+      (x) => x.name === 'site.build' || x.name === 'site.approve' || x.name === 'change.request',
     ),
   );
 });
@@ -334,7 +330,7 @@ test('server preview, browser approval security, stale revisions, exact-byte dep
   assert.equal(deps.counts.verifies, 1);
   assert.equal(deps.inputs[0].build.report.outputSha256, row.outputSha256);
   assert.equal(deps.inputs[0].clientEmail, user.email);
-  await assert.rejects(deploy(), /initial_site_only/);
+  assert.equal((await deploy()).state, 'live');
 });
 
 test('editing and reverting content cannot revive approval; failed verification is visible but never approvable', async (t) => {
@@ -737,7 +733,7 @@ test('upload progress stays within 4 KiB and append order keeps cursors stable',
   assert.equal(second.nextAfter, null);
 });
 
-test('change requests always report unavailable, including obsolete and malformed arguments', async (t) => {
+test('removed change tool is absent even with obsolete and malformed arguments', async (t) => {
   const f = await fixture(testDependencies());
   t.after(f.close);
   const u = await f.user('changes@example.invalid');
@@ -751,8 +747,7 @@ test('change requests always report unavailable, including obsolete and malforme
     },
     { siteId: 'invalid', specId: 'invalid', test: true },
   ]) {
-    const result = await call(f, u, 'change.request', args);
-    assert.equal(result.error, 'change_requests_unavailable');
-    assert.equal(result.isError, true);
+    const result = await (await f.rpc(await f.token(u), 'tools/call', {name:'change.request',arguments:args})).json();
+    assert.match(result.error.message, /not found/);
   }
 });

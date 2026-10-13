@@ -13,16 +13,17 @@ export function summary(this: Drafts, d: any) {
   const result = {
     kind: d.kind ?? 'website',
     starter: d.starter_id ? { id: d.starter_id, version: d.starter_version } : null,
-    requiredInputs: d.starter_id ? explicitPresentationErrors(d.content).map(e => e.path) : [],
+    requiredInputs: explicitPresentationErrors(d.content).map(e => e.path),
     suggestions: starterSuggestions(d.starter_id, d.starter_version),
     draftId: d.id,
+    baseSpecId: d.base_spec_id ?? null,
     siteId: d.site_id,
     revision: d.revision,
     state: d.state,
     pages: d.content.pages.length,
     assets: d.content.assets.length,
     policyVersion: d.policy_version ?? defaultPolicy.version.value,
-    language: d.content.language ?? (d.starter_id ? null : 'en'),
+    language: d.content.language ?? null,
     tokens: d.content.tokens,
     effects: [
       ...new Set<string>(
@@ -36,7 +37,7 @@ export function summary(this: Drafts, d: any) {
     ],
     blockers: blockers(d.content, { test: d.test_mode }, Boolean(d.starter_id)),
     missingLabels: Object.entries(
-      [...contentErrors(d.content, catalog), ...(d.starter_id ? explicitPresentationErrors(d.content).filter(e => e.path.startsWith('/shell/')) : [])].reduce(
+      [...contentErrors(d.content, catalog), ...explicitPresentationErrors(d.content).filter(e => e.path.startsWith('/shell/'))].reduce(
         (groups: Record<string, string[]>, e) => {
           const at = e.path.lastIndexOf('/'),
             prefix = e.path.slice(0, at);

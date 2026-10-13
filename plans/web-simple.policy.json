@@ -4,11 +4,11 @@
     "rationale": "One bounded pilot plan; no price or checkout."
   },
   "version": {
-    "value": "2.2.0",
+    "value": "2.3.0",
     "rationale": "Additive curated library capabilities; historical policies remain frozen."
   },
   "effectiveDate": {
-    "value": "2026-10-12",
+    "value": "2026-10-13",
     "rationale": "Owner-requested contract preparation; not production activation."
   },
   "includes": {
@@ -62,7 +62,7 @@
   },
   "firstVersion": {
     "contractVersion": {
-      "value": "2.2",
+      "value": "2.3",
       "rationale": "Server drafts with curated effects, behaviors and fonts; clients never supply code."
     },
     "structure": {
@@ -717,7 +717,7 @@
   "changes": {
     "perMonth": {
       "value": 4,
-      "rationale": "Selected bounded pilot allowance."
+      "rationale": "One successful edit deployment per request, owner-wide in the UTC calendar month of completion. Pending or unknown deployments hold capacity without counting as successful changes."
     },
     "calendar": {
       "value": "UTC",
@@ -728,40 +728,23 @@
       "rationale": "Unused requests do not accumulate."
     },
     "countsWhen": {
-      "value": "successfully-applied",
+      "value": "successfully-deployed-edit",
       "rationale": "Validation, rejected work and retries are not new applied requests."
-    },
-    "maxPagesTouched": {
-      "value": 2,
-      "rationale": "Selected per-request page cap."
-    },
-    "maxBlocksModified": {
-      "value": 10,
-      "rationale": "Selected per-request block cap; additions to new pages count."
-    },
-    "maxGlobalOperations": {
-      "value": 1,
-      "rationale": "Shared configuration has a separate allowance."
-    },
-    "maxOperations": {
-      "value": 20,
-      "rationale": "Bounds processing independently of final change size."
     },
     "operations": {
       "value": [
-        "add-block",
-        "update-block",
-        "remove-block",
-        "add-page",
-        "update-page-seo",
-        "update-tokens",
-        "update-navigation"
+        "draft-edit"
       ],
-      "rationale": "Typed bounded changes; no arbitrary patches, page deletion or renaming."
+      "rationale": "Edit the live composition through revisioned drafts, full verification, browser approval and confirmed exact-byte deployment; the complete result obeys catalog and plan limits."
     },
     "doesNotCount": {
       "value": [
-        "pocketbase-content-edit"
+        "pocketbase-content-edit",
+        "validation-failure",
+        "quick-preview",
+        "unapproved-snapshot",
+        "retry",
+        "initial-deployment"
       ],
       "rationale": "Content-only CMS edits do not change the static site contract."
     }

@@ -36,7 +36,7 @@ current source/catalog rather than a stale bundled copy.
 | Group | Named API |
 | --- | --- |
 | Policy and digests | `defaultPolicy`, `policyForVersion`, `assertPolicy`, `canonicalJson`, `sha256`, `specDigest`, `Policy` |
-| Validation | `validateSiteSpec`, `validateAssets`, `validateChangeRequest`, site and validation types |
+| Validation | `validateSiteSpec`, `validateAssets`, site and validation types |
 | Contracts | `artifactDirectory`, `assertPolicySnapshot`, `flattenRules`, `generateContracts`, `makeExamples`, `Schema` |
 | Library | `catalog`, `gzipBytes`, `behaviorBundle`, `selectedPackages`, `fontPackages`, `validateLibrarySelection`, `contentErrors`, `behaviorLoader`, `LibraryPackage`, `LibraryCatalog`, `LibraryContext` |
 

@@ -6,11 +6,11 @@ import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 import { SiteAdministration } from '../src/admin/site-administration.ts';
 import { migrate, migrationInventory } from '../src/migrate.ts';
 
-test('nine migrations are idempotent and readiness rejects incomplete, altered or obsolete inventories', async (t) => {
+test('ten migrations are idempotent and readiness rejects incomplete, altered or obsolete inventories', async (t) => {
   const f = await fixture();
   t.after(f.close);
   const names = await migrationInventory(f.pool);
-  assert.equal(names.length, 9);
+  assert.equal(names.length, 10);
   assert.equal(names[7].name, '008-site-starters.sql');
   assert.equal(names[8].name, '009-quick-preview-quota.sql');
   await migrate(f.pool);

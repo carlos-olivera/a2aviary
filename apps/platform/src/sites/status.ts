@@ -44,6 +44,8 @@ export async function status(this: Sites, actor: string, siteId: string) {
           : null,
         requestedDomain: site.resources.customDomain ?? null,
         specs,
+        monthlyRequestsUsed: await this.successfulUsage(c, site.owner_id),
+        monthlyCapacityHeld: await this.usage(c, site.owner_id),
         monthlyRequestsRemaining: Math.max(
           0,
           defaultPolicy.changes.perMonth.value -

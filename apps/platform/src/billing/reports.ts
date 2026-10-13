@@ -1,3 +1,4 @@
+import { archivedEditHistory } from './edit-history.ts';
 import type { SiteAdministration } from '../admin/site-administration.ts';
 
 export async function report(
@@ -44,6 +45,11 @@ export async function report(
         [siteId, from, to],
       )
     ).rows;
+    const archivedEdits = await archivedEditHistory(c, siteId);
+    const inPeriod = (value: unknown) =>
+      Boolean(value) &&
+      new Date(value as string).getTime() >= Date.parse(from) &&
+      new Date(value as string).getTime() < Date.parse(to);
     const changes = (
       await c.query(
         'SELECT count(*)::int AS count FROM platform_site_spec WHERE site_id=$1 AND accounting IS NOT NULL AND applied_at>=$2 AND applied_at<$3',
@@ -62,7 +68,19 @@ export async function report(
       operations,
       operationsTruncated: operations.length === 1000,
       catalogJobs: legacy,
-      appliedChanges: changes,
+      appliedChanges:
+        changes + archivedEdits.filter((e) => inPeriod(e.appliedAt)).length,
+      editHistory: [
+        ...archivedEdits.filter(
+          (e) => inPeriod(e.createdAt) || inPeriod(e.appliedAt),
+        ),
+        ...(
+          await c.query(
+            'SELECT id AS "specId",draft_id AS "draftId",state,base_sha256 AS "baseSha256",spec_sha256 AS "specSha256",applied_at AS "appliedAt",reserved FROM platform_site_spec WHERE site_id=$1 AND accounting IS NOT NULL AND (created_at >= $2 AND created_at < $3 OR applied_at >= $2 AND applied_at < $3) ORDER BY created_at DESC LIMIT 1000',
+            [siteId, from, to],
+          )
+        ).rows,
+      ],
       costs: costs ?? {
         data: {
           status: 'unavailable',

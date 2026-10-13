@@ -3,21 +3,15 @@ import { canonicalJson, sha256 } from '@a2aviary/site-core';
 
 export async function loadPlans(root = new URL('../../../', import.meta.url)) {
   const manifest = JSON.parse(
-    await readFile(new URL('contracts/site/2.2.0/manifest.json', root), 'utf8'),
+    await readFile(new URL('contracts/site/2.3.0/manifest.json', root), 'utf8'),
   );
   const markdown = await readFile(
-    new URL('contracts/site/2.2.0/manifest.md', root),
+    new URL('contracts/site/2.3.0/manifest.md', root),
     'utf8',
   );
   const siteSpec = JSON.parse(
     await readFile(
-      new URL('contracts/site/2.2.0/site-spec.schema.json', root),
-      'utf8',
-    ),
-  );
-  const changeRequest = JSON.parse(
-    await readFile(
-      new URL('contracts/site/2.2.0/change-request.schema.json', root),
+      new URL('contracts/site/2.3.0/site-spec.schema.json', root),
       'utf8',
     ),
   );
@@ -34,9 +28,7 @@ export async function loadPlans(root = new URL('../../../', import.meta.url)) {
     throw new Error('Stale generated plan manifest');
   if (
     siteSpec['x-provenance']?.policyVersion !== manifest.policyVersion ||
-    changeRequest['x-provenance']?.policyVersion !== manifest.policyVersion ||
-    siteSpec['x-provenance']?.policySha256 !== policySha256 ||
-    changeRequest['x-provenance']?.policySha256 !== policySha256
+    siteSpec['x-provenance']?.policySha256 !== policySha256
   )
     throw new Error('Stale generated plan schemas');
   return {
@@ -45,7 +37,6 @@ export async function loadPlans(root = new URL('../../../', import.meta.url)) {
     manifest,
     markdown,
     siteSpec,
-    changeRequest,
   };
 }
 export type Plans = Awaited<ReturnType<typeof loadPlans>>;

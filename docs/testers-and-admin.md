@@ -39,7 +39,7 @@ site classification and exclude test sites from charges.
 
 ## Test site lifecycle
 
-Create/apply a draft, open its shared upload session, call `site.preview`, obtain scoped browser approval, then use `site.status` and confirmed `site.deploy` as in [site operations](sites.md). `change.request` is unavailable pending redesign.
+Create/apply a draft, open its shared upload session, call `site.preview`, obtain scoped browser approval, then use `site.status` and confirmed `site.deploy` as in [site operations](sites.md). Use `site.edit.open` for later live edits with the same preview/approval/deploy flow.
 No caller-supplied `test` switch exists: the server records it at site creation,
 inherits it on specs/builds/changes/jobs and prevents later reclassification.
 Application activity logs, verification-call logs and audit rows carry the test
@@ -57,7 +57,7 @@ uses the platform staging project as a fixture target. Test deploys reject every
 custom domain, including a domain already recorded in resources. Retain
 `SITE_PROTECTED_PROJECT_IDS` and the platform project/domain protections.
 
-Historical monthly-change accounting is retained, but change requests are unavailable. CMS content edits remain available. Removing tester eligibility blocks further access to their existing test
+One successful edit uses one of the owner-wide four changes per UTC calendar month, without rollover. Preview/validation failures and retries do not count. Pending/unknown deployments hold capacity separately; CMS record edits remain available without consuming changes. Removing tester eligibility blocks further access to their existing test
 sites; it cannot turn those sites into customer sites. Re-enrollment restores
 access. Existing non-test sites similarly cannot be operated as tester sites.
 
@@ -128,7 +128,7 @@ Use `testers.list`, `sites.list` and `site.inspect` before selecting a reset.
 For logs, ask for a short time range plus `test:true` and a specific actor/tool.
 `sites.list.status` uses the deployed current spec when one exists; a newly
 uploaded candidate does not make a live site appear staged. Resetting/archived
-sites have those lifecycle statuses. `monthlyRequestsUsed` includes current-month successful requests and retained reservations across the owner’s sites. Use returned cursors with unchanged filters.
+sites have those lifecycle statuses. `monthlyRequestsUsed` counts current-month successful edits across the owner’s sites; `monthlyCapacityHeld` additionally includes pending/unknown reservations. Use returned cursors with unchanged filters.
 MCP tools are hidden from other roles, and a direct attempt to call a known
 restricted tool returns `forbidden` without site/user data.
 
@@ -153,3 +153,8 @@ not live provider evidence. `RUN_TESTER_CLOUD_E2E=true`, together with
 staging tester lifecycle, CMS edit and reset smoke test. Supply credentials
 privately; evidence remains in excluded `.local/`. Review/merge, staging rollout,
 real Claude/ChatGPT use and live provider cleanup remain separate owner gates.
+
+Migration 010 retains multiple historical drafts and one active draft per site.
+Reset archives a redacted edit-history summary in immutable operations before
+deleting mutable specs/drafts; original approvals and audits survive. See
+[live edits](sites.md#live-edits-policy-23) and [owner release gates](evidence/site-edits/README.md#owner-only-hosted-verification).

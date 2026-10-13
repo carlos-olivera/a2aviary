@@ -1,3 +1,4 @@
+import { archivedEditHistory } from '../billing/edit-history.ts';
 import { SiteError } from '@a2aviary/generator';
 
 import type { SiteRow } from '../sites/deployments.ts';
@@ -17,7 +18,7 @@ export async function list(
   return this.store.siteAction(actor, 'sites.list', async (c, p) => {
     const rows = (
       await c.query(
-        `SELECT s.id AS "siteId",s.owner_id AS "ownerId",s.slug,s.test_mode AS test,s.lifecycle,s.policy_version AS "policyVersion",s.first_client_pilot AS "firstClientPilot", CASE WHEN s.lifecycle='active' THEN COALESCE(cur.state,v.state,'staged') ELSE s.lifecycle END AS status
+        `SELECT s.id AS "siteId",s.owner_id AS "ownerId",s.slug,s.test_mode AS test,s.lifecycle,s.policy_version AS "policyVersion",s.first_client_pilot AS "firstClientPilot",((SELECT count(*) FROM platform_site_spec h WHERE h.site_id=s.id AND h.accounting IS NOT NULL AND h.applied_at IS NOT NULL)+(SELECT count(*) FROM platform_site_operation o CROSS JOIN LATERAL jsonb_array_elements(o.details->'editHistory') e WHERE o.site_id=s.id AND o.kind='tester.reset.edits' AND e->>'applied_at' IS NOT NULL))::int AS "deployedEdits",(SELECT id FROM platform_site_draft d WHERE d.site_id=s.id AND d.state='active') AS "activeDraftId", CASE WHEN s.lifecycle='active' THEN COALESCE(cur.state,v.state,'staged') ELSE s.lifecycle END AS status
         FROM platform_site s LEFT JOIN platform_site_spec cur ON cur.id=s.current_spec_id LEFT JOIN LATERAL (SELECT state FROM platform_site_spec WHERE site_id=s.id ORDER BY created_at DESC,id DESC LIMIT 1) v ON true
         WHERE ($1::boolean IS NULL OR s.test_mode=$1) AND ($2::text IS NULL OR s.owner_id=$2) AND ($3::text IS NULL OR CASE WHEN s.lifecycle='active' THEN COALESCE(cur.state,v.state,'staged') ELSE s.lifecycle END=$3) AND ($4::uuid IS NULL OR s.id>$4) ORDER BY s.id LIMIT $5`,
         [
@@ -46,7 +47,7 @@ export async function inspect(this: Sites, actor: string, siteId: string) {
     if (!site) throw new SiteError('site_not_found');
     const specs = (
       await c.query(
-        'SELECT id AS "specId",state,spec_sha256 AS "specSha256",source_sha256 AS "sourceSha256",output_sha256 AS "outputSha256",accounting,applied_at AS "appliedAt",test_mode AS test,error_code AS error FROM platform_site_spec WHERE site_id=$1 ORDER BY created_at DESC,id DESC LIMIT 20',
+        'SELECT id AS "specId",state,spec_sha256 AS "specSha256",source_sha256 AS "sourceSha256",output_sha256 AS "outputSha256",draft_id AS "draftId",base_sha256 AS "baseSha256",reserved,accounting,applied_at AS "appliedAt",test_mode AS test,error_code AS error FROM platform_site_spec WHERE site_id=$1 ORDER BY created_at DESC,id DESC LIMIT 20',
         [siteId],
       )
     ).rows;
@@ -91,7 +92,9 @@ export async function inspect(this: Sites, actor: string, siteId: string) {
       currentSpecId: site.current_spec_id,
       lastDeploy,
       specs,
-      monthlyRequestsUsed: await this.usage(c, site.owner_id),
+      archivedEdits: await archivedEditHistory(c, siteId),
+      monthlyRequestsUsed: await this.successfulUsage(c, site.owner_id),
+      monthlyCapacityHeld: await this.usage(c, site.owner_id),
       siteUrl: site.resources.domain
         ? 'https://' + site.resources.domain
         : null,

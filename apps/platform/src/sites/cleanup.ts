@@ -41,7 +41,7 @@ export async function cleanup(this: Drafts) {
     });
   const drafts = (
     await pool.query(
-      "SELECT id FROM platform_site_draft WHERE state IN ('expired','discarded') AND NOT artifacts_deleted ORDER BY expires_at LIMIT 20",
+      "SELECT id FROM platform_site_draft WHERE state IN ('expired','discarded','completed') AND NOT artifacts_deleted ORDER BY expires_at LIMIT 20",
     )
   ).rows;
   for (const d of drafts) {

@@ -16,14 +16,10 @@ assertPolicySnapshot(
 );
 const generated = generateContracts(defaultPolicy);
 assert.deepEqual(
-  await read('contracts/site/2.2.0/site-spec.schema.json'),
+  await read('contracts/site/2.3.0/site-spec.schema.json'),
   generated.siteSchema,
 );
-assert.deepEqual(
-  await read('contracts/site/2.2.0/change-request.schema.json'),
-  generated.changeSchema,
-);
-const manifest = await read('contracts/site/2.2.0/manifest.json');
+const manifest = await read('contracts/site/2.3.0/manifest.json');
 assert.equal(manifest.planId, defaultPolicy.planId.value);
 for (const key of ['includes', 'firstVersion', 'changes'])
   assert.deepEqual(manifest[key], defaultPolicy[key]);

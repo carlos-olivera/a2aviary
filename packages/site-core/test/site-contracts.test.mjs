@@ -4,13 +4,12 @@ import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import sharp from 'sharp';
-import { validateSiteSpec, validateAssets, validateChangeRequest, specDigest, defaultPolicy } from '@a2aviary/site-core';
+import { validateSiteSpec, validateAssets, specDigest, defaultPolicy } from '@a2aviary/site-core';
 import { artifactDirectory, assertPolicySnapshot, generateContracts, flattenRules } from '@a2aviary/site-core';
 import { makeExamples } from '@a2aviary/site-core';
 
-const fixture = JSON.parse(await readFile('../../contracts/site/2.2.0/examples/site-spec.json', 'utf8'));
-const changeFixture = JSON.parse(await readFile('../../contracts/site/2.2.0/examples/change-request.json', 'utf8'));
-const pixels = await readFile('../../contracts/site/2.2.0/examples/fictional-pixel.webp');
+const fixture = JSON.parse(await readFile('../../contracts/site/2.3.0/examples/site-spec.json', 'utf8'));
+const pixels = await readFile('../../contracts/site/2.3.0/examples/fictional-pixel.webp');
 const invalid = JSON.parse(await readFile('test/site-fixtures/invalid-specs.json', 'utf8'));
 const context = () => ({ month: '2026-10', appliedRequests: 0, now: new Date('2026-10-06T12:00:00.000Z') });
 const spec = () => structuredClone(fixture);
@@ -132,7 +131,7 @@ test('serialized submission cap, cyclic and non-JSON values', () => {
 test('policy generates deterministic schemas and examples; drift check is read-only', () => {
   assert.deepEqual(generateContracts(defaultPolicy),generateContracts(structuredClone(defaultPolicy)));
   execFileSync(process.execPath,['scripts/generate.ts','--check'],{stdio:'pipe'});
-  assert.deepEqual(makeExamples(defaultPolicy,fixture.assets[0]),{spec:fixture,change:changeFixture});
+  assert.deepEqual(makeExamples(defaultPolicy,fixture.assets[0]),{spec:fixture});
   const p=structuredClone(defaultPolicy);p.includes.maxPages.value=6;const schema=generateContracts(p).siteSchema;assert.equal(schema.properties.pages.maxItems,6);expectError(validateSiteSpec(fixture,p),'schema.maxItems');
   const example=makeExamples(p,fixture.assets[0]);assert.equal(validateSiteSpec(example.spec,p).ok,true);
   const headingPolicy=structuredClone(defaultPolicy);headingPolicy.firstVersion.copy.heading.value=5;expectError(validateSiteSpec(fixture,headingPolicy),'schema.maxLength');
@@ -143,12 +142,11 @@ test('unsupported policy settings, missing rationale, invalid dates and limits f
   assert(flattenRules(defaultPolicy).every(r=>r.rationale.trim()));
 });
 
-test('change requests are explicitly unavailable',()=>{expectError(validateChangeRequest({},fixture,context()),'change_requests_unavailable');});
 
 test('JSON byte limit accepts its exact boundary; later policy versions use separate artifact directories', () => {
   const p=structuredClone(defaultPolicy);p.firstVersion.structure.maxJsonBytes.value=Buffer.byteLength(JSON.stringify(fixture));
   assert.equal(validateSiteSpec(fixture,p).ok,true);p.firstVersion.structure.maxJsonBytes.value--;expectError(validateSiteSpec(fixture,p),'submission.bytes');
-  assert.equal(artifactDirectory(defaultPolicy),'2.2.0');p.version.value='1.1.0';assert.equal(artifactDirectory(p),'1.1.0');
+  assert.equal(artifactDirectory(defaultPolicy),'2.3.0');p.version.value='1.1.0';assert.equal(artifactDirectory(p),'1.1.0');
 });
 
 

@@ -92,6 +92,22 @@ export async function reset(
       await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [
         'site-allowance:' + snapshot.site.owner_id,
       ]);
+      const editHistory = (
+        await c.query(
+          'SELECT id,draft_id,state,spec_sha256,base_sha256,created_at,applied_at FROM platform_site_spec WHERE site_id=$1 AND accounting IS NOT NULL ORDER BY created_at',
+          [siteId],
+        )
+      ).rows;
+      await this.administration.event(
+        c,
+        { ...p, testMode: true },
+        snapshot.site,
+        'tester.reset.edits',
+        'archived-edits',
+        null,
+        null,
+        { editHistory },
+      );
       await c.query(
         'UPDATE platform_site SET current_spec_id=NULL WHERE id=$1',
         [siteId],

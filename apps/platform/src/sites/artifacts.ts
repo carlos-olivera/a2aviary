@@ -1,4 +1,9 @@
-import { sha256, canonicalJson, SUPPORTED_POLICY_VERSIONS } from '@a2aviary/site-core';
+import type { PoolClient } from 'pg';
+import {
+  sha256,
+  canonicalJson,
+  SUPPORTED_POLICY_VERSIONS,
+} from '@a2aviary/site-core';
 import {
   assertVerified,
   SiteError,
@@ -43,6 +48,7 @@ export async function saveBuild(
   this: Sites,
   specId: string,
   build: VerifiedBuild,
+  transaction?: PoolClient,
 ) {
   const artifactNames = Object.keys(build.artifacts).filter(
     (name) => name !== 'site.json',
@@ -68,7 +74,7 @@ export async function saveBuild(
       }),
     ),
   );
-  await this.store.pool.query(
+  await (transaction ?? this.store.pool).query(
     'UPDATE platform_site_spec SET artifact_hashes=$2 WHERE id=$1',
     [specId, JSON.stringify(artifactHashes)],
   );
@@ -79,6 +85,7 @@ export async function copyBuild(
   fromId: string,
   toId: string,
   build: VerifiedBuild,
+  transaction?: PoolClient,
 ) {
   const names =
     (build as VerifiedBuild & { artifactNames?: string[] }).artifactNames ?? [];
@@ -87,5 +94,5 @@ export async function copyBuild(
     artifacts[name] = Buffer.from(
       await this.objects.get('specs/' + fromId + '/artifacts/' + name),
     ).toString('base64');
-  await this.saveBuild(toId, { ...build, artifacts });
+  await this.saveBuild(toId, { ...build, artifacts }, transaction);
 }

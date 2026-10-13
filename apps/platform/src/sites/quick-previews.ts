@@ -112,9 +112,7 @@ export class QuickPreviews {
         let timer: ReturnType<typeof setTimeout> | undefined;
         try {
           const bytes = await Promise.race([
-            this.drafts.sites.objects.get(
-              'drafts/' + draftId + '/assets/' + a.id,
-            ),
+            this.drafts.asset(d, a.id),
             new Promise<never>((_, reject) => {
               timer = setTimeout(
                 () => reject(new SiteError('quick_timeout')),

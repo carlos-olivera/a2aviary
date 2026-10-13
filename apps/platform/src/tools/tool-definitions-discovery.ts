@@ -40,12 +40,7 @@ export const discoveryTools = [
         full: 'site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment.',
       },
       starters: { available: Boolean(sites), description: 'Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site.' },
-      changeRequests: {
-        available: false,
-        reason: 'change_requests_unavailable',
-        description:
-          'Draft-based changes await their revision, snapshot and browser-approval redesign. CMS content edits remain available.',
-      },
+      edits: { available: Boolean(sites), workflow: 'site.edit.open → site.preview → browser approval → site.deploy' },
       emailTransport: 'existing JWS v1; keys require separate owner enrollment',
     }),
   }),
@@ -84,7 +79,7 @@ export const discoveryTools = [
   defineTool({
     name: 'plan.get_schemas',
     description:
-      'Read site-spec and change-request schemas for the exact pinned policy.',
+      'Read site-spec schema for the exact pinned policy.',
     roles: ALL_ROLES,
     feature: 'discovery',
     readOnly: true,
@@ -93,7 +88,6 @@ export const discoveryTools = [
     inputSchema: ({ plans }) => plan(plans),
     handler: ({ plans }) => ({
       siteSpec: plans.siteSpec,
-      changeRequest: plans.changeRequest,
     }),
   }),
   defineTool({

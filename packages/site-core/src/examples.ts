@@ -32,5 +32,10 @@ export function makeExamples(policy: Policy, asset: Asset) {
     tokens: { colors: Object.fromEntries(f.designTokens.colorSlots.value.map((slot, i) => [slot, ['#FAFAFA', '#EEEEEE', '#222222', '#555555', '#334455', '#557799', '#CCCCCC'][i % 7]])), fonts: { heading: f.designTokens.fonts.value[0], body: f.designTokens.fonts.value[0] }, spacing: f.designTokens.spacing.value[0], radius: f.designTokens.radius.value[0] },
     navigation: { primary: [link], footer: [link] }, assets: [asset], cms: { collections: policy.includes.cmsCollections.value }
   };
-  return { spec, change: {available: false, reason: "change_requests_unavailable"} };
+  if (policy.version.value === '2.3.0') {
+    spec.language = 'en';
+    spec.shell = {skipLink:'Skip fictional content',primaryNavigationLabel:'Guide navigation',footerNavigationLabel:'Guide footer',notFoundTitle:'Page missing',notFoundText:'This fictional page does not exist.',notFoundHomeLabel:'Return to guide'};
+    spec.tokens.fonts.mono = 'system-sans'; spec.tokens.layout = 'boxed'; spec.tokens.motion = 'none';
+  }
+  return { spec };
 }

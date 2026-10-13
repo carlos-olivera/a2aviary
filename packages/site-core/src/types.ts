@@ -22,9 +22,5 @@ export interface SiteSpec {
 }
 export interface ValidationError { path: string; rule: string; limit: unknown; suggestion: string; policyPath?: string; actual?: unknown; operationIndex?: number }
 export type ValidationResult<T> = { ok: true; value: T } | { ok: false; errors: ValidationError[] };
-export interface ChangeAccounting { pagesTouched: number; blocksModified: number; globalOperations: number; monthlyRequestsRemaining: number }
-/** Trusted caller state, never read from the client request. No reservation is made here. */
-export interface ChangeContext { month: string; appliedRequests: number; now: Date }
-
 /** Server-owned classification; never copied from client JSON. */
 export interface LibraryContext { test?: boolean; catalog?: import('./library.ts').LibraryCatalog; }

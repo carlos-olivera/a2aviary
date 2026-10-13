@@ -45,7 +45,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -62,7 +62,7 @@
         },
         {
           "name": "plan.get_schemas",
-          "description": "Read site-spec and change-request schemas for the exact pinned policy.",
+          "description": "Read site-spec schema for the exact pinned policy.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -73,7 +73,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -215,6 +215,7 @@
                   "starters.list",
                   "starter.get",
                   "site.draft.create",
+                  "site.edit.open",
                   "site.draft.apply",
                   "site.draft.get",
                   "site.draft.discard",
@@ -225,7 +226,6 @@
                   "site.preview.quick",
                   "site.status",
                   "site.deploy",
-                  "change.request",
                   "testers.add",
                   "testers.remove",
                   "testers.list",
@@ -660,7 +660,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -677,7 +677,7 @@
         },
         {
           "name": "plan.get_schemas",
-          "description": "Read site-spec and change-request schemas for the exact pinned policy.",
+          "description": "Read site-spec schema for the exact pinned policy.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -688,7 +688,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -888,7 +888,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -905,7 +905,7 @@
         },
         {
           "name": "plan.get_schemas",
-          "description": "Read site-spec and change-request schemas for the exact pinned policy.",
+          "description": "Read site-spec schema for the exact pinned policy.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -916,7 +916,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -1145,7 +1145,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -1162,7 +1162,7 @@
         },
         {
           "name": "plan.get_schemas",
-          "description": "Read site-spec and change-request schemas for the exact pinned policy.",
+          "description": "Read site-spec schema for the exact pinned policy.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1173,7 +1173,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -1404,7 +1404,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -1421,7 +1421,7 @@
         },
         {
           "name": "plan.get_schemas",
-          "description": "Read site-spec and change-request schemas for the exact pinned policy.",
+          "description": "Read site-spec schema for the exact pinned policy.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -1432,7 +1432,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -1563,6 +1563,36 @@
             },
             "required": [
               "slug",
+              "requestId"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.edit.open",
+          "description": "Open a draft seeded from the current live snapshot and normalized asset references. One active draft per site; immutable starter provenance. Uses policy 2.3 completeness rules.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "siteId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            },
+            "required": [
+              "siteId",
               "requestId"
             ],
             "additionalProperties": false
@@ -2057,7 +2087,7 @@
         },
         {
           "name": "site.deploy",
-          "description": "Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. cmsPassword is the initial CMS password; encrypted until delivered to Railway and never logged.",
+          "description": "Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. Edits reuse the existing web service without a password. Removing bindings requires retainCmsRecordsConfirmation RETAIN_CMS_RECORDS:<specId>:<sorted,comma-separated removed collections>; records are retained. cmsPassword is only the initial CMS password; encrypted until delivered to Railway and never logged.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2081,6 +2111,10 @@
                 "minLength": 16,
                 "maxLength": 128
               },
+              "retainCmsRecordsConfirmation": {
+                "type": "string",
+                "maxLength": 512
+              },
               "domain": {
                 "type": "string",
                 "maxLength": 253,
@@ -2090,25 +2124,9 @@
             "required": [
               "siteId",
               "specId",
-              "confirmation",
-              "cmsPassword"
+              "confirmation"
             ],
             "additionalProperties": false
-          },
-          "annotations": {
-            "readOnlyHint": false,
-            "destructiveHint": true,
-            "openWorldHint": false
-          }
-        },
-        {
-          "name": "change.request",
-          "description": "Unavailable: draft-based changes are deferred. CMS content edits remain available. Every request returns change_requests_unavailable.",
-          "inputSchema": {
-            "type": "object",
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "properties": {},
-            "additionalProperties": {}
           },
           "annotations": {
             "readOnlyHint": false,
@@ -2228,6 +2246,7 @@
                   "starters.list",
                   "starter.get",
                   "site.draft.create",
+                  "site.edit.open",
                   "site.draft.apply",
                   "site.draft.get",
                   "site.draft.discard",
@@ -2238,7 +2257,6 @@
                   "site.preview.quick",
                   "site.status",
                   "site.deploy",
-                  "change.request",
                   "testers.add",
                   "testers.remove",
                   "testers.list",
@@ -2803,7 +2821,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -2820,7 +2838,7 @@
         },
         {
           "name": "plan.get_schemas",
-          "description": "Read site-spec and change-request schemas for the exact pinned policy.",
+          "description": "Read site-spec schema for the exact pinned policy.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -2831,7 +2849,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -2962,6 +2980,36 @@
             },
             "required": [
               "slug",
+              "requestId"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.edit.open",
+          "description": "Open a draft seeded from the current live snapshot and normalized asset references. One active draft per site; immutable starter provenance. Uses policy 2.3 completeness rules.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "siteId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            },
+            "required": [
+              "siteId",
               "requestId"
             ],
             "additionalProperties": false
@@ -3456,7 +3504,7 @@
         },
         {
           "name": "site.deploy",
-          "description": "Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. cmsPassword is the initial CMS password; encrypted until delivered to Railway and never logged.",
+          "description": "Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. Edits reuse the existing web service without a password. Removing bindings requires retainCmsRecordsConfirmation RETAIN_CMS_RECORDS:<specId>:<sorted,comma-separated removed collections>; records are retained. cmsPassword is only the initial CMS password; encrypted until delivered to Railway and never logged.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -3480,6 +3528,10 @@
                 "minLength": 16,
                 "maxLength": 128
               },
+              "retainCmsRecordsConfirmation": {
+                "type": "string",
+                "maxLength": 512
+              },
               "domain": {
                 "type": "string",
                 "maxLength": 253,
@@ -3489,25 +3541,9 @@
             "required": [
               "siteId",
               "specId",
-              "confirmation",
-              "cmsPassword"
+              "confirmation"
             ],
             "additionalProperties": false
-          },
-          "annotations": {
-            "readOnlyHint": false,
-            "destructiveHint": true,
-            "openWorldHint": false
-          }
-        },
-        {
-          "name": "change.request",
-          "description": "Unavailable: draft-based changes are deferred. CMS content edits remain available. Every request returns change_requests_unavailable.",
-          "inputSchema": {
-            "type": "object",
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "properties": {},
-            "additionalProperties": {}
           },
           "annotations": {
             "readOnlyHint": false,
@@ -3685,7 +3721,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -3702,7 +3738,7 @@
         },
         {
           "name": "plan.get_schemas",
-          "description": "Read site-spec and change-request schemas for the exact pinned policy.",
+          "description": "Read site-spec schema for the exact pinned policy.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -3713,7 +3749,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -3844,6 +3880,36 @@
             },
             "required": [
               "slug",
+              "requestId"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.edit.open",
+          "description": "Open a draft seeded from the current live snapshot and normalized asset references. One active draft per site; immutable starter provenance. Uses policy 2.3 completeness rules.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "siteId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            },
+            "required": [
+              "siteId",
               "requestId"
             ],
             "additionalProperties": false
@@ -4338,7 +4404,7 @@
         },
         {
           "name": "site.deploy",
-          "description": "Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. cmsPassword is the initial CMS password; encrypted until delivered to Railway and never logged.",
+          "description": "Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. Edits reuse the existing web service without a password. Removing bindings requires retainCmsRecordsConfirmation RETAIN_CMS_RECORDS:<specId>:<sorted,comma-separated removed collections>; records are retained. cmsPassword is only the initial CMS password; encrypted until delivered to Railway and never logged.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -4362,6 +4428,10 @@
                 "minLength": 16,
                 "maxLength": 128
               },
+              "retainCmsRecordsConfirmation": {
+                "type": "string",
+                "maxLength": 512
+              },
               "domain": {
                 "type": "string",
                 "maxLength": 253,
@@ -4371,25 +4441,9 @@
             "required": [
               "siteId",
               "specId",
-              "confirmation",
-              "cmsPassword"
+              "confirmation"
             ],
             "additionalProperties": false
-          },
-          "annotations": {
-            "readOnlyHint": false,
-            "destructiveHint": true,
-            "openWorldHint": false
-          }
-        },
-        {
-          "name": "change.request",
-          "description": "Unavailable: draft-based changes are deferred. CMS content edits remain available. Every request returns change_requests_unavailable.",
-          "inputSchema": {
-            "type": "object",
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "properties": {},
-            "additionalProperties": {}
           },
           "annotations": {
             "readOnlyHint": false,
@@ -4624,7 +4678,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -4641,7 +4695,7 @@
         },
         {
           "name": "plan.get_schemas",
-          "description": "Read site-spec and change-request schemas for the exact pinned policy.",
+          "description": "Read site-spec schema for the exact pinned policy.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -4652,7 +4706,7 @@
               },
               "policyVersion": {
                 "type": "string",
-                "const": "2.2.0"
+                "const": "2.3.0"
               }
             },
             "required": [
@@ -4783,6 +4837,36 @@
             },
             "required": [
               "slug",
+              "requestId"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": true,
+            "openWorldHint": false
+          }
+        },
+        {
+          "name": "site.edit.open",
+          "description": "Open a draft seeded from the current live snapshot and normalized asset references. One active draft per site; immutable starter provenance. Uses policy 2.3 completeness rules.",
+          "inputSchema": {
+            "type": "object",
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "properties": {
+              "siteId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid",
+                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+              }
+            },
+            "required": [
+              "siteId",
               "requestId"
             ],
             "additionalProperties": false
@@ -5277,7 +5361,7 @@
         },
         {
           "name": "site.deploy",
-          "description": "Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. cmsPassword is the initial CMS password; encrypted until delivered to Railway and never logged.",
+          "description": "Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. Edits reuse the existing web service without a password. Removing bindings requires retainCmsRecordsConfirmation RETAIN_CMS_RECORDS:<specId>:<sorted,comma-separated removed collections>; records are retained. cmsPassword is only the initial CMS password; encrypted until delivered to Railway and never logged.",
           "inputSchema": {
             "type": "object",
             "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -5301,6 +5385,10 @@
                 "minLength": 16,
                 "maxLength": 128
               },
+              "retainCmsRecordsConfirmation": {
+                "type": "string",
+                "maxLength": 512
+              },
               "domain": {
                 "type": "string",
                 "maxLength": 253,
@@ -5310,25 +5398,9 @@
             "required": [
               "siteId",
               "specId",
-              "confirmation",
-              "cmsPassword"
+              "confirmation"
             ],
             "additionalProperties": false
-          },
-          "annotations": {
-            "readOnlyHint": false,
-            "destructiveHint": true,
-            "openWorldHint": false
-          }
-        },
-        {
-          "name": "change.request",
-          "description": "Unavailable: draft-based changes are deferred. CMS content edits remain available. Every request returns change_requests_unavailable.",
-          "inputSchema": {
-            "type": "object",
-            "$schema": "https://json-schema.org/draft/2020-12/schema",
-            "properties": {},
-            "additionalProperties": {}
           },
           "annotations": {
             "readOnlyHint": false,

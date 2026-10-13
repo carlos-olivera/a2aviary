@@ -140,7 +140,7 @@ export async function runtimeFixture(sourceRoot, libraryArtifacts) {
     await mkdir(join(root, 'plans/versions/web-simple'), { recursive: true });
     for (const path of [
       'plans/web-simple.policy.json',
-      'plans/versions/web-simple/2.2.0.policy.json',
+      'plans/versions/web-simple/2.3.0.policy.json',
     ])
       await writeFile(join(root, path), JSON.stringify(policy));
     const output = await libraryArtifacts(root);
