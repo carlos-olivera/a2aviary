@@ -34,6 +34,11 @@ export const discoveryTools = [
       ).map((t) => t.name),
       websiteProduction: Boolean(sites) && principal.role !== 'tester',
       payments: false,
+      previews: {
+        available: Boolean(sites),
+        quick: 'site.preview.quick: fast unverified rendering for design/content iteration; same blockers, separate quota, ephemeral URL, no scripts or live CMS; never approvable or deployable.',
+        full: 'site.preview: hosted Astro build, accessibility/link checks and screenshots; five new verifications per owner per rolling day; required before browser approval and exact-byte deployment.',
+      },
       starters: { available: Boolean(sites), description: 'Optional data-only seeds, copied once; later suggestions never block. Experimental starters require tester classification. A different starter requires a new site.' },
       changeRequests: {
         available: false,

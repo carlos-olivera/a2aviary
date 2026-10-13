@@ -1,3 +1,4 @@
+import { QuickPreviews } from './quick-previews.ts';
 import { summary } from './draft-summary.ts';
 import {
   channels,
@@ -44,6 +45,7 @@ import {
 } from './draft-content.ts';
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
 export class Drafts {
+  readonly quick: QuickPreviews;
   readonly sites: Sites;
   readonly origin: string;
   private readonly secret: string;
@@ -51,6 +53,7 @@ export class Drafts {
     this.sites = sites;
     this.origin = origin;
     this.secret = secret;
+    this.quick = new QuickPreviews(this);
   }
   /** @internal Shared by domain operations. */
   mac(purpose: string, value: string) {

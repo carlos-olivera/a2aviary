@@ -64,6 +64,7 @@ export async function sitePage(
 ): Promise<Response> {
   const url = new URL(request.url),
     path = url.pathname;
+  if (path.startsWith('/q/')) return drafts.quick.page(request);
   if (path === '/site-ui.css')
     return new Response(
       'body{font:16px system-ui;margin:0;padding:1rem;color:#222;background:#fff}main{max-width:70rem;margin:auto}button,input,select{font:inherit;padding:.6rem}img{max-width:100%;height:auto}iframe{width:100%;height:65vh;border:1px solid #888}figure{margin:1rem 0}li{margin:.5rem 0}a{overflow-wrap:anywhere}',
