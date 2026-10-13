@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { defaultPolicy, sha256 } from '../src/policy.ts';
 import { artifactDirectory, assertPolicySnapshot, flattenRules, generateContracts } from '../src/generator.ts';
 import { makeExamples } from '../src/examples.ts';
-import { validateAssets, validateChangeRequest, validateSiteSpec } from '../src/validator.ts';
+import { validateAssets, validateSiteSpec } from '../src/validator.ts';
 
 const root = fileURLToPath(new URL('../../..', import.meta.url));
 const out = resolve(root, 'contracts/site', artifactDirectory(defaultPolicy));
@@ -32,17 +32,17 @@ const usage = {
  digest: 'Hash compact UTF-8 JSON with recursively sorted object keys and preserved array order. Include the entire canonical spec. No Unicode normalization.',
  approval: 'A verified owner or enabled site administrator approves a verified server snapshot through the browser. Approval binds the spec and output hashes and draft revision. No MCP approval.',
  previews: 'Server-generated, sandbox-verified artifact and screenshots; deployment uses these exact bytes without rebuilding.',
- changes: 'change_requests_unavailable. CMS content edits remain available directly through PocketBase.',
- versions: 'Policy 2.2.0 and site contract 2.2 replace intake. Historical policies are frozen, retired artifacts.'
+ changes: 'Open a live edit draft; verify, approve in the browser and confirm deployment. One successful edit consumes one owner-wide monthly change. CMS record edits do not count.',
+ versions: 'New drafts use policy 2.3.0 and contract 2.3. Existing 2.2.0 approved snapshots retain exact stored-byte deployment.'
 };
 const rules = flattenRules(defaultPolicy);
-const manifest = { ...generated.provenance, planId: defaultPolicy.planId.value, usage, includes: defaultPolicy.includes, firstVersion: defaultPolicy.firstVersion, changes: defaultPolicy.changes, schemas: { site: 'site-spec.schema.json', change: 'change-request.schema.json' }, examples: { spec: examples.spec, change: examples.change } };
+const manifest = { ...generated.provenance, planId: defaultPolicy.planId.value, usage, includes: defaultPolicy.includes, firstVersion: defaultPolicy.firstVersion, changes: defaultPolicy.changes, schemas: { site: 'site-spec.schema.json' }, examples: { spec: examples.spec } };
 const json = (v: unknown) => JSON.stringify(v, null, 2) + '\n';
-const markdown = `# web-simple client manifest\n\nPolicy ${generated.provenance.policyVersion}; SHA-256 ${generated.provenance.policySha256}.\n\n${Object.values(usage).join('\n\n')}\n\n## Limits and rationale\n\n| Policy rule | Value | Rationale |\n| --- | --- | --- |\n${rules.map(r => `| \`${r.path}\` | \`${JSON.stringify(r.value)}\` | ${r.rationale} |`).join('\n')}\n\n## Components\n\n${Object.entries(defaultPolicy.firstVersion.components).map(([name, c]) => `- **${name}**: variants ${c.variants.value.join(', ')}; ${Object.entries(c.fields).map(([key, f]) => `${key}: ${f.kind}${f.required ? ' (required)' : ' (optional)'}`).join('; ')}.`).join('\n')}\n\n## Examples\n\nAll content and pixels are fictional. No links are fetched.\n\nSite spec:\n\n\`\`\`json\n${json(examples.spec)}\`\`\`\n\nChange request:\n\n\`\`\`json\n${json(examples.change)}\`\`\`\n`;
+const markdown = `# web-simple client manifest\n\nPolicy ${generated.provenance.policyVersion}; SHA-256 ${generated.provenance.policySha256}.\n\n${Object.values(usage).join('\n\n')}\n\n## Limits and rationale\n\n| Policy rule | Value | Rationale |\n| --- | --- | --- |\n${rules.map(r => `| \`${r.path}\` | \`${JSON.stringify(r.value)}\` | ${r.rationale} |`).join('\n')}\n\n## Components\n\n${Object.entries(defaultPolicy.firstVersion.components).map(([name, c]) => `- **${name}**: variants ${c.variants.value.join(', ')}; ${Object.entries(c.fields).map(([key, f]) => `${key}: ${f.kind}${f.required ? ' (required)' : ' (optional)'}`).join('; ')}.`).join('\n')}\n\n## Examples\n\nAll content and pixels are fictional. No links are fetched.\n\nSite spec:\n\n\`\`\`json\n${json(examples.spec)}\`\`\`\n`;
 const files = new Map<string, string | Uint8Array>([
-  [resolve(out, 'site-spec.schema.json'), json(generated.siteSchema)], [resolve(out, 'change-request.schema.json'), json(generated.changeSchema)],
+  [resolve(out, 'site-spec.schema.json'), json(generated.siteSchema)],
   [resolve(out, 'manifest.json'), json(manifest)], [resolve(out, 'manifest.md'), markdown],
-  [resolve(out, 'examples/site-spec.json'), json(examples.spec)], [resolve(out, 'examples/change-request.json'), json(examples.change)], [pixelFile, pixels]
+  [resolve(out, 'examples/site-spec.json'), json(examples.spec)], [pixelFile, pixels]
 ]);
 for (const [path, content] of files) {
   const expected = Buffer.from(content);

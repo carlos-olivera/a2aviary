@@ -97,11 +97,6 @@ test('tool wrapper records exactly the existing site failure paths with sanitize
       },
       [specId, 'owned_site_required', siteId],
     ],
-    [
-      'change.request',
-      { siteId: 'not-a-uuid', specId: [] },
-      [undefined, 'change_requests_unavailable', undefined],
-    ],
   ]) {
     const result = await rpc(handler, name, args);
     assert.equal(result.isError, true);
@@ -111,8 +106,8 @@ test('tool wrapper records exactly the existing site failure paths with sanitize
     slug: 'fictional',
     requestId: specId,
   });
-  assert.equal(failures.length, 4);
-  assert.equal(calls.length, 5);
+  assert.equal(failures.length, 3);
+  assert.equal(calls.length, 4);
 });
 
 test('a registered administration tool rechecks the current role before its handler and records denial', async () => {

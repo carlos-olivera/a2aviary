@@ -115,20 +115,8 @@ test('tool schemas, annotations, ordering and capabilities: four roles × eight 
             list,
             capabilities: JSON.parse(capabilities.content[0].text),
           };
-          if (enabled) {
-            const unavailable = await rpc('tools/call', {
-              name: 'change.request',
-              arguments: { arbitrary: 'retained' },
-            });
-            assert.equal(unavailable.isError, true);
-            assert.deepEqual(JSON.parse(unavailable.content[0].text), {
-              error: 'change_requests_unavailable',
-              errors: [],
-            });
-            actual[
-              `${role}/workflow=${workflow}/drafts=${drafts}/administration=${admin}`
-            ].changeRequest = unavailable;
-          }
+          assert.ok(!list.tools.some(t => t.name === 'change.request'));
+
         }
   }
   if (process.env.UPDATE_TOOL_VISIBILITY_SNAPSHOTS === 'true')

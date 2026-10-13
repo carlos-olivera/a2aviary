@@ -4,15 +4,16 @@ Current source implements [decision 013](decisions/013-server-drafts-and-preview
 
 ## Current workflow and contracts
 
-The client's LLM supplies catalog content incrementally. a2aviary normalizes uploads and owns snapshot generation/verification. Human approval happens through the authenticated browser page after verification, followed by explicit MCP deployment confirmation. Current source policy is `web-simple` **2.2.0**, site contract **2.2**. Canonical specs contain complete catalog content and server-generated normalized asset metadata, without client approval or preview fields. Hash the entire spec using sorted-key JSON, preserving array order. Immutable approval records separately bind revision/spec/output, actor and time.
+The client's LLM supplies catalog content incrementally. a2aviary normalizes uploads and owns snapshot generation/verification. Human approval happens through the authenticated browser page after verification, followed by explicit MCP deployment confirmation. Current source policy is `web-simple` **2.3.0**, site contract **2.3**. Canonical specs contain complete catalog content and server-generated normalized asset metadata, without client approval or preview fields. Hash the entire spec using sorted-key JSON, preserving array order. Immutable approval records separately bind revision/spec/output, actor and time.
 
-Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepted as intake contracts. `POST /api/site-specs` and `site.build` are removed. `change.request` returns `change_requests_unavailable`: its draft/approval redesign is pending; CMS edits remain available. Initial-site drafts cannot redeploy an already-live site.
+Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepted as intake contracts. `POST /api/site-specs` and `site.build` are removed. `change.request` is removed. Live sites use `site.edit.open`; CMS record editing remains separate.
 
 | Tool | Arguments | Behavior |
 | --- | --- | --- |
 | `starters.list` | None | List visible data-only starter versions; experimental entries require a tester |
 | `starter.get` | `id`, optional `version` | Read structure and English agent guidance |
 | `site.draft.create` | `slug`, UUID `requestId`, optional `starter: {id, version?}` | Create incomplete owned draft/site, optionally copying a starter once |
+| `site.edit.open` | `siteId`, UUID `requestId` | Open one active edit draft from live content and normalized asset references; retain original starter provenance |
 | `site.draft.apply` | `draftId`, `expectedRevision`, UUID `requestId`, `operations` | Atomic validated batch; return new revision |
 | `site.draft.get` | `draftId`, optional `detail`, `after` | Compact summary; explicit `full`, page ID, or paginated `assets` |
 | `site.draft.discard` | `draftId`, `expectedRevision` | Supersede snapshots, revoke sessions, schedule cleanup |
@@ -22,7 +23,7 @@ Historical 1.0.0/1.0.1 artifacts remain in Git but are not advertised or accepte
 | `site.preview.quick` | `draftId`, `expectedRevision` | Direct unverified render for iteration; separate quota, never approvable |
 | `site.preview` | `draftId`, `expectedRevision` | Assemble complete immutable spec, deduplicate/queue verification |
 | `site.status` | `siteId` | Latest snapshots, approval/verification/deployment states and artifacts |
-| `site.deploy` | `siteId`, `specId`, `cmsPassword`, `confirmation`, optional initial `domain` | Deploy approved stored bytes |
+| `site.deploy` | `siteId`, `specId`, `confirmation`, optional initial `cmsPassword`/`domain`, optional `retainCmsRecordsConfirmation` | Deploy approved stored bytes |
 
 Operations: `settings` supplies language/tokens/navigation/CMS; `upsert-page`/`remove-page`; `upsert-section`/`remove-section`; `upsert-block`/`remove-block`; `asset-metadata` sets alt text on server assets; `remove-asset` removes metadata. IDs remain stable; insertion uses zero-based `index`; supplying it on an existing ID also reorders that entity. Upserts replace the selected entity, so retain desired fields/children in its payload. A parent must exist before inserting its child. Missing required content and forward references are allowed during drafting and reported as preview blockers. Supplied values and aggregate budgets are validated immediately. A failed batch writes nothing. At most 32 operations and 64 KiB per batch, 256 KiB complete JSON, 20 errors, 4 KiB default summaries. Errors identify operation index/path/rule/limit/actual and correction guidance. Request IDs are actor-scoped and bind the full request; conflicting reuse fails. Revisions prevent overwrite and increment only for actual content changes, including newly attached normalized assets.
 
@@ -39,16 +40,16 @@ as the site and draft. Retry receipts bind the original selection.
 Summaries separate `blockers` (shared catalog/plan/completeness requirements) from
 nonblocking `suggestions`. `missing` remains a bounded compatibility alias for
 `blockers`; `requiredInputs` lists all missing explicit presentation JSON Pointers.
-Missing language is `null` for a starter draft. Every starter draft requires
+Missing language is `null` for a blank or starter draft. Every new draft requires
 language, all shell labels, colors, heading/body/mono fonts, spacing, radius,
 layout and motion, even after replacing its entire structure. No English shell
-or font/token defaults are supplied. Blank-draft legacy behavior is unchanged.
+or font/token defaults are supplied. Frozen 2.2 snapshots retain their stored bytes.
 
 Agents may remove all copied blocks, change variants/tokens and add unrelated
 components/pages within the shared catalog and plan. Suggestions and design
 intent never render as site copy or become blockers. Provenance is immutable;
 using a different starter, including adding one to a blank site, requires a new
-site. Quick preview is described below. Live edits and policy 2.3.0 remain separate work.
+site. Quick preview is described below; [live edits](#live-edits-policy-23) reuse it.
 
 ## Shared upload session
 
@@ -67,8 +68,8 @@ Sessions: one/draft, three/owner; 100 MiB raw and 100 attempts each. Rolling dai
 
 `site.preview.quick` uses the same shared catalog/plan/completeness validation as
 `site.preview`, for blank and starter drafts. Missing required content blocks both;
-`blockers` and nonblocking `suggestions` retain the draft summary meaning. Only
-policy 2.2.0 is supported. The result includes `verified: false`, `quickPreviewId`,
+`blockers` and nonblocking `suggestions` retain the draft summary meaning. New
+previews use policy 2.3.0, including edits opened from a 2.2 live snapshot. The result includes `verified: false`, `quickPreviewId`,
 `draftId`, `revision`, `test`, `previewUrl`, `expiresAt`, `blockers` and `suggestions`.
 There is no `specId` or approval URL. Run the full `site.preview` when ready for
 browser approval; quick IDs cannot pass approval or deployment lookup.
@@ -144,7 +145,7 @@ Cleanup tracks bucket prefix write intents before external writes, so rolled-bac
 
 ## Local checks and the one hosted fixture
 
-Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. `npm run test:fixture:cms --prefix apps/platform` exercises the hosted `light-es` input through MCP draft preparation and real local PocketBase/Caddy: a declared/bound announcements write succeeds, while a composition with no collections must reject an undeclared write with HTTP 404 and record `no collection to edit`. Hosted presentation variants add one fictional announcements block without changing the static presentation matrix. Platform tests use unique loopback Postgres schemas; migration inventory must match all nine filenames and hashes and health fails closed on alteration. Migrations 001–008 are unchanged by quick preview. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](history/release-verification-2026-10.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); all eight migrations through 008 match the observed production readiness inventory after PR #40 on 2026-10-13. Migration 009 is local source awaiting owner review. Never rewrite inventory to bypass a mismatch.
+Node **22.23.3** is required. Run generator check/build/tests, platform check/build/tests and service check/build/tests; the existing website/infra CI checks also apply. `npm run fixture --prefix packages/generator` creates fictional catalog inputs/source; it supplies no approval. `npm run test:cms --prefix packages/generator` and `test:cms:volume` exercise PocketBase/Caddy locally. `npm run test:fixture:cms --prefix apps/platform` exercises the hosted `light-es` input through MCP draft preparation and real local PocketBase/Caddy: a declared/bound announcements write succeeds, while a composition with no collections must reject an undeclared write with HTTP 404 and record `no collection to edit`. Hosted presentation variants add one fictional announcements block without changing the static presentation matrix. Platform tests use unique loopback Postgres schemas; migration inventory must match all ten filenames and hashes and health fails closed on alteration. Migrations 001–009 are unchanged by live edits. Production's earlier 006 mismatch was reconciled by the owner on 2026-10-07 (owner-reported; see [release verification](history/release-verification-2026-10.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); all eight migrations through 008 match the observed production readiness inventory after PR #40 on 2026-10-13. Hosted migration 009 is not verified by this delivery; migration 010 awaits owner review. Never rewrite inventory to bypass a mismatch.
 
 The explicitly authorized hosted runner is `node apps/platform/scripts/run-hosted-fixture.mjs`. It reads only the approved credential variable names from production Railway configuration into memory, filters them into the test child environment, overrides fixture flags, creates a disposable local database, and rejects a second attempt through a local marker. Never use production DATABASE_URL. SDK/action retries are disabled; readiness polling is allowed. The flow stops at its first failed stage and performs teardown once. Its private evidence contains only fictional IDs, safe usage/stage/cleanup observations and variable **names**, never values. Fictional verified browser sessions do not establish real Google authentication. No production variables/services/deployments are changed.
 
@@ -177,8 +178,8 @@ production platform; it does not authorize one. Record the outcome in
 [release verification](release-verification.md).
 
 1. Confirm `/healthz` returns HTTP 200 with the deployed revision's migration
-   inventory and matching hashes: eight after PR #40; nine only after a separately
-   approved migration 009 rollout.
+   inventory and matching hashes: eight after PR #40; ten only after separately
+   approved migrations 009 and 010.
    Record backup/restore proof for the decision 013 rollout; take and restore a
    Postgres backup before further schema changes (see the
    [Railway platform runbook](runbooks.md#railway-platform)).
@@ -236,7 +237,7 @@ summaries include language, selected tokens/effects and structured blockers.
 one package's detail/example, only when site tools are visible. Policy schemas
 remain available through `plan.get_schemas`. Client code remains excluded.
 
-Only 2.2.0 is supported. Historical drafts and snapshots return
+The original 2.2 release supported only 2.2.0. Versions older than 2.2 still return
 `policy_version_unsupported` for reads/discard, editing, uploads, preview, approval
 and deployment. Historical artifacts remain in Git at pre-cleanup commit
 `27f642a`; the owner may tag that revision. No migrations or automatic upgrades occur.
@@ -250,12 +251,66 @@ Caddy responses negotiate zstd/gzip; configured compression is distinct from a
 verified production deployment. The CSP remains unchanged.
 
 
-MCP `settings.shell` supplies skip/navigation/404 copy. It is required for any new
+For the original 2.2 contract, MCP `settings.shell` supplies skip/navigation/404 copy. It was required for any new
 batch package (including dependencies), non-`en` language, or explicit shell
 object. Incomplete draft apply/get responses include exact missing-label paths;
 preview/build require complete nonblank shell and conditional profile controls.
 Owner copy is never translated or filled with English. Legacy English compositions
 without the new packages or explicit shell preserve existing bytes. See the
 [2.2 content rules](../library/README.md#owner-content-and-incomplete-drafts).
-Generator provenance is 2.3.0; local verification and hosted activation remain
-separate. No migration accompanies this batch.
+That batch used generator provenance 2.3.0 without a migration. Current live-edit
+source uses generator 2.4.0 and migration 010; all new drafts require explicit
+shell and presentation inputs. Local verification and hosted activation remain
+separate.
+
+
+## Live edits (policy 2.3)
+
+Prepared implementation, pending owner review; [decision 016](decisions/016-draft-based-live-edits.md)
+and [local evidence](evidence/site-edits/README.md) distinguish source from activation.
+
+1. Call `site.edit.open {siteId, requestId}`. It copies the current live spec and
+   server-owned normalized asset references without re-upload. The returned
+   `baseSpecId` binds this edit. Only one active draft per site is allowed;
+   discard/expiry/completion preserves history and permits the next draft.
+2. Apply content, token, section and page edits using the existing revision checks.
+   Every new blank or starter draft requires explicit language, all six shell
+   labels, colors, heading/body/mono fonts, spacing, radius, motion and layout.
+   Existing 2.2 content may need missing inputs supplied before a 2.3 preview.
+3. Use quick previews for iteration, then full verification and browser approval
+   of the exact revision. Superseded approvals cannot be revived by reverting.
+4. Call `site.deploy` with `DEPLOY_SITE:<siteId>`. Omit `cmsPassword` and `domain`
+   for edits; initial-only options are rejected. The previous live snapshot stays
+   stored and selected until the new web deployment succeeds. Queued, running or
+   unknown deployments freeze edits. A retry of an already-live spec is a no-op.
+
+The same Railway project/web service is reused. The CMS service, credentials and
+volume are not redeployed or replaced. Added collections use only reviewed
+schemas through the running CMS API; existing records and schemas are untouched.
+Before unbinding collections, send `retainCmsRecordsConfirmation` equal to
+`RETAIN_CMS_RECORDS:<specId>:<sorted removed collection IDs joined by commas>`.
+Unbinding removes public/editor routes and retains records; rebinding exposes
+the existing records again.
+
+Only collection additions need `SITE_RAILWAY_SSH_IDENTITY_FILE`, pointing to an
+owner-provisioned already-registered identity with trusted host configuration for
+the runtime user. The fixed command uses existing CMS credentials inside its
+container. The runtime never registers a key or expands permissions. Ordinary
+edits reuse recorded collection inventory (or the current live bindings for older
+sites). Missing additive-collection access fails before web upload. Hosted SSH
+and its credential setup need separate authorization and verification.
+
+One successful edit consumes one of the owner's four UTC-calendar-month changes,
+including test sites. No rollover; CMS edits, initial deployment, previews,
+validation failures and retries do not count. `monthlyRequestsUsed` counts
+successes; `monthlyCapacityHeld` also includes pending/unknown reservations;
+remaining allowance excludes held capacity. Unknown outcomes require explicit
+reconciliation. Inventory lists deployed edit counts; inspection and monthly
+reports expose redacted spec/baseline hashes and outcomes. Tester reset retains
+immutable approval/audit history and an archived edit summary while clearing the
+site's mutable history, artifacts and allowance.
+
+Policy 2.2.0 and contract 2.2 are frozen and remain deployable from stored bytes.
+No old snapshot is regenerated or silently upgraded. Site kind and original
+starter provenance never change. Public rollback is proposed in decision 016;
+only its web-only provider primitive has local stored-byte restoration evidence.

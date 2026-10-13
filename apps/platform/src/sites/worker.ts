@@ -2,7 +2,8 @@ import {
   validateSiteSpec,
   SUPPORTED_POLICY_VERSIONS,
   sha256,
-  defaultPolicy,
+  policyForVersion,
+  boundCollectionIds,
 } from '@a2aviary/site-core';
 import {
   generateSite,
@@ -57,6 +58,7 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
   }
   let hash: string | null = null;
   let providerStarted = false;
+  let deploymentCommitted = false;
   try {
     const p = await this.store.principal(job.actor_id);
     requireRole(p, job.kind === 'build' ? 'site.preview' : 'site.deploy');
@@ -91,7 +93,7 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
       throw new SiteError('policy_version_unsupported');
     const validated = validateSiteSpec(
       row.spec,
-      defaultPolicy,
+      policyForVersion(row.spec.policyVersion),
       { test: site.test_mode },
     );
     if (!validated.ok) throw new SiteError('invalid_spec', validated.errors);
@@ -159,7 +161,8 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
       // Recheck ownership, current base and permission immediately before a provider action.
       await this.store.siteAction(p.id, 'site.deploy', async (c) => {
         const s = await this.owned(c, p.id, site.id);
-        if (s.current_spec_id) throw new SiteError('initial_site_only');
+        if (Boolean(s.current_spec_id) !== Boolean(row.accounting))
+          throw new SiteError('edit_base_stale');
         await this.drafts.assertApproval(c, await this.row(c, p.id, row.id));
         await c.query(
           "UPDATE platform_site_spec SET state='deploying' WHERE id=$1",
@@ -179,7 +182,20 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
         build,
         resources: site.resources,
         clientEmail: email,
-        clientPassword: this.open(row.client_password_ciphertext!),
+        clientPassword: row.client_password_ciphertext
+          ? this.open(row.client_password_ciphertext)
+          : undefined,
+        redeploy: Boolean(site.current_spec_id),
+        previousCollections: site.current_spec_id
+          ? boundCollectionIds(
+              (
+                await this.store.pool.query(
+                  'SELECT spec FROM platform_site_spec WHERE id=$1',
+                  [site.current_spec_id],
+                )
+              ).rows[0].spec,
+            )
+          : [],
         domain: row.requested_domain ?? undefined,
         saveResources: async (value) => {
           await this.store.pool.query(
@@ -200,8 +216,20 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
           [row.id],
         );
         await c.query(
-          'UPDATE platform_site SET current_spec_id=$2,resources=$3 WHERE id=$1',
-          [site.id, row.id, JSON.stringify(resources)],
+          'UPDATE platform_site SET current_spec_id=$2,resources=$3,policy_version=$4 WHERE id=$1',
+          [site.id, row.id, JSON.stringify(resources), row.spec.policyVersion],
+        );
+        await c.query(
+          "UPDATE platform_site_job SET state='done',finished_at=now() WHERE id=$1",
+          [job.id],
+        );
+        await c.query(
+          "UPDATE platform_site_draft SET state='completed' WHERE id=(SELECT draft_id FROM platform_site_spec WHERE id=$1)",
+          [row.id],
+        );
+        await c.query(
+          'UPDATE platform_upload_session SET revoked=true WHERE draft_id=(SELECT draft_id FROM platform_site_spec WHERE id=$1)',
+          [row.id],
         );
         await this.audit(
           c,
@@ -213,6 +241,7 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
           site.id,
         );
       });
+      deploymentCommitted = true;
     }
     await this.store.pool.query(
       "UPDATE platform_site_job SET state='done',finished_at=now() WHERE id=$1",
@@ -239,6 +268,15 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
       );
     });
   } catch (error) {
+    if (deploymentCommitted) {
+      console.error(
+        JSON.stringify({
+          event: 'site.post_deploy_reporting_failed',
+          test: job.test_mode,
+        }),
+      );
+      return true;
+    }
     if (error instanceof VerificationFailure) {
       try {
         await this.saveBuild(job.spec_id, error.build);
@@ -261,7 +299,13 @@ export async function processAdmittedJob(this: Sites): Promise<boolean> {
         : 'operation_failed';
     // An uncertain provider outcome is retained for manual reconciliation, never replayed or charged blindly.
     const unknown =
-      job.kind === 'deploy' && providerStarted && code !== 'deployment_failed';
+      job.kind === 'deploy' &&
+      providerStarted &&
+      ![
+        'deployment_failed',
+        'cms_collection_access_required',
+        'redeploy_resources_required',
+      ].includes(code);
     await this.store.transaction(async (c) => {
       await c.query(
         'UPDATE platform_site_job SET state=$2,finished_at=now() WHERE id=$1',

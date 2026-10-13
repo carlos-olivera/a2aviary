@@ -23,7 +23,7 @@ export async function checkLibraryBrowser(root, production, compiler) {
   try {
     const baseline = JSON.parse(
       await readFile(
-        join(root, 'contracts/site/2.2.0/examples/site-spec.json'),
+        join(root, 'contracts/site/2.3.0/examples/site-spec.json'),
       ),
     );
     const variants = Object.values(fixture.catalog).filter(
@@ -142,7 +142,7 @@ export async function checkLibraryBrowser(root, production, compiler) {
       };
       for (const a of spec.assets)
         resources['/assets/' + a.sha256 + '.' + a.format] = await readFile(
-          join(root, 'contracts/site/2.2.0/examples/fictional-pixel.webp'),
+          join(root, 'contracts/site/2.3.0/examples/fictional-pixel.webp'),
         );
       for (const f of fontPackages(spec, catalog))
         for (const file of f.files)

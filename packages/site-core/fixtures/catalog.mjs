@@ -5,7 +5,7 @@ export async function fixtureSubmission() {
   const spec = JSON.parse(
     await readFile(
       new URL(
-        '../../../contracts/site/2.2.0/examples/site-spec.json',
+        '../../../contracts/site/2.3.0/examples/site-spec.json',
         import.meta.url,
       ),
       'utf8',
@@ -13,7 +13,7 @@ export async function fixtureSubmission() {
   );
   const bytes = await readFile(
     new URL(
-      '../../../contracts/site/2.2.0/examples/fictional-pixel.webp',
+      '../../../contracts/site/2.3.0/examples/fictional-pixel.webp',
       import.meta.url,
     ),
   );

@@ -34,7 +34,7 @@ export async function preview(
     for (const a of spec.assets)
       assets.set(
         a.id,
-        await this.sites.objects.get('drafts/' + id + '/assets/' + a.id),
+        await this.asset(d, a.id),
       );
     const source = await generateSite(spec, assets, {
         serverNormalized: true,
@@ -127,6 +127,9 @@ export async function preview(
         !cached && !pending,
       ],
     );
+    if (d.base_spec_id) {
+      await c.query("UPDATE platform_site_spec SET base_sha256=(SELECT spec_sha256 FROM platform_site_spec WHERE id=$2),accounting='{\"kind\":\"edit\"}' WHERE id=$1", [specId, d.base_spec_id]);
+    }
     if (pending && !cached)
       await c.query(
         'UPDATE platform_site_spec SET pending_source_id=$2 WHERE id=$1',
@@ -134,7 +137,7 @@ export async function preview(
       );
     if (cached) {
       const build = await this.sites.readVerifiedBuild(cached);
-      await this.sites.copyBuild(cached.id, specId, build);
+      await this.sites.copyBuild(cached.id, specId, build, c);
       await c.query(
         'UPDATE platform_site_spec SET source_sha256=$2,output_sha256=$3 WHERE id=$1',
         [specId, build.report.sourceSha256, build.report.outputSha256],
@@ -256,14 +259,14 @@ export async function assertApproval(this: Drafts, c: PoolClient, row: any) {
   ).rows[0];
   if (
     !approval ||
-    !['approved', 'deploying'].includes(row.state) ||
+    !['approved', 'deploying', 'failed'].includes(row.state) ||
     row.artifacts_deleted ||
     new Date(row.expires_at).getTime() <= Date.now()
   )
     throw new SiteError('snapshot_approval_required');
   const { d, site } = await this.draft(c, approval.actor_id, row.draft_id);
   if (
-    site.current_spec_id ||
+    (d.base_spec_id ?? null) !== site.current_spec_id ||
     d.revision !== approval.revision ||
     row.draft_revision !== approval.revision ||
     row.spec_sha256 !== approval.spec_sha256 ||

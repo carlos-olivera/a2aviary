@@ -102,7 +102,8 @@ export class Drafts {
     )
       throw new SiteError('draft_expired');
     if (mutable) {
-      if (site.current_spec_id) throw new SiteError('initial_site_only');
+      if ((d.base_spec_id ?? null) !== site.current_spec_id)
+        throw new SiteError('edit_base_stale');
       if (
         (
           await c.query(
@@ -117,7 +118,7 @@ export class Drafts {
     d.starter_id = site.starter_id;
     d.starter_version = site.starter_version;
     d.test_mode = site.test_mode;
-    d.policy_version = site.policy_version;
+
     return { d, site };
   }
   /** @internal Shared by domain operations. */
@@ -184,7 +185,12 @@ export class Drafts {
       [prefix],
     );
   }
-  async create(actor: string, slug: string, requestId: string, starter?: { id: string; version?: string }) {
+  async create(
+    actor: string,
+    slug: string,
+    requestId: string,
+    starter?: { id: string; version?: string },
+  ) {
     return this.sites.store.siteAction(
       actor,
       'site.draft.create',
@@ -205,7 +211,9 @@ export class Drafts {
           await this.access(c, actor, d.site_id);
           return r.response;
         }
-        const selected = starter ? getStarter(starter.id, starter.version, p.testMode) : undefined;
+        const selected = starter
+          ? getStarter(starter.id, starter.version, p.testMode)
+          : undefined;
         if (starter && !selected) throw new SiteError('starter_unavailable');
         if (!/^[a-z][a-z0-9-]{0,63}$/.test(slug))
           throw new SiteError('slug_required');
@@ -256,14 +264,111 @@ export class Drafts {
         const d = (
           await c.query(
             'INSERT INTO platform_site_draft(id,site_id,content) VALUES($1,$2,$3) RETURNING *',
-            [id, siteId, JSON.stringify({ pages: selected ? structuredClone(selected.seed.pages) : [], assets: [] })],
+            [
+              id,
+              siteId,
+              JSON.stringify({
+                pages: selected ? structuredClone(selected.seed.pages) : [],
+                assets: [],
+              }),
+            ],
           )
         ).rows[0];
-        const result = this.summary({ ...d, kind: 'website', test_mode: p.testMode, starter_id: selected?.id, starter_version: selected?.version });
+        const result = this.summary({
+          ...d,
+          kind: 'website',
+          test_mode: p.testMode,
+          starter_id: selected?.id,
+          starter_version: selected?.version,
+        });
         await this.saveReceipt(c, actor, requestId, id, r.hash, result);
         await this.event(c, actor, siteId, 'site.draft.create', 'created');
         return result;
       },
+    );
+  }
+  async openEdit(actor: string, siteId: string, requestId: string) {
+    return this.sites.store.siteAction(actor, 'site.edit.open', async (c) => {
+      const receipt = await this.receipt(c, actor, requestId, {
+        op: 'edit.open',
+        siteId,
+      });
+      await c.query("SELECT pg_advisory_xact_lock(hashtext('draft-count'))");
+      const site = await this.access(c, actor, siteId);
+      if (receipt.response) return receipt.response;
+      if (!site.current_spec_id) throw new SiteError('live_site_required');
+      if (
+        (
+          await c.query(
+            "SELECT 1 FROM platform_site_job j JOIN platform_site_spec p ON p.id=j.spec_id WHERE p.site_id=$1 AND j.kind='deploy' AND j.state IN ('queued','running','unknown')",
+            [siteId],
+          )
+        ).rowCount
+      )
+        throw new SiteError('deployment_busy');
+      await c.query(
+        "UPDATE platform_site_draft SET state='expired' WHERE site_id=$1 AND state='active' AND (expires_at<=now() OR created_at<=now()-interval '30 days')",
+        [siteId],
+      );
+      if (
+        (
+          await c.query(
+            "SELECT 1 FROM platform_site_draft WHERE site_id=$1 AND state='active'",
+            [siteId],
+          )
+        ).rowCount
+      )
+        throw new SiteError('active_draft_exists');
+      const count = (
+        await c.query(
+          "SELECT count(*)::int AS total,count(*) FILTER(WHERE s.owner_id=$1)::int AS owned FROM platform_site_draft d JOIN platform_site s ON s.id=d.site_id WHERE d.state='active' AND d.expires_at>now() AND d.created_at>now()-interval '30 days'",
+          [site.owner_id],
+        )
+      ).rows[0];
+      if (count.owned >= 3 || count.total >= 50)
+        throw new SiteError('draft_quota');
+      const live = (
+        await c.query('SELECT * FROM platform_site_spec WHERE id=$1', [
+          site.current_spec_id,
+        ])
+      ).rows[0];
+      if (!live || live.artifacts_deleted || live.state !== 'live')
+        throw new SiteError('live_snapshot_required');
+      const { contractVersion, planId, policyVersion, ...content } = live.spec;
+      const assetSources = Object.fromEntries(
+        content.assets.map((a: any) => [a.id, live.id]),
+      );
+      const d = (
+        await c.query(
+          'INSERT INTO platform_site_draft(id,site_id,content,base_spec_id,asset_sources) VALUES($1,$2,$3,$4,$5) RETURNING *',
+          [
+            randomUUID(),
+            siteId,
+            JSON.stringify(content),
+            live.id,
+            JSON.stringify(assetSources),
+          ],
+        )
+      ).rows[0];
+      const result = this.summary({
+        ...d,
+        kind: site.kind,
+        starter_id: site.starter_id,
+        starter_version: site.starter_version,
+        test_mode: site.test_mode,
+      });
+      await this.saveReceipt(c, actor, requestId, d.id, receipt.hash, result);
+      await this.event(c, actor, siteId, 'site.edit.open', 'created');
+      return result;
+    });
+  }
+  // Server-owned references reuse normalized stored assets without upload/copy.
+  async asset(d: any, id: string) {
+    const source = d.asset_sources?.[id];
+    return this.sites.objects.get(
+      source
+        ? 'specs/' + source + '/assets/' + id
+        : 'drafts/' + d.id + '/assets/' + id,
     );
   }
   /** @internal Shared by domain operations. */
@@ -318,7 +423,7 @@ export class Drafts {
         starter_id: site.starter_id,
         starter_version: site.starter_version,
         test_mode: site.test_mode,
-        policy_version: site.policy_version,
+        policy_version: d.policy_version,
       });
       await this.saveReceipt(c, actor, input.requestId, d.id, r.hash, result);
       await this.event(c, actor, d.site_id, 'site.draft.apply', 'updated');

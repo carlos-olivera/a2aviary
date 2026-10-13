@@ -31,3 +31,9 @@ Rejected: client approval assertions and preview bundles (no trustworthy browser
 Migrations 001–006 are byte-for-byte preserved. Production's earlier 006 was reconciled by the owner to the current file on 2026-10-07 (owner-reported; see [release evidence](../history/release-verification-2026-10.md#hosted-catalog-activation--2026-10-07-to-2026-10-08-owner--and-agent-reported)); migration 007 is now on main, but its production application is unverified after the observed HTTP 503. No production activation, variables, DNS, payments, merge or deployment is authorized. One isolated hosted tester fixture is the explicit exception; its fictional approval session does not verify real Google authentication. Observed results, cleanup and unavailable billing values belong in release evidence, not inferred from a successful build or PR.
 
 References: [workflow](../sites.md), [release evidence](../release-verification.md), [Sharp metadata defaults](https://sharp.pixelplumbing.com/api-output/), [CSP sandbox](https://www.w3.org/TR/CSP3/#directive-sandbox).
+
+## Live-edit extension — 2026-10-13
+
+[Decision 016](016-draft-based-live-edits.md) implements the owner-requested live-edit
+flow and retires the unavailable change tool. The original deferral above records
+the initial release; browser-only approval and exact-byte deployment remain.

@@ -36,9 +36,9 @@ tool-filter enum follows the same registry order without changing accepted value
 `TOOL_ROLES`/`legacyToolRoles` and top-level re-export shims are removed; consumers
 import the domain modules. The deliberate snapshot changes are documented in
 [cleanup evidence](evidence/runtime-cleanup/README.md#scope-and-behavioral-differences).
-`change.request` retains its passthrough schema, annotations, wrapper audit and
-failure recording, and throws the same `change_requests_unavailable` SiteError
-in its handler. The dead `Sites.change()` method is removed.
+Policy 2.3 removes `change.request` and its stub/schema. `site.edit.open` uses the
+same registry and wrapper; [live edits](sites.md#live-edits-policy-23) reuse draft,
+approval and deployment domain modules.
 
 To extend tools in a later authorized delivery, add one `defineTool` declaration
 in its feature module, give it the required roles and behavior metadata, and
@@ -73,7 +73,8 @@ written, run and committed in `e352ecc` (rebased as `3320272`) **before any sour
 [The snapshot test](../apps/platform/test/tool-visibility.test.mjs) exercises
 four SQL-resolved roles × eight workflow/draft/administration combinations:
 full `tools/list` schemas, descriptions, annotations, order and server metadata;
-`capabilities.get`; and the enabled `change.request` error. It uses the real
+`capabilities.get`; and the historical enabled `change.request` error (retired
+in policy 2.3; current snapshots verify its absence). It uses the real
 runtime flag admission and fictional provider configuration without making
 provider requests. The fixture is retained unchanged after the refactor.
 

@@ -15,15 +15,35 @@ import {
 
 export const workflowTools = [
   defineTool({
-    name: 'starters.list', description: 'List data-only starting points visible to this principal. Experimental starters require tester classification.',
-    roles: ALL_ROLES, feature: 'siteWorkflow', readOnly: true, recordsSiteFailure: false, order: 5.1,
+    name: 'starters.list',
+    description:
+      'List data-only starting points visible to this principal. Experimental starters require tester classification.',
+    roles: ALL_ROLES,
+    feature: 'siteWorkflow',
+    readOnly: true,
+    recordsSiteFailure: false,
+    order: 5.1,
     inputSchema: () => z.object({}).strict(),
-    handler: ({ principal }) => ({ starters: listStarters(principal.testMode) }),
+    handler: ({ principal }) => ({
+      starters: listStarters(principal.testMode),
+    }),
   }),
   defineTool({
-    name: 'starter.get', description: 'Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.',
-    roles: ALL_ROLES, feature: 'siteWorkflow', readOnly: true, recordsSiteFailure: false, order: 5.2,
-    inputSchema: () => z.object({ id: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), version: z.string().max(64).optional() }).strict(),
+    name: 'starter.get',
+    description:
+      'Read a starter seed and English agent guidance, never site copy. Applied once at creation; a different starter requires a new site.',
+    roles: ALL_ROLES,
+    feature: 'siteWorkflow',
+    readOnly: true,
+    recordsSiteFailure: false,
+    order: 5.2,
+    inputSchema: () =>
+      z
+        .object({
+          id: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),
+          version: z.string().max(64).optional(),
+        })
+        .strict(),
     handler: ({ principal }, a) => {
       const starter = getStarter(a.id, a.version, principal.testMode);
       if (!starter) throw new SiteError('starter_unavailable');
@@ -53,10 +73,33 @@ export const workflowTools = [
     order: 6,
     inputSchema: () =>
       z
-        .object({ slug: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), requestId, starter: z.object({ id: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/), version: z.string().max(64).optional() }).strict().optional() })
+        .object({
+          slug: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),
+          requestId,
+          starter: z
+            .object({
+              id: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/),
+              version: z.string().max(64).optional(),
+            })
+            .strict()
+            .optional(),
+        })
         .strict(),
     handler: ({ principal, sites }, a) =>
       sites!.drafts.create(principal.id, a.slug, a.requestId, a.starter),
+  }),
+  defineTool({
+    name: 'site.edit.open',
+    description:
+      'Open a draft seeded from the current live snapshot and normalized asset references. One active draft per site; immutable starter provenance. Uses policy 2.3 completeness rules.',
+    roles: ALL_ROLES,
+    feature: 'siteWorkflow',
+    readOnly: false,
+    recordsSiteFailure: true,
+    order: 6.5,
+    inputSchema: () => z.object({ siteId: z.uuid(), requestId }).strict(),
+    handler: ({ principal, sites }, a) =>
+      sites!.drafts.openEdit(principal.id, a.siteId, a.requestId),
   }),
   defineTool({
     name: 'site.draft.apply',
@@ -163,14 +206,16 @@ export const workflowTools = [
   }),
   defineTool({
     name: 'site.preview.quick',
-    description: 'Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.',
+    description:
+      'Render this complete draft revision for fast design/content iteration, without hosted verification or AI. Returns verified:false and an ephemeral signed URL. Blockers still block; suggestions do not. Scripts and CMS are off. Separate quota: 60/owner and 300/service per rolling day. Never approvable or deployable; run site.preview before browser approval.',
     roles: ALL_ROLES,
     feature: 'siteWorkflow',
     readOnly: false,
     recordsSiteFailure: true,
     order: 13.5,
     inputSchema: () => z.object({ draftId, expectedRevision }).strict(),
-    handler: ({ principal, sites }, a) => sites!.drafts.quick.create(principal.id, a.draftId, a.expectedRevision),
+    handler: ({ principal, sites }, a) =>
+      sites!.drafts.quick.create(principal.id, a.draftId, a.expectedRevision),
   }),
   defineTool({
     name: 'site.status',
@@ -188,7 +233,7 @@ export const workflowTools = [
   defineTool({
     name: 'site.deploy',
     description:
-      'Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. cmsPassword is the initial CMS password; encrypted until delivered to Railway and never logged.',
+      'Deploy your verified build to an isolated client project. Confirmation DEPLOY_SITE:<siteId>, or DEPLOY_SITE:<siteId>:<domain> for an initial custom domain. DNS is never modified. Edits reuse the existing web service without a password. Removing bindings requires retainCmsRecordsConfirmation RETAIN_CMS_RECORDS:<specId>:<sorted,comma-separated removed collections>; records are retained. cmsPassword is only the initial CMS password; encrypted until delivered to Railway and never logged.',
     roles: ALL_ROLES,
     feature: 'siteWorkflow',
     readOnly: false,
@@ -200,7 +245,8 @@ export const workflowTools = [
           siteId: z.uuid(),
           specId: z.uuid(),
           confirmation: z.string().max(310),
-          cmsPassword: z.string().min(16).max(128),
+          cmsPassword: z.string().min(16).max(128).optional(),
+          retainCmsRecordsConfirmation: z.string().max(512).optional(),
           domain: z
             .string()
             .max(253)
@@ -216,21 +262,8 @@ export const workflowTools = [
         args.cmsPassword,
         args.confirmation,
         args.domain,
+        args.retainCmsRecordsConfirmation,
       ),
-  }),
-  defineTool({
-    name: 'change.request',
-    description:
-      'Unavailable: draft-based changes are deferred. CMS content edits remain available. Every request returns change_requests_unavailable.',
-    roles: ALL_ROLES,
-    feature: 'siteWorkflow',
-    readOnly: false,
-    recordsSiteFailure: true,
-    order: 16,
-    inputSchema: () => z.object({}).passthrough(),
-    handler: (_context) => {
-      throw new SiteError('change_requests_unavailable');
-    },
   }),
   defineTool({
     name: 'sites.list',

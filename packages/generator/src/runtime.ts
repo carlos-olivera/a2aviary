@@ -82,6 +82,7 @@ export function siteRuntime(env: NodeJS.ProcessEnv = process.env) {
     ),
     deployer: new RailwayDeployer({
       apiToken: required('RAILWAY_API_TOKEN'),
+      sshIdentityFile: env.SITE_RAILWAY_SSH_IDENTITY_FILE,
       workspaceId: required('SITE_RAILWAY_WORKSPACE_ID'),
       protectedProjectIds: protectedIds,
       protectedDomains,

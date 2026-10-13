@@ -25,7 +25,7 @@ test('real MCP drafts/upload accept the presentation for tester sites and reject
     )
   ).rows[0];
   assert.equal(row.test_mode, true);
-  assert.equal(row.spec.contractVersion, '2.2');
+  assert.equal(row.spec.contractVersion, '2.3');
   assert.deepEqual(row.spec.shell, input.spec.shell);
   assert.equal(row.spec.pages[0].sections[0].blocks[0].variant, 'flip-3d');
   const client = await f.user('client-presentation@example.invalid');

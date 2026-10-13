@@ -1,4 +1,7 @@
-import { collectionDefinition, collectionDefinitions } from '@a2aviary/site-core';
+import {
+  collectionDefinition,
+  collectionDefinitions,
+} from '@a2aviary/site-core';
 import type { CollectionDefinition, SiteSpec } from '@a2aviary/site-core';
 import { boundCollections } from './render.ts';
 export const POCKETBASE_VERSION = '0.40.4';
@@ -18,7 +21,7 @@ export function pocketBaseMigration(spec: SiteSpec): string {
       createRule: editor.create,
       updateRule: editor.update,
       deleteRule: editor.delete,
-      fields: definition.fields.map(field => {
+      fields: definition.fields.map((field) => {
         const { editor: _editor, ...data } = field;
         return data;
       }),
@@ -50,32 +53,96 @@ ENTRYPOINT ["sh","-ec","chown 1000:1000 /pb/pb_data && exec su-exec 1000:1000 \\
 CMD ["/pb/pocketbase","serve","--http=[::]:8090","--dir=/pb/pb_data","--encryptionEnv=PB_ENCRYPTION_KEY"]
 `;
 export function cmsEditorHtml(): string {
-  const fields = collectionDefinitions[0].fields.map(field => {
-    const label = field.editor.label;
-    if (field.type === 'bool') return `<label>${label} <input name="${field.name}" type="checkbox"></label>`;
-    const required = field.required ? ' required' : '';
-    if (field.editor.control === 'textarea') return `<label>${label} <textarea name="${field.name}" maxlength="${field.max}"${required}></textarea></label>`;
-    return `<label>${label} <input name="${field.name}" maxlength="${field.max}"${required}></label>`;
-  }).join('');
+  const fields = collectionDefinitions[0].fields
+    .map((field) => {
+      const label = field.editor.label;
+      if (field.type === 'bool')
+        return `<label>${label} <input name="${field.name}" type="checkbox"></label>`;
+      const required = field.required ? ' required' : '';
+      if (field.editor.control === 'textarea')
+        return `<label>${label} <textarea name="${field.name}" maxlength="${field.max}"${required}></textarea></label>`;
+      return `<label>${label} <input name="${field.name}" maxlength="${field.max}"${required}></label>`;
+    })
+    .join('');
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Site CMS</title><script src="editor.js" defer></script></head><body><main><h1>Site content</h1><form id="login"><label>Email <input name="email" type="email" autocomplete="username" required></label><label>Password <input name="password" type="password" autocomplete="current-password" required></label><button>Sign in</button></form><p id="status" role="status"></p><section id="editor" hidden><button id="logout">Sign out</button><label>Collection <select id="collection"></select></label><ul id="records"></ul><form id="record"><input name="id" type="hidden">${fields}<button>Save content</button></form></section></main></body></html>`;
 }
 export function cmsEditorScript(spec: SiteSpec): string {
   return renderCmsEditorScript(boundCollections(spec), collectionDefinitions);
 }
 // Reviewed data only; exported for compiler/editor fixture verification.
-export function renderCmsEditorScript(names: string[], definitions: readonly CollectionDefinition[]): string {
+export function renderCmsEditorScript(
+  names: string[],
+  definitions: readonly CollectionDefinition[],
+): string {
   const definition = definitions[0];
-  const shape = (definition: CollectionDefinition) => JSON.stringify({fields: definition.fields, label: definition.editorRecordLabel});
-  if (definitions.some(d => shape(d) !== shape(definition))) return heterogeneousEditorScript(names, definitions);
-  const textFields = definition.fields.filter(field => field.type === 'text');
-  const booleanFields = definition.fields.filter(field => field.type === 'bool');
-  const readFields = ['id', ...textFields.map(field => field.name)];
-  const readBooleans = booleanFields.map(field => `f.elements.${field.name}.checked=item.${field.name}`).join(';');
-  const payload = definition.fields.map(field => `${field.name}:f.${field.type === 'bool' ? 'has' : 'get'}('${field.name}')`).join(',');
+  const shape = (definition: CollectionDefinition) =>
+    JSON.stringify({
+      fields: definition.fields,
+      label: definition.editorRecordLabel,
+    });
+  if (definitions.some((d) => shape(d) !== shape(definition)))
+    return heterogeneousEditorScript(names, definitions);
+  const textFields = definition.fields.filter((field) => field.type === 'text');
+  const booleanFields = definition.fields.filter(
+    (field) => field.type === 'bool',
+  );
+  const readFields = ['id', ...textFields.map((field) => field.name)];
+  const readBooleans = booleanFields
+    .map((field) => `f.elements.${field.name}.checked=item.${field.name}`)
+    .join(';');
+  const payload = definition.fields
+    .map(
+      (field) =>
+        `${field.name}:f.${field.type === 'bool' ? 'has' : 'get'}('${field.name}')`,
+    )
+    .join(',');
   return `const collections=${JSON.stringify(names)};let token='';const status=document.querySelector('#status'),editor=document.querySelector('#editor'),select=document.querySelector('#collection');for(const name of collections){const o=document.createElement('option');o.value=name;o.textContent=name;select.append(o)}const api=async(path,data,method='GET')=>{const r=await fetch('api/'+path,{method,headers:{'Content-Type':'application/json',Authorization:token},body:data?JSON.stringify(data):undefined});if(!r.ok)throw Error('Request rejected');return r.status===204?{}:r.json()};async function refresh(){const data=await api('collections/'+select.value+'/records?perPage=100');const list=document.querySelector('#records');list.replaceChildren();for(const item of data.items){const li=document.createElement('li'),edit=document.createElement('button'),remove=document.createElement('button');edit.textContent=item.${definition.editorRecordLabel};edit.onclick=()=>{const f=document.querySelector('#record');for(const k of ${JSON.stringify(readFields).replaceAll('"', "'")})f.elements[k].value=item[k];${readBooleans}};remove.textContent='Delete';remove.onclick=async()=>{if(!confirm('Delete this content record?'))return;try{await api('collections/'+select.value+'/records/'+item.id,undefined,'DELETE');await refresh()}catch{status.textContent='Delete failed'}};li.append(edit,remove);list.append(li)}}document.querySelector('#login').onsubmit=async e=>{e.preventDefault();try{const f=new FormData(e.target),r=await api('collections/editors/auth-with-password',{identity:f.get('email'),password:f.get('password')},'POST');token=r.token;e.target.reset();e.target.hidden=true;editor.hidden=false;status.textContent='Signed in';await refresh()}catch{status.textContent='Sign in failed'}};document.querySelector('#record').onsubmit=async e=>{e.preventDefault();const f=new FormData(e.target),id=f.get('id');try{await api('collections/'+select.value+'/records'+(id?'/'+id:''),{${payload}},id?'PATCH':'POST');e.target.reset();await refresh();status.textContent='Saved. CMS edits do not consume site changes.'}catch{status.textContent='Save failed'}};select.onchange=()=>refresh().catch(()=>status.textContent='Load failed');document.querySelector('#logout').onclick=()=>location.reload();\n`;
 }
 
-function heterogeneousEditorScript(names: string[], definitions: readonly CollectionDefinition[]): string {
-  const data = Object.fromEntries(definitions.filter(d => names.includes(d.id)).map(d => [d.id,d]));
+function heterogeneousEditorScript(
+  names: string[],
+  definitions: readonly CollectionDefinition[],
+): string {
+  const data = Object.fromEntries(
+    definitions.filter((d) => names.includes(d.id)).map((d) => [d.id, d]),
+  );
   return `const definitions=${JSON.stringify(data)},collections=${JSON.stringify(names)};let token='';const status=document.querySelector('#status'),editor=document.querySelector('#editor'),select=document.querySelector('#collection'),form=document.querySelector('#record');for(const name of collections){const o=document.createElement('option');o.value=name;o.textContent=name;select.append(o)}const api=async(path,data,method='GET')=>{const r=await fetch('api/'+path,{method,headers:{'Content-Type':'application/json',Authorization:token},body:data?JSON.stringify(data):undefined});if(!r.ok)throw Error('Request rejected');return r.status===204?{}:r.json()};function fields(){form.replaceChildren();const id=document.createElement('input');id.name='id';id.type='hidden';form.append(id);for(const field of definitions[select.value].fields){const label=document.createElement('label'),input=document.createElement(field.editor.control==='textarea'?'textarea':'input');label.textContent=field.editor.label+' ';input.name=field.name;if(field.type==='bool')input.type='checkbox';else{input.maxLength=field.max;input.required=field.required}label.append(input);form.append(label)}const save=document.createElement('button');save.textContent='Save content';form.append(save)}async function refresh(){if(!select.value)return;fields();const data=await api('collections/'+select.value+'/records?perPage=100'),list=document.querySelector('#records');list.replaceChildren();for(const item of data.items){const li=document.createElement('li'),edit=document.createElement('button'),remove=document.createElement('button');edit.textContent=item[definitions[select.value].editorRecordLabel];edit.onclick=()=>{form.elements.id.value=item.id;for(const field of definitions[select.value].fields){const input=form.elements[field.name];if(field.type==='bool')input.checked=item[field.name];else input.value=item[field.name]}};remove.textContent='Delete';remove.onclick=async()=>{if(!confirm('Delete this content record?'))return;try{await api('collections/'+select.value+'/records/'+item.id,undefined,'DELETE');await refresh()}catch{status.textContent='Delete failed'}};li.append(edit,remove);list.append(li)}}document.querySelector('#login').onsubmit=async e=>{e.preventDefault();try{const f=new FormData(e.target),r=await api('collections/editors/auth-with-password',{identity:f.get('email'),password:f.get('password')},'POST');token=r.token;e.target.reset();e.target.hidden=true;editor.hidden=false;status.textContent='Signed in';await refresh()}catch{status.textContent='Sign in failed'}};form.onsubmit=async e=>{e.preventDefault();const f=new FormData(form),id=f.get('id'),payload={};for(const field of definitions[select.value].fields)payload[field.name]=field.type==='bool'?f.has(field.name):f.get(field.name);try{await api('collections/'+select.value+'/records'+(id?'/'+id:''),payload,id?'PATCH':'POST');await refresh();status.textContent='Saved. CMS edits do not consume site changes.'}catch{status.textContent='Save failed'}};select.onchange=()=>refresh().catch(()=>status.textContent='Load failed');document.querySelector('#logout').onclick=()=>location.reload();\n`;
+}
+
+/** Fixed remote command: only catalog definitions are embedded, never client copy
+ * or credentials. It talks to the existing process instead of replacing it. */
+export function ensureCollectionsCommand(spec: SiteSpec): string {
+  const quote = (value: string) => "'" + value.replaceAll("'", "'\\''") + "'";
+  const definitions = boundCollections(spec).map((name) => {
+    const d = collectionDefinition(name);
+    return {
+      name,
+      type: 'base',
+      listRule: `${d.publicReadRules.list} || (${d.editorRules.create})`,
+      viewRule: `${d.publicReadRules.view} || (${d.editorRules.create})`,
+      createRule: d.editorRules.create,
+      updateRule: d.editorRules.update,
+      deleteRule: d.editorRules.delete,
+      fields: d.fields.map(({ editor, ...field }) => field),
+    };
+  });
+  // Bootstrap generates these values using this restricted alphabet. A manually
+  // changed credential outside it fails closed rather than unsafe JSON encoding.
+  return `set -eu
+case "$PB_ADMIN_PASSWORD" in ''|*[!A-Za-z0-9_-]*) exit 1;; esac
+case "$PB_ADMIN_EMAIL" in ''|*[!A-Za-z0-9@._+-]*) exit 1;; esac
+reply=$(wget -qO- --header='Content-Type: application/json' --post-data="{\\"identity\\":\\"$PB_ADMIN_EMAIL\\",\\"password\\":\\"$PB_ADMIN_PASSWORD\\"}" http://127.0.0.1:8090/api/collections/_superusers/auth-with-password)
+token=$(printf '%s' "$reply" | sed -n 's/.*"token":"\\([A-Za-z0-9_.-]*\\)".*/\\1/p')
+[ -n "$token" ]
+${definitions
+  .map(
+    (
+      d,
+    ) => `if ! wget -qO /dev/null --header="Authorization: $token" http://127.0.0.1:8090/api/collections/${d.name}; then
+wget -qO /dev/null --header="Authorization: $token" --header='Content-Type: application/json' --post-data=${quote(JSON.stringify(d))} http://127.0.0.1:8090/api/collections
+fi`,
+  )
+  .join('\n')}
+printf 'CMS_COLLECTIONS_READY\\n'
+`;
 }

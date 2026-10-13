@@ -7,7 +7,6 @@ export * from './runtime.ts';
 export {
   validateSiteSpec,
   validateAssets,
-  validateChangeRequest,
   specDigest,
   defaultPolicy,
 } from '@a2aviary/site-core';

@@ -22,6 +22,7 @@ RUN npm run build -w @a2aviary/site-core && npm run check -w @a2aviary/site-core
 RUN npm prune --omit=dev
 
 FROM node:22.23.3-bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends openssh-client && rm -rf /var/lib/apt/lists/*
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=build /app/package.json /app/package-lock.json ./

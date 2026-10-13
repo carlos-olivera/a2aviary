@@ -4,9 +4,9 @@ import { validateLibrarySelection } from './library.ts';
 import type { LibraryContext } from './types.ts';
 import { Ajv, type ErrorObject } from 'ajv';
 import type { Policy } from './policy.ts';
-import { SUPPORTED_POLICY_VERSIONS, canonicalJson, defaultPolicy, sha256, specDigest } from './policy.ts';
+import { SUPPORTED_POLICY_VERSIONS, policyForVersion, canonicalJson, defaultPolicy, sha256, specDigest } from './policy.ts';
 import { generateContracts, type Schema } from './generator.ts';
-import type { Asset, ChangeAccounting, Link, SiteSpec, ValidationError, ValidationResult } from './types.ts';
+import type { Asset, Link, SiteSpec, ValidationError, ValidationResult } from './types.ts';
 export type * from './types.ts';
 export { specDigest, defaultPolicy } from './policy.ts';
 
@@ -27,7 +27,7 @@ function compile(policy: Policy) {
       return /^\+?[0-9()-]+$/.test(url.pathname) && !url.search && !url.hash;
     } catch { return false; }
   });
-  return { site: ajv.compile(generated.siteSchema), change: ajv.compile(generated.changeSchema), asset: ajv.compile({ definitions: generated.siteSchema.definitions, $ref: '#/definitions/assets' }), ...generated };
+  return { site: ajv.compile(generated.siteSchema), asset: ajv.compile({ definitions: generated.siteSchema.definitions, $ref: '#/definitions/assets' }), ...generated };
 }
 function compiled(policy: Policy) {
   const key = sha256(canonicalJson(policy));
@@ -65,11 +65,12 @@ function jsonBound(value: unknown, policy: Policy): ValidationError[] {
 }
 
 export function validateSiteSpec(input: unknown, policy: Policy = defaultPolicy, context: LibraryContext = {}): ValidationResult<SiteSpec> {
+  if (policy === defaultPolicy && (input as SiteSpec)?.policyVersion === '2.2.0') policy = policyForVersion('2.2.0');
   const bounded = jsonBound(input, policy);
   if (bounded.length) return failed(bounded);
   const version = (input as SiteSpec)?.policyVersion;
   if (!SUPPORTED_POLICY_VERSIONS.includes(version) || !SUPPORTED_POLICY_VERSIONS.includes(policy.version.value))
-    return failed([failure('/policyVersion', 'policy_version_unsupported', SUPPORTED_POLICY_VERSIONS, 'Use the supported policy version 2.2.0.', '/version')]);
+    return failed([failure('/policyVersion', 'policy_version_unsupported', SUPPORTED_POLICY_VERSIONS, 'Use a repository-pinned supported policy.', '/version')]);
   const validators = compiled(policy);
   if (!validators.site(input)) return failed(schemaErrors(validators.site.errors!, validators.siteSchema));
   const spec = input as SiteSpec, errors: ValidationError[] = validateLibrarySelection(input, policy, context.catalog ?? catalog, context);
@@ -180,8 +181,4 @@ export async function validateAssets(declarations: unknown, buffers: ReadonlyMap
   for (const id of buffers.keys()) if (!ids.has(id)) errors.push(failure('/assets', 'asset.extra', id, 'Remove undeclared bytes or declare the asset.'));
   if (total > policy.firstVersion.images.maxTotalBytes.value) errors.push(failure('/assets', 'assets.totalBytes', policy.firstVersion.images.maxTotalBytes.value, 'Prepare a smaller bundle on the client side.', '/firstVersion/images/maxTotalBytes'));
   return errors.length ? failed(errors) : { ok: true, value: structuredClone(assets) };
-}
-
-export function validateChangeRequest(..._args: unknown[]): ValidationResult<{ spec: SiteSpec; accounting: ChangeAccounting }> {
-  return failed([failure('', 'change_requests_unavailable', null, 'Changes will use draft, preview and browser approval in a later release.')]);
 }

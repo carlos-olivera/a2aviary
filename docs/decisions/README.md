@@ -76,3 +76,5 @@ These decisions were accepted in the initial-release implementation plan. Accept
 ## Accepted application model
 
 - [015 — Application types, categories and starters](015-application-types-and-categories.md) — records the owner's 2026-10-12 decisions; accepted by owner merge of PR #34 on 2026-10-12. Separates kind, starter, catalog and plan, flags earlier-policy/default/preview/live-edit conflicts, and sequences independently reviewable implementation. No source, migration, policy or contract changes.
+
+- [016 — Draft-based live edits](016-draft-based-live-edits.md) — owner-requested implementation for review; policy 2.3, retained draft history, CMS-preserving redeploy and UTC accounting. No production activation.

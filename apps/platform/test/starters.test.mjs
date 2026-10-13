@@ -76,7 +76,7 @@ test('starter discovery, atomic creation, retry binding and immutable provenance
     await assert.rejects(f.pool.query(`UPDATE platform_site SET ${column}=$2 WHERE id=$1`,[created.siteId,value]),/immutable site provenance/);
   await migrate(f.pool); // checksum-pinned migrator rerun is a no-op
   const blank = await call(f,client,'site.draft.create',{slug:'fictional-blank',requestId:randomUUID()});
-  assert.equal(blank.language,'en'); assert.equal(blank.starter,null);
+  assert.equal(blank.language,null); assert.equal(blank.starter,null);
   assert.deepEqual(blank.suggestions,[]);
   await assert.rejects(f.pool.query("UPDATE platform_site SET starter_id='profile',starter_version='1.0.0' WHERE id=$1",[blank.siteId]),/immutable site provenance/);
   const preview = await call(f,tester,'site.preview',{draftId:created.draftId,expectedRevision:0});

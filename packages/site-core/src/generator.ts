@@ -1,3 +1,4 @@
+import legacySchema from '../../../contracts/site/2.2.0/site-spec.schema.json' with { type: 'json' };
 import { collectionIds } from './collections.ts';
 import { assertPolicy, canonicalJson, sha256, type Policy } from './policy.ts';
 
@@ -9,6 +10,7 @@ export function assertPolicySnapshot(policy: Policy, snapshot: unknown): void {
 }
 export function generateContracts(policy: Policy) {
   assertPolicy(policy);
+  if (policy.version.value === '2.2.0') return {siteSchema: legacySchema as Schema, provenance: legacySchema['x-provenance']};
   const f = policy.firstVersion, s = f.structure, c = f.copy;
   const tag = (schema: Schema, policyPath: string): Schema => ({ ...schema, 'x-policyPath': policyPath });
   const obj = (properties: Schema, required = Object.keys(properties)): Schema => ({ type: 'object', additionalProperties: false, required, properties });
@@ -50,13 +52,13 @@ export function generateContracts(policy: Policy) {
   defs.section = obj({ id, blocks: arr(ref('block'), s.maxBlocksPerSection.value, '/firstVersion/structure/maxBlocksPerSection', 1), effects }, ['id','blocks']);
   defs.seo = obj({ title: copy('seoTitle'), description: copy('seoDescription'), socialImage: id }, ['title', 'description']);
   defs.page = obj({ id, path: tag({ type: 'string', pattern: s.pagePathPattern.value }, '/firstVersion/structure/pagePathPattern'), seo: ref('seo'), sections: arr(ref('section'), s.maxSectionsPerPage.value, '/firstVersion/structure/maxSectionsPerPage', 1) });
-  defs.shell = obj({skipLink: copy('label'), primaryNavigationLabel: copy('label'), footerNavigationLabel: copy('label'), notFoundTitle: copy('heading'), notFoundText: copy('shortCopy'), notFoundHomeLabel: copy('label')}, []);
+  defs.shell = obj({skipLink: copy('label'), primaryNavigationLabel: copy('label'), footerNavigationLabel: copy('label'), notFoundTitle: copy('heading'), notFoundText: copy('shortCopy'), notFoundHomeLabel: copy('label')});
   defs.tokens = obj({
     colors: tag(obj(Object.fromEntries(f.designTokens.colorSlots.value.map(slot => [slot, tag({ type: 'string', pattern: f.designTokens.colorPattern.value }, '/firstVersion/designTokens/colorPattern')]))), '/firstVersion/designTokens/colorSlots'),
-    fonts: obj({ heading: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), body: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), mono: tag({enum: f.designTokens.fonts.value}, '/firstVersion/designTokens/fonts') }, ['heading','body']),
+    fonts: obj({ heading: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), body: tag({ enum: f.designTokens.fonts.value }, '/firstVersion/designTokens/fonts'), mono: tag({enum: f.designTokens.fonts.value}, '/firstVersion/designTokens/fonts') }, ['heading','body','mono']),
     spacing: tag({ enum: f.designTokens.spacing.value }, '/firstVersion/designTokens/spacing'), radius: tag({ enum: f.designTokens.radius.value }, '/firstVersion/designTokens/radius'),
     motion: {enum:f.designTokens.motion.value}, layout: {enum:f.designTokens.layout.value}
-  }, ['colors','fonts','spacing','radius']);
+  }, ['colors','fonts','spacing','radius','motion','layout']);
   defs.navigation = obj({ primary: arr(ref('link'), f.navigation.maxPrimary.value, '/firstVersion/navigation/maxPrimary'), footer: arr(ref('link'), f.navigation.maxFooter.value, '/firstVersion/navigation/maxFooter') });
   defs.asset = obj({ id, format: tag({ enum: f.images.formats.value }, '/firstVersion/images/formats'), bytes: tag({ type: 'integer', minimum: 1, maximum: f.images.maxBytes.value }, '/firstVersion/images/maxBytes'), width: tag({ type: 'integer', minimum: 1, maximum: f.images.maxWidth.value }, '/firstVersion/images/maxWidth'), height: tag({ type: 'integer', minimum: 1, maximum: f.images.maxHeight.value }, '/firstVersion/images/maxHeight'), alt: copy('alt'), sha256: hash });
   defs.assets = arr(ref('asset'), f.images.maxAssets.value, '/firstVersion/images/maxAssets');
@@ -64,20 +66,8 @@ export function generateContracts(policy: Policy) {
   const identity = { contractVersion: { const: f.contractVersion.value }, planId: { const: policy.planId.value }, policyVersion: { const: policy.version.value } };
   const provenance = { policyVersion: policy.version.value, policySha256: sha256(canonicalJson(policy)) };
   const schema = (name: string, body: Schema): Schema => ({ $schema: 'http://json-schema.org/draft-07/schema#', $id: `https://a2aviary.io/contracts/site/${policy.version.value}/${name}`, ...body, definitions: defs, 'x-provenance': provenance });
-  const siteSchema = schema('site-spec-v1', obj({ ...identity, shell:ref('shell'), language: {type:'string', pattern:f.language.value}, pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms']));
-  const operationShapes: Record<string, Schema> = {
-    'add-block': { pageId: id, sectionId: id, index: { type: 'integer', minimum: 0, maximum: s.maxBlocksPerSection.value }, block: ref('block') },
-    'update-block': { pageId: id, sectionId: id, blockId: id, block: ref('block') },
-    'remove-block': { pageId: id, sectionId: id, blockId: id },
-    'add-page': { page: ref('page') }, 'update-page-seo': { pageId: id, seo: ref('seo') },
-    'update-tokens': { tokens: ref('tokens') }, 'update-navigation': { navigation: ref('navigation') }
-  };
-  defs.operation = {
-    type: 'object', required: ['op'], properties: { op: tag({ enum: policy.changes.operations.value }, '/changes/operations') },
-    allOf: policy.changes.operations.value.map(op => ({ if: { properties: { op: { const: op } }, required: ['op'] }, then: obj({ op: { const: op }, ...operationShapes[op] }) }))
-  };
-  const changeSchema = schema('change-request-unavailable', {not: {}, description: 'change_requests_unavailable; draft-based changes are not implemented.'});
-  return { siteSchema, changeSchema, provenance };
+  const siteSchema = schema('site-spec-v1', obj({ ...identity, shell:ref('shell'), language: {type:'string', pattern:f.language.value}, pages: arr(ref('page'), policy.includes.maxPages.value, '/includes/maxPages', 1), tokens: ref('tokens'), navigation: ref('navigation'), assets: ref('assets'), cms: obj({ collections: tag({ type: 'array', uniqueItems: true, items: { enum: policy.includes.cmsCollections.value } }, '/includes/cmsCollections') }) }, [...Object.keys(identity), 'pages', 'tokens', 'navigation', 'assets', 'cms', 'language', 'shell']));
+  return { siteSchema, provenance };
 }
 
 export function flattenRules(policy: Policy): { path: string; value: unknown; rationale: string }[] {

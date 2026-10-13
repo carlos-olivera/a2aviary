@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createApp } from '../src/app.ts';
 import { fixture } from './helpers.mjs';
 
-test('an enabled workflow with absent or disabled drafts boots discovery with all nine migrations', async (t) => {
+test('an enabled workflow with absent or disabled drafts boots discovery with all ten migrations', async (t) => {
   const names = ['SITE_WORKFLOW_ENABLED', 'SITE_DRAFTS_ENABLED'];
   const previous = Object.fromEntries(names.map((name) => [name, process.env[name]]));
   t.after(() => {
@@ -28,8 +28,8 @@ test('an enabled workflow with absent or disabled drafts boots discovery with al
     assert.equal(response.status, 200);
     const body = await response.json();
     assert.equal(body.mandate, 'discovery-only');
-    assert.equal(body.migrations.length, 9);
-    assert.equal(body.migrations.at(-1).name, '009-quick-preview-quota.sql');
+    assert.equal(body.migrations.length, 10);
+    assert.equal(body.migrations.at(-1).name, '010-draft-site-edits.sql');
     assert.equal(await f.pool.query('SELECT count(*)::int AS count FROM platform_site').then((r) => r.rows[0].count), 0);
   }
 });

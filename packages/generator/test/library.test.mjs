@@ -22,6 +22,7 @@ import {
 } from '../dist/index.js';
 import { fixtureSubmission } from '@a2aviary/site-core/fixtures/catalog';
 const root = new URL('../../../', import.meta.url);
+const legacySpec=JSON.parse(await readFile(new URL('../../../contracts/site/2.2.0/examples/site-spec.json',import.meta.url)));
 const input = await fixtureSubmission(),
   assets = new Map(
     Object.entries(input.assets).map(([id, b]) => [
@@ -284,7 +285,7 @@ test('fixtures render each policy component, helpers preserve links, assets and 
   const nested = spec.pages.find((p) => p.path !== '/');
   assert(renderPage(spec, nested.id).includes('../catalog.css'));
   const source = await generateSite(spec, assets);
-  assert.equal(GENERATOR_VERSION, '2.3.0');
+  assert.equal(GENERATOR_VERSION, '2.4.0');
   assert.equal(source.specSha256.length, 64);
 });
 test('CSS includes only used variants once in sorted order and keeps deterministic bundles', async () => {
@@ -327,11 +328,11 @@ test('CSS includes only used variants once in sorted order and keeps determinist
       'utf8',
     ),
   );
-  const full = await generateSite(input.spec, assets);
+  const full = await generateSite(legacySpec, assets);
   assert.equal(sha256(full.files['public/cms.js']), baseline.cmsSha256);
-  for (const page of input.spec.pages)
+  for (const page of legacySpec.pages)
     assert.equal(
-      renderPage(input.spec, page.id)
+      renderPage(legacySpec, page.id)
         .replace(/ data-v="[a-z-]+:standard"/g, '')
         .replace(/>\s+</g, '><')
         .trim(),
@@ -339,11 +340,11 @@ test('CSS includes only used variants once in sorted order and keeps determinist
     );
 });
 
-test('default boxed output retains exact PR #29 HTML, CSS, CMS and font bytes', async () => {
+test('legacy 2.2 boxed output retains exact PR #29 HTML, CSS, CMS and font bytes', async () => {
   const golden = JSON.parse(
     await readFile(new URL('./fixtures/boxed-2.1.json', import.meta.url)),
   );
-  const source = await generateSite(input.spec, assets);
+  const source = await generateSite(legacySpec, assets);
   for (const [path, hash] of Object.entries(golden.hashes))
     assert.equal(
       sha256(

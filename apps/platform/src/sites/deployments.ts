@@ -15,7 +15,11 @@ import {
   createDecipheriv,
 } from 'node:crypto';
 import type { PoolClient } from 'pg';
-import { type SiteSpec } from '@a2aviary/site-core';
+import {
+  boundCollectionIds,
+  defaultPolicy,
+  type SiteSpec,
+} from '@a2aviary/site-core';
 import {
   SiteError,
   type ObjectStore,
@@ -136,6 +140,7 @@ export class Sites {
     result: string,
     jobId: string | null = null,
     siteId?: string,
+    details: Record<string, unknown> = {},
   ) {
     await c.query(
       'INSERT INTO platform_audit(actor_user_id,action,target,details,test_mode) VALUES($1,$2,$3,$4,$5)',
@@ -143,22 +148,35 @@ export class Sites {
         p.id,
         'site.tool.result',
         tool,
-        JSON.stringify({ tool, specSha256: hash, result, test: p.testMode }),
+        JSON.stringify({
+          tool,
+          specSha256: hash,
+          result,
+          test: p.testMode,
+          ...details,
+        }),
         p.testMode,
       ],
     );
     if (siteId) {
       const site = await this.owned(c, p.id, siteId);
-      const specId = hash
+      const specId = jobId
         ? (
-            await c.query(
-              'SELECT id FROM platform_site_spec WHERE site_id=$1 AND spec_sha256=$2',
-              [siteId, hash],
-            )
-          ).rows[0]?.id
-        : null;
+            await c.query('SELECT spec_id FROM platform_site_job WHERE id=$1', [
+              jobId,
+            ])
+          ).rows[0]?.spec_id
+        : hash
+          ? (
+              await c.query(
+                'SELECT id FROM platform_site_spec WHERE site_id=$1 AND spec_sha256=$2',
+                [siteId, hash],
+              )
+            ).rows[0]?.id
+          : null;
       await this.administration.event(c, p, site, tool, result, specId, jobId, {
         specSha256: hash,
+        ...details,
       });
     }
   }
@@ -174,20 +192,27 @@ export class Sites {
       ).rows[0].count,
     );
   }
+  async successfulUsage(c: PoolClient, owner: string) {
+    return (
+      await c.query(
+        "SELECT count(*)::int AS n FROM platform_site_spec p JOIN platform_site s ON s.id=p.site_id WHERE s.owner_id=$1 AND p.accounting IS NOT NULL AND p.applied_at>=date_trunc('month',now() AT TIME ZONE 'UTC') AT TIME ZONE 'UTC' AND p.applied_at<(date_trunc('month',now() AT TIME ZONE 'UTC')+interval '1 month') AT TIME ZONE 'UTC'",
+        [owner],
+      )
+    ).rows[0].n;
+  }
   async deploy(
     actor: string,
     siteId: string,
     specId: string,
-    password: string,
+    password: string | undefined,
     confirmation: string,
     domain?: string,
+    retainCmsRecordsConfirmation?: string,
   ) {
     requireConfirmation(
       confirmation,
       'DEPLOY_SITE:' + siteId + (domain ? ':' + domain : ''),
     );
-    if (password.length < 16 || password.length > 128)
-      throw new SiteError('cms_password_length');
     return this.store.siteAction(actor, 'site.deploy', async (c, p) => {
       const site = await this.owned(c, actor, siteId);
       await c.query('SELECT pg_advisory_xact_lock(hashtext($1))', [
@@ -202,7 +227,43 @@ export class Sites {
         throw new SiteError('test_custom_domain_forbidden');
       if (row.site_id !== siteId)
         throw new SiteError('candidate_site_mismatch');
-      if (site.current_spec_id) throw new SiteError('initial_site_only');
+      if (site.current_spec_id === row.id && row.state === 'live')
+        return { siteId, specId, state: 'live', test: site.test_mode };
+      if (
+        !site.current_spec_id &&
+        (!password || password.length < 16 || password.length > 128)
+      )
+        throw new SiteError('cms_password_length');
+      if (
+        site.current_spec_id &&
+        (password !== undefined || domain !== undefined)
+      )
+        throw new SiteError('edit_initial_options_forbidden');
+      let removedCollections: string[] = [];
+      if (site.current_spec_id) {
+        const live = (
+          await c.query(
+            'SELECT spec_sha256,spec FROM platform_site_spec WHERE id=$1',
+            [site.current_spec_id],
+          )
+        ).rows[0];
+        if (!row.accounting || row.base_sha256 !== live.spec_sha256)
+          throw new SiteError('edit_base_stale');
+        const removed = (removedCollections = boundCollectionIds(
+          live.spec,
+        ).filter((id) => !boundCollectionIds(row.spec).includes(id)));
+        if (removed.length)
+          requireConfirmation(
+            retainCmsRecordsConfirmation ?? '',
+            'RETAIN_CMS_RECORDS:' + specId + ':' + removed.sort().join(','),
+          );
+        if (
+          (await this.usage(c, site.owner_id)) >=
+          defaultPolicy.changes.perMonth.value
+        )
+          throw new SiteError('monthly_change_allowance');
+      }
+
       await this.drafts.assertApproval(c, row);
       await this.readVerifiedBuild(row);
       const active = (
@@ -219,8 +280,8 @@ export class Sites {
         )
       ).rows[0];
       await c.query(
-        'UPDATE platform_site_spec SET client_password_ciphertext=$2,requested_domain=$3 WHERE id=$1',
-        [specId, this.seal(password), domain ?? null],
+        'UPDATE platform_site_spec SET client_password_ciphertext=$2,requested_domain=$3,reserved=(accounting IS NOT NULL) WHERE id=$1',
+        [specId, password ? this.seal(password) : null, domain ?? null],
       );
       await this.audit(
         c,
@@ -230,6 +291,12 @@ export class Sites {
         'queued',
         job.id,
         site.id,
+        removedCollections.length
+          ? {
+              retainedCollections: removedCollections,
+              retainCmsRecordsConfirmation,
+            }
+          : {},
       );
       return {
         siteId,
@@ -258,11 +325,20 @@ export class Sites {
   async readVerifiedBuild(row: SpecRow) {
     return readVerifiedBuild.call(this, row);
   }
-  async saveBuild(specId: string, build: VerifiedBuild) {
-    return saveBuild.call(this, specId, build);
+  async saveBuild(
+    specId: string,
+    build: VerifiedBuild,
+    transaction?: PoolClient,
+  ) {
+    return saveBuild.call(this, specId, build, transaction);
   }
-  async copyBuild(fromId: string, toId: string, build: VerifiedBuild) {
-    return copyBuild.call(this, fromId, toId, build);
+  async copyBuild(
+    fromId: string,
+    toId: string,
+    build: VerifiedBuild,
+    transaction?: PoolClient,
+  ) {
+    return copyBuild.call(this, fromId, toId, build, transaction);
   }
   async processOne(): Promise<boolean> {
     return processOne.call(this);

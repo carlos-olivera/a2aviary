@@ -56,11 +56,11 @@ fixture site cleanup needs narrowly scoped provider delete/list permissions.
 
 ## Initial-site drafts (current source)
 
-Both `SITE_WORKFLOW_ENABLED=true` and default-false `SITE_DRAFTS_ENABLED=true` are required. Policy 2.0.0 replaces client preview intake with revisioned drafts, shared raw uploads, isolated normalization, server snapshots and scoped browser approval before exact-byte deployment. `site.build` and `/api/site-specs` are removed; `change.request` returns `change_requests_unavailable`. Read [current operations](../../docs/sites.md) and [release evidence](../../docs/release-verification.md). All seven migration names/hashes must match; production 006 reconciliation is unresolved. Run `npm run test:browser` for the real local browser check and the separately authorized one-shot hosted runner only with fixture overrides and a disposable local database.
-
-The platform and generator use the root npm workspace lockfile. Domain imports
-use [site-core](../../packages/site-core/README.md); `plans.ts` uses its canonical
-JSON/digest functions. The repository-root Docker build installs that graph once,
-checks/builds in dependency order and prunes development dependencies before
-copying the non-root Node 22.23.3 runtime. The Railway pre-deploy migration command
-and all seven SQL files are unchanged. See [local refactor evidence](../../docs/evidence/site-core-workspaces/README.md).
+Both `SITE_WORKFLOW_ENABLED=true` and default-false `SITE_DRAFTS_ENABLED=true`
+are required. New drafts use policy 2.3.0 / contract 2.3, with explicit owner
+presentation inputs, revisioned drafts, uploads, verified snapshots and browser
+approval. Live edits open with `site.edit.open`. The retired intake/build/change
+APIs are removed; 2.2 approved stored snapshots remain deployable. See
+[current operations](../../docs/sites.md) and [release evidence](../../docs/release-verification.md).
+Readiness requires all ten source migration files with exact checksums after an
+owner-authorized rollout; local source is not production migration evidence.

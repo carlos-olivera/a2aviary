@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-10-13 — Draft-based live edits (prepared for review)
+
+- Add `site.edit.open`, retained draft history, live baseline/revision approval
+  checks, normalized asset reuse and web-only redeployment in the same project.
+- Reuse accounting columns for one successful edit per UTC monthly change;
+  reservations, failures and retries remain distinct. Add edit inventory/reporting
+  and retained reset summaries, including archived monthly report counts.
+- Keep cached-preview artifact hashes in the snapshot transaction, and bind
+  deployment audits to the job snapshot even when earlier content is reused.
+- Generate immutable policy 2.3.0 / contract 2.3, require explicit presentation
+  inputs for all new drafts and remove the change tool/schema/stub. Preserve 2.2.
+- Verify lifecycle/concurrency locally with provider doubles and record survival
+  through Docker PocketBase/Caddy edits and stored-byte restoration. Public
+  rollback and library field deduplication remain explicit follow-ups.
+- See [evidence and separately authorized hosted gates](docs/evidence/site-edits/README.md).
+
 ## 2026-10-13 — PR #41 platform CI browser prerequisite
 
 - Install Chromium and its system dependencies through platform `pretest` before

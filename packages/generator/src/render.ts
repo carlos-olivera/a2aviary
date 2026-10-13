@@ -1,4 +1,4 @@
-import { catalog, boundCollectionIds, collectionDefinitions, SUPPORTED_POLICY_VERSIONS } from '@a2aviary/site-core';
+import { catalog, policyForVersion, boundCollectionIds, collectionDefinitions, SUPPORTED_POLICY_VERSIONS } from '@a2aviary/site-core';
 import {
   selectedPackages,
   fontPackages,
@@ -46,7 +46,7 @@ const escape = (v: unknown) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
-export const GENERATOR_VERSION = '2.3.0';
+export const GENERATOR_VERSION = '2.4.0';
 export interface SourceBundle {
   files: Record<string, string>;
   binaryFiles: Record<string, string>;
@@ -71,7 +71,7 @@ export async function generateSite(
   if (!SUPPORTED_POLICY_VERSIONS.includes((input as SiteSpec)?.policyVersion))
     throw new SiteError('policy_version_unsupported');
   const activeCatalog = options.fixtureLibrary?.catalog ?? catalog;
-  const activePolicy = options.fixtureLibrary?.policy ?? defaultPolicy;
+  const activePolicy = options.fixtureLibrary?.policy ?? policyForVersion((input as SiteSpec).policyVersion);
   const context: LibraryContext = {
     test: options.test,
     catalog: activeCatalog,

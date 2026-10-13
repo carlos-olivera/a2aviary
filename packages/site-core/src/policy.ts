@@ -1,10 +1,11 @@
 import { collectionIds } from './collections.ts';
 import { createHash } from 'node:crypto';
+import legacy from '../../../plans/versions/web-simple/2.2.0.policy.json' with { type: 'json' };
 import source from '../../../plans/web-simple.policy.json' with { type: 'json' };
 
 export type Policy = typeof source;
 export const defaultPolicy: Policy = source;
-export const SUPPORTED_POLICY_VERSIONS: readonly string[] = Object.freeze(['2.2.0']);
+export const SUPPORTED_POLICY_VERSIONS: readonly string[] = Object.freeze(['2.2.0', '2.3.0']);
 export function assertSupportedPolicyVersion(version: unknown): void {
   if (typeof version !== 'string' || !SUPPORTED_POLICY_VERSIONS.includes(version))
     throw new Error('policy_version_unsupported');
@@ -44,10 +45,10 @@ const shape = {
     library: { ...rules('effects fonts', 'strings'), budgets: rules('variantCss effectCss behaviorJs pageCss pageJs fontFamilies fontFiles fontBytes components variants behaviors effects fonts gzipLevel', 'number') },
     approval: { ...rules('required previewRequired', 'boolean'), ...rules('digest', 'string') }
   },
-  changes: { ...rules('perMonth maxPagesTouched maxBlocksModified maxGlobalOperations maxOperations', 'number'), ...rules('calendar countsWhen', 'string'), ...rules('rollover', 'boolean'), ...rules('operations doesNotCount', 'strings') }
+  changes: { ...rules('perMonth', 'number'), ...rules('calendar countsWhen', 'string'), ...rules('rollover', 'boolean'), ...rules('operations doesNotCount', 'strings') }
 };
 const fixedProfile: Record<string, unknown> = {
-  planId: 'web-simple', 'firstVersion.contractVersion': '2.2',
+  planId: 'web-simple', 'firstVersion.contractVersion': '2.3',
   'includes.capabilities': ['static-astro', 'pocketbase-cms'], 'includes.system404Counts': false,
   'includes.ssl': true, 'includes.domain': 'client-supplied',
   'includes.excludes': ['custom-backend', 'end-user-auth', 'checkout', 'research', 'ocr', 'image-editing', 'custom-script', 'custom-style', 'raw-html', 'arbitrary-component', 'uploaded-svg'],
@@ -55,11 +56,15 @@ const fixedProfile: Record<string, unknown> = {
   'firstVersion.navigation.externalSchemes': ['https:', 'mailto:', 'tel:'], 'firstVersion.images.formats': ['webp'],
   'firstVersion.images.animated': false, 'firstVersion.images.altRequired': true, 'firstVersion.images.hash': 'sha256',
   'firstVersion.approval.required': true, 'firstVersion.approval.digest': 'sha256-sorted-json', 'firstVersion.approval.previewRequired': true,
-  'changes.calendar': 'UTC', 'changes.rollover': false, 'changes.countsWhen': 'successfully-applied',
-  'changes.operations': ['add-block', 'update-block', 'remove-block', 'add-page', 'update-page-seo', 'update-tokens', 'update-navigation'],
-  'changes.doesNotCount': ['pocketbase-content-edit']
+  'changes.calendar': 'UTC', 'changes.rollover': false, 'changes.countsWhen': 'successfully-deployed-edit',
+  'changes.operations': ['draft-edit'],
+  'changes.doesNotCount': ['pocketbase-content-edit','validation-failure','quick-preview','unapproved-snapshot','retry','initial-deployment']
 };
 export function assertPolicy(input: unknown): asserts input is Policy {
+  if ((input as Policy)?.version?.value === '2.2.0') {
+    if (canonicalJson(input) !== canonicalJson(legacy)) throw new Error('Immutable legacy policy mismatch');
+    return;
+  }
   const fail = (path: string): never => { throw new Error('Unsupported or invalid policy at ' + path); };
   const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
   const visit = (actual: unknown, template: unknown, path: string): void => {
@@ -108,5 +113,5 @@ export function assertPolicy(input: unknown): asserts input is Policy {
 /** Select only repository-pinned policies, never a client policy document. */
 export function policyForVersion(version: string): Policy {
   assertSupportedPolicyVersion(version);
-  return defaultPolicy;
+  return version === '2.2.0' ? legacy as Policy : defaultPolicy;
 }

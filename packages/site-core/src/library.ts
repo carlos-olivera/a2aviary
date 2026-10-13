@@ -318,7 +318,7 @@ export function contentErrors(
           ' in the site language; no default text is substituted.',
       });
   };
-  let needsShell = spec.shell !== undefined || (spec.language ?? 'en') !== 'en';
+  let needsShell = spec.policyVersion === '2.3.0' || spec.shell !== undefined || (spec.language ?? 'en') !== 'en';
   const use = (id: string) => {
     if (catalog[id]?.requiresShellContent) needsShell = true;
   };

@@ -19,7 +19,7 @@ export type DraftContent = Partial<
   Omit<SiteSpec, 'contractVersion' | 'planId' | 'policyVersion'>
 > & { pages: any[]; assets: any[] };
 export const identity = () => ({
-  contractVersion: '2.2',
+  contractVersion: '2.3',
   planId: defaultPolicy.planId.value,
   policyVersion: defaultPolicy.version.value,
 });
@@ -238,13 +238,13 @@ export function validateDraft(
     );
   return errors.filter((e) => e.rule !== 'content.required').slice(0, 20);
 }
-export function blockers(content: DraftContent, context: LibraryContext = {}, explicit = false) {
+export function blockers(content: DraftContent, context: LibraryContext = {}, explicit = true) {
   const r = validateSiteSpec(
     { ...identity(), ...content },
     defaultPolicy,
     context,
   );
-  const required = explicit ? explicitPresentationErrors(content) : [];
+  const required = explicitPresentationErrors(content);
   return r.ok
     ? required
     : [
