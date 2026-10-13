@@ -265,3 +265,9 @@ origins; the deployed AWS evaluator is unchanged. Server drafts and scoped brows
 snapshot approval are merged to main; successful production rollout remains
 unverified after the observed HTTP 503. Future work: the monthly-change redesign, and CI wiring, because the release
 workflow does not build or test `apps/platform` or `packages/generator`.
+
+## Internal module boundaries
+
+See [platform modules and refactor evidence](platform-modules.md) for the tool
+registry, domain layout, preserved behavior snapshots and before/after sizes.
+This organization does not activate starters, quick previews or live editing.

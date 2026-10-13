@@ -1,8 +1,9 @@
 import { createMcpHandler } from '@modelcontextprotocol/server';
 import { requireMcpAuth } from '@better-auth/mcp';
 import { createPool } from './database.ts';
-import { createAuth } from './auth.ts';
-import { AccessError, Store, TOOL_ROLES, isAdminTool } from './store.ts';
+import { createAuth } from './identity/auth.ts';
+import { AccessError, Store, isAdminTool } from './identity/store.ts';
+import { toolIndex } from './tool-registry.ts';
 import { createServer } from './tools.ts';
 import { loadPlans } from './plans.ts';
 import { page } from './pages.ts';
@@ -14,11 +15,11 @@ import {
   type BuildVerifier,
   type SiteDeployer,
 } from '@a2aviary/generator';
-import { SiteAdministration } from './site-administration.ts';
+import { SiteAdministration } from './admin/site-administration.ts';
 import { migrationInventory } from './migrate.ts';
-import { Sites } from './sites.ts';
-import { Drafts } from './drafts.ts';
-import { sitePage, authorizeUploadRequest } from './site-pages.ts';
+import { Sites } from './sites/deployments.ts';
+import { Drafts } from './sites/drafts.ts';
+import { sitePage, authorizeUploadRequest } from './sites/pages.ts';
 
 export interface SiteDependencies {
   objects: ObjectStore;
@@ -80,8 +81,8 @@ export async function createApp(
       if (
         validProtocol &&
         typeof name === 'string' &&
-        Object.hasOwn(TOOL_ROLES, name) &&
-        !TOOL_ROLES[name].includes(principal.role)
+        Object.hasOwn(toolIndex, name) &&
+        !toolIndex[name].roles.includes(principal.role)
       ) {
         await store.adminResult(principal.id, name, 'forbidden');
         return Response.json({
@@ -307,8 +308,8 @@ export async function createApp(
               error.code === 'upload_unavailable'
                 ? 503
                 : error.code.includes('quota') || error.code === 'upload_busy'
-                ? 429
-                : 403,
+                  ? 429
+                  : 403,
           },
         );
       else if (error instanceof AccessError)

@@ -2,7 +2,8 @@ import { verifyOAuthQueryParams } from '@better-auth/oauth-provider';
 import type { Auth } from './auth.ts';
 import type { Config } from './config.ts';
 import type { Plans } from './plans.ts';
-import { TOOL_ROLES, type Store } from './store.ts';
+import type { Store } from './identity/store.ts';
+import { availableTools } from './tool-registry.ts';
 
 export const escapeHtml = (value: unknown) =>
   String(value).replace(
@@ -128,26 +129,11 @@ export async function page(
   });
   const includes = plans.manifest.includes;
   const principal = await store.principal(session.user.id);
-  const allowedTools = Object.keys(TOOL_ROLES).filter(
-    (name) =>
-      TOOL_ROLES[name].includes(principal.role) &&
-      (sites ||
-        (!(
-          name.startsWith('site.draft.') ||
-          name.startsWith('site.upload.') ||
-          name === 'site.preview'
-        ) &&
-          ![
-            'site.preview',
-            'site.status',
-            'site.deploy',
-            'change.request',
-            'sites.list',
-            'site.inspect',
-            'tester.reset',
-            'site.costs.refresh',
-          ].includes(name))),
-  );
+  const allowedTools = availableTools(
+    principal.role,
+    { sites, administration: true },
+    'capabilities',
+  ).map((t) => t.name);
   return html(
     'Authorize connector',
     `<p>Client: ${escapeHtml(client.client_name ?? params.get('client_id'))}</p><p>Signed in as ${escapeHtml(session.user.email)}.</p><p>Requested scopes: ${escapeHtml(params.get('scope') ?? '')}</p><p>Requested identity claims: ${escapeHtml(params.get('claims') ?? 'standard claims for the scopes shown')}</p><h2>Plan contract: ${escapeHtml(plans.id)} ${escapeHtml(plans.version)}</h2><p>Up to ${escapeHtml(includes.maxPages.value)} authored pages; capabilities ${escapeHtml(includes.capabilities.value.join(', '))}; CMS collections ${escapeHtml(includes.cmsCollections.value.join(', '))}; SSL ${includes.ssl.value ? 'included' : 'excluded'}; domain ${escapeHtml(includes.domain.value)}. ${escapeHtml(plans.manifest.changes.perMonth.value)} successful changes per UTC month are proposed by the current policy.</p><p>Excludes: ${escapeHtml(includes.excludes.value.join(', '))}.</p><h2>${sites ? 'Approved catalog-site mandate' : 'Discovery-only mandate'}</h2><p>${principal.testMode ? 'Free test-only web-simple plan. Sites use a separate Railway staging host; customer custom domains are prohibited. Successful changes exercise the same monthly allowance. ' : ''}Role: ${escapeHtml(principal.role)}. Available tools: ${escapeHtml(allowedTools.join(', '))}.</p><p>${sites ? 'This connector can prepare a server draft and open agent/human upload channels. a2aviary normalizes images, builds and verifies a preview, and requires owner or assigned administrator browser approval before deploying the exact verified bytes with explicit confirmation. Change requests are unavailable; CMS content edits remain available. No research, OCR, creative image editing, payments or runtime policy changes.' : 'This connector can read plan contracts and manage your agent public keys. Admin tools are available only to authorized roles. No plan enrollment, payments, site submissions, generation or deployment.'} Access does not approve a website or expand the signed-email mandate.</p><form method="post" action="/consent">${hiddenQuery(query)}<button name="accept" value="true">Allow access</button><button name="accept" value="false">Deny access</button></form>`,
