@@ -1,3 +1,3 @@
-# Owner-only fallback while the trusted Operator App is not active.
-# Replace this blanket rule only after App-bound policy enforcement is verified.
+# Permanent while collaborators have write access: Carlos owns every path.
+# This GitHub-level guard complements the trusted policy check.
 * @carlos-olivera
