@@ -2,7 +2,7 @@
 
 ## Context
 
-Read README.md, docs/vision.md, and docs/decisions/README.md before proposing architecture changes. The AWS foundation has deployment evidence and Railway deployment is owner-reported. Decision 013 reached main on 2026-10-08; public health returned HTTP 503 at 16:46:22 -0400, leaving current site-workflow activation unverified. Read docs/release-verification.md for actual configured, deployed, verified, and blocked status; do not present proposals, examples, or simulated services as implemented features.
+Read README.md, docs/vision.md, and docs/decisions/README.md before proposing architecture changes. The AWS landing and legacy signed-email brief-discovery foundation have dated deployment evidence. [Current release status](docs/release-verification.md#current-status) records successful Railway rollout after PR #40, HTTP 200 with eight matching migrations and discovery-only operation observed on 2026-10-13; earlier baseline observations are retained in [repository evidence](docs/evidence/starters/README.md#observed-checks-and-publication-preflight). Catalog generation and hosting are implemented in source, but hosted full-workflow verification and real Google upload/approval authentication remain open gates. Quick preview and live edits have local evidence only; their production activation is unverified. Nothing is for sale; commercial services remain proposed. Read docs/release-verification.md and docs/evidence/ for actual configured, deployed, verified, and blocked status; do not present proposals, examples, or simulated services as implemented features.
 
 Read [ADR 015](docs/decisions/015-application-types-and-categories.md) before any work on categories, starters or plans; it records the owner's four-axis direction, accepted by owner merge of PR #34 on 2026-10-12.
 
@@ -29,7 +29,7 @@ English is the canonical language for repository documentation, architecture rec
 
 ## Persistent owner instructions for future tasks
 
-Confirmed by the owner on 2026-10-05; apply to future work in this project unless the owner explicitly changes the scope or rules.
+Confirmed by the owner on 2026-10-05; apply to future work in this project unless the owner explicitly changes the scope or rules. The `codex/` branch and Operator App publication rules below apply to agents acting for Carlos Olivera Terrazas; human collaborators and their agents follow the next section.
 
 - For authorized implementation deliveries, use a `codex/` feature branch and a pull request. Never push directly to `main`.
 - Publish branches and create PRs only through the **a2aviary Operator App** (`app/a2aviary-operator`, PR author `a2aviary-operator[bot]`). Never use Carlos Olivera Terrazas's personal GitHub login or credentials as a fallback.
@@ -40,6 +40,15 @@ Confirmed by the owner on 2026-10-05; apply to future work in this project unles
 - Human support and privacy/refund contact use **hello@a2aviary.io**. **agent@a2aviary.io** is the registered signed-agent pipeline, not human support. Do not claim mailbox delivery until verified.
 - Do not invent commercial prices or metrics. Until a real catalog and sales readiness are confirmed, clearly state that nothing is for sale and there is no live checkout or active Paddle merchant of record; distinguish verified brief discovery from future agency services. Record later status changes only against evidence.
 - Do not add infrastructure, analytics/tracking, payment integrations, or unrelated branding outside the explicitly authorized task scope. Preserve Apache 2.0 and dependency licenses, exclude secrets and client data, and keep English documentation and confirmed/proposed/unverified distinctions.
+
+## Human collaborators and their agents
+
+- A human collaborator, and any agent working for them, publishes from the collaborator's own GitHub account on `<github-login>/<topic>` branches and opens pull requests against `main`. Never push to `main`.
+- Do not merge: Carlos merges. GitHub may not enforce this separation on a personal-account repository; it remains a project rule.
+- Never create, move or delete tags.
+- Do not modify `.github/` without prior agreement with Carlos.
+- Collaborators' agents identify their real authoring actor as required by [CONTRIBUTING.md](CONTRIBUTING.md). Never use the Operator App, its brokers or Carlos's identity.
+- A collaborator's approvals confer no authority over sensitive paths. Only Carlos's approval of the current PR head satisfies the trusted policy check.
 
 ## Verification
 

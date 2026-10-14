@@ -1,5 +1,33 @@
 # Changelog
 
+## 2026-10-14 — Collaborator readiness and default-sensitive policy
+
+- Make every changed path sensitive except routine `docs/**` (excluding
+  decisions, evidence, history and release verification) and root CHANGELOG,
+  README and COSTS. Preserve rename-origin evaluation and Carlos's current-head
+  approval rule; unknown paths and production assets now require approval.
+- Keep blanket owner CODEOWNERS and clarify its permanent collaborator guard.
+  Define write-access collaborators, their own-account agent publication,
+  required 2FA, owner-only merge/approval, tag restrictions and prior agreement
+  for `.github/` changes. Refresh AGENTS context from dated release evidence.
+- Correct platform runtime dependency licenses using locked/installed metadata
+  and notice-copy verification after production pruning. Verify sharp's separate
+  libvips LGPL-3.0-or-later packages, including lockfile-matching Linux archives;
+  document missing LGPL text and excluded axe-core third-party notice collection
+  without changing the build. See [dependency findings](apps/platform/THIRD_PARTY.md).
+- On Node 22.23.3, services check/build and all 150 tests pass; infrastructure
+  build and nine tests pass. The required disposable LocalStack integration
+  passes queued processing, signed/correlated reply, duplicate/tamper rejection,
+  mock Operator and scheduled-control assertions. Website check/build, modified
+  Markdown relative links/anchors and whitespace checks pass. Regenerate
+  architecture provenance from six existing matching finalized drawings/receipts;
+  retain their validated source revision and unchanged page/layout.
+- Live default Operator profile preflight confirms repository-only access with
+  no workflows permission, five required main checks and auto-merge disabled.
+  No merge, production deployment, configuration, collaborator invitation or tags changed.
+  After review/merge, the owner must deploy the runtime evaluator and verify a
+  library-only PR fails policy until Carlos approves its current head.
+
 ## 2026-10-13 — Draft-based live edits (prepared for review)
 
 - Add `site.edit.open`, retained draft history, live baseline/revision approval
